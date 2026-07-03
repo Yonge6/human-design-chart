@@ -39,11 +39,12 @@ function svg(tag, attrs = {}) {
 function drawBase(data = {}) {
   graph.innerHTML = "";
   const active = activeGates(data);
+  addChartAtmosphere();
   for (const [a, b] of channels) {
     const p1 = gatePoint(a), p2 = gatePoint(b), mid = [(p1[0]+p2[0])/2, (p1[1]+p2[1])/2];
     graph.append(svg("line", { x1:p1[0], y1:p1[1], x2:p2[0], y2:p2[1], class:"channel-bg" }));
-    if (active.design.has(a) || active.personality.has(a)) graph.append(svg("line", { x1:p1[0], y1:p1[1], x2:mid[0], y2:mid[1], class:"channel-half", stroke: active.design.has(a) ? "#9d97cc" : "#696691" }));
-    if (active.design.has(b) || active.personality.has(b)) graph.append(svg("line", { x1:p2[0], y1:p2[1], x2:mid[0], y2:mid[1], class:"channel-half", stroke: active.design.has(b) ? "#9d97cc" : "#696691" }));
+    if (active.design.has(a) || active.personality.has(a)) graph.append(svg("line", { x1:p1[0], y1:p1[1], x2:mid[0], y2:mid[1], class:"channel-half", stroke: active.design.has(a) ? "#8f2434" : "#7e6aa4" }));
+    if (active.design.has(b) || active.personality.has(b)) graph.append(svg("line", { x1:p2[0], y1:p2[1], x2:mid[0], y2:mid[1], class:"channel-half", stroke: active.design.has(b) ? "#8f2434" : "#7e6aa4" }));
   }
 
   const defined = new Set((data["Defined Centers"] || []).map(v => v.toLowerCase()));
@@ -63,6 +64,36 @@ function drawBase(data = {}) {
       graph.append(text);
     }
   }
+}
+
+function addChartAtmosphere() {
+  const defs = svg("defs");
+  defs.innerHTML = `
+    <radialGradient id="pluto-vellum" cx="50%" cy="42%" r="70%">
+      <stop offset="0%" stop-color="#fbefdc"/>
+      <stop offset="62%" stop-color="#ead7bd"/>
+      <stop offset="100%" stop-color="#d7bea0"/>
+    </radialGradient>
+    <radialGradient id="pluto-disc" cx="44%" cy="38%" r="58%">
+      <stop offset="0%" stop-color="#fbecd6" stop-opacity=".85"/>
+      <stop offset="52%" stop-color="#6f2639" stop-opacity=".28"/>
+      <stop offset="100%" stop-color="#211321" stop-opacity=".05"/>
+    </radialGradient>
+    <radialGradient id="pluto-shadow" cx="58%" cy="34%" r="66%">
+      <stop offset="0%" stop-color="#2b1729" stop-opacity=".24"/>
+      <stop offset="78%" stop-color="#120b13" stop-opacity=".50"/>
+      <stop offset="100%" stop-color="#120b13" stop-opacity="0"/>
+    </radialGradient>
+  `;
+  graph.append(defs);
+  graph.append(svg("rect", { x: 2, y: 2, width: 418, height: 809, rx: 6, class: "chart-bg" }));
+  graph.append(svg("circle", { cx: 214, cy: 248, r: 138, class: "pluto-disc" }));
+  graph.append(svg("circle", { cx: 254, cy: 234, r: 112, class: "pluto-shadow" }));
+  graph.append(svg("ellipse", { cx: 214, cy: 390, rx: 165, ry: 330, class: "orbit" }));
+  graph.append(svg("ellipse", { cx: 214, cy: 390, rx: 126, ry: 275, class: "orbit inner" }));
+  graph.append(svg("ellipse", { cx: 214, cy: 390, rx: 205, ry: 96, class: "orbit", transform: "rotate(-18 214 390)" }));
+  [[54,160,1.2],[82,712,1.5],[116,96,1],[336,132,1.3],[372,376,1.1],[48,520,1.3],[356,688,1],[294,742,1.2]]
+    .forEach(([cx, cy, r]) => graph.append(svg("circle", { cx, cy, r, class: "star-dust" })));
 }
 
 function activeGates(data) {

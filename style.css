@@ -70,22 +70,21 @@ body {
 .chart-panel {
   position: relative;
   overflow: hidden;
-  padding: 30px 34px 28px;
+  padding: 28px 34px 30px;
   background:
-    radial-gradient(circle at 51% 38%, rgba(183, 131, 69, .10), transparent 35%),
-    radial-gradient(circle at 70% 14%, rgba(72, 48, 76, .055), transparent 28%),
-    linear-gradient(180deg, #fbf5ea 0%, #ead7bd 100%);
+    radial-gradient(circle at 50% 38%, rgba(158, 122, 72, .12), transparent 38%),
+    radial-gradient(circle at 70% 13%, rgba(87, 68, 80, .045), transparent 28%),
+    repeating-linear-gradient(90deg, rgba(108, 81, 49, .018) 0 1px, transparent 1px 13px),
+    linear-gradient(180deg, #fbf3e6 0%, #ead5b8 100%);
   color: #2c2525;
 }
 .chart-panel::before {
   content: "";
   position: absolute;
-  inset: 34px 34px auto auto;
-  width: 340px;
-  aspect-ratio: 1;
-  border: 1px solid rgba(133, 92, 46, .22);
-  border-radius: 50%;
-  opacity: .65;
+  inset: 10px;
+  border: 1px solid rgba(125, 87, 47, .48);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.34), inset 0 0 0 5px rgba(125, 87, 47, .10);
+  opacity: 1;
   pointer-events: none;
 }
 .chart-panel::after {
@@ -93,10 +92,10 @@ body {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(92, 66, 39, .035) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(92, 66, 39, .025) 1px, transparent 1px);
-  background-size: 42px 42px;
-  mask-image: radial-gradient(circle at 60% 42%, black 0%, transparent 72%);
+    linear-gradient(rgba(251, 243, 230, .72), rgba(234, 213, 184, .72)),
+    url("option-3-right-texture.png") center / cover no-repeat;
+  opacity: .18;
+  mix-blend-mode: multiply;
   pointer-events: none;
 }
 .eyebrow {
@@ -142,54 +141,53 @@ button {
   align-items: start;
   justify-content: space-between;
   gap: 16px;
-  border-bottom: 1px solid rgba(133, 92, 46, .24);
-  padding-bottom: 18px;
+  border-bottom: 0;
+  padding: 10px 0 10px;
 }
 .chart-meta button {
   width: 156px;
-  border: 1px solid rgba(133, 92, 46, .45);
-  background: rgba(246, 237, 224, .48);
+  border: 1px solid rgba(119, 82, 45, .55);
+  border-radius: 2px;
+  background: rgba(248, 239, 226, .28);
   color: #5c432f;
   letter-spacing: .04em;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.35);
 }
 #birthLine { margin: -8px 0 0; color: #7b6d62; }
 .chart-frame {
   position: relative;
   z-index: 1;
   max-width: 1030px;
-  margin: 24px auto 0;
-  padding: 30px 34px 26px;
-  background:
-    radial-gradient(circle at 50% 32%, rgba(151, 112, 57, .10), transparent 28%),
-    radial-gradient(circle at 50% 52%, rgba(83, 65, 90, .04), transparent 42%),
-    linear-gradient(180deg, rgba(253, 247, 237, .98), rgba(239, 225, 204, .96));
-  border: 1px solid rgba(133, 92, 46, .50);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.58), inset 0 0 78px rgba(92, 66, 39, .07), 0 22px 70px rgba(0,0,0,.14);
+  margin: 8px auto 0;
+  padding: 18px 34px 10px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 .chart-frame::before,
 .chart-frame::after {
   content: "";
   position: absolute;
   left: 50%;
-  top: 48%;
-  width: 590px;
-  height: 590px;
-  border: 1px solid rgba(133, 92, 46, .11);
+  top: 39%;
+  width: 650px;
+  height: 650px;
+  border: 1px solid rgba(133, 92, 46, .13);
   border-radius: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
 .chart-frame::after {
-  width: 690px;
-  height: 690px;
-  border-color: rgba(110, 68, 99, .08);
+  width: 760px;
+  height: 760px;
+  border-color: rgba(133, 92, 46, .10);
 }
 .chart-layout {
   display: grid;
-  grid-template-columns: minmax(142px, 174px) minmax(330px, 422px) minmax(142px, 174px);
+  grid-template-columns: minmax(142px, 170px) minmax(360px, 408px) minmax(142px, 170px);
   justify-content: center;
   align-items: start;
-  gap: 24px;
+  gap: 28px;
 }
 .chart-graph {
   position: relative;
@@ -207,14 +205,14 @@ button {
   filter: blur(.2px);
   opacity: .8;
 }
-#bodygraph { width: 100%; max-width: 422px; height: auto; }
+#bodygraph { width: 100%; max-width: 408px; height: auto; }
 .watermark {
   margin: -2px 0 0;
   color: rgba(77, 49, 54, .48);
   font: 12px ui-sans-serif, system-ui, sans-serif;
 }
 .side-column > p {
-  margin: 0 0 14px;
+  margin: 8px 0 14px;
   color: #8b3042;
   font: 700 11px/1 ui-sans-serif, system-ui, sans-serif;
   letter-spacing: .14em;
@@ -227,30 +225,33 @@ button {
   padding: 0;
   display: grid;
   gap: 0;
-  padding: 14px 16px;
-  border: 1px solid rgba(133, 92, 46, .22);
-  background: rgba(252, 246, 236, .44);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.28);
+  padding: 14px 16px 12px;
+  border: 1px solid rgba(125, 87, 47, .34);
+  background: rgba(252, 246, 236, .24);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.30);
   font: 14px/1.15 Georgia, "Times New Roman", serif;
 }
-.planet-list li { display: flex; justify-content: space-between; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(133, 92, 46, .14); }
+.planet-list li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid rgba(133, 92, 46, .18); }
 .planet-list li:last-child { border-bottom: 0; }
-.planet-list span { color: #5f534c; font-style: italic; }
+.planet-list span { display: flex; align-items: center; gap: 10px; color: #5f534c; font-style: italic; }
+.planet-list i { width: 16px; color: #7e5a35; font-style: normal; font-size: 17px; text-align: center; }
 .planet-list b { color: #2c2525; }
 .right li { flex-direction: row-reverse; }
+.right .planet-list span { flex-direction: row-reverse; }
 .properties {
   display: grid;
   grid-template-columns: repeat(4, minmax(150px, 1fr));
   gap: 0;
   max-width: 1030px;
-  margin: 24px auto 0;
+  margin: 10px auto 0;
   position: relative;
   z-index: 1;
-  border: 1px solid rgba(133, 92, 46, .24);
-  background: rgba(252, 246, 236, .42);
+  border: 1px solid rgba(125, 87, 47, .38);
+  background: rgba(252, 246, 236, .24);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.28);
 }
 .property {
-  min-height: 70px;
+  min-height: 68px;
   border-right: 1px solid rgba(133, 92, 46, .20);
   border-bottom: 1px solid rgba(133, 92, 46, .20);
   padding: 14px 16px;
@@ -269,9 +270,9 @@ button {
 .center.root { fill: #c9aa74; }
 .center.defined { stroke: #8b5d28; filter: drop-shadow(0 3px 3px rgba(43, 31, 22, .20)); }
 .chart-bg { fill: transparent; }
-.astro-ring { fill: none; stroke: rgba(133, 92, 46, .18); stroke-width: 1; stroke-dasharray: 2 7; }
-.astro-ring.inner { stroke: rgba(110, 68, 99, .11); stroke-dasharray: none; }
-.astro-ring.faint { stroke: rgba(133, 92, 46, .075); stroke-dasharray: 1 9; }
+.astro-ring { fill: none; stroke: rgba(133, 92, 46, .22); stroke-width: 1; stroke-dasharray: 2 7; }
+.astro-ring.inner { stroke: rgba(110, 68, 99, .16); stroke-dasharray: none; }
+.astro-ring.faint { stroke: rgba(133, 92, 46, .11); stroke-dasharray: 1 9; }
 .astro-tick { stroke: rgba(133, 92, 46, .25); stroke-width: 1; }
 .pluto-disc { fill: url(#pluto-disc); opacity: .16; }
 .pluto-shadow { fill: url(#pluto-shadow); mix-blend-mode: multiply; opacity: .18; }

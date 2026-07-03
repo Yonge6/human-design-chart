@@ -12,6 +12,7 @@ const centers = {
 
 const channels = [[64,47],[61,24],[63,4],[17,62],[43,23],[11,56],[16,48],[20,57],[31,7],[8,1],[33,13],[45,21],[12,22],[25,51],[10,57],[10,34],[20,10],[2,14],[15,5],[46,29],[26,44],[40,37],[34,57],[34,20],[27,50],[59,6],[42,53],[3,60],[9,52],[32,54],[28,38],[18,58],[30,41],[55,39],[19,49]];
 const planets = ["Sun","Earth","North Node","South Node","Moon","Mercury","Venus","Mars","Jupiter","Saturn","Uranus","Neptune","Pluto"];
+const planetGlyphs = ["☉","⊕","☊","☋","☽","☿","♀","♂","♃","♄","♅","♆","♇"];
 const graph = document.querySelector("#bodygraph");
 const fields = {
   name: document.querySelector("#name"),
@@ -167,7 +168,8 @@ function render(data) {
 }
 
 function row(name, item) {
-  return `<li><span>${name}</span><b>${item.Gate}.${item.Line}</b></li>`;
+  const glyph = planetGlyphs[planets.indexOf(name)] || "";
+  return `<li><span><i>${glyph}</i>${name}</span><b>${item.Gate}.${item.Line}</b></li>`;
 }
 
 document.querySelector("#download").addEventListener("click", () => {

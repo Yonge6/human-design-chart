@@ -48,8 +48,8 @@ function drawBase(data = {}) {
   }
 
   const defined = new Set((data["Defined Centers"] || []).map(v => v.toLowerCase()));
-  for (const center of Object.values(centers)) {
-    const cls = "center" + (defined.has(center.name) ? " defined" : "");
+  for (const [key, center] of Object.entries(centers)) {
+    const cls = `center ${key}` + (defined.has(center.name) ? " defined" : "");
     if (center.type === "rect") graph.append(svg("rect", { x:center.x, y:center.y, width:center.w, height:center.h, rx:8, class:cls }));
     if (center.type === "tri") graph.append(svg("polygon", { points:center.points.map(p => p.join(",")).join(" "), class:cls }));
     if (center.type === "diamond") graph.append(svg("polygon", { points:[[center.cx,center.cy-center.r],[center.cx+center.r,center.cy],[center.cx,center.cy+center.r],[center.cx-center.r,center.cy]].map(p => p.join(",")).join(" "), class:cls }));
@@ -89,6 +89,7 @@ function addChartAtmosphere() {
   graph.append(svg("rect", { x: 2, y: 2, width: 418, height: 809, rx: 6, class: "chart-bg" }));
   graph.append(svg("circle", { cx: 214, cy: 300, r: 206, class: "astro-ring" }));
   graph.append(svg("circle", { cx: 214, cy: 300, r: 162, class: "astro-ring inner" }));
+  graph.append(svg("circle", { cx: 214, cy: 300, r: 118, class: "astro-ring faint" }));
   for (let i = 0; i < 32; i++) {
     const angle = i * 11.25;
     graph.append(svg("line", { x1:214, y1:79, x2:214, y2:i % 4 === 0 ? 91 : 86, class:"astro-tick", transform:`rotate(${angle} 214 300)` }));

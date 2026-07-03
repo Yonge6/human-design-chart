@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Human Design Chart</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">My Human Design</div>
+    <nav aria-label="Primary">
+      <a href="#chartForm">Create Chart</a>
+      <a href="#capture">My Chart</a>
+    </nav>
+  </header>
+  <main class="shell">
+    <section class="form-panel">
+      <p class="eyebrow">Human Design Chart</p>
+      <h1>Get Your Human Design Chart</h1>
+      <form id="chartForm">
+        <label>Name <input id="name" name="name" value="Test" required></label>
+        <div class="grid3">
+          <label>Year <input id="year" inputmode="numeric" value="1990" required></label>
+          <label>Month <input id="month" inputmode="numeric" value="01" required></label>
+          <label>Day <input id="day" inputmode="numeric" value="01" required></label>
+        </div>
+        <div class="grid3">
+          <label>Hour <input id="hour" inputmode="numeric" value="12" required></label>
+          <label>Minute <input id="minute" inputmode="numeric" value="00" required></label>
+          <label>AM/PM
+            <select id="ampm">
+              <option value="pm">PM</option>
+              <option value="am">AM</option>
+            </select>
+          </label>
+        </div>
+        <label>Birth location
+          <input id="location" list="locations" value="Shanghai, China" required>
+          <datalist id="locations"></datalist>
+        </label>
+        <input id="timezone" type="hidden" value="Asia/Shanghai">
+        <button type="submit">Generate Chart</button>
+        <p id="status"></p>
+      </form>
+    </section>
+
+    <section class="chart-panel" id="capture">
+      <div class="chart-meta">
+        <div>
+          <p class="eyebrow">Your Chart</p>
+          <h2 id="personName">-</h2>
+          <p id="birthLine">Enter details to generate.</p>
+        </div>
+        <button id="download" type="button">Download PNG</button>
+      </div>
+      <div class="chart-frame">
+        <div class="chart-layout">
+          <div class="side-column">
+            <p>Design</p>
+            <ol id="designList" class="planet-list"></ol>
+          </div>
+          <div class="chart-graph">
+            <svg id="bodygraph" viewBox="0 0 422 813" role="img" aria-label="Human Design bodygraph"></svg>
+            <p class="watermark">&copy; Human Design Chart</p>
+          </div>
+          <div class="side-column right">
+            <p>Personality</p>
+            <ol id="personalityList" class="planet-list right"></ol>
+          </div>
+        </div>
+      </div>
+      <div id="properties" class="properties"></div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

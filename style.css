@@ -72,8 +72,10 @@ body {
   overflow: hidden;
   padding: 30px 34px 28px;
   background:
-    radial-gradient(circle at 58% 30%, rgba(120, 37, 57, .18), transparent 34%),
-    linear-gradient(180deg, #19111b 0%, #100d13 100%);
+    radial-gradient(circle at 54% 33%, rgba(183, 131, 69, .12), transparent 31%),
+    radial-gradient(circle at 62% 42%, rgba(72, 48, 76, .08), transparent 36%),
+    linear-gradient(180deg, #f7efe4 0%, #ead8c1 100%);
+  color: #2c2525;
 }
 .chart-panel::before {
   content: "";
@@ -81,7 +83,7 @@ body {
   inset: 34px 34px auto auto;
   width: 340px;
   aspect-ratio: 1;
-  border: 1px solid rgba(184, 132, 74, .18);
+  border: 1px solid rgba(133, 92, 46, .22);
   border-radius: 50%;
   opacity: .65;
   pointer-events: none;
@@ -91,9 +93,9 @@ body {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(255,255,255,.018) 1px, transparent 1px);
-  background-size: 56px 56px;
+    linear-gradient(90deg, rgba(92, 66, 39, .035) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(92, 66, 39, .025) 1px, transparent 1px);
+  background-size: 42px 42px;
   mask-image: radial-gradient(circle at 60% 42%, black 0%, transparent 72%);
   pointer-events: none;
 }
@@ -140,22 +142,29 @@ button {
   align-items: start;
   justify-content: space-between;
   gap: 16px;
-  border-bottom: 1px solid rgba(216, 177, 125, .35);
+  border-bottom: 1px solid rgba(133, 92, 46, .24);
   padding-bottom: 18px;
 }
-.chart-meta button { width: 150px; }
-#birthLine { margin: -8px 0 0; color: var(--muted); }
+.chart-meta button {
+  width: 156px;
+  border: 1px solid rgba(133, 92, 46, .45);
+  background: rgba(246, 237, 224, .48);
+  color: #5c432f;
+  letter-spacing: .04em;
+}
+#birthLine { margin: -8px 0 0; color: #7b6d62; }
 .chart-frame {
   position: relative;
   z-index: 1;
-  max-width: 980px;
+  max-width: 1030px;
   margin: 24px auto 0;
-  padding: 24px 26px 22px;
+  padding: 30px 34px 26px;
   background:
-    radial-gradient(circle at 50% 44%, rgba(183, 131, 69, .09), transparent 32%),
-    linear-gradient(180deg, rgba(246, 234, 219, .98), rgba(232, 212, 189, .92));
-  border: 1px solid rgba(183, 131, 69, .5);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.35), 0 22px 70px rgba(0,0,0,.24);
+    radial-gradient(circle at 50% 42%, rgba(184, 138, 74, .12), transparent 27%),
+    radial-gradient(circle at 50% 52%, rgba(72, 48, 76, .07), transparent 39%),
+    linear-gradient(180deg, rgba(252, 246, 236, .98), rgba(237, 222, 201, .94));
+  border: 1px solid rgba(133, 92, 46, .43);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.5), inset 0 0 90px rgba(92, 66, 39, .08), 0 22px 70px rgba(0,0,0,.18);
 }
 .chart-frame::before,
 .chart-frame::after {
@@ -163,21 +172,21 @@ button {
   position: absolute;
   left: 50%;
   top: 48%;
-  width: 430px;
-  height: 430px;
-  border: 1px solid rgba(68, 34, 51, .12);
+  width: 510px;
+  height: 510px;
+  border: 1px solid rgba(133, 92, 46, .13);
   border-radius: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
 .chart-frame::after {
-  width: 535px;
-  height: 535px;
-  border-color: rgba(125, 31, 46, .10);
+  width: 645px;
+  height: 645px;
+  border-color: rgba(110, 68, 99, .10);
 }
 .chart-layout {
   display: grid;
-  grid-template-columns: minmax(132px, 168px) minmax(330px, 422px) minmax(132px, 168px);
+  grid-template-columns: minmax(142px, 174px) minmax(330px, 422px) minmax(142px, 174px);
   justify-content: center;
   align-items: start;
   gap: 24px;
@@ -191,10 +200,10 @@ button {
   content: "";
   position: absolute;
   top: 54px;
-  width: 270px;
+  width: 292px;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(circle at 38% 36%, rgba(246, 234, 219, .62), rgba(120, 37, 57, .18) 47%, transparent 68%);
+  background: radial-gradient(circle at 38% 36%, rgba(246, 234, 219, .56), rgba(104, 41, 57, .19) 46%, transparent 68%);
   filter: blur(.2px);
   opacity: .8;
 }
@@ -205,8 +214,8 @@ button {
   font: 12px ui-sans-serif, system-ui, sans-serif;
 }
 .side-column > p {
-  margin: 22px 0 16px;
-  color: #7d1f2e;
+  margin: 0 0 14px;
+  color: #8b3042;
   font: 700 11px/1 ui-sans-serif, system-ui, sans-serif;
   letter-spacing: .14em;
   text-transform: uppercase;
@@ -217,42 +226,52 @@ button {
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 20px;
-  font: 14px/1.15 ui-sans-serif, system-ui, sans-serif;
+  gap: 0;
+  padding: 14px 16px;
+  border: 1px solid rgba(133, 92, 46, .22);
+  background: rgba(252, 246, 236, .44);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.28);
+  font: 14px/1.15 Georgia, "Times New Roman", serif;
 }
-.planet-list li { display: flex; justify-content: space-between; gap: 10px; }
-.planet-list span { color: #513d44; }
-.planet-list b { color: #211321; }
+.planet-list li { display: flex; justify-content: space-between; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(133, 92, 46, .14); }
+.planet-list li:last-child { border-bottom: 0; }
+.planet-list span { color: #5f534c; font-style: italic; }
+.planet-list b { color: #2c2525; }
 .right li { flex-direction: row-reverse; }
 .properties {
   display: grid;
   grid-template-columns: repeat(4, minmax(150px, 1fr));
   gap: 0;
-  max-width: 980px;
+  max-width: 1030px;
   margin: 24px auto 0;
   position: relative;
   z-index: 1;
-  border-top: 1px solid rgba(216, 177, 125, .35);
+  border: 1px solid rgba(133, 92, 46, .24);
+  background: rgba(252, 246, 236, .42);
 }
 .property {
-  min-height: 58px;
-  border-bottom: 1px solid rgba(216, 177, 125, .28);
-  padding: 12px 14px 10px 0;
+  min-height: 70px;
+  border-right: 1px solid rgba(133, 92, 46, .20);
+  border-bottom: 1px solid rgba(133, 92, 46, .20);
+  padding: 14px 16px;
   font: 13px ui-sans-serif, system-ui, sans-serif;
 }
-.property b { display: block; color: #d8b17d; }
-.center { fill: rgba(248, 237, 221, .86); stroke: #a87945; stroke-width: 2.1; }
-.center.defined { fill: #8c2938; stroke: #d8b17d; }
+.property b { display: block; color: #8b3042; letter-spacing: .04em; text-transform: uppercase; }
+.center { fill: rgba(248, 239, 226, .88); stroke: #a87945; stroke-width: 2.1; filter: drop-shadow(0 2px 2px rgba(43, 31, 22, .18)); }
+.center.defined { fill: #a56852; stroke: #d8b17d; }
 .chart-bg { fill: url(#pluto-vellum); }
-.pluto-disc { fill: url(#pluto-disc); opacity: .42; }
+.astro-ring { fill: none; stroke: rgba(133, 92, 46, .20); stroke-width: 1; stroke-dasharray: 2 6; }
+.astro-ring.inner { stroke: rgba(110, 68, 99, .13); stroke-dasharray: none; }
+.astro-tick { stroke: rgba(133, 92, 46, .32); stroke-width: 1; }
+.pluto-disc { fill: url(#pluto-disc); opacity: .36; }
 .pluto-shadow { fill: url(#pluto-shadow); mix-blend-mode: multiply; }
-.star-dust { fill: #8c2938; opacity: .34; }
-.orbit { fill: none; stroke: rgba(58, 31, 52, .28); stroke-width: 1; }
-.orbit.inner { stroke: rgba(168, 121, 69, .28); }
-.channel-bg { stroke: #cfc1ae; stroke-width: 14; stroke-linecap: round; opacity: .72; }
+.star-dust { fill: #b78345; opacity: .42; }
+.orbit { fill: none; stroke: rgba(92, 66, 39, .22); stroke-width: 1; }
+.orbit.inner { stroke: rgba(110, 68, 99, .18); }
+.channel-bg { stroke: #d7c8b4; stroke-width: 14; stroke-linecap: round; opacity: .78; }
 .channel-half { stroke-width: 6; stroke-linecap: round; opacity: .94; }
-.gate-dot { fill: #f7ead7; stroke: #c8b8a4; stroke-width: 2; }
-.gate-dot.active { fill: #211321; stroke: #d8b17d; }
+.gate-dot { fill: #f7ead7; stroke: #c8b8a4; stroke-width: 2; filter: drop-shadow(0 1px 1px rgba(43, 31, 22, .12)); }
+.gate-dot.active { fill: #292329; stroke: #d8b17d; }
 .gate-label { font: 700 11px ui-sans-serif, system-ui, sans-serif; text-anchor: middle; dominant-baseline: central; fill: #4a3037; }
 .gate-label.active { fill: #f8ecd9; }
 @media (max-width: 1080px) {

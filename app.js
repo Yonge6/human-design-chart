@@ -43,8 +43,8 @@ function drawBase(data = {}) {
   for (const [a, b] of channels) {
     const p1 = gatePoint(a), p2 = gatePoint(b), mid = [(p1[0]+p2[0])/2, (p1[1]+p2[1])/2];
     graph.append(svg("line", { x1:p1[0], y1:p1[1], x2:p2[0], y2:p2[1], class:"channel-bg" }));
-    if (active.design.has(a) || active.personality.has(a)) graph.append(svg("line", { x1:p1[0], y1:p1[1], x2:mid[0], y2:mid[1], class:"channel-half", stroke: active.design.has(a) ? "#8f2434" : "#7e6aa4" }));
-    if (active.design.has(b) || active.personality.has(b)) graph.append(svg("line", { x1:p2[0], y1:p2[1], x2:mid[0], y2:mid[1], class:"channel-half", stroke: active.design.has(b) ? "#8f2434" : "#7e6aa4" }));
+    if (active.design.has(a) || active.personality.has(a)) graph.append(svg("line", { x1:p1[0], y1:p1[1], x2:mid[0], y2:mid[1], class:"channel-half", stroke: active.design.has(a) ? "#9a3040" : "#755e95" }));
+    if (active.design.has(b) || active.personality.has(b)) graph.append(svg("line", { x1:p2[0], y1:p2[1], x2:mid[0], y2:mid[1], class:"channel-half", stroke: active.design.has(b) ? "#9a3040" : "#755e95" }));
   }
 
   const defined = new Set((data["Defined Centers"] || []).map(v => v.toLowerCase()));
@@ -87,8 +87,14 @@ function addChartAtmosphere() {
   `;
   graph.append(defs);
   graph.append(svg("rect", { x: 2, y: 2, width: 418, height: 809, rx: 6, class: "chart-bg" }));
+  graph.append(svg("circle", { cx: 214, cy: 300, r: 206, class: "astro-ring" }));
+  graph.append(svg("circle", { cx: 214, cy: 300, r: 162, class: "astro-ring inner" }));
+  for (let i = 0; i < 32; i++) {
+    const angle = i * 11.25;
+    graph.append(svg("line", { x1:214, y1:79, x2:214, y2:i % 4 === 0 ? 91 : 86, class:"astro-tick", transform:`rotate(${angle} 214 300)` }));
+  }
   graph.append(svg("circle", { cx: 214, cy: 248, r: 138, class: "pluto-disc" }));
-  graph.append(svg("circle", { cx: 254, cy: 234, r: 112, class: "pluto-shadow" }));
+  graph.append(svg("circle", { cx: 258, cy: 244, r: 116, class: "pluto-shadow" }));
   graph.append(svg("ellipse", { cx: 214, cy: 390, rx: 165, ry: 330, class: "orbit" }));
   graph.append(svg("ellipse", { cx: 214, cy: 390, rx: 126, ry: 275, class: "orbit inner" }));
   graph.append(svg("ellipse", { cx: 214, cy: 390, rx: 205, ry: 96, class: "orbit", transform: "rotate(-18 214 390)" }));

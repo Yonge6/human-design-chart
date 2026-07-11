@@ -3,15 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Human Design Chart</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://photon.komoot.io; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <title>Pluto Human Design Chart</title>
+  <link rel="stylesheet" href="style.css?v=20260711-3">
 </head>
 <body>
   <header class="topbar">
-    <div class="brand">My Human Design</div>
+    <div class="brand">Pluto Human Design</div>
     <nav aria-label="Primary">
       <a href="#chartForm">Create Chart</a>
       <a href="#capture">My Chart</a>
+      <a href="https://github.com/Yonge6/human-design-chart" rel="noopener">Source</a>
     </nav>
   </header>
   <main class="shell">
@@ -19,7 +22,7 @@
       <p class="eyebrow">Human Design Chart</p>
       <h1>Get Your Human Design Chart</h1>
       <form id="chartForm">
-        <label>Name <input id="name" name="name" value="Test" required></label>
+        <label>Name <input id="name" name="name" value="Test" maxlength="80" required></label>
         <div class="grid3">
           <label>Year <select id="year" required></select></label>
           <label>Month <select id="month" required></select></label>
@@ -37,14 +40,19 @@
         </div>
         <label>Birth location
           <div class="location-combobox">
-            <input id="location" name="location" type="search" value="Shanghai, China" placeholder="City, district or region" autocomplete="off" aria-autocomplete="list" aria-controls="locationResults" aria-expanded="false" required>
-            <ul id="locationResults" class="location-results" role="listbox" hidden></ul>
+            <input id="location" name="location" type="search" role="combobox" value="Shanghai, China" placeholder="City, district or region" autocomplete="off" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="locationResults" aria-expanded="false" aria-describedby="status" required>
+            <ul id="locationResults" class="location-results" role="listbox" aria-label="Birth location suggestions" hidden></ul>
           </div>
         </label>
-        <label>Timezone <select id="timezone" name="timezone" required></select></label>
-        <p class="place-attribution">Place search &copy; OpenStreetMap contributors &middot; Photon</p>
+        <label id="clockOccurrenceField" hidden>Clock occurrence
+          <select id="clockOccurrence">
+            <option value="earlier">First occurrence</option>
+            <option value="later">Second occurrence</option>
+          </select>
+        </label>
+        <p class="place-attribution">Search queries are sent to Photon. Data &copy; <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap contributors</a>, ODbL.</p>
         <button type="submit">Generate Chart</button>
-        <p id="status"></p>
+        <p id="status" role="status" aria-live="polite"></p>
       </form>
     </section>
 
@@ -55,7 +63,7 @@
           <h2 id="personName">-</h2>
           <p id="birthLine">Enter details to generate.</p>
         </div>
-        <button id="download" type="button">Download PNG</button>
+        <button id="download" type="button" disabled>Download PNG</button>
       </div>
       <div class="chart-frame">
         <div class="chart-layout">
@@ -76,7 +84,8 @@
       <div id="properties" class="properties"></div>
     </section>
   </main>
-  <script src="vendor/tz-lookup/tz.js"></script>
-  <script type="module" src="app.js"></script>
+  <script src="vendor/tz-lookup/tz.js?v=20260711-3"></script>
+  <script src="vendor/html2canvas/html2canvas.min.js?v=20260711-3"></script>
+  <script type="module" src="app.js?v=20260711-3"></script>
 </body>
 </html>

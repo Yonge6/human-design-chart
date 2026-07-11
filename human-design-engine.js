@@ -1,10 +1,12 @@
-import { SwissEphemeris } from "./vendor/swisseph/swisseph-browser.js";
-import { getIncarnationCross } from "./vendor/natalengine/incarnation-crosses.js";
+import { SwissEphemeris } from "./vendor/swisseph/swisseph-browser.js?v=20260711-3";
+import { getIncarnationCross } from "./vendor/natalengine/incarnation-crosses.js?v=20260711-3";
 
 const Planet = {
   Sun: 0, Moon: 1, Mercury: 2, Venus: 3, Mars: 4, Jupiter: 5,
   Saturn: 6, Uranus: 7, Neptune: 8, Pluto: 9, TrueNode: 11,
 };
+const SWISS_EPHEMERIS_FLAGS = 258;
+const EPHEMERIS_FILES = ["sepl_18.se1", "semo_18.se1", "seas_18.se1"];
 
 const GATE_ORDER = [
   25, 17, 21, 51, 42, 3, 27, 24, 2, 23, 8, 20, 16, 35, 45, 12,
@@ -93,10 +95,19 @@ async function getSwissEphemeris() {
     swePromise = (async () => {
       const swe = new SwissEphemeris();
       await swe.init(new URL("./vendor/swisseph/swisseph.wasm", import.meta.url).href);
+      await swe.loadEphemerisFiles(EPHEMERIS_FILES.map((name) => ({
+        name,
+        url: new URL(`./vendor/swisseph/ephe/${name}`, import.meta.url).href,
+      })));
       return swe;
     })();
   }
-  return swePromise;
+  try {
+    return await swePromise;
+  } catch (error) {
+    swePromise = undefined;
+    throw error;
+  }
 }
 
 function normalize(longitude) {
@@ -125,7 +136,9 @@ function longitudeToActivation(longitude) {
 }
 
 function position(swe, jd, planet) {
-  return swe.calculatePosition(jd, planet).longitude;
+  const result = swe.calculatePosition(jd, planet, SWISS_EPHEMERIS_FLAGS);
+  if ((result.flags & 2) !== 2) throw new Error("Swiss Ephemeris data files were not loaded.");
+  return result.longitude;
 }
 
 function calculateSide(swe, jd) {
@@ -202,11 +215,15 @@ function getType(channels, centers) {
   return motorToThroat ? "Manifestor" : "Projector";
 }
 
-function getAuthority(centers) {
+function hasChannel(channels, first, second) {
+  return channels.some(([[a, b]]) => (a === first && b === second) || (a === second && b === first));
+}
+
+function getAuthority(centers, channels) {
   if (centers.has("solar")) return "Emotional - Solar Plexus";
   if (centers.has("sacral")) return "Sacral";
   if (centers.has("spleen")) return "Splenic";
-  if (centers.has("heart")) return "Ego - Heart";
+  if (centers.has("heart")) return hasChannel(channels, 21, 45) ? "Ego Manifested" : "Ego Projected";
   if (centers.has("g")) return "Self-Projected";
   if (centers.size === 0) return "Lunar";
   return "Mental - Environment";
@@ -244,11 +261,40 @@ function timezoneOffsetAt(utcMs, timezone) {
   return Date.UTC(values.year, values.month - 1, values.day, values.hour, values.minute, values.second) - utcMs;
 }
 
-function localToUtcMs(year, month, day, hour, minute, timezone) {
+function localToUtcCandidates(year, month, day, hour, minute, timezone) {
   const wallTime = Date.UTC(year, month - 1, day, hour, minute);
-  let utcMs = wallTime - timezoneOffsetAt(wallTime, timezone);
-  utcMs = wallTime - timezoneOffsetAt(utcMs, timezone);
-  return utcMs;
+  const normalized = new Date(wallTime);
+  if (
+    normalized.getUTCFullYear() !== year
+    || normalized.getUTCMonth() + 1 !== month
+    || normalized.getUTCDate() !== day
+    || normalized.getUTCHours() !== hour
+    || normalized.getUTCMinutes() !== minute
+  ) {
+    throw new RangeError("Invalid birth date or time.");
+  }
+
+  const offsets = new Set([-2, -1, 0, 1, 2].map((days) => timezoneOffsetAt(wallTime + days * 86400000, timezone)));
+  const candidates = [...offsets]
+    .map((offset) => wallTime - offset)
+    .filter((utcMs) => {
+      const local = new Date(utcMs + timezoneOffsetAt(utcMs, timezone));
+      return local.getUTCFullYear() === year
+        && local.getUTCMonth() + 1 === month
+        && local.getUTCDate() === day
+        && local.getUTCHours() === hour
+        && local.getUTCMinutes() === minute;
+    })
+    .filter((utcMs, index, values) => values.indexOf(utcMs) === index)
+    .sort((a, b) => a - b);
+
+  return candidates;
+}
+
+function localToUtcMs(year, month, day, hour, minute, timezone, disambiguation = "earlier") {
+  const candidates = localToUtcCandidates(year, month, day, hour, minute, timezone);
+  if (!candidates.length) throw new RangeError("This local birth time did not exist because the clocks moved forward.");
+  return disambiguation === "later" ? candidates[candidates.length - 1] : candidates[0];
 }
 
 function ordinal(day) {
@@ -266,9 +312,9 @@ function displayDate(date, timezone) {
   return `${ordinal(Number(values.day))} ${values.month} ${values.year} @ ${values.hour}:${values.minute}`;
 }
 
-export async function calculateHumanDesign({ name, location, year, month, day, hour, minute, timezone }) {
+export async function calculateHumanDesign({ name, location, year, month, day, hour, minute, timezone, timeDisambiguation }) {
   const swe = await getSwissEphemeris();
-  const utcMs = localToUtcMs(year, month, day, hour, minute, timezone);
+  const utcMs = localToUtcMs(year, month, day, hour, minute, timezone, timeDisambiguation);
   const birthDate = new Date(utcMs);
   const birthJd = swe.dateToJulianDay(birthDate);
   const designJd = findDesignJulianDay(swe, birthJd);
@@ -297,7 +343,7 @@ export async function calculateHumanDesign({ name, location, year, month, day, h
       Type: type,
       Strategy: TYPE_META[type].strategy,
       Sign: TYPE_META[type].sign,
-      "Inner Authority": getAuthority(centers),
+      "Inner Authority": getAuthority(centers, channels),
       Definition: getDefinition(channels, centers),
       Profile: `${profile}: ${PROFILE_NAMES[profile] || "Profile"}`,
       "Incarnation Cross": cross.fullName,
@@ -317,12 +363,13 @@ export async function calculateHumanDesign({ name, location, year, month, day, h
       Perspective: leftPerspective ? "<" : ">",
     },
     Meta: {
-      Ephemeris: "Swiss Ephemeris WASM (Moshier)",
+      Ephemeris: "Swiss Ephemeris WASM (SE1 data files)",
       DesignSolarArc: 88,
+      Timezone: timezone,
       BirthJulianDay: birthJd,
       DesignJulianDay: designJd,
     },
   };
 }
 
-export { GATE_ORDER, CHANNELS };
+export { GATE_ORDER, CHANNELS, getAuthority, localToUtcCandidates, localToUtcMs, longitudeToActivation };

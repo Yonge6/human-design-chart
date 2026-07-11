@@ -10,7 +10,9 @@ python3 server.py
 
 Open `http://127.0.0.1:8789/`.
 
-The birth data stays in the browser during chart calculation. Birth locations support global free-form input with optional OpenStreetMap-powered suggestions. Selecting a suggestion maps its coordinates to an IANA timezone locally; the full timezone menu remains available as a manual fallback.
+Run the engine regression suite with `npm test`.
+
+The birth data stays in the browser during chart calculation. Birth locations support global OpenStreetMap-powered search. Selecting a result maps its coordinates to an IANA timezone locally; the timezone is used internally for accurate UTC conversion and is not shown as a separate form field.
 
 ## Calculation
 

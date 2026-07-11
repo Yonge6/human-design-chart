@@ -1,4 +1,4 @@
-import { calculateHumanDesign } from "./human-design-engine.js";
+import { calculateHumanDesign, localToUtcCandidates } from "./human-design-engine.js?v=20260711-3";
 
 const planets = ["Sun", "Earth", "North Node", "South Node", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 const graph = document.querySelector("#bodygraph");
@@ -11,10 +11,13 @@ const fields = {
   minute: document.querySelector("#minute"),
   ampm: document.querySelector("#ampm"),
   location: document.querySelector("#location"),
-  timezone: document.querySelector("#timezone"),
+  clockOccurrence: document.querySelector("#clockOccurrence"),
 };
 const locationResults = document.querySelector("#locationResults");
-const defaultTimezones = ["Asia/Shanghai", "Asia/Hong_Kong", "Asia/Taipei", "Europe/London", "America/New_York", "America/Los_Angeles", "Australia/Sydney", "Etc/UTC"];
+const clockOccurrenceField = document.querySelector("#clockOccurrenceField");
+const status = document.querySelector("#status");
+const chartForm = document.querySelector("#chartForm");
+const downloadButton = document.querySelector("#download");
 
 const centerColors = {
   "head-center": "#a8a27c",
@@ -34,6 +37,12 @@ let placeMatches = [];
 let activePlaceIndex = -1;
 let placeTimer;
 let placeRequest;
+let placeQueryVersion = 0;
+let selectedPlace = {
+  label: "Shanghai, China",
+  coordinates: [121.4737, 31.2304],
+  timezone: "Asia/Shanghai",
+};
 
 function appendOptions(select, values, selected) {
   select.replaceChildren(...values.map(({ value, label }) => {
@@ -61,17 +70,6 @@ function initializeSelectors() {
   appendOptions(fields.hour, Array.from({ length: 12 }, (_, index) => ({ value: index + 1 })), 12);
   appendOptions(fields.minute, Array.from({ length: 60 }, (_, index) => ({ value: index })), 0);
   updateDays();
-
-  const timezones = typeof Intl.supportedValuesOf === "function"
-    ? Intl.supportedValuesOf("timeZone")
-    : defaultTimezones;
-  fields.timezone.replaceChildren(...timezones.map((timezone) => {
-    const option = document.createElement("option");
-    option.value = timezone;
-    option.textContent = timezone.replaceAll("_", " ").replace("/", " / ");
-    option.selected = timezone === "Asia/Shanghai";
-    return option;
-  }));
 }
 
 function placeLabel(properties) {
@@ -99,23 +97,34 @@ function highlightPlace(index) {
   options[activePlaceIndex].scrollIntoView({ block: "nearest" });
 }
 
-function setTimezone(timezone) {
-  let option = [...fields.timezone.options].find((item) => item.value === timezone);
-  if (!option) {
-    option = document.createElement("option");
-    option.value = timezone;
-    option.textContent = timezone.replaceAll("_", " ").replace("/", " / ");
-    fields.timezone.append(option);
+function resetClockOccurrence() {
+  clockOccurrenceField.hidden = true;
+  fields.clockOccurrence.value = "earlier";
+}
+
+function isValidTimezone(timezone) {
+  try {
+    new Intl.DateTimeFormat("en", { timeZone: timezone }).format();
+    return true;
+  } catch {
+    return false;
   }
-  fields.timezone.value = timezone;
 }
 
 function selectPlace(index) {
   const place = placeMatches[index];
   if (!place) return;
   const [longitude, latitude] = place.geometry.coordinates;
-  fields.location.value = placeLabel(place.properties);
-  setTimezone(window.tzlookup(latitude, longitude));
+  if (![longitude, latitude].every(Number.isFinite)) return;
+  // Mainland Chinese civil records use China Standard Time nationwide.
+  const timezone = place.properties.countrycode === "CN" ? "Asia/Shanghai" : window.tzlookup(latitude, longitude);
+  if (!isValidTimezone(timezone)) return;
+  const label = placeLabel(place.properties);
+  fields.location.value = label;
+  selectedPlace = { label, coordinates: [longitude, latitude], timezone };
+  fields.location.removeAttribute("aria-invalid");
+  placeRequest?.abort();
+  resetClockOccurrence();
   closePlaceResults();
 }
 
@@ -146,34 +155,69 @@ function renderPlaceResults(features) {
   locationResults.hidden = placeMatches.length === 0;
   fields.location.setAttribute("aria-expanded", String(placeMatches.length > 0));
   activePlaceIndex = -1;
+  if (placeMatches.length) {
+    status.textContent = "";
+    highlightPlace(0);
+  } else {
+    status.textContent = "No matching place found. Try city, region, and country.";
+  }
 }
 
-async function searchPlaces(query) {
+async function searchPlaces(query, queryVersion) {
   placeRequest?.abort();
-  placeRequest = new AbortController();
+  const request = new AbortController();
+  placeRequest = request;
+  let timedOut = false;
+  const timeout = window.setTimeout(() => {
+    timedOut = true;
+    request.abort();
+  }, 8000);
   try {
     const url = new URL("https://photon.komoot.io/api/");
     url.search = new URLSearchParams({ q: query, limit: "7", osm_tag: "place", lang: "default" });
-    const response = await fetch(url, { signal: placeRequest.signal });
+    const response = await fetch(url, { signal: request.signal });
     if (!response.ok) throw new Error("Place search unavailable");
     const data = await response.json();
+    if (queryVersion !== placeQueryVersion || fields.location.value.trim() !== query) return;
     renderPlaceResults(data.features || []);
   } catch (error) {
-    if (error.name !== "AbortError") closePlaceResults();
+    if ((error.name !== "AbortError" || timedOut) && queryVersion === placeQueryVersion) {
+      closePlaceResults();
+      status.textContent = "Location search unavailable. Check your connection and try again.";
+    }
+  } finally {
+    window.clearTimeout(timeout);
   }
+}
+
+function cancelPlaceSearch() {
+  placeQueryVersion += 1;
+  placeRequest?.abort();
+  closePlaceResults();
 }
 
 fields.location.addEventListener("input", () => {
   window.clearTimeout(placeTimer);
+  placeRequest?.abort();
+  placeQueryVersion += 1;
+  selectedPlace = null;
+  placeMatches = [];
+  locationResults.replaceChildren();
+  closePlaceResults();
+  resetClockOccurrence();
+  fields.location.removeAttribute("aria-invalid");
+  status.textContent = "";
   const query = fields.location.value.trim();
   if (query.length < 2) {
     closePlaceResults();
     return;
   }
-  placeTimer = window.setTimeout(() => searchPlaces(query), 280);
+  const queryVersion = placeQueryVersion;
+  placeTimer = window.setTimeout(() => searchPlaces(query, queryVersion), 280);
 });
 
 fields.location.addEventListener("keydown", (event) => {
+  if (event.isComposing) return;
   if (locationResults.hidden) return;
   if (event.key === "ArrowDown") {
     event.preventDefault();
@@ -181,15 +225,15 @@ fields.location.addEventListener("keydown", (event) => {
   } else if (event.key === "ArrowUp") {
     event.preventDefault();
     highlightPlace(activePlaceIndex - 1);
-  } else if (event.key === "Enter" && activePlaceIndex >= 0) {
+  } else if (event.key === "Enter" && placeMatches.length > 0) {
     event.preventDefault();
-    selectPlace(activePlaceIndex);
+    selectPlace(activePlaceIndex >= 0 ? activePlaceIndex : 0);
   } else if (event.key === "Escape") {
-    closePlaceResults();
+    cancelPlaceSearch();
   }
 });
 
-fields.location.addEventListener("blur", () => window.setTimeout(closePlaceResults, 120));
+fields.location.addEventListener("blur", () => window.setTimeout(cancelPlaceSearch, 120));
 
 function time24(hour, minute, ampm) {
   let value = Number(hour);
@@ -200,7 +244,7 @@ function time24(hour, minute, ampm) {
 
 async function loadGraphTemplate() {
   if (!graphTemplate) {
-    const response = await fetch("./assets/bodygraph-template.svg");
+    const response = await fetch("./assets/bodygraph-template.svg?v=20260711-3");
     if (!response.ok) throw new Error("BodyGraph template failed to load");
     graphTemplate = await response.text();
   }
@@ -267,39 +311,85 @@ function row(name, item) {
   return `<li><span><i class="${iconClass}" aria-hidden="true"></i>${name}</span><b>${item.Gate}.${item.Line}</b></li>`;
 }
 
-function render(data) {
-  paintBodygraph(data);
+async function render(data) {
+  await paintBodygraph(data);
   document.querySelector("#personName").textContent = data.Properties.Name;
   document.querySelector("#birthLine").textContent = `${data.Properties.BirthDateLocal} in ${data.Properties.Location}`;
   document.querySelector("#designList").innerHTML = planets.map((planet) => row(planet, data.Design[planet])).join("");
   document.querySelector("#personalityList").innerHTML = planets.map((planet) => row(planet, data.Personality[planet])).join("");
   const keys = ["Type", "Strategy", "Inner Authority", "Profile", "Definition", "Incarnation Cross", "Not Self Theme", "Digestion", "Sense", "Environment"];
   document.querySelector("#properties").innerHTML = keys.map((key) => `<div class="property"><b>${key}</b>${data.Properties[key]}</div>`).join("");
+  downloadButton.disabled = false;
+}
+
+function invalidateChart() {
+  if (!lastData) return;
+  lastData = undefined;
+  downloadButton.disabled = true;
+  document.querySelector("#personName").textContent = "-";
+  document.querySelector("#birthLine").textContent = "Enter details to generate.";
+  document.querySelector("#designList").replaceChildren();
+  document.querySelector("#personalityList").replaceChildren();
+  document.querySelector("#properties").replaceChildren();
+  paintBodygraph({ Design: {}, Personality: {}, "Defined Centers": [] }).catch((error) => {
+    status.textContent = error.message;
+  });
 }
 
 fields.year.addEventListener("change", updateDays);
 fields.month.addEventListener("change", updateDays);
+[fields.year, fields.month, fields.day, fields.hour, fields.minute, fields.ampm].forEach((field) => field.addEventListener("change", resetClockOccurrence));
+chartForm.addEventListener("input", invalidateChart);
+chartForm.addEventListener("change", invalidateChart);
 
-document.querySelector("#chartForm").addEventListener("submit", async (event) => {
+chartForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-  const status = document.querySelector("#status");
-  const submit = event.submitter;
-  status.textContent = "Calculating planetary positions...";
-  submit.disabled = true;
+  const submit = event.submitter || document.querySelector("#chartForm button[type='submit']");
+  if (submit.disabled) return;
+  if (!selectedPlace || fields.location.value.trim() !== selectedPlace.label) {
+    fields.location.setAttribute("aria-invalid", "true");
+    fields.location.focus();
+    status.textContent = "Select a birth location from the search results.";
+    return;
+  }
+  const name = fields.name.value.trim();
+  if (!name) {
+    fields.name.setAttribute("aria-invalid", "true");
+    fields.name.focus();
+    status.textContent = "Enter a name.";
+    return;
+  }
+  fields.name.removeAttribute("aria-invalid");
   const time = time24(fields.hour.value, fields.minute.value, fields.ampm.value);
   try {
+    const candidates = localToUtcCandidates(
+      Number(fields.year.value), Number(fields.month.value), Number(fields.day.value),
+      time.hour, time.minute, selectedPlace.timezone,
+    );
+    if (!candidates.length) throw new RangeError("This local birth time did not exist because the clocks moved forward.");
+    if (candidates.length > 1 && clockOccurrenceField.hidden) {
+      clockOccurrenceField.hidden = false;
+      status.textContent = "This clock time occurred twice. Choose which occurrence is on the birth record.";
+      fields.clockOccurrence.focus();
+      return;
+    }
+    const selectedUtc = fields.clockOccurrence.value === "later" ? candidates[candidates.length - 1] : candidates[0];
+    if (selectedUtc > Date.now()) throw new RangeError("Birth date and time cannot be in the future.");
+    status.textContent = "Calculating planetary positions...";
+    submit.disabled = true;
     const data = await calculateHumanDesign({
-      name: fields.name.value.trim(),
-      location: fields.location.value.trim(),
+      name,
+      location: selectedPlace.label,
       year: Number(fields.year.value),
       month: Number(fields.month.value),
       day: Number(fields.day.value),
       hour: time.hour,
       minute: time.minute,
-      timezone: fields.timezone.value,
+      timezone: selectedPlace.timezone,
+      timeDisambiguation: fields.clockOccurrence.value,
     });
+    await render(data);
     lastData = data;
-    render(data);
     status.textContent = "Chart calculated locally with Swiss Ephemeris.";
   } catch (error) {
     console.error(error);
@@ -309,38 +399,46 @@ document.querySelector("#chartForm").addEventListener("submit", async (event) =>
   }
 });
 
-document.querySelector("#download").addEventListener("click", async () => {
+downloadButton.addEventListener("click", async () => {
   if (!lastData) return;
-  const status = document.querySelector("#status");
   status.textContent = "Preparing PNG...";
-  const svg = graph.querySelector("svg");
-  const source = new XMLSerializer().serializeToString(svg);
-  const blob = new Blob([source], { type: "image/svg+xml;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const image = new Image();
-  image.onload = () => {
-    const canvas = document.createElement("canvas");
-    canvas.width = 1266;
-    canvas.height = 2439;
-    const context = canvas.getContext("2d");
-    context.fillStyle = "#f5e7d2";
-    context.fillRect(0, 0, canvas.width, canvas.height);
-    context.drawImage(image, 0, 0, canvas.width, canvas.height);
-    URL.revokeObjectURL(url);
+  downloadButton.disabled = true;
+  try {
+    const canvas = await window.html2canvas(document.querySelector("#capture"), {
+      backgroundColor: "#ead5b8",
+      logging: false,
+      scale: 2,
+      useCORS: true,
+      windowWidth: 1200,
+      onclone: (documentClone) => {
+        const panel = documentClone.querySelector("#capture");
+        panel.style.width = "1128px";
+        panel.style.maxWidth = "none";
+        documentClone.querySelector("#download").disabled = false;
+      },
+    });
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+    if (!blob) throw new Error("Canvas could not be encoded");
+    const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
-    link.download = `${lastData.Properties.Name || "human-design"}-bodygraph.png`;
-    link.href = canvas.toDataURL("image/png");
+    const safeName = (lastData.Properties.Name || "human-design")
+      .replace(/[<>:"/\\|?*\u0000-\u001f]/g, "-")
+      .trim()
+      .slice(0, 80) || "human-design";
+    link.download = `${safeName}-human-design-chart.png`;
+    link.href = url;
     link.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
     status.textContent = "PNG downloaded.";
-  };
-  image.onerror = () => {
-    URL.revokeObjectURL(url);
-    status.textContent = "PNG export failed.";
-  };
-  image.src = url;
+  } catch (error) {
+    console.error(error);
+    status.textContent = `PNG export failed: ${error.message}`;
+  } finally {
+    downloadButton.disabled = !lastData;
+  }
 });
 
-loadGraphTemplate().catch((error) => {
+paintBodygraph({ Design: {}, Personality: {}, "Defined Centers": [] }).catch((error) => {
   document.querySelector("#status").textContent = error.message;
 });
 initializeSelectors();

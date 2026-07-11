@@ -22,6 +22,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body {
   margin: 0;
   color: var(--ink);
@@ -166,6 +167,7 @@ input[type="search"]::-webkit-search-cancel-button { opacity: .55; }
   color: #8f7d79;
   font: 10px/1.3 ui-sans-serif, system-ui, sans-serif;
 }
+.place-attribution a { color: inherit; }
 button {
   cursor: pointer;
   border: 0;
@@ -173,6 +175,7 @@ button {
   color: #1a1018;
   font-weight: 700;
 }
+button:disabled { cursor: not-allowed; opacity: .52; }
 .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 #status { min-height: 20px; font: 13px ui-sans-serif, system-ui, sans-serif; color: #d8b17d; }
 .chart-meta {
@@ -362,4 +365,5 @@ button {
   .chart-meta button { width: 100%; }
   .properties, .planet-list { grid-template-columns: 1fr; }
   .location-results { max-height: 240px; }
+  .gate-label { font-size: 13px; }
 }

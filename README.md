@@ -1,6 +1,6 @@
-# Human Design Chart Prototype
+# Human Design BodyGraph
 
-Static Human Design chart prototype inspired by myhumandesign.com.
+Browser-side Human Design chart generator with a Swiss Ephemeris WASM calculation engine and a dynamic SVG BodyGraph.
 
 ## Local preview
 
@@ -8,10 +8,14 @@ Static Human Design chart prototype inspired by myhumandesign.com.
 python3 server.py
 ```
 
-Then open:
+Open `http://127.0.0.1:8789/`.
 
-```text
-http://127.0.0.1:8789/
-```
+The birth data stays in the browser during chart calculation. The location field currently uses the public My Human Design timezone autocomplete to resolve a place name to an IANA timezone.
 
-GitHub Pages serves `index.html` directly.
+## Calculation
+
+See [ALGORITHM.md](ALGORITHM.md) for the complete calculation chain and verification evidence.
+
+## Licensing
+
+The browser astronomy engine is based on Swiss Ephemeris and is distributed under AGPL-3.0 in this prototype. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) before commercial deployment.

@@ -1,18 +1,6 @@
-const centers = {
-  head: { name: "head center", type: "tri", points: [[214,7],[174,96],[254,96]], gates: {64:[190,96],61:[214,78],63:[238,96]} },
-  ajna: { name: "ajna center", type: "tri", points: [[214,116],[174,207],[254,207]], gates: {47:[190,118],24:[214,118],4:[238,118],17:[180,205],43:[214,205],11:[248,205]} },
-  throat: { name: "throat center", type: "rect", x: 172, y: 247, w: 83, h: 83, gates: {62:[190,247],23:[214,247],56:[238,247],16:[172,288],20:[190,330],31:[204,330],8:[224,330],33:[238,330],45:[255,288],12:[255,315]} },
-  g: { name: "g center", type: "diamond", cx: 214, cy: 403, r: 59, gates: {1:[214,344],7:[192,360],13:[236,360],10:[172,403],25:[214,462],2:[236,446],15:[192,446],46:[256,403]} },
-  heart: { name: "heart center", type: "tri", points: [[283,425],[346,464],[278,488]], gates: {21:[292,432],51:[286,480],26:[333,462],40:[304,488]} },
-  sacral: { name: "sacral center", type: "rect", x: 172, y: 510, w: 83, h: 83, gates: {34:[172,540],14:[190,510],5:[214,510],29:[238,510],27:[172,580],59:[255,580],42:[190,593],3:[214,593],9:[238,593]} },
-  spleen: { name: "splenic center", type: "tri", points: [[51,499],[143,466],[136,633]], gates: {48:[140,474],57:[136,508],44:[132,536],50:[130,568],32:[128,600],28:[88,524],18:[88,604]} },
-  solar: { name: "solar plexus center", type: "tri", points: [[372,499],[282,466],[288,633]], gates: {22:[286,474],37:[292,526],6:[292,582],30:[335,512],55:[335,556],49:[335,604]} },
-  root: { name: "root center", type: "rect", x: 172, y: 621, w: 83, h: 83, gates: {53:[190,621],60:[214,621],52:[238,621],54:[172,666],38:[190,704],58:[214,704],41:[238,704],39:[255,666],19:[255,690]} },
-};
+import { calculateHumanDesign } from "./human-design-engine.js";
 
-const channels = [[64,47],[61,24],[63,4],[17,62],[43,23],[11,56],[16,48],[20,57],[31,7],[8,1],[33,13],[45,21],[12,22],[25,51],[10,57],[10,34],[20,10],[2,14],[15,5],[46,29],[26,44],[40,37],[34,57],[34,20],[27,50],[59,6],[42,53],[3,60],[9,52],[32,54],[28,38],[18,58],[30,41],[55,39],[19,49]];
-const planets = ["Sun","Earth","North Node","South Node","Moon","Mercury","Venus","Mars","Jupiter","Saturn","Uranus","Neptune","Pluto"];
-const planetGlyphs = ["☉","⊕","☊","☋","☽","☿","♀","♂","♃","♄","♅","♆","♇"];
+const planets = ["Sun", "Earth", "North Node", "South Node", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 const graph = document.querySelector("#bodygraph");
 const fields = {
   name: document.querySelector("#name"),
@@ -25,171 +13,198 @@ const fields = {
   location: document.querySelector("#location"),
   timezone: document.querySelector("#timezone"),
 };
+
+const centerColors = {
+  "head-center": "#a8a27c",
+  "ajna-center": "#777168",
+  "throat-center": "#b58b63",
+  "g-center": "#ddbf70",
+  "heart-center": "#c8afbd",
+  "sacral-center": "#b8756e",
+  "splenic-center": "#ad8764",
+  "solar-plexus-center": "#a995b6",
+  "root-center": "#c29d6b",
+};
+
+let graphTemplate;
 let lastData;
+let locationResults = [];
 
-function gatePoint(gate) {
-  for (const center of Object.values(centers)) if (center.gates[gate]) return center.gates[gate];
+function time24(hour, minute, ampm) {
+  let value = Number(hour);
+  if (value === 12) value = 0;
+  if (ampm === "pm") value += 12;
+  return { hour: value, minute: Number(minute) };
 }
 
-function svg(tag, attrs = {}) {
-  const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
-  for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
-  return el;
-}
-
-function drawBase(data = {}) {
-  graph.innerHTML = "";
-  const active = activeGates(data);
-  addChartAtmosphere();
-  for (const [a, b] of channels) {
-    const p1 = gatePoint(a), p2 = gatePoint(b), mid = [(p1[0]+p2[0])/2, (p1[1]+p2[1])/2];
-    graph.append(svg("line", { x1:p1[0], y1:p1[1], x2:p2[0], y2:p2[1], class:"channel-bg" }));
-    if (active.design.has(a) || active.personality.has(a)) graph.append(svg("line", { x1:p1[0], y1:p1[1], x2:mid[0], y2:mid[1], class:"channel-half", stroke: active.design.has(a) ? "#9a3040" : "#755e95" }));
-    if (active.design.has(b) || active.personality.has(b)) graph.append(svg("line", { x1:p2[0], y1:p2[1], x2:mid[0], y2:mid[1], class:"channel-half", stroke: active.design.has(b) ? "#9a3040" : "#755e95" }));
+async function loadGraphTemplate() {
+  if (!graphTemplate) {
+    const response = await fetch("./assets/bodygraph-template.svg");
+    if (!response.ok) throw new Error("BodyGraph template failed to load");
+    graphTemplate = await response.text();
   }
-
-  const defined = new Set((data["Defined Centers"] || []).map(v => v.toLowerCase()));
-  for (const [key, center] of Object.entries(centers)) {
-    const cls = `center ${key}` + (defined.has(center.name) ? " defined" : "");
-    if (center.type === "rect") graph.append(svg("rect", { x:center.x, y:center.y, width:center.w, height:center.h, rx:8, class:cls }));
-    if (center.type === "tri") graph.append(svg("polygon", { points:center.points.map(p => p.join(",")).join(" "), class:cls }));
-    if (center.type === "diamond") graph.append(svg("polygon", { points:[[center.cx,center.cy-center.r],[center.cx+center.r,center.cy],[center.cx,center.cy+center.r],[center.cx-center.r,center.cy]].map(p => p.join(",")).join(" "), class:cls }));
-  }
-
-  for (const center of Object.values(centers)) {
-    for (const [gate, point] of Object.entries(center.gates)) {
-      const on = active.all.has(Number(gate));
-      graph.append(svg("circle", { cx:point[0], cy:point[1], r:12, class:"gate-dot" + (on ? " active" : "") }));
-      const text = svg("text", { x:point[0], y:point[1], class:"gate-label" + (on ? " active" : "") });
-      text.textContent = gate;
-      graph.append(text);
-    }
-  }
-}
-
-function addChartAtmosphere() {
-  const defs = svg("defs");
-  defs.innerHTML = `
-    <radialGradient id="pluto-vellum" cx="50%" cy="42%" r="70%">
-      <stop offset="0%" stop-color="#fbefdc"/>
-      <stop offset="62%" stop-color="#ead7bd"/>
-      <stop offset="100%" stop-color="#d7bea0"/>
-    </radialGradient>
-    <radialGradient id="pluto-disc" cx="44%" cy="38%" r="58%">
-      <stop offset="0%" stop-color="#fbecd6" stop-opacity=".85"/>
-      <stop offset="52%" stop-color="#6f2639" stop-opacity=".28"/>
-      <stop offset="100%" stop-color="#211321" stop-opacity=".05"/>
-    </radialGradient>
-    <radialGradient id="pluto-shadow" cx="58%" cy="34%" r="66%">
-      <stop offset="0%" stop-color="#2b1729" stop-opacity=".24"/>
-      <stop offset="78%" stop-color="#120b13" stop-opacity=".50"/>
-      <stop offset="100%" stop-color="#120b13" stop-opacity="0"/>
-    </radialGradient>
-  `;
-  graph.append(defs);
-  graph.append(svg("rect", { x: 2, y: 2, width: 418, height: 809, rx: 6, class: "chart-bg" }));
-  graph.append(svg("circle", { cx: 214, cy: 300, r: 206, class: "astro-ring" }));
-  graph.append(svg("circle", { cx: 214, cy: 300, r: 162, class: "astro-ring inner" }));
-  graph.append(svg("circle", { cx: 214, cy: 300, r: 118, class: "astro-ring faint" }));
-  for (let i = 0; i < 32; i++) {
-    const angle = i * 11.25;
-    graph.append(svg("line", { x1:214, y1:79, x2:214, y2:i % 4 === 0 ? 91 : 86, class:"astro-tick", transform:`rotate(${angle} 214 300)` }));
-  }
-  graph.append(svg("circle", { cx: 214, cy: 248, r: 138, class: "pluto-disc" }));
-  graph.append(svg("circle", { cx: 258, cy: 244, r: 116, class: "pluto-shadow" }));
-  graph.append(svg("ellipse", { cx: 214, cy: 390, rx: 165, ry: 330, class: "orbit" }));
-  graph.append(svg("ellipse", { cx: 214, cy: 390, rx: 126, ry: 275, class: "orbit inner" }));
-  graph.append(svg("ellipse", { cx: 214, cy: 390, rx: 205, ry: 96, class: "orbit", transform: "rotate(-18 214 390)" }));
-  [[54,160,1.2],[82,712,1.5],[116,96,1],[336,132,1.3],[372,376,1.1],[48,520,1.3],[356,688,1],[294,742,1.2]]
-    .forEach(([cx, cy, r]) => graph.append(svg("circle", { cx, cy, r, class: "star-dust" })));
+  graph.innerHTML = graphTemplate;
+  const svg = graph.querySelector("svg");
+  svg.removeAttribute("width");
+  svg.removeAttribute("height");
+  svg.setAttribute("role", "img");
+  svg.setAttribute("aria-label", "Human Design BodyGraph");
+  return svg;
 }
 
 function activeGates(data) {
-  const design = new Set(Object.values(data.Design || {}).map(v => v.Gate));
-  const personality = new Set(Object.values(data.Personality || {}).map(v => v.Gate));
+  const design = new Set(Object.values(data.Design || {}).map((value) => value.Gate));
+  const personality = new Set(Object.values(data.Personality || {}).map((value) => value.Gate));
   return { design, personality, all: new Set([...design, ...personality]) };
 }
 
-function time24(hour, minute, ampm) {
-  let h = Number(hour);
-  if (h === 12) h = 0;
-  if (ampm === "pm") h += 12;
-  return `${String(h).padStart(2, "0")}:${String(Number(minute)).padStart(2, "0")}`;
+async function paintBodygraph(data) {
+  const svg = await loadGraphTemplate();
+  const active = activeGates(data);
+
+  svg.querySelectorAll("[data-gate-number]").forEach((label) => {
+    const gate = Number(label.dataset.gateNumber);
+    const marker = label.previousElementSibling;
+    const isActive = active.all.has(gate);
+    if (marker) {
+      marker.style.fill = isActive ? "#2b2430" : "#f7ecdc";
+      marker.style.stroke = isActive ? "#b88a51" : "#cbbca8";
+    }
+    label.style.fill = isActive ? "#fbefdc" : "#503d3d";
+  });
+
+  svg.querySelectorAll("[data-gate-line]").forEach((line) => {
+    const gate = Number(line.dataset.gateLine);
+    const hasDesign = active.design.has(gate);
+    const hasPersonality = active.personality.has(gate);
+    if (hasDesign && hasPersonality) {
+      line.style.fill = line.dataset.gateLineType === "design" ? "#8c3040" : "#302936";
+    } else if (hasDesign) {
+      line.style.fill = "#8c3040";
+    } else if (hasPersonality) {
+      line.style.fill = "#302936";
+    } else {
+      line.style.fill = "transparent";
+    }
+  });
+
+  Object.entries(centerColors).forEach(([id]) => {
+    const center = svg.querySelector(`#${id}`);
+    if (!center) return;
+    center.style.fill = "rgba(249, 238, 221, .94)";
+    center.style.stroke = "#a87945";
+  });
+  for (const centerName of data["Defined Centers"] || []) {
+    const id = centerName.replace(/\s+/g, "-");
+    const center = svg.querySelector(`#${id}`);
+    if (center) center.style.fill = centerColors[id];
+  }
 }
 
-async function getJson(url) {
-  let target = url;
-  if (location.protocol === "file:") target = "http://127.0.0.1:8789" + url;
-  if (location.protocol !== "file:" && url.startsWith("/api/timezone")) {
-    target = "https://api.myhumandesign.com/timezone?" + url.split("?")[1];
-  }
-  if (location.protocol !== "file:" && url.startsWith("/api/chart")) {
-    target = "https://api.myhumandesign.com/chart/?apiKey=31e62c359ae2e2424b9b2ba47c569877&" + url.split("?")[1];
-  }
-  const res = await fetch(target);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.json();
+function row(name, item) {
+  const iconClass = `wb-${name.replaceAll(" ", "-")}`;
+  return `<li><span><i class="${iconClass}" aria-hidden="true"></i>${name}</span><b>${item.Gate}.${item.Line}</b></li>`;
 }
 
-document.querySelector("#location").addEventListener("input", async (event) => {
-  const q = event.target.value.trim();
-  if (q.length < 3) return;
-  const places = await getJson(`/api/timezone?q=${encodeURIComponent(q)}`);
-  document.querySelector("#locations").innerHTML = places.map(p => `<option value="${p.value}" data-tz="${p.timezone}"></option>`).join("");
-  const exact = places.find(p => p.value === q);
+function render(data) {
+  paintBodygraph(data);
+  document.querySelector("#personName").textContent = data.Properties.Name;
+  document.querySelector("#birthLine").textContent = `${data.Properties.BirthDateLocal} in ${data.Properties.Location}`;
+  document.querySelector("#designList").innerHTML = planets.map((planet) => row(planet, data.Design[planet])).join("");
+  document.querySelector("#personalityList").innerHTML = planets.map((planet) => row(planet, data.Personality[planet])).join("");
+  const keys = ["Type", "Strategy", "Inner Authority", "Profile", "Definition", "Incarnation Cross", "Not Self Theme", "Digestion", "Sense", "Environment"];
+  document.querySelector("#properties").innerHTML = keys.map((key) => `<div class="property"><b>${key}</b>${data.Properties[key]}</div>`).join("");
+}
+
+async function lookupLocations(query) {
+  const response = await fetch(`https://api.myhumandesign.com/timezone?q=${encodeURIComponent(query)}`);
+  if (!response.ok) return [];
+  return response.json();
+}
+
+let locationRequest;
+fields.location.addEventListener("input", () => {
+  clearTimeout(locationRequest);
+  const query = fields.location.value.trim();
+  if (query.length < 2) return;
+  locationRequest = setTimeout(async () => {
+    locationResults = await lookupLocations(query);
+    const datalist = document.querySelector("#locations");
+    datalist.replaceChildren(...locationResults.map((place) => {
+      const option = document.createElement("option");
+      option.value = place.value;
+      return option;
+    }));
+    const exact = locationResults.find((place) => place.value === fields.location.value.trim());
+    if (exact) fields.timezone.value = exact.timezone;
+  }, 180);
+});
+
+fields.location.addEventListener("change", () => {
+  const exact = locationResults.find((place) => place.value === fields.location.value.trim());
   if (exact) fields.timezone.value = exact.timezone;
 });
 
 document.querySelector("#chartForm").addEventListener("submit", async (event) => {
   event.preventDefault();
   const status = document.querySelector("#status");
-  status.textContent = "Generating...";
-  const date = `${fields.year.value}-${fields.month.value.padStart(2,"0")}-${fields.day.value.padStart(2,"0")} ${time24(fields.hour.value, fields.minute.value, fields.ampm.value)}`;
-  const params = new URLSearchParams({ name: fields.name.value.trim(), location: fields.location.value.trim(), date, timezone: fields.timezone.value });
+  const submit = event.submitter;
+  status.textContent = "Calculating planetary positions...";
+  submit.disabled = true;
+  const time = time24(fields.hour.value, fields.minute.value, fields.ampm.value);
   try {
-    const data = await getJson(`/api/chart?${params}`);
-    if (!data.Properties) throw new Error("No chart data returned");
+    const data = await calculateHumanDesign({
+      name: fields.name.value.trim(),
+      location: fields.location.value.trim(),
+      year: Number(fields.year.value),
+      month: Number(fields.month.value),
+      day: Number(fields.day.value),
+      hour: time.hour,
+      minute: time.minute,
+      timezone: fields.timezone.value,
+    });
     lastData = data;
     render(data);
-    status.textContent = "Done.";
+    status.textContent = "Chart calculated locally with Swiss Ephemeris.";
   } catch (error) {
+    console.error(error);
     status.textContent = `Failed: ${error.message}`;
+  } finally {
+    submit.disabled = false;
   }
 });
 
-function render(data) {
-  drawBase(data);
-  document.querySelector("#personName").textContent = data.Properties.Name;
-  document.querySelector("#birthLine").textContent = `${data.Properties.BirthDateLocal} in ${data.Properties.Location}`;
-  document.querySelector("#designList").innerHTML = planets.map(p => row(p, data.Design[p])).join("");
-  document.querySelector("#personalityList").innerHTML = planets.map(p => row(p, data.Personality[p])).join("");
-  const keys = ["Type","Strategy","Inner Authority","Profile","Definition","Incarnation Cross","Not Self Theme","Digestion","Sense","Environment"];
-  document.querySelector("#properties").innerHTML = keys.filter(k => data.Properties[k]).map(k => `<div class="property"><b>${k}</b>${data.Properties[k]}</div>`).join("");
-}
-
-function row(name, item) {
-  const glyph = planetGlyphs[planets.indexOf(name)] || "";
-  return `<li><span><i>${glyph}</i>${name}</span><b>${item.Gate}.${item.Line}</b></li>`;
-}
-
-document.querySelector("#download").addEventListener("click", () => {
-  const source = new XMLSerializer().serializeToString(graph);
-  const img = new Image();
+document.querySelector("#download").addEventListener("click", async () => {
+  if (!lastData) return;
+  const status = document.querySelector("#status");
+  status.textContent = "Preparing PNG...";
+  const svg = graph.querySelector("svg");
+  const source = new XMLSerializer().serializeToString(svg);
   const blob = new Blob([source], { type: "image/svg+xml;charset=utf-8" });
   const url = URL.createObjectURL(blob);
-  img.onload = () => {
+  const image = new Image();
+  image.onload = () => {
     const canvas = document.createElement("canvas");
-    canvas.width = 1260; canvas.height = 2280;
-    const ctx = canvas.getContext("2d");
-    ctx.fillStyle = "#fffaf4"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    canvas.width = 1266;
+    canvas.height = 2439;
+    const context = canvas.getContext("2d");
+    context.fillStyle = "#f5e7d2";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
     URL.revokeObjectURL(url);
-    const a = document.createElement("a");
-    a.download = `${lastData?.Properties?.Name || "human-design"}-chart.png`;
-    a.href = canvas.toDataURL("image/png");
-    a.click();
+    const link = document.createElement("a");
+    link.download = `${lastData.Properties.Name || "human-design"}-bodygraph.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+    status.textContent = "PNG downloaded.";
   };
-  img.src = url;
+  image.onerror = () => {
+    URL.revokeObjectURL(url);
+    status.textContent = "PNG export failed.";
+  };
+  image.src = url;
 });
 
-drawBase();
+loadGraphTemplate().catch((error) => {
+  document.querySelector("#status").textContent = error.message;
+});

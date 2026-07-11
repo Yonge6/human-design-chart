@@ -15,6 +15,12 @@
   --bronze: #a87945;
 }
 
+@font-face {
+  font-family: "human-design";
+  src: url("assets/fonts/human-design.woff2") format("woff2");
+  font-display: block;
+}
+
 * { box-sizing: border-box; }
 body {
   margin: 0;
@@ -205,7 +211,8 @@ button {
   filter: blur(.2px);
   opacity: .8;
 }
-#bodygraph { width: 100%; max-width: 408px; height: auto; }
+#bodygraph { width: 100%; max-width: 408px; aspect-ratio: 422 / 813; }
+#bodygraph svg { display: block; width: 100%; height: auto; overflow: visible; }
 .watermark {
   margin: -2px 0 0;
   color: rgba(77, 49, 54, .48);
@@ -234,7 +241,25 @@ button {
 .planet-list li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid rgba(133, 92, 46, .18); }
 .planet-list li:last-child { border-bottom: 0; }
 .planet-list span { display: flex; align-items: center; gap: 10px; color: #5f534c; font-style: italic; }
-.planet-list i { width: 16px; color: #7e5a35; font-style: normal; font-size: 17px; text-align: center; }
+.planet-list i {
+  width: 16px;
+  color: #7e5a35;
+  font: 17px/1 "human-design";
+  text-align: center;
+}
+.wb-Earth::before { content: "\e900"; }
+.wb-Jupiter::before { content: "\e901"; }
+.wb-Mars::before { content: "\e902"; }
+.wb-Mercury::before { content: "\e903"; }
+.wb-Moon::before { content: "\e904"; }
+.wb-Neptune::before { content: "\e905"; }
+.wb-North-Node::before { content: "\e906"; }
+.wb-Pluto::before { content: "\e907"; }
+.wb-Saturn::before { content: "\e908"; }
+.wb-South-Node::before { content: "\e909"; }
+.wb-Sun::before { content: "\e90a"; }
+.wb-Uranus::before { content: "\e90b"; }
+.wb-Venus::before { content: "\e90c"; }
 .planet-list b { color: #2c2525; }
 .right li { flex-direction: row-reverse; }
 .right .planet-list span { flex-direction: row-reverse; }

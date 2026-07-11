@@ -131,6 +131,41 @@ input, select, button {
   font: 15px ui-sans-serif, system-ui, sans-serif;
 }
 input::placeholder { color: #7c6c67; }
+input[type="search"]::-webkit-search-cancel-button { opacity: .55; }
+.location-combobox { position: relative; }
+.location-results {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 286px;
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 5px;
+  border: 1px solid rgba(216, 177, 125, .55);
+  border-radius: 5px;
+  background: #f6eadb;
+  box-shadow: 0 18px 38px rgba(0, 0, 0, .35);
+  color: #241822;
+}
+.location-results li {
+  display: grid;
+  gap: 3px;
+  padding: 10px 11px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.location-results li:hover,
+.location-results li.active { background: rgba(125, 31, 46, .11); }
+.location-results strong { font: 700 14px/1.2 ui-sans-serif, system-ui, sans-serif; }
+.location-results span { color: #796763; font: 12px/1.3 ui-sans-serif, system-ui, sans-serif; }
+.place-attribution {
+  margin: -4px 0 14px;
+  color: #8f7d79;
+  font: 10px/1.3 ui-sans-serif, system-ui, sans-serif;
+}
 button {
   cursor: pointer;
   border: 0;
@@ -326,4 +361,5 @@ button {
   .chart-meta { display: grid; }
   .chart-meta button { width: 100%; }
   .properties, .planet-list { grid-template-columns: 1fr; }
+  .location-results { max-height: 240px; }
 }

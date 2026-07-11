@@ -13,6 +13,8 @@ const fields = {
   location: document.querySelector("#location"),
   timezone: document.querySelector("#timezone"),
 };
+const locationResults = document.querySelector("#locationResults");
+const defaultTimezones = ["Asia/Shanghai", "Asia/Hong_Kong", "Asia/Taipei", "Europe/London", "America/New_York", "America/Los_Angeles", "Australia/Sydney", "Etc/UTC"];
 
 const centerColors = {
   "head-center": "#a8a27c",
@@ -28,6 +30,10 @@ const centerColors = {
 
 let graphTemplate;
 let lastData;
+let placeMatches = [];
+let activePlaceIndex = -1;
+let placeTimer;
+let placeRequest;
 
 function appendOptions(select, values, selected) {
   select.replaceChildren(...values.map(({ value, label }) => {
@@ -55,7 +61,135 @@ function initializeSelectors() {
   appendOptions(fields.hour, Array.from({ length: 12 }, (_, index) => ({ value: index + 1 })), 12);
   appendOptions(fields.minute, Array.from({ length: 60 }, (_, index) => ({ value: index })), 0);
   updateDays();
+
+  const timezones = typeof Intl.supportedValuesOf === "function"
+    ? Intl.supportedValuesOf("timeZone")
+    : defaultTimezones;
+  fields.timezone.replaceChildren(...timezones.map((timezone) => {
+    const option = document.createElement("option");
+    option.value = timezone;
+    option.textContent = timezone.replaceAll("_", " ").replace("/", " / ");
+    option.selected = timezone === "Asia/Shanghai";
+    return option;
+  }));
 }
+
+function placeLabel(properties) {
+  const parts = [properties.name, properties.district, properties.city, properties.county, properties.state, properties.country];
+  return parts.filter((part, index) => part && parts.indexOf(part) === index).join(", ");
+}
+
+function closePlaceResults() {
+  locationResults.hidden = true;
+  fields.location.setAttribute("aria-expanded", "false");
+  fields.location.removeAttribute("aria-activedescendant");
+  activePlaceIndex = -1;
+}
+
+function highlightPlace(index) {
+  const options = [...locationResults.children];
+  if (!options.length) return;
+  activePlaceIndex = (index + options.length) % options.length;
+  options.forEach((option, optionIndex) => {
+    const isActive = optionIndex === activePlaceIndex;
+    option.classList.toggle("active", isActive);
+    option.setAttribute("aria-selected", String(isActive));
+  });
+  fields.location.setAttribute("aria-activedescendant", options[activePlaceIndex].id);
+  options[activePlaceIndex].scrollIntoView({ block: "nearest" });
+}
+
+function setTimezone(timezone) {
+  let option = [...fields.timezone.options].find((item) => item.value === timezone);
+  if (!option) {
+    option = document.createElement("option");
+    option.value = timezone;
+    option.textContent = timezone.replaceAll("_", " ").replace("/", " / ");
+    fields.timezone.append(option);
+  }
+  fields.timezone.value = timezone;
+}
+
+function selectPlace(index) {
+  const place = placeMatches[index];
+  if (!place) return;
+  const [longitude, latitude] = place.geometry.coordinates;
+  fields.location.value = placeLabel(place.properties);
+  setTimezone(window.tzlookup(latitude, longitude));
+  closePlaceResults();
+}
+
+function renderPlaceResults(features) {
+  const labels = new Set();
+  placeMatches = features.filter((place) => {
+    const label = placeLabel(place.properties);
+    if (!label || labels.has(label)) return false;
+    labels.add(label);
+    return true;
+  });
+  locationResults.replaceChildren(...placeMatches.map((place, index) => {
+    const option = document.createElement("li");
+    option.id = `location-option-${index}`;
+    option.role = "option";
+    option.tabIndex = -1;
+    const label = placeLabel(place.properties);
+    const [primary, ...context] = label.split(", ");
+    const name = document.createElement("strong");
+    const detail = document.createElement("span");
+    name.textContent = primary;
+    detail.textContent = context.join(" · ");
+    option.append(name, detail);
+    option.addEventListener("mousedown", (event) => event.preventDefault());
+    option.addEventListener("click", () => selectPlace(index));
+    return option;
+  }));
+  locationResults.hidden = placeMatches.length === 0;
+  fields.location.setAttribute("aria-expanded", String(placeMatches.length > 0));
+  activePlaceIndex = -1;
+}
+
+async function searchPlaces(query) {
+  placeRequest?.abort();
+  placeRequest = new AbortController();
+  try {
+    const url = new URL("https://photon.komoot.io/api/");
+    url.search = new URLSearchParams({ q: query, limit: "7", osm_tag: "place", lang: "default" });
+    const response = await fetch(url, { signal: placeRequest.signal });
+    if (!response.ok) throw new Error("Place search unavailable");
+    const data = await response.json();
+    renderPlaceResults(data.features || []);
+  } catch (error) {
+    if (error.name !== "AbortError") closePlaceResults();
+  }
+}
+
+fields.location.addEventListener("input", () => {
+  window.clearTimeout(placeTimer);
+  const query = fields.location.value.trim();
+  if (query.length < 2) {
+    closePlaceResults();
+    return;
+  }
+  placeTimer = window.setTimeout(() => searchPlaces(query), 280);
+});
+
+fields.location.addEventListener("keydown", (event) => {
+  if (locationResults.hidden) return;
+  if (event.key === "ArrowDown") {
+    event.preventDefault();
+    highlightPlace(activePlaceIndex + 1);
+  } else if (event.key === "ArrowUp") {
+    event.preventDefault();
+    highlightPlace(activePlaceIndex - 1);
+  } else if (event.key === "Enter" && activePlaceIndex >= 0) {
+    event.preventDefault();
+    selectPlace(activePlaceIndex);
+  } else if (event.key === "Escape") {
+    closePlaceResults();
+  }
+});
+
+fields.location.addEventListener("blur", () => window.setTimeout(closePlaceResults, 120));
 
 function time24(hour, minute, ampm) {
   let value = Number(hour);
@@ -143,9 +277,6 @@ function render(data) {
   document.querySelector("#properties").innerHTML = keys.map((key) => `<div class="property"><b>${key}</b>${data.Properties[key]}</div>`).join("");
 }
 
-fields.location.addEventListener("change", () => {
-  fields.timezone.value = fields.location.selectedOptions[0].dataset.timezone;
-});
 fields.year.addEventListener("change", updateDays);
 fields.month.addEventListener("change", updateDays);
 

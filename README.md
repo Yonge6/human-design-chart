@@ -10,7 +10,7 @@ python3 server.py
 
 Open `http://127.0.0.1:8789/`.
 
-The birth data stays in the browser during chart calculation. Date, time, and birth location are selected from menus; every listed city is bound directly to an IANA timezone.
+The birth data stays in the browser during chart calculation. Birth locations support global free-form input with optional OpenStreetMap-powered suggestions. Selecting a suggestion maps its coordinates to an IANA timezone locally; the full timezone menu remains available as a manual fallback.
 
 ## Calculation
 

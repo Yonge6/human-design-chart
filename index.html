@@ -21,13 +21,13 @@
       <form id="chartForm">
         <label>Name <input id="name" name="name" value="Test" required></label>
         <div class="grid3">
-          <label>Year <input id="year" inputmode="numeric" value="1990" required></label>
-          <label>Month <input id="month" inputmode="numeric" value="01" required></label>
-          <label>Day <input id="day" inputmode="numeric" value="01" required></label>
+          <label>Year <select id="year" required></select></label>
+          <label>Month <select id="month" required></select></label>
+          <label>Day <select id="day" required></select></label>
         </div>
         <div class="grid3">
-          <label>Hour <input id="hour" inputmode="numeric" value="12" required></label>
-          <label>Minute <input id="minute" inputmode="numeric" value="00" required></label>
+          <label>Hour <select id="hour" required></select></label>
+          <label>Minute <select id="minute" required></select></label>
           <label>AM/PM
             <select id="ampm">
               <option value="pm">PM</option>
@@ -36,8 +36,40 @@
           </label>
         </div>
         <label>Birth location
-          <input id="location" list="locations" value="Shanghai, China" required>
-          <datalist id="locations"></datalist>
+          <select id="location" required>
+            <optgroup label="China">
+              <option value="Shanghai, China" data-timezone="Asia/Shanghai" selected>Shanghai, China</option>
+              <option value="Beijing, China" data-timezone="Asia/Shanghai">Beijing, China</option>
+              <option value="Guangzhou, China" data-timezone="Asia/Shanghai">Guangzhou, China</option>
+              <option value="Shenzhen, China" data-timezone="Asia/Shanghai">Shenzhen, China</option>
+              <option value="Chengdu, China" data-timezone="Asia/Shanghai">Chengdu, China</option>
+              <option value="Hangzhou, China" data-timezone="Asia/Shanghai">Hangzhou, China</option>
+              <option value="Wuhan, China" data-timezone="Asia/Shanghai">Wuhan, China</option>
+              <option value="Xi'an, China" data-timezone="Asia/Shanghai">Xi'an, China</option>
+              <option value="Hong Kong" data-timezone="Asia/Hong_Kong">Hong Kong</option>
+              <option value="Taipei, Taiwan" data-timezone="Asia/Taipei">Taipei, Taiwan</option>
+            </optgroup>
+            <optgroup label="Asia Pacific">
+              <option value="Singapore" data-timezone="Asia/Singapore">Singapore</option>
+              <option value="Tokyo, Japan" data-timezone="Asia/Tokyo">Tokyo, Japan</option>
+              <option value="Seoul, South Korea" data-timezone="Asia/Seoul">Seoul, South Korea</option>
+              <option value="Bangkok, Thailand" data-timezone="Asia/Bangkok">Bangkok, Thailand</option>
+              <option value="Sydney, Australia" data-timezone="Australia/Sydney">Sydney, Australia</option>
+            </optgroup>
+            <optgroup label="Europe & Middle East">
+              <option value="London, United Kingdom" data-timezone="Europe/London">London, United Kingdom</option>
+              <option value="Paris, France" data-timezone="Europe/Paris">Paris, France</option>
+              <option value="Berlin, Germany" data-timezone="Europe/Berlin">Berlin, Germany</option>
+              <option value="Dubai, United Arab Emirates" data-timezone="Asia/Dubai">Dubai, United Arab Emirates</option>
+            </optgroup>
+            <optgroup label="Americas">
+              <option value="New York, United States" data-timezone="America/New_York">New York, United States</option>
+              <option value="Los Angeles, United States" data-timezone="America/Los_Angeles">Los Angeles, United States</option>
+              <option value="Chicago, United States" data-timezone="America/Chicago">Chicago, United States</option>
+              <option value="Toronto, Canada" data-timezone="America/Toronto">Toronto, Canada</option>
+              <option value="Vancouver, Canada" data-timezone="America/Vancouver">Vancouver, Canada</option>
+            </optgroup>
+          </select>
         </label>
         <input id="timezone" type="hidden" value="Asia/Shanghai">
         <button type="submit">Generate Chart</button>

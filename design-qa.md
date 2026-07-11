@@ -24,6 +24,7 @@ final result: passed
 - 19 unique active gates and the Sacral, Solar Plexus, and Root centers are painted.
 - Type, Strategy, Authority, Profile, Definition, Incarnation Cross, Digestion, Sense, and Environment match the reference fixture.
 - PNG export reaches `PNG downloaded.` after the SVG is rasterized.
+- Year, month, day, hour, minute, AM/PM, and birth location are native selection controls; leap-year day counts and city timezone bindings were verified.
 - Fresh-page browser console: no application errors.
 
 **Comparison History**

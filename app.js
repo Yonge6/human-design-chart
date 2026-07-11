@@ -28,7 +28,34 @@ const centerColors = {
 
 let graphTemplate;
 let lastData;
-let locationResults = [];
+
+function appendOptions(select, values, selected) {
+  select.replaceChildren(...values.map(({ value, label }) => {
+    const option = document.createElement("option");
+    const formatted = String(value).padStart(2, "0");
+    option.value = formatted;
+    option.textContent = label ?? formatted;
+    option.selected = String(value) === String(selected);
+    return option;
+  }));
+}
+
+function updateDays() {
+  const year = Number(fields.year.value || 1990);
+  const month = Number(fields.month.value || 1);
+  const previous = Math.min(Number(fields.day.value || 1), new Date(year, month, 0).getDate());
+  const days = Array.from({ length: new Date(year, month, 0).getDate() }, (_, index) => ({ value: index + 1 }));
+  appendOptions(fields.day, days, previous);
+}
+
+function initializeSelectors() {
+  const currentYear = new Date().getFullYear();
+  appendOptions(fields.year, Array.from({ length: currentYear - 1899 }, (_, index) => ({ value: currentYear - index })), 1990);
+  appendOptions(fields.month, Array.from({ length: 12 }, (_, index) => ({ value: index + 1 })), 1);
+  appendOptions(fields.hour, Array.from({ length: 12 }, (_, index) => ({ value: index + 1 })), 12);
+  appendOptions(fields.minute, Array.from({ length: 60 }, (_, index) => ({ value: index })), 0);
+  updateDays();
+}
 
 function time24(hour, minute, ampm) {
   let value = Number(hour);
@@ -116,34 +143,11 @@ function render(data) {
   document.querySelector("#properties").innerHTML = keys.map((key) => `<div class="property"><b>${key}</b>${data.Properties[key]}</div>`).join("");
 }
 
-async function lookupLocations(query) {
-  const response = await fetch(`https://api.myhumandesign.com/timezone?q=${encodeURIComponent(query)}`);
-  if (!response.ok) return [];
-  return response.json();
-}
-
-let locationRequest;
-fields.location.addEventListener("input", () => {
-  clearTimeout(locationRequest);
-  const query = fields.location.value.trim();
-  if (query.length < 2) return;
-  locationRequest = setTimeout(async () => {
-    locationResults = await lookupLocations(query);
-    const datalist = document.querySelector("#locations");
-    datalist.replaceChildren(...locationResults.map((place) => {
-      const option = document.createElement("option");
-      option.value = place.value;
-      return option;
-    }));
-    const exact = locationResults.find((place) => place.value === fields.location.value.trim());
-    if (exact) fields.timezone.value = exact.timezone;
-  }, 180);
-});
-
 fields.location.addEventListener("change", () => {
-  const exact = locationResults.find((place) => place.value === fields.location.value.trim());
-  if (exact) fields.timezone.value = exact.timezone;
+  fields.timezone.value = fields.location.selectedOptions[0].dataset.timezone;
 });
+fields.year.addEventListener("change", updateDays);
+fields.month.addEventListener("change", updateDays);
 
 document.querySelector("#chartForm").addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -208,3 +212,4 @@ document.querySelector("#download").addEventListener("click", async () => {
 loadGraphTemplate().catch((error) => {
   document.querySelector("#status").textContent = error.message;
 });
+initializeSelectors();

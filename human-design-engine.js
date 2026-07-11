@@ -1,5 +1,5 @@
-import { SwissEphemeris } from "./vendor/swisseph/swisseph-browser.js?v=20260711-3";
-import { getIncarnationCross } from "./vendor/natalengine/incarnation-crosses.js?v=20260711-3";
+import { SwissEphemeris } from "./vendor/swisseph/swisseph-browser.js?v=20260712-2";
+import { getIncarnationCross } from "./vendor/natalengine/incarnation-crosses.js?v=20260712-2";
 
 const Planet = {
   Sun: 0, Moon: 1, Mercury: 2, Venus: 3, Mars: 4, Jupiter: 5,
@@ -366,6 +366,7 @@ export async function calculateHumanDesign({ name, location, year, month, day, h
       Ephemeris: "Swiss Ephemeris WASM (SE1 data files)",
       DesignSolarArc: 88,
       Timezone: timezone,
+      BirthIso: birthDate.toISOString(),
       BirthJulianDay: birthJd,
       DesignJulianDay: designJd,
     },

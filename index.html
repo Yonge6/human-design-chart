@@ -6,52 +6,58 @@
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://photon.komoot.io; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
   <title>Pluto Human Design Chart</title>
-  <link rel="stylesheet" href="style.css?v=20260711-3">
+  <link rel="stylesheet" href="style.css?v=20260712-2">
 </head>
 <body>
   <header class="topbar">
     <div class="brand">Pluto Human Design</div>
-    <nav aria-label="Primary">
-      <a href="#chartForm">Create Chart</a>
-      <a href="#capture">My Chart</a>
-      <a href="https://github.com/Yonge6/human-design-chart" rel="noopener">Source</a>
-    </nav>
+    <div class="topbar-actions">
+      <nav aria-label="Primary">
+        <a href="#chartForm" data-i18n="navCreate">创建人类图</a>
+        <a href="#capture" data-i18n="navChart">我的人类图</a>
+        <a href="https://github.com/Yonge6/human-design-chart" rel="noopener" data-i18n="navSource">源代码</a>
+      </nav>
+      <div class="language-switch" role="group" aria-label="Language / 语言">
+        <button type="button" data-language="zh" aria-pressed="true">中文</button>
+        <button type="button" data-language="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
   </header>
   <main class="shell">
     <section class="form-panel">
-      <p class="eyebrow">Human Design Chart</p>
-      <h1>Get Your Human Design Chart</h1>
+      <p class="eyebrow" data-i18n="formEyebrow">人类图</p>
+      <h1 data-i18n="formTitle">生成你的人类图</h1>
       <form id="chartForm">
-        <label>Name <input id="name" name="name" value="Test" maxlength="80" required></label>
+        <label><span data-i18n="name">姓名</span><input id="name" name="name" value="Test" maxlength="80" required></label>
         <div class="grid3">
-          <label>Year <select id="year" required></select></label>
-          <label>Month <select id="month" required></select></label>
-          <label>Day <select id="day" required></select></label>
+          <label><span data-i18n="year">年</span><select id="year" required></select></label>
+          <label><span data-i18n="month">月</span><select id="month" required></select></label>
+          <label><span data-i18n="day">日</span><select id="day" required></select></label>
         </div>
         <div class="grid3">
-          <label>Hour <select id="hour" required></select></label>
-          <label>Minute <select id="minute" required></select></label>
-          <label>AM/PM
+          <label><span data-i18n="hour">时</span><select id="hour" required></select></label>
+          <label><span data-i18n="minute">分</span><select id="minute" required></select></label>
+          <label><span data-i18n="ampm">上午/下午</span>
             <select id="ampm">
-              <option value="pm">PM</option>
-              <option value="am">AM</option>
+              <option value="pm" data-i18n="pm">下午</option>
+              <option value="am" data-i18n="am">上午</option>
             </select>
           </label>
         </div>
-        <label>Birth location
+        <label><span data-i18n="birthLocation">出生地点</span>
           <div class="location-combobox">
-            <input id="location" name="location" type="search" role="combobox" value="Shanghai, China" placeholder="City, district or region" autocomplete="off" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="locationResults" aria-expanded="false" aria-describedby="status" required>
-            <ul id="locationResults" class="location-results" role="listbox" aria-label="Birth location suggestions" hidden></ul>
+            <input id="location" name="location" type="search" role="combobox" value="Shanghai, China" placeholder="城市、区县或地区" autocomplete="off" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="locationResults" aria-expanded="false" aria-describedby="status" required>
+            <ul id="locationResults" class="location-results" role="listbox" aria-label="出生地点建议" hidden></ul>
           </div>
         </label>
-        <label id="clockOccurrenceField" hidden>Clock occurrence
+        <label id="clockOccurrenceField" hidden><span data-i18n="clockOccurrence">重复时刻</span>
           <select id="clockOccurrence">
-            <option value="earlier">First occurrence</option>
-            <option value="later">Second occurrence</option>
+            <option value="earlier" data-i18n="firstOccurrence">第一次出现</option>
+            <option value="later" data-i18n="secondOccurrence">第二次出现</option>
           </select>
         </label>
-        <p class="place-attribution">Search queries are sent to Photon. Data &copy; <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap contributors</a>, ODbL.</p>
-        <button type="submit">Generate Chart</button>
+        <p class="place-attribution"><span data-i18n="attributionPrefix">地点搜索由 Photon 提供。数据</span> &copy; <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap contributors</a>, ODbL.</p>
+        <button type="submit" data-i18n="generate">生成人类图</button>
         <p id="status" role="status" aria-live="polite"></p>
       </form>
     </section>
@@ -59,24 +65,24 @@
     <section class="chart-panel" id="capture">
       <div class="chart-meta">
         <div>
-          <p class="eyebrow">Your Chart</p>
+          <p class="eyebrow" data-i18n="yourChart">你的人类图</p>
           <h2 id="personName">-</h2>
-          <p id="birthLine">Enter details to generate.</p>
+          <p id="birthLine" data-i18n="emptyChart">填写出生资料后生成。</p>
         </div>
-        <button id="download" type="button" disabled>Download PNG</button>
+        <button id="download" type="button" disabled data-i18n="download">下载 PNG</button>
       </div>
       <div class="chart-frame">
         <div class="chart-layout">
           <div class="side-column">
-            <p>Design</p>
+            <p data-i18n="design">设计</p>
             <ol id="designList" class="planet-list"></ol>
           </div>
           <div class="chart-graph">
             <div id="bodygraph" role="img" aria-label="Human Design bodygraph"></div>
-            <p class="watermark">Swiss Ephemeris &middot; exact 88&deg; solar arc</p>
+            <p class="watermark" data-i18n="watermark">Swiss Ephemeris · 精确 88° 太阳弧</p>
           </div>
           <div class="side-column right">
-            <p>Personality</p>
+            <p data-i18n="personality">人格</p>
             <ol id="personalityList" class="planet-list right"></ol>
           </div>
         </div>
@@ -84,8 +90,8 @@
       <div id="properties" class="properties"></div>
     </section>
   </main>
-  <script src="vendor/tz-lookup/tz.js?v=20260711-3"></script>
-  <script src="vendor/html2canvas/html2canvas.min.js?v=20260711-3"></script>
-  <script type="module" src="app.js?v=20260711-3"></script>
+  <script src="vendor/tz-lookup/tz.js?v=20260712-2"></script>
+  <script src="vendor/html2canvas/html2canvas.min.js?v=20260712-2"></script>
+  <script type="module" src="app.js?v=20260712-2"></script>
 </body>
 </html>

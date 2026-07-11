@@ -1,4 +1,4 @@
-import { calculateHumanDesign, localToUtcCandidates } from "./human-design-engine.js?v=20260711-3";
+import { calculateHumanDesign, localToUtcCandidates } from "./human-design-engine.js?v=20260712-2";
 
 const planets = ["Sun", "Earth", "North Node", "South Node", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 const graph = document.querySelector("#bodygraph");
@@ -18,6 +18,95 @@ const clockOccurrenceField = document.querySelector("#clockOccurrenceField");
 const status = document.querySelector("#status");
 const chartForm = document.querySelector("#chartForm");
 const downloadButton = document.querySelector("#download");
+const languageButtons = [...document.querySelectorAll("[data-language]")];
+
+const copy = {
+  zh: {
+    navCreate: "创建人类图", navChart: "我的人类图", navSource: "源代码",
+    formEyebrow: "人类图", formTitle: "生成你的人类图", name: "姓名", year: "年", month: "月", day: "日",
+    hour: "时", minute: "分", ampm: "上午/下午", am: "上午", pm: "下午", birthLocation: "出生地点",
+    locationPlaceholder: "城市、区县或地区", locationSuggestions: "出生地点建议", clockOccurrence: "重复时刻",
+    navLabel: "主导航", bodygraphLabel: "人类图身体图",
+    firstOccurrence: "第一次出现", secondOccurrence: "第二次出现", attributionPrefix: "地点搜索由 Photon 提供。数据",
+    generate: "生成人类图", yourChart: "你的人类图", emptyChart: "填写出生资料后生成。", download: "下载 PNG",
+    design: "设计", personality: "人格", watermark: "Swiss Ephemeris · 精确 88° 太阳弧",
+    noPlace: "没有找到匹配地点，请尝试输入城市、地区和国家。", placeUnavailable: "地点搜索暂时不可用，请检查网络后重试。",
+    selectPlace: "请从搜索结果中选择出生地点。", enterName: "请输入姓名。",
+    missingTime: "该出生时刻因夏令时向前调整而不存在。", repeatedTime: "这个时刻出现过两次，请选择出生记录对应的那一次。",
+    futureTime: "出生日期和时间不能晚于现在。", calculating: "正在计算行星位置…", calculated: "已使用 Swiss Ephemeris 在本地完成计算。",
+    failed: "计算失败：{message}", preparing: "正在生成 PNG…", downloaded: "PNG 已下载。", exportFailed: "PNG 导出失败：{message}",
+  },
+  en: {
+    navCreate: "Create Chart", navChart: "My Chart", navSource: "Source",
+    formEyebrow: "Human Design Chart", formTitle: "Get Your Human Design Chart", name: "Name", year: "Year", month: "Month", day: "Day",
+    hour: "Hour", minute: "Minute", ampm: "AM/PM", am: "AM", pm: "PM", birthLocation: "Birth location",
+    locationPlaceholder: "City, district or region", locationSuggestions: "Birth location suggestions", clockOccurrence: "Clock occurrence",
+    navLabel: "Primary", bodygraphLabel: "Human Design bodygraph",
+    firstOccurrence: "First occurrence", secondOccurrence: "Second occurrence", attributionPrefix: "Search queries are sent to Photon. Data",
+    generate: "Generate Chart", yourChart: "Your Chart", emptyChart: "Enter details to generate.", download: "Download PNG",
+    design: "Design", personality: "Personality", watermark: "Swiss Ephemeris · exact 88° solar arc",
+    noPlace: "No matching place found. Try city, region, and country.", placeUnavailable: "Location search unavailable. Check your connection and try again.",
+    selectPlace: "Select a birth location from the search results.", enterName: "Enter a name.",
+    missingTime: "This local birth time did not exist because the clocks moved forward.", repeatedTime: "This clock time occurred twice. Choose which occurrence is on the birth record.",
+    futureTime: "Birth date and time cannot be in the future.", calculating: "Calculating planetary positions…", calculated: "Chart calculated locally with Swiss Ephemeris.",
+    failed: "Failed: {message}", preparing: "Preparing PNG…", downloaded: "PNG downloaded.", exportFailed: "PNG export failed: {message}",
+  },
+};
+
+const planetNames = {
+  Sun: "太阳", Earth: "地球", "North Node": "北交点", "South Node": "南交点", Moon: "月亮", Mercury: "水星",
+  Venus: "金星", Mars: "火星", Jupiter: "木星", Saturn: "土星", Uranus: "天王星", Neptune: "海王星", Pluto: "冥王星",
+};
+const propertyNames = {
+  Type: "类型", Strategy: "策略", "Inner Authority": "内在权威", Profile: "人生角色", Definition: "定义",
+  "Incarnation Cross": "轮回交叉", "Not Self Theme": "非自己主题", Digestion: "消化", Sense: "感知", Environment: "环境",
+};
+const valueNames = {
+  Generator: "生产者", "Manifesting Generator": "显示生产者", Manifestor: "显现者", Projector: "投射者", Reflector: "反映者",
+  "To Respond": "等待回应", "To Inform": "告知", "Wait for the Invitation": "等待邀请", "Wait a Lunar Cycle": "等待一个月亮周期",
+  "Emotional - Solar Plexus": "情绪权威 · 太阳神经丛", Sacral: "荐骨权威", Splenic: "脾脏权威", "Ego Manifested": "意志显现权威",
+  "Ego Projected": "意志投射权威", "Self-Projected": "自我投射权威", Lunar: "月亮权威", "Mental - Environment": "环境权威",
+  "No Definition": "无定义", "Single Definition": "一分人", "Split Definition": "二分人", "Triple Split Definition": "三分人", "Quadruple Split Definition": "四分人",
+  Frustration: "挫败", Anger: "愤怒", Bitterness: "苦涩", Disappointment: "失望",
+  "Consecutive Appetite": "连续食欲", "Alternating Appetite": "交替食欲", "Open Taste": "开放味觉", "Closed Taste": "封闭味觉",
+  "Hot Thirst": "热渴", "Cold Thirst": "冷渴", "Calm Touch": "平静触觉", "Nervous Touch": "紧张触觉", "High Sound": "高声音", "Low Sound": "低声音",
+  "Direct Light": "直接光", "Indirect Light": "间接光", Smell: "嗅觉", Taste: "味觉", "Outer Vision": "外在视觉", "Inner Vision": "内在视觉",
+  Feeling: "感觉", Touch: "触觉", Caves: "洞穴", Markets: "市场", Kitchens: "厨房", Mountains: "山脉", Valleys: "山谷", Shores: "海岸",
+};
+const profileRoles = { Investigator: "研究者", Martyr: "体验者", Opportunist: "机会主义者", Hermit: "隐士", Heretic: "异端者", "Role Model": "榜样" };
+let language = localStorage.getItem("pluto-language") || (navigator.language?.toLowerCase().startsWith("zh") ? "zh" : "en");
+let statusState;
+
+function t(key, values = {}) {
+  return Object.entries(values).reduce((text, [name, value]) => text.replace(`{${name}}`, value), copy[language][key] || key);
+}
+
+function setStatus(key, values = {}) {
+  statusState = key ? { key, values } : null;
+  status.textContent = key ? t(key, values) : "";
+}
+
+function translatedValue(key, value) {
+  if (language !== "zh") return value;
+  if (key === "Profile") {
+    return value.replace(/(Investigator|Martyr|Opportunist|Hermit|Heretic|Role Model)/g, (role) => profileRoles[role]);
+  }
+  if (key === "Incarnation Cross") {
+    return value
+      .replace(/^Right Angle Cross of /, "右角度交叉 · ")
+      .replace(/^Left Angle Cross of /, "左角度交叉 · ")
+      .replace(/^Juxtaposition Cross of /, "并列交叉 · ");
+  }
+  return valueNames[value] || value;
+}
+
+function formattedBirth(data) {
+  if (language === "en" || !data.Meta?.BirthIso) return `${data.Properties.BirthDateLocal} in ${data.Properties.Location}`;
+  const date = new Intl.DateTimeFormat("zh-CN", {
+    timeZone: data.Meta.Timezone, year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit", hourCycle: "h23",
+  }).format(new Date(data.Meta.BirthIso));
+  return `${date} · ${data.Properties.Location}`;
+}
 
 const centerColors = {
   "head-center": "#a8a27c",
@@ -156,10 +245,10 @@ function renderPlaceResults(features) {
   fields.location.setAttribute("aria-expanded", String(placeMatches.length > 0));
   activePlaceIndex = -1;
   if (placeMatches.length) {
-    status.textContent = "";
+    setStatus(null);
     highlightPlace(0);
   } else {
-    status.textContent = "No matching place found. Try city, region, and country.";
+    setStatus("noPlace");
   }
 }
 
@@ -174,7 +263,7 @@ async function searchPlaces(query, queryVersion) {
   }, 8000);
   try {
     const url = new URL("https://photon.komoot.io/api/");
-    url.search = new URLSearchParams({ q: query, limit: "7", osm_tag: "place", lang: "default" });
+    url.search = new URLSearchParams({ q: query, limit: "7", osm_tag: "place", lang: language });
     const response = await fetch(url, { signal: request.signal });
     if (!response.ok) throw new Error("Place search unavailable");
     const data = await response.json();
@@ -183,7 +272,7 @@ async function searchPlaces(query, queryVersion) {
   } catch (error) {
     if ((error.name !== "AbortError" || timedOut) && queryVersion === placeQueryVersion) {
       closePlaceResults();
-      status.textContent = "Location search unavailable. Check your connection and try again.";
+      setStatus("placeUnavailable");
     }
   } finally {
     window.clearTimeout(timeout);
@@ -206,7 +295,7 @@ fields.location.addEventListener("input", () => {
   closePlaceResults();
   resetClockOccurrence();
   fields.location.removeAttribute("aria-invalid");
-  status.textContent = "";
+  setStatus(null);
   const query = fields.location.value.trim();
   if (query.length < 2) {
     closePlaceResults();
@@ -244,7 +333,7 @@ function time24(hour, minute, ampm) {
 
 async function loadGraphTemplate() {
   if (!graphTemplate) {
-    const response = await fetch("./assets/bodygraph-template.svg?v=20260711-3");
+    const response = await fetch("./assets/bodygraph-template.svg?v=20260712-2");
     if (!response.ok) throw new Error("BodyGraph template failed to load");
     graphTemplate = await response.text();
   }
@@ -308,31 +397,55 @@ async function paintBodygraph(data) {
 
 function row(name, item) {
   const iconClass = `wb-${name.replaceAll(" ", "-")}`;
-  return `<li><span><i class="${iconClass}" aria-hidden="true"></i>${name}</span><b>${item.Gate}.${item.Line}</b></li>`;
+  const label = language === "zh" ? planetNames[name] : name;
+  return `<li><span><i class="${iconClass}" aria-hidden="true"></i>${label}</span><b>${item.Gate}.${item.Line}</b></li>`;
 }
 
 async function render(data) {
   await paintBodygraph(data);
   document.querySelector("#personName").textContent = data.Properties.Name;
-  document.querySelector("#birthLine").textContent = `${data.Properties.BirthDateLocal} in ${data.Properties.Location}`;
+  document.querySelector("#birthLine").textContent = formattedBirth(data);
   document.querySelector("#designList").innerHTML = planets.map((planet) => row(planet, data.Design[planet])).join("");
   document.querySelector("#personalityList").innerHTML = planets.map((planet) => row(planet, data.Personality[planet])).join("");
   const keys = ["Type", "Strategy", "Inner Authority", "Profile", "Definition", "Incarnation Cross", "Not Self Theme", "Digestion", "Sense", "Environment"];
-  document.querySelector("#properties").innerHTML = keys.map((key) => `<div class="property"><b>${key}</b>${data.Properties[key]}</div>`).join("");
+  document.querySelector("#properties").innerHTML = keys.map((key) => {
+    const label = language === "zh" ? propertyNames[key] : key;
+    return `<div class="property"><b>${label}</b><span>${translatedValue(key, data.Properties[key])}</span></div>`;
+  }).join("");
   downloadButton.disabled = false;
 }
+
+function applyLanguage(nextLanguage, rerender = true) {
+  language = nextLanguage === "en" ? "en" : "zh";
+  localStorage.setItem("pluto-language", language);
+  document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
+  document.title = language === "zh" ? "Pluto 人类图" : "Pluto Human Design Chart";
+  document.querySelectorAll("[data-i18n]").forEach((element) => {
+    element.textContent = t(element.dataset.i18n);
+  });
+  fields.location.placeholder = t("locationPlaceholder");
+  locationResults.setAttribute("aria-label", t("locationSuggestions"));
+  document.querySelector(".topbar nav").setAttribute("aria-label", t("navLabel"));
+  graph.setAttribute("aria-label", t("bodygraphLabel"));
+  graph.querySelector("svg")?.setAttribute("aria-label", t("bodygraphLabel"));
+  languageButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.language === language)));
+  if (statusState) status.textContent = t(statusState.key, statusState.values);
+  if (rerender && lastData) render(lastData).catch((error) => { setStatus("failed", { message: error.message }); });
+}
+
+languageButtons.forEach((button) => button.addEventListener("click", () => applyLanguage(button.dataset.language)));
 
 function invalidateChart() {
   if (!lastData) return;
   lastData = undefined;
   downloadButton.disabled = true;
   document.querySelector("#personName").textContent = "-";
-  document.querySelector("#birthLine").textContent = "Enter details to generate.";
+  document.querySelector("#birthLine").textContent = t("emptyChart");
   document.querySelector("#designList").replaceChildren();
   document.querySelector("#personalityList").replaceChildren();
   document.querySelector("#properties").replaceChildren();
   paintBodygraph({ Design: {}, Personality: {}, "Defined Centers": [] }).catch((error) => {
-    status.textContent = error.message;
+    setStatus("failed", { message: error.message });
   });
 }
 
@@ -349,14 +462,14 @@ chartForm.addEventListener("submit", async (event) => {
   if (!selectedPlace || fields.location.value.trim() !== selectedPlace.label) {
     fields.location.setAttribute("aria-invalid", "true");
     fields.location.focus();
-    status.textContent = "Select a birth location from the search results.";
+    setStatus("selectPlace");
     return;
   }
   const name = fields.name.value.trim();
   if (!name) {
     fields.name.setAttribute("aria-invalid", "true");
     fields.name.focus();
-    status.textContent = "Enter a name.";
+    setStatus("enterName");
     return;
   }
   fields.name.removeAttribute("aria-invalid");
@@ -366,16 +479,16 @@ chartForm.addEventListener("submit", async (event) => {
       Number(fields.year.value), Number(fields.month.value), Number(fields.day.value),
       time.hour, time.minute, selectedPlace.timezone,
     );
-    if (!candidates.length) throw new RangeError("This local birth time did not exist because the clocks moved forward.");
+    if (!candidates.length) throw new RangeError(t("missingTime"));
     if (candidates.length > 1 && clockOccurrenceField.hidden) {
       clockOccurrenceField.hidden = false;
-      status.textContent = "This clock time occurred twice. Choose which occurrence is on the birth record.";
+      setStatus("repeatedTime");
       fields.clockOccurrence.focus();
       return;
     }
     const selectedUtc = fields.clockOccurrence.value === "later" ? candidates[candidates.length - 1] : candidates[0];
-    if (selectedUtc > Date.now()) throw new RangeError("Birth date and time cannot be in the future.");
-    status.textContent = "Calculating planetary positions...";
+    if (selectedUtc > Date.now()) throw new RangeError(t("futureTime"));
+    setStatus("calculating");
     submit.disabled = true;
     const data = await calculateHumanDesign({
       name,
@@ -390,10 +503,10 @@ chartForm.addEventListener("submit", async (event) => {
     });
     await render(data);
     lastData = data;
-    status.textContent = "Chart calculated locally with Swiss Ephemeris.";
+    setStatus("calculated");
   } catch (error) {
     console.error(error);
-    status.textContent = `Failed: ${error.message}`;
+    setStatus("failed", { message: error.message });
   } finally {
     submit.disabled = false;
   }
@@ -401,44 +514,58 @@ chartForm.addEventListener("submit", async (event) => {
 
 downloadButton.addEventListener("click", async () => {
   if (!lastData) return;
-  status.textContent = "Preparing PNG...";
+  const exportData = lastData;
+  const formControls = [...chartForm.elements];
+  const disabledStates = formControls.map((control) => control.disabled);
+  setStatus("preparing");
   downloadButton.disabled = true;
+  formControls.forEach((control) => { control.disabled = true; });
+  languageButtons.forEach((button) => { button.disabled = true; });
   try {
+    await document.fonts.ready;
     const canvas = await window.html2canvas(document.querySelector("#capture"), {
-      backgroundColor: "#ead5b8",
+      backgroundColor: "#f3e3cc",
       logging: false,
       scale: 2,
       useCORS: true,
       windowWidth: 1200,
+      scrollX: 0,
+      scrollY: 0,
       onclone: (documentClone) => {
         const panel = documentClone.querySelector("#capture");
-        panel.style.width = "1128px";
-        panel.style.maxWidth = "none";
-        documentClone.querySelector("#download").disabled = false;
+        panel.classList.add("export-mode");
+        const clonedDownload = documentClone.querySelector("#download");
+        clonedDownload.disabled = false;
+        clonedDownload.style.visibility = "hidden";
       },
     });
     const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
     if (!blob) throw new Error("Canvas could not be encoded");
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
-    const safeName = (lastData.Properties.Name || "human-design")
+    const safeName = (exportData.Properties.Name || "human-design")
       .replace(/[<>:"/\\|?*\u0000-\u001f]/g, "-")
       .trim()
       .slice(0, 80) || "human-design";
     link.download = `${safeName}-human-design-chart.png`;
     link.href = url;
+    document.body.append(link);
     link.click();
-    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-    status.textContent = "PNG downloaded.";
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 30000);
+    setStatus("downloaded");
   } catch (error) {
     console.error(error);
-    status.textContent = `PNG export failed: ${error.message}`;
+    setStatus("exportFailed", { message: error.message });
   } finally {
     downloadButton.disabled = !lastData;
+    formControls.forEach((control, index) => { control.disabled = disabledStates[index]; });
+    languageButtons.forEach((button) => { button.disabled = false; });
   }
 });
 
 paintBodygraph({ Design: {}, Personality: {}, "Defined Centers": [] }).catch((error) => {
-  document.querySelector("#status").textContent = error.message;
+  setStatus("failed", { message: error.message });
 });
 initializeSelectors();
+applyLanguage(language, false);

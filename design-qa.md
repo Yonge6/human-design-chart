@@ -3,36 +3,45 @@ final result: passed
 **Evidence**
 
 - Source visual truth: `/Users/yongyuan/Documents/人类图/style-draft-3-archive-ritual.png`
-- Source BodyGraph capture: `/Users/yongyuan/Documents/人类图/source-chart-desktop-full.png`
-- Implementation screenshot: `/Users/yongyuan/Documents/人类图/local-swiss-engine-desktop-final.png`
-- Mobile screenshot: `/Users/yongyuan/Documents/人类图/local-swiss-engine-mobile-final.png`
-- Full-view comparison: `/Users/yongyuan/Documents/人类图/qa-comparison-option3-vs-engine.png`
-- Desktop viewport/state: 1590 x 1207, generated chart for Test, 1990-01-01 12:00 PM, Shanghai.
-- Mobile viewport/state: 390 x 844, same generated chart.
-- Focused region: the implementation uses the captured 422 x 813 BodyGraph geometry, with dynamic gate, channel, and center painting rather than a visual approximation.
+- User-reported broken export: `/tmp/codex-remote-attachments/019f2807-752a-73a1-81e6-c9cc64623217/4A9CDBC2-8A13-4405-BE66-5548C5CE2FFF/1-照片-1.jpg`
+- Desktop generated state: `/Users/yongyuan/Documents/人类图/qa-bilingual-generated-zh.png`
+- Mobile generated state: `/Users/yongyuan/Documents/人类图/qa-bilingual-mobile-generated.png`
+- Export comparison: `/Users/yongyuan/Documents/人类图/qa-comparison-export.png`
+- Verified PNG: `/Users/yongyuan/Downloads/Test-human-design-chart.png` (`2256 x 2450`, 3.1 MB)
+- Viewports: desktop `1440 x 1000`; mobile `390 x 844`.
+- State: generated chart for Test, 1990-01-01 12:00 PM, Shanghai; Chinese and English presentations.
 
 **Findings**
 
-- No P0/P1/P2 issues remain in the scoped chart-generation experience.
-- The right panel follows the selected archive/parchment direction while preserving the exact source BodyGraph geometry.
-- Typography, spacing, colors, image texture, planetary icon font, and chart copy were checked at desktop and mobile sizes.
-- Mobile has no horizontal overflow; the BodyGraph keeps its 422:813 aspect ratio.
+- No P0/P1/P2 issues remain in the scoped generation, bilingual, responsive, or PNG-export experience.
+- The previous full-chart screenshot used as a pseudo-element texture was removed. The exported PNG now contains one chart only, with no ghost layers, duplicate labels, or large accidental canvas extension.
+- Export uses a deterministic 1128px desktop clone regardless of the live mobile/desktop viewport. The button is hidden, fonts are awaited, and form/language mutations are locked until capture completes.
+- Chinese and English switch without recalculating planetary data. Static copy, status messages, birth date, planet names, properties, title, placeholders, and ARIA labels update together.
+- The implementation keeps the option-3 black-plum and parchment composition. The exact production BodyGraph is intentionally cleaner and less distressed than the concept image so gate labels remain readable.
+
+**Required Fidelity Surfaces**
+
+- Fonts and typography: English serif and Chinese Song-style fallbacks preserve the archival tone; compact UI copy remains legible at 390px.
+- Spacing and layout: two-panel desktop composition and stacked mobile flow have no page-level horizontal overflow; the language control remains visible on mobile.
+- Colors and tokens: black-plum, bone, wine red, bronze, and muted violet match the selected Pluto archive direction.
+- Image quality and assets: the real dynamic BodyGraph SVG and planetary icon font are used; no screenshot is embedded behind the chart.
+- Copy and content: both locales were checked in generated and empty states, including dynamic Human Design properties.
 
 **Functional Verification**
 
-- 13 Design and 13 Personality activations match the My Human Design reference fixture.
-- 19 unique active gates and the Sacral, Solar Plexus, and Root centers are painted.
-- Type, Strategy, Authority, Profile, Definition, Incarnation Cross, Digestion, Sense, and Environment match the reference fixture.
-- PNG export reaches `PNG downloaded.` after the SVG is rasterized.
-- Year, month, day, hour, minute, AM/PM, and birth location are native selection controls; leap-year day counts and city timezone bindings were verified.
-- Fresh-page browser console: no application errors.
+- Seven engine regression tests pass, including fractional time zones, DST gaps/folds, gate mapping, channels, and authority.
+- Chinese and English generation both complete locally with Swiss Ephemeris.
+- Language switching preserves all gate/line values and translates the current result without recalculation.
+- A real English PNG download was reopened and inspected; PNG dimensions, content, and visual alignment are valid.
+- Mobile generation has `390px` document width, no page horizontal overflow, and a visible language switch.
+- Browser console: no warnings or errors.
 
 **Comparison History**
 
-- Earlier implementation used hand-positioned centers and approximate straight channels. Replaced it with the source BodyGraph SVG geometry and attribute-driven painting.
-- Earlier chart calculation depended on the target API. Replaced it with local Swiss Ephemeris WASM, true lunar node calculation, and an exact 88-degree solar-arc search.
-- Earlier mobile layout left excess blank chart height. Replaced the fixed minimum height with the source SVG aspect ratio.
+- Pass 1 found the complete chart screenshot duplicated under the live chart, causing the reported ghosting. Removed it from `.chart-panel::after`.
+- Pass 2 found responsive rules could affect export. Added `.export-mode` with a fixed desktop chart grid and verified the same export structure from mobile.
+- Pass 3 found language and form mutation races during async capture. Locked controls, snapshotted export data, hid the download control, and extended the object URL lifetime.
 
 **Follow-up Polish**
 
-- A newly requested Image2 restyle could not be generated because the local Image2 process stalled twice. The implementation retains the previously selected Image2 option-3 texture; this does not affect chart calculation or rendering correctness.
+- A fresh Image2 visual exploration could not be generated in this run because both available Image2 paths timed out. The existing selected option-3 Image2 concept remains the visual source of truth.

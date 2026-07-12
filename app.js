@@ -1,4 +1,4 @@
-import { calculateHumanDesign, localToUtcCandidates } from "./human-design-engine.js?v=20260712-3";
+import { calculateHumanDesign, localToUtcCandidates } from "./human-design-engine.js?v=20260712-4";
 
 const planets = ["Sun", "Earth", "North Node", "South Node", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 const graph = document.querySelector("#bodygraph");
@@ -22,34 +22,34 @@ const languageButtons = [...document.querySelectorAll("[data-language]")];
 
 const copy = {
   zh: {
-    navCreate: "创建人类图", navChart: "我的人类图", navSource: "源代码",
+    navCreate: "创建人类图", navChart: "我的人类图",
     formEyebrow: "人类图", formTitle: "生成你的人类图", name: "姓名", year: "年", month: "月", day: "日",
     hour: "时", minute: "分", ampm: "上午/下午", am: "上午", pm: "下午", birthLocation: "出生地点",
     locationPlaceholder: "城市、区县或地区", locationSuggestions: "出生地点建议", clockOccurrence: "重复时刻",
     navLabel: "主导航", bodygraphLabel: "人类图身体图",
     firstOccurrence: "第一次出现", secondOccurrence: "第二次出现", attributionPrefix: "地点搜索由 Photon 提供。数据",
-    generate: "生成人类图", yourChart: "你的人类图", emptyChart: "填写出生资料后生成。", download: "下载 PNG",
+    generate: "生成人类图", yourChart: "你的人类图", emptyChart: "填写出生资料后生成。", download: "下载 图片",
     design: "设计", personality: "人格", watermark: "Swiss Ephemeris · 精确 88° 太阳弧",
     noPlace: "没有找到匹配地点，请尝试输入城市、地区和国家。", placeUnavailable: "地点搜索暂时不可用，请检查网络后重试。",
     selectPlace: "请从搜索结果中选择出生地点。", enterName: "请输入姓名。",
     missingTime: "该出生时刻因夏令时向前调整而不存在。", repeatedTime: "这个时刻出现过两次，请选择出生记录对应的那一次。",
     futureTime: "出生日期和时间不能晚于现在。", calculating: "正在计算行星位置…", calculated: "已使用 Swiss Ephemeris 在本地完成计算。",
-    failed: "计算失败：{message}", preparing: "正在生成 PNG…", downloaded: "PNG 已下载。", exportFailed: "PNG 导出失败：{message}",
+    failed: "计算失败：{message}", preparing: "正在生成图片…", downloaded: "图片已下载。", exportFailed: "图片导出失败：{message}",
   },
   en: {
-    navCreate: "Create Chart", navChart: "My Chart", navSource: "Source",
+    navCreate: "Create Chart", navChart: "My Chart",
     formEyebrow: "Human Design Chart", formTitle: "Get Your Human Design Chart", name: "Name", year: "Year", month: "Month", day: "Day",
     hour: "Hour", minute: "Minute", ampm: "AM/PM", am: "AM", pm: "PM", birthLocation: "Birth location",
     locationPlaceholder: "City, district or region", locationSuggestions: "Birth location suggestions", clockOccurrence: "Clock occurrence",
     navLabel: "Primary", bodygraphLabel: "Human Design bodygraph",
     firstOccurrence: "First occurrence", secondOccurrence: "Second occurrence", attributionPrefix: "Search queries are sent to Photon. Data",
-    generate: "Generate Chart", yourChart: "Your Chart", emptyChart: "Enter details to generate.", download: "Download PNG",
+    generate: "Generate Chart", yourChart: "Your Chart", emptyChart: "Enter details to generate.", download: "Download Image",
     design: "Design", personality: "Personality", watermark: "Swiss Ephemeris · exact 88° solar arc",
     noPlace: "No matching place found. Try city, region, and country.", placeUnavailable: "Location search unavailable. Check your connection and try again.",
     selectPlace: "Select a birth location from the search results.", enterName: "Enter a name.",
     missingTime: "This local birth time did not exist because the clocks moved forward.", repeatedTime: "This clock time occurred twice. Choose which occurrence is on the birth record.",
     futureTime: "Birth date and time cannot be in the future.", calculating: "Calculating planetary positions…", calculated: "Chart calculated locally with Swiss Ephemeris.",
-    failed: "Failed: {message}", preparing: "Preparing PNG…", downloaded: "PNG downloaded.", exportFailed: "PNG export failed: {message}",
+    failed: "Failed: {message}", preparing: "Preparing image…", downloaded: "Image downloaded.", exportFailed: "Image export failed: {message}",
   },
 };
 
@@ -357,7 +357,7 @@ function time24(hour, minute, ampm) {
 
 async function loadExportBackground() {
   const image = new Image();
-  image.src = "./assets/pluto-vellum-bg-v2.png";
+  image.src = "./assets/pluto-vellum-bg-v3.png";
   if (image.decode) await image.decode();
   else if (!image.complete) await new Promise((resolve, reject) => {
     image.addEventListener("load", resolve, { once: true });
@@ -367,7 +367,7 @@ async function loadExportBackground() {
 
 async function loadGraphTemplate() {
   if (!graphTemplate) {
-    const response = await fetch("./assets/bodygraph-template.svg?v=20260712-3");
+    const response = await fetch("./assets/bodygraph-template.svg?v=20260712-4");
     if (!response.ok) throw new Error("BodyGraph template failed to load");
     graphTemplate = await response.text();
   }

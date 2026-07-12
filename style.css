@@ -92,9 +92,11 @@ body {
   align-self: start;
   position: sticky;
   top: 28px;
+  min-height: 880px;
   padding: 28px 24px;
   background:
-    linear-gradient(180deg, rgba(54, 31, 49, .92), rgba(19, 13, 22, .97)),
+    linear-gradient(180deg, rgba(8, 12, 16, .24), rgba(6, 9, 13, .38)),
+    url("assets/pluto-form-bg-v3.png") center / cover no-repeat,
     var(--panel);
 }
 .chart-panel {
@@ -103,7 +105,7 @@ body {
   padding: 28px 34px 30px;
   background:
     linear-gradient(rgba(250, 241, 226, .22), rgba(234, 213, 184, .16)),
-    url("assets/pluto-vellum-bg-v2.png") center / cover no-repeat,
+    url("assets/pluto-vellum-bg-v3.png") center / cover no-repeat,
     #f3e3cc;
   color: #2c2525;
 }

@@ -2,49 +2,48 @@ final result: passed
 
 **Evidence**
 
-- Source visual truth: `/Users/yongyuan/Documents/人类图/style-draft-3-archive-ritual.png`
-- New Image2 asset: `/Users/yongyuan/Documents/人类图/assets/pluto-vellum-bg-v2.png`
-- Generated desktop state: `/Users/yongyuan/Documents/人类图/qa-image2-v2-generated.png`
-- Side-by-side export comparison: `/Users/yongyuan/Documents/人类图/qa-comparison-image2-v2.png`
-- Desktop PNG: `/Users/yongyuan/Downloads/Pluto-human-design-chart.png`
-- Mobile PNG: `/Users/yongyuan/Downloads/Mobile-human-design-chart.png`
-- Desktop viewport: `1280px`; mobile viewport: `390 x 844`.
-- State: 1990-01-01 12:00 PM, selected Chinese address `湖南省湘潭市雨湖区`.
+- Left-panel reference: `/var/folders/vd/kws8fm5509l6b9hnywhd8yfr0000gn/T/codex-clipboard-a24c46e0-00db-487b-a0dd-559418b61979.png`
+- New dark Image2 asset: `/Users/yongyuan/Documents/人类图/assets/pluto-form-bg-v3.png`
+- New seamless vellum Image2 asset: `/Users/yongyuan/Documents/人类图/assets/pluto-vellum-bg-v3.png`
+- Generated page state: `/Users/yongyuan/Documents/人类图/qa-pluto-v3-generated.png`
+- Side-by-side page comparison: `/Users/yongyuan/Documents/人类图/qa-comparison-pluto-v3.png`
+- Verified export: `/Users/yongyuan/Downloads/袁勇-human-design-chart.png`
+- State: 袁勇, 1986-06-24 13:50, 湘潭.
 
 **Findings**
 
-- No P0/P1/P2 issues remain in the scoped empty-form, Chinese-address, chart-generation, responsive, or PNG-export experience.
-- Image2 produced a content-free vellum texture with Pluto orbit engraving and an antique bronze border. It contains no text, UI, or duplicate BodyGraph, so it cannot recreate the original ghost-layer failure.
-- Default name, date, time, AM/PM, and location controls are all empty. Required native selection prevents incomplete submissions.
-- Continuous Chinese input `湖南省湘潭市雨湖区` is segmented internally for Photon, returns a selectable result, preserves the user's Chinese label, and resolves the correct coordinates/timezone.
-- Desktop and mobile both export the same deterministic `2256 x 2302` poster composition. The button and watermark are absent from the PNG; the BodyGraph, both activation columns, and all ten properties remain visible.
+- No P0/P1/P2 issues remain in the annotated navigation, download label, Pluto visual direction, or saved-image composition.
+- The top navigation now contains only `创建人类图` and `我的人类图`; `源代码` was removed from the owning HTML.
+- The visible action is `下载 图片` in Chinese and `Download Image` in English. Export status text uses “图片” consistently.
+- The left form uses a dedicated content-free Image2 background with a dark star field, crescent, Pluto-like planet, engraved orbits, and bronze frame. No screenshot UI or reference text is embedded in the asset.
+- The result/export uses a newly regenerated seamless vellum asset. Its interior has no center fold, split, panel boundary, or vertical seam.
+- The real 袁勇 PNG was downloaded and reopened at `2256 x 2350`; the previously reported full-height center line is absent.
 
 **Required Fidelity Surfaces**
 
-- Fonts and typography: Chinese Song-style display text and compact sans-serif metadata preserve the archival editorial hierarchy.
-- Spacing and layout: the generated chart is vertically tighter than the previous export, with the properties band pulled closer to the BodyGraph and no accidental empty canvas extension.
-- Colors and tokens: bone vellum, graphite grain, antique bronze, wine red, muted violet, and black-plum shell match the selected Pluto direction.
-- Image quality and assets: the project uses the generated 1203 x 1308 Image2 background, the real dynamic BodyGraph SVG, and the planetary icon font. No chart screenshot is used as a texture.
-- Copy and content: empty, generated, Chinese-address, status, and bilingual states were checked.
+- Fonts and typography: Chinese Song-style display text, warm white form copy, and compact gold metadata align with the reference hierarchy.
+- Spacing and layout: the left panel is 880px tall on desktop so the Pluto planet and orbital field remain visible below the functional form.
+- Colors and tokens: near-black charcoal, plum undertone, antique bronze, ivory vellum, wine red, and muted violet form a coherent Pluto palette.
+- Image quality and assets: both new backgrounds are generated bitmap assets; the live Human Design data remains the production SVG and icon font.
+- Copy and content: both annotations were applied in source, without temporary browser-marker attributes.
 
 **Functional Verification**
 
 - Seven engine regression tests pass.
-- Chinese address search returned and selected `湖南省湘潭市雨湖区` without a `400` response.
-- The selected address generated 13 Design and 13 Personality activations with Swiss Ephemeris.
-- A real desktop PNG and a real mobile PNG were downloaded, reopened, dimension-checked, and visually inspected.
-- Mobile document width remains `390px` with no page-level horizontal overflow.
+- Exact 袁勇 fixture generated successfully with 13 Design and 13 Personality activations.
+- A real PNG was saved, reopened, dimension-checked, and visually inspected.
+- The empty form, Chinese address selection, bilingual switch, and mobile no-overflow behavior remain intact.
 - Browser console: no application warnings or errors.
 
 **Comparison History**
 
-- Pass 1: removed the full-chart screenshot previously embedded behind the live chart.
-- Pass 2: added fixed export geometry and locked form/language mutations during capture.
-- Pass 3: replaced the plain result background with a safe, content-free Image2 vellum asset.
-- Pass 4: removed the invalid `lang=zh` Photon parameter and over-restrictive `osm_tag=place` filter.
-- Pass 5: added Chinese administrative-suffix segmentation and increased the search timeout from 8 to 12 seconds.
-- Pass 6: preloaded and decoded the Image2 background before html2canvas capture, then verified matching desktop/mobile outputs.
+- Pass 1: removed the old embedded full-chart texture that caused ghost duplication.
+- Pass 2: added deterministic export geometry and mutation locking.
+- Pass 3: introduced the first content-free Image2 vellum background.
+- Pass 4: regenerated the vellum background specifically without a center seam.
+- Pass 5: generated and integrated a separate dark Pluto form background based on the user-selected reference.
+- Pass 6: reproduced the user fixture and verified the exported image after reopening it.
 
 **Follow-up Polish**
 
-- P3 only: the exact production BodyGraph remains slightly narrower than the concept illustration to preserve all gate numbers and channel geometry at export resolution.
+- P3 only: the production BodyGraph remains narrower than the concept illustration so every gate number and channel remains readable.

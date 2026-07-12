@@ -374,7 +374,7 @@ function time24(hour, minute, ampm) {
 
 async function loadExportBackground() {
   const image = new Image();
-  image.src = "./assets/pluto-vellum-bg-v4.png";
+  image.src = "./assets/pluto-chart-mobile-v1.png";
   if (image.decode) await image.decode();
   else if (!image.complete) await new Promise((resolve, reject) => {
     image.addEventListener("load", resolve, { once: true });
@@ -604,17 +604,17 @@ downloadButton.addEventListener("click", async () => {
   try {
     await Promise.all([document.fonts.ready, loadExportBackground()]);
     const canvas = await window.html2canvas(document.querySelector("#capture"), {
-      backgroundColor: "#f3e3cc",
+      backgroundColor: "#0d0b12",
       logging: false,
       scale: 2,
       useCORS: true,
-      windowWidth: 1200,
+      windowWidth: 660,
       scrollX: 0,
       scrollY: 0,
       onclone: (documentClone) => {
         const panel = documentClone.querySelector("#capture");
-        panel.classList.add("export-mode");
-        documentClone.querySelector(".chart-actions").style.visibility = "hidden";
+        panel.classList.add("export-mobile");
+        documentClone.querySelector(".chart-actions").style.display = "none";
       },
     });
     const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));

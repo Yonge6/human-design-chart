@@ -2,51 +2,36 @@ final result: passed
 
 **Source visual truth**
 
-- Previous mobile implementation: `/Users/yongyuan/Documents/人类图/qa-mobile-form-v5.png`.
-- Existing selected Image2 asset: `/Users/yongyuan/Documents/人类图/assets/pluto-form-mobile-v4.png`.
-- User requirement: fit the complete form and Pluto composition in one iPhone viewport, then order the mobile result as graph, Design/Personality, and properties.
+- User reference: `/tmp/codex-remote-attachments/019f2807-752a-73a1-81e6-c9cc64623217/AF0F1C8F-F4D3-4C0C-879C-9D36724CCBDD/1-照片-1.jpg`.
+- Image2 mobile export background: `/Users/yongyuan/Documents/人类图/assets/pluto-chart-mobile-v1.png`.
+- Reference/output comparison: `/Users/yongyuan/Documents/人类图/qa-mobile-export-comparison-v6.png`.
+- Final reopened export: `/Users/yongyuan/Downloads/袁勇-human-design-chart.png` (`1200 x 2570`).
 
-**Implementation evidence**
+**Design comparison**
 
-- Full-view before/after comparison: `/Users/yongyuan/Documents/人类图/qa-mobile-home-comparison-v8.png`.
-- Final empty mobile home: `/Users/yongyuan/Documents/人类图/qa-mobile-home-v8.png`.
-- Final mobile result first viewport: `/Users/yongyuan/Documents/人类图/qa-mobile-result-v8.png`.
-- Focused Design/Personality region: `/Users/yongyuan/Documents/人类图/qa-mobile-columns-v8.png`.
-- Reopened mobile-triggered download: `/Users/yongyuan/Downloads/顺序验证-human-design-chart.png` (`2256 x 2424`).
+- The reference's phone-readable hierarchy is preserved: identity first, activation rails around the central BodyGraph, then properties.
+- The production result is visually distinct and more premium: black obsidian, antique champagne gold, smoky ivory, engraved orbital geometry, and a restrained Pluto planetary limb.
+- The BodyGraph is the dominant object and is mathematically centered in a fixed symmetrical grid: `98px / 324px / 98px`, with equal `8px` gaps.
+- Design and Personality rails have identical widths, heights, spacing, borders, and mirrored row direction.
+- Planet symbols remain visible, and the names Sun, Earth, Moon, and all other planets remain readable in small type in both Chinese and English.
+- The lower property section is a balanced two-column grid with fine gold rules and no nested cards.
 
-**Viewport and state**
+**Mobile export requirements**
 
-- Primary viewport: `390 x 844`, empty Chinese form.
-- Secondary viewport: `375 x 812`, populated Chinese form.
-- Generated state: `顺序验证`, 1990-01-01 12:00, `湖南省湘潭市雨湖区`.
-- Both mobile home states have document height equal to viewport height and no horizontal or vertical page scroll.
-
-**Findings**
-
-- No P0/P1/P2 issues remain.
-- Typography: the display face, compact labels, and button hierarchy remain consistent with the Pluto visual direction; no text clips at either iPhone width.
-- Spacing: the mobile header, controls, and form rhythm were compressed without reducing controls below 40px. The full form and Pluto artwork now end inside the first viewport.
-- Colors: antique gold, near-black, ivory, and bronze remain unchanged from the selected direction.
-- Image quality: the original Image2 Pluto bitmap is reused at native mobile proportions with bottom anchoring; no stretched or replacement artwork was introduced.
-- Copy: all bilingual labels and Photon attribution remain unchanged.
-- Result order: the BodyGraph is first, Design is second, Personality is third, and the property grid is last.
-- Download: mobile and desktop use the same fixed desktop export composition. The reopened PNG contains the complete BodyGraph, both planetary columns, and all properties without clipping.
-
-**Comparison history**
-
-- Pass 1 found that the old mobile form extended beyond the viewport and hid the Pluto subject below the fold.
-- Fix: reduced mobile-only vertical spacing, used a viewport-bound form shell, and bottom-anchored the existing Image2 asset.
-- Pass 2 confirmed `390 x 844` and `375 x 812` both have zero page overflow and show the Pluto composition in one screen.
-- Pass 3 changed mobile visual ordering with CSS only, preserving the desktop DOM and export layout.
-- Pass 4 reopened the real `2256 x 2424` PNG and confirmed the previously clipped export frame is now fully visible.
+- Output width is `1200px`, appropriate for high-density phone screens and social sharing.
+- Portrait ratio is approximately `9:19.3`; it may scroll vertically but reads comfortably at phone width.
+- All real content is included: name, birth line, 13 Design activations, 13 Personality activations, BodyGraph, and 10 properties.
+- The export contains no webpage controls, status bar, browser chrome, download button, or fake Image2 text.
+- No vertical seam, stale mobile-width frame, clipping, horizontal overflow, or off-center graph appears in the reopened PNG.
 
 **Functional verification**
 
-- Chinese Photon location selection and local Swiss Ephemeris generation completed successfully.
-- Mobile edit and download actions remain functional.
+- Real fixture: 袁勇, 1986-06-24 13:50, 湖南省湘潭市雨湖区.
+- Chinese Photon location selection and Swiss Ephemeris generation completed successfully.
+- Export downloaded from a `390 x 844` viewport and reopened successfully.
 - Seven engine regression tests pass.
 - `node --check` and `git diff --check` pass.
 
-**Follow-up polish**
+**Remaining polish**
 
-- P3 only: on very short legacy iPhone heights, less of the surrounding star field is visible, but the page still remains a single screen and all controls stay accessible.
+- P3 only: the intentional breathing room below the BodyGraph creates an editorial pause before the technical properties and keeps the dense poster from feeling crowded.

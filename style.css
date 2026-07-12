@@ -82,6 +82,16 @@ body {
   min-height: 100vh;
   padding: 28px;
 }
+.shell.form-view {
+  display: block;
+  width: min(540px, 100%);
+  margin: 0 auto;
+}
+.shell.result-view {
+  display: block;
+  width: min(1184px, 100%);
+  margin: 0 auto;
+}
 .form-panel, .chart-panel {
   background: var(--panel);
   border: 1px solid rgba(181, 124, 76, .42);
@@ -105,18 +115,12 @@ body {
   padding: 28px 34px 30px;
   background:
     linear-gradient(rgba(250, 241, 226, .22), rgba(234, 213, 184, .16)),
-    url("assets/pluto-vellum-bg-v3.png") center / cover no-repeat,
+    url("assets/pluto-vellum-bg-v4.png") center / cover no-repeat,
     #f3e3cc;
   color: #2c2525;
 }
 .chart-panel::before {
-  content: "";
-  position: absolute;
-  inset: 10px;
-  border: 1px solid rgba(125, 87, 47, .48);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.34), inset 0 0 0 5px rgba(125, 87, 47, .10);
-  opacity: 1;
-  pointer-events: none;
+  content: none;
 }
 .chart-panel::after {
   content: none;
@@ -192,6 +196,15 @@ button {
   font-weight: 700;
 }
 button:disabled { cursor: not-allowed; opacity: .52; }
+#chartForm button[type="submit"],
+#editChart {
+  border: 1px solid #e0c293;
+  background: #cfad79;
+  color: #1b121a;
+  box-shadow: inset 0 0 0 1px rgba(255, 247, 232, .24), 0 8px 22px rgba(0, 0, 0, .18);
+}
+#chartForm button[type="submit"]:hover,
+#editChart:hover { background: #ddbd89; }
 .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 #status { min-height: 20px; font: 13px ui-sans-serif, system-ui, sans-serif; color: #d8b17d; }
 .chart-meta {
@@ -213,6 +226,12 @@ button:disabled { cursor: not-allowed; opacity: .52; }
   letter-spacing: .04em;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.35);
 }
+.chart-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.chart-actions button { width: 138px; }
 #birthLine { margin: -8px 0 0; color: #7b6d62; }
 .chart-frame {
   position: relative;
@@ -397,9 +416,19 @@ button:disabled { cursor: not-allowed; opacity: .52; }
   .topbar-actions { gap: 0; }
   .topbar nav { display: none; }
   .shell { padding: 14px; }
+  .shell.form-view, .shell.result-view { width: 100%; }
+  .form-panel {
+    min-height: 920px;
+    padding: 24px;
+    background:
+      linear-gradient(180deg, rgba(8, 12, 16, .18), rgba(6, 9, 13, .34)),
+      url("assets/pluto-form-mobile-v4.png") center / cover no-repeat,
+      var(--panel);
+  }
   .chart-panel { padding: 22px 16px; }
   .chart-meta { display: grid; }
-  .chart-meta button { width: 100%; }
+  .chart-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+  .chart-actions button { width: 100%; }
   .properties, .planet-list { grid-template-columns: 1fr; }
   .location-results { max-height: 240px; }
   .gate-label { font-size: 13px; }

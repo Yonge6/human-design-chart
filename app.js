@@ -1,4 +1,4 @@
-import { calculateHumanDesign, localToUtcCandidates } from "./human-design-engine.js?v=20260712-4";
+import { calculateHumanDesign, localToUtcCandidates } from "./human-design-engine.js?v=20260712-7";
 
 const planets = ["Sun", "Earth", "North Node", "South Node", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 const graph = document.querySelector("#bodygraph");
@@ -18,6 +18,12 @@ const clockOccurrenceField = document.querySelector("#clockOccurrenceField");
 const status = document.querySelector("#status");
 const chartForm = document.querySelector("#chartForm");
 const downloadButton = document.querySelector("#download");
+const editButton = document.querySelector("#editChart");
+const shell = document.querySelector(".shell");
+const formPanel = document.querySelector(".form-panel");
+const chartPanel = document.querySelector("#capture");
+const navCreate = document.querySelector("#navCreate");
+const navChart = document.querySelector("#navChart");
 const languageButtons = [...document.querySelectorAll("[data-language]")];
 
 const copy = {
@@ -27,10 +33,10 @@ const copy = {
     hour: "时", minute: "分", ampm: "上午/下午", am: "上午", pm: "下午", birthLocation: "出生地点",
     locationPlaceholder: "城市、区县或地区", locationSuggestions: "出生地点建议", clockOccurrence: "重复时刻",
     navLabel: "主导航", bodygraphLabel: "人类图身体图",
-    firstOccurrence: "第一次出现", secondOccurrence: "第二次出现", attributionPrefix: "地点搜索由 Photon 提供。数据",
-    generate: "生成人类图", yourChart: "你的人类图", emptyChart: "填写出生资料后生成。", download: "下载 图片",
+    firstOccurrence: "第一次出现", secondOccurrence: "第二次出现", attribution: "地点搜索由 Photon 提供。",
+    generate: "生成人类图", yourChart: "你的人类图", emptyChart: "填写出生资料后生成。", editChart: "重新填写", download: "下载 图片",
     design: "设计", personality: "人格", watermark: "Swiss Ephemeris · 精确 88° 太阳弧",
-    noPlace: "没有找到匹配地点，请尝试输入城市、地区和国家。", placeUnavailable: "地点搜索暂时不可用，请检查网络后重试。",
+    searchingPlace: "正在搜索地点…", noPlace: "没有找到匹配地点，请尝试输入城市、地区和国家。", placeUnavailable: "地点搜索暂时不可用，请检查网络后重试。",
     selectPlace: "请从搜索结果中选择出生地点。", enterName: "请输入姓名。",
     missingTime: "该出生时刻因夏令时向前调整而不存在。", repeatedTime: "这个时刻出现过两次，请选择出生记录对应的那一次。",
     futureTime: "出生日期和时间不能晚于现在。", calculating: "正在计算行星位置…", calculated: "已使用 Swiss Ephemeris 在本地完成计算。",
@@ -42,10 +48,10 @@ const copy = {
     hour: "Hour", minute: "Minute", ampm: "AM/PM", am: "AM", pm: "PM", birthLocation: "Birth location",
     locationPlaceholder: "City, district or region", locationSuggestions: "Birth location suggestions", clockOccurrence: "Clock occurrence",
     navLabel: "Primary", bodygraphLabel: "Human Design bodygraph",
-    firstOccurrence: "First occurrence", secondOccurrence: "Second occurrence", attributionPrefix: "Search queries are sent to Photon. Data",
-    generate: "Generate Chart", yourChart: "Your Chart", emptyChart: "Enter details to generate.", download: "Download Image",
+    firstOccurrence: "First occurrence", secondOccurrence: "Second occurrence", attribution: "Location search by Photon.",
+    generate: "Generate Chart", yourChart: "Your Chart", emptyChart: "Enter details to generate.", editChart: "Edit Details", download: "Download Image",
     design: "Design", personality: "Personality", watermark: "Swiss Ephemeris · exact 88° solar arc",
-    noPlace: "No matching place found. Try city, region, and country.", placeUnavailable: "Location search unavailable. Check your connection and try again.",
+    searchingPlace: "Searching locations…", noPlace: "No matching place found. Try city, region, and country.", placeUnavailable: "Location search unavailable. Check your connection and try again.",
     selectPlace: "Select a birth location from the search results.", enterName: "Enter a name.",
     missingTime: "This local birth time did not exist because the clocks moved forward.", repeatedTime: "This clock time occurred twice. Choose which occurrence is on the birth record.",
     futureTime: "Birth date and time cannot be in the future.", calculating: "Calculating planetary positions…", calculated: "Chart calculated locally with Swiss Ephemeris.",
@@ -128,6 +134,7 @@ let activePlaceIndex = -1;
 let placeTimer;
 let placeRequest;
 let placeQueryVersion = 0;
+const placeCache = new Map();
 let selectedPlace = null;
 
 function appendOptions(select, values, selected, includePlaceholder = true) {
@@ -255,8 +262,10 @@ function renderPlaceResults(features, query) {
     name.textContent = primary;
     detail.textContent = context.join(" · ");
     option.append(name, detail);
-    option.addEventListener("mousedown", (event) => event.preventDefault());
-    option.addEventListener("click", () => selectPlace(index));
+    option.addEventListener("pointerdown", (event) => {
+      event.preventDefault();
+      selectPlace(index);
+    });
     return option;
   }));
   locationResults.hidden = placeMatches.length === 0;
@@ -271,6 +280,11 @@ function renderPlaceResults(features, query) {
 }
 
 async function searchPlaces(query, queryVersion) {
+  const cacheKey = `${language}:${query}`;
+  if (placeCache.has(cacheKey)) {
+    renderPlaceResults(placeCache.get(cacheKey), query);
+    return;
+  }
   placeRequest?.abort();
   const request = new AbortController();
   placeRequest = request;
@@ -291,7 +305,9 @@ async function searchPlaces(query, queryVersion) {
     if (!response.ok) throw new Error("Place search unavailable");
     const data = await response.json();
     if (queryVersion !== placeQueryVersion || fields.location.value.trim() !== query) return;
-    renderPlaceResults(data.features || [], query);
+    const features = data.features || [];
+    placeCache.set(cacheKey, features);
+    renderPlaceResults(features, query);
   } catch (error) {
     if ((error.name !== "AbortError" || timedOut) && queryVersion === placeQueryVersion) {
       closePlaceResults();
@@ -325,8 +341,9 @@ fields.location.addEventListener("input", () => {
     closePlaceResults();
     return;
   }
+  setStatus("searchingPlace");
   const queryVersion = placeQueryVersion;
-  placeTimer = window.setTimeout(() => searchPlaces(query, queryVersion), 280);
+  placeTimer = window.setTimeout(() => searchPlaces(query, queryVersion), 360);
 });
 
 fields.location.addEventListener("keydown", (event) => {
@@ -346,7 +363,7 @@ fields.location.addEventListener("keydown", (event) => {
   }
 });
 
-fields.location.addEventListener("blur", () => window.setTimeout(cancelPlaceSearch, 120));
+fields.location.addEventListener("blur", () => window.setTimeout(cancelPlaceSearch, 420));
 
 function time24(hour, minute, ampm) {
   let value = Number(hour);
@@ -357,7 +374,7 @@ function time24(hour, minute, ampm) {
 
 async function loadExportBackground() {
   const image = new Image();
-  image.src = "./assets/pluto-vellum-bg-v3.png";
+  image.src = "./assets/pluto-vellum-bg-v4.png";
   if (image.decode) await image.decode();
   else if (!image.complete) await new Promise((resolve, reject) => {
     image.addEventListener("load", resolve, { once: true });
@@ -367,7 +384,7 @@ async function loadExportBackground() {
 
 async function loadGraphTemplate() {
   if (!graphTemplate) {
-    const response = await fetch("./assets/bodygraph-template.svg?v=20260712-4");
+    const response = await fetch("./assets/bodygraph-template.svg?v=20260712-7");
     if (!response.ok) throw new Error("BodyGraph template failed to load");
     graphTemplate = await response.text();
   }
@@ -449,6 +466,24 @@ async function render(data) {
   downloadButton.disabled = false;
 }
 
+function showFormView() {
+  setStatus(null);
+  closePlaceResults();
+  chartPanel.hidden = true;
+  formPanel.hidden = false;
+  shell.classList.remove("result-view");
+  shell.classList.add("form-view");
+  window.scrollTo({ top: 0, behavior: "auto" });
+}
+
+function showChartView() {
+  formPanel.hidden = true;
+  chartPanel.hidden = false;
+  shell.classList.remove("form-view");
+  shell.classList.add("result-view");
+  window.scrollTo({ top: 0, behavior: "auto" });
+}
+
 function applyLanguage(nextLanguage, rerender = true) {
   language = nextLanguage === "en" ? "en" : "zh";
   localStorage.setItem("pluto-language", language);
@@ -468,6 +503,16 @@ function applyLanguage(nextLanguage, rerender = true) {
 }
 
 languageButtons.forEach((button) => button.addEventListener("click", () => applyLanguage(button.dataset.language)));
+editButton.addEventListener("click", showFormView);
+navCreate.addEventListener("click", (event) => {
+  event.preventDefault();
+  showFormView();
+});
+navChart.addEventListener("click", (event) => {
+  event.preventDefault();
+  if (!lastData) return;
+  showChartView();
+});
 
 function invalidateChart() {
   if (!lastData) return;
@@ -538,6 +583,7 @@ chartForm.addEventListener("submit", async (event) => {
     await render(data);
     lastData = data;
     setStatus("calculated");
+    showChartView();
   } catch (error) {
     console.error(error);
     setStatus("failed", { message: error.message });
@@ -568,9 +614,7 @@ downloadButton.addEventListener("click", async () => {
       onclone: (documentClone) => {
         const panel = documentClone.querySelector("#capture");
         panel.classList.add("export-mode");
-        const clonedDownload = documentClone.querySelector("#download");
-        clonedDownload.disabled = false;
-        clonedDownload.style.visibility = "hidden";
+        documentClone.querySelector(".chart-actions").style.visibility = "hidden";
       },
     });
     const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));

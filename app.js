@@ -1,4 +1,4 @@
-import { calculateHumanDesign, localToUtcCandidates } from "./human-design-engine.js?v=20260712-2";
+import { calculateHumanDesign, localToUtcCandidates } from "./human-design-engine.js?v=20260712-3";
 
 const planets = ["Sun", "Earth", "North Node", "South Node", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 const graph = document.querySelector("#bodygraph");
@@ -123,47 +123,64 @@ const centerColors = {
 let graphTemplate;
 let lastData;
 let placeMatches = [];
+let placeLabels = [];
 let activePlaceIndex = -1;
 let placeTimer;
 let placeRequest;
 let placeQueryVersion = 0;
-let selectedPlace = {
-  label: "Shanghai, China",
-  coordinates: [121.4737, 31.2304],
-  timezone: "Asia/Shanghai",
-};
+let selectedPlace = null;
 
-function appendOptions(select, values, selected) {
-  select.replaceChildren(...values.map(({ value, label }) => {
+function appendOptions(select, values, selected, includePlaceholder = true) {
+  const options = values.map(({ value, label }) => {
     const option = document.createElement("option");
     const formatted = String(value).padStart(2, "0");
     option.value = formatted;
     option.textContent = label ?? formatted;
     option.selected = String(value) === String(selected);
     return option;
-  }));
+  });
+  if (includePlaceholder) {
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = "--";
+    placeholder.disabled = true;
+    placeholder.selected = selected === null || selected === undefined || selected === "";
+    options.unshift(placeholder);
+  }
+  select.replaceChildren(...options);
 }
 
 function updateDays() {
-  const year = Number(fields.year.value || 1990);
-  const month = Number(fields.month.value || 1);
-  const previous = Math.min(Number(fields.day.value || 1), new Date(year, month, 0).getDate());
+  const year = Number(fields.year.value);
+  const month = Number(fields.month.value);
+  if (!year || !month) {
+    appendOptions(fields.day, [], null);
+    return;
+  }
+  const currentDay = Number(fields.day.value);
+  const previous = currentDay ? Math.min(currentDay, new Date(year, month, 0).getDate()) : null;
   const days = Array.from({ length: new Date(year, month, 0).getDate() }, (_, index) => ({ value: index + 1 }));
   appendOptions(fields.day, days, previous);
 }
 
 function initializeSelectors() {
   const currentYear = new Date().getFullYear();
-  appendOptions(fields.year, Array.from({ length: currentYear - 1899 }, (_, index) => ({ value: currentYear - index })), 1990);
-  appendOptions(fields.month, Array.from({ length: 12 }, (_, index) => ({ value: index + 1 })), 1);
-  appendOptions(fields.hour, Array.from({ length: 12 }, (_, index) => ({ value: index + 1 })), 12);
-  appendOptions(fields.minute, Array.from({ length: 60 }, (_, index) => ({ value: index })), 0);
+  appendOptions(fields.year, Array.from({ length: currentYear - 1899 }, (_, index) => ({ value: currentYear - index })), null);
+  appendOptions(fields.month, Array.from({ length: 12 }, (_, index) => ({ value: index + 1 })), null);
+  appendOptions(fields.hour, Array.from({ length: 12 }, (_, index) => ({ value: index + 1 })), null);
+  appendOptions(fields.minute, Array.from({ length: 60 }, (_, index) => ({ value: index })), null);
   updateDays();
 }
 
 function placeLabel(properties) {
   const parts = [properties.name, properties.district, properties.city, properties.county, properties.state, properties.country];
   return parts.filter((part, index) => part && parts.indexOf(part) === index).join(", ");
+}
+
+function resultLabel(place, query) {
+  const fallback = placeLabel(place.properties);
+  if (place.properties.countrycode !== "CN" || !/[\u3400-\u9fff]/.test(query)) return fallback;
+  return query.trim().replace(/[\s,，、/]+/g, ", ");
 }
 
 function closePlaceResults() {
@@ -208,7 +225,7 @@ function selectPlace(index) {
   // Mainland Chinese civil records use China Standard Time nationwide.
   const timezone = place.properties.countrycode === "CN" ? "Asia/Shanghai" : window.tzlookup(latitude, longitude);
   if (!isValidTimezone(timezone)) return;
-  const label = placeLabel(place.properties);
+  const label = placeLabels[index] || placeLabel(place.properties);
   fields.location.value = label;
   selectedPlace = { label, coordinates: [longitude, latitude], timezone };
   fields.location.removeAttribute("aria-invalid");
@@ -217,20 +234,21 @@ function selectPlace(index) {
   closePlaceResults();
 }
 
-function renderPlaceResults(features) {
+function renderPlaceResults(features, query) {
   const labels = new Set();
   placeMatches = features.filter((place) => {
-    const label = placeLabel(place.properties);
+    const label = resultLabel(place, query);
     if (!label || labels.has(label)) return false;
     labels.add(label);
     return true;
   });
+  placeLabels = placeMatches.map((place) => resultLabel(place, query));
   locationResults.replaceChildren(...placeMatches.map((place, index) => {
     const option = document.createElement("li");
     option.id = `location-option-${index}`;
     option.role = "option";
     option.tabIndex = -1;
-    const label = placeLabel(place.properties);
+    const label = placeLabels[index];
     const [primary, ...context] = label.split(", ");
     const name = document.createElement("strong");
     const detail = document.createElement("span");
@@ -260,15 +278,20 @@ async function searchPlaces(query, queryVersion) {
   const timeout = window.setTimeout(() => {
     timedOut = true;
     request.abort();
-  }, 8000);
+  }, 12000);
   try {
     const url = new URL("https://photon.komoot.io/api/");
-    url.search = new URLSearchParams({ q: query, limit: "7", osm_tag: "place", lang: language });
+    const apiQuery = /[\u3400-\u9fff]/.test(query)
+      ? query.replace(/([省市区县州旗])(?=[\u3400-\u9fff])/g, "$1 ")
+      : query;
+    const params = { q: apiQuery, limit: "7" };
+    if (language === "en") params.lang = "en";
+    url.search = new URLSearchParams(params);
     const response = await fetch(url, { signal: request.signal });
     if (!response.ok) throw new Error("Place search unavailable");
     const data = await response.json();
     if (queryVersion !== placeQueryVersion || fields.location.value.trim() !== query) return;
-    renderPlaceResults(data.features || []);
+    renderPlaceResults(data.features || [], query);
   } catch (error) {
     if ((error.name !== "AbortError" || timedOut) && queryVersion === placeQueryVersion) {
       closePlaceResults();
@@ -291,6 +314,7 @@ fields.location.addEventListener("input", () => {
   placeQueryVersion += 1;
   selectedPlace = null;
   placeMatches = [];
+  placeLabels = [];
   locationResults.replaceChildren();
   closePlaceResults();
   resetClockOccurrence();
@@ -331,9 +355,19 @@ function time24(hour, minute, ampm) {
   return { hour: value, minute: Number(minute) };
 }
 
+async function loadExportBackground() {
+  const image = new Image();
+  image.src = "./assets/pluto-vellum-bg-v2.png";
+  if (image.decode) await image.decode();
+  else if (!image.complete) await new Promise((resolve, reject) => {
+    image.addEventListener("load", resolve, { once: true });
+    image.addEventListener("error", reject, { once: true });
+  });
+}
+
 async function loadGraphTemplate() {
   if (!graphTemplate) {
-    const response = await fetch("./assets/bodygraph-template.svg?v=20260712-2");
+    const response = await fetch("./assets/bodygraph-template.svg?v=20260712-3");
     if (!response.ok) throw new Error("BodyGraph template failed to load");
     graphTemplate = await response.text();
   }
@@ -522,7 +556,7 @@ downloadButton.addEventListener("click", async () => {
   formControls.forEach((control) => { control.disabled = true; });
   languageButtons.forEach((button) => { button.disabled = true; });
   try {
-    await document.fonts.ready;
+    await Promise.all([document.fonts.ready, loadExportBackground()]);
     const canvas = await window.html2canvas(document.querySelector("#capture"), {
       backgroundColor: "#f3e3cc",
       logging: false,

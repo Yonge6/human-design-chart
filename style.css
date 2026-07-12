@@ -102,10 +102,9 @@ body {
   overflow: hidden;
   padding: 28px 34px 30px;
   background:
-    radial-gradient(circle at 50% 38%, rgba(158, 122, 72, .12), transparent 38%),
-    radial-gradient(circle at 70% 13%, rgba(87, 68, 80, .045), transparent 28%),
-    repeating-linear-gradient(90deg, rgba(108, 81, 49, .018) 0 1px, transparent 1px 13px),
-    linear-gradient(180deg, #fbf3e6 0%, #ead5b8 100%);
+    linear-gradient(rgba(250, 241, 226, .22), rgba(234, 213, 184, .16)),
+    url("assets/pluto-vellum-bg-v2.png") center / cover no-repeat,
+    #f3e3cc;
   color: #2c2525;
 }
 .chart-panel::before {
@@ -348,7 +347,8 @@ button:disabled { cursor: not-allowed; opacity: .52; }
   grid-template-columns: 170px 408px 170px !important;
   gap: 28px !important;
 }
-.chart-panel.export-mode .chart-frame { padding: 18px 34px 10px !important; }
+.chart-panel.export-mode .chart-frame { max-height: 760px; overflow: hidden; padding: 18px 34px 10px !important; }
+.chart-panel.export-mode .watermark { display: none; }
 .chart-panel.export-mode .planet-list { grid-template-columns: 1fr !important; }
 .chart-panel.export-mode .side-column > p { text-align: left !important; }
 .chart-panel.export-mode .side-column.right > p { text-align: right !important; }

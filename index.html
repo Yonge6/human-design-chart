@@ -6,7 +6,8 @@
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://photon.komoot.io; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
   <title>Pluto Human Design Chart</title>
-  <link rel="stylesheet" href="style.css?v=20260712-2">
+  <link rel="preload" as="image" href="assets/pluto-vellum-bg-v2.png">
+  <link rel="stylesheet" href="style.css?v=20260712-3">
 </head>
 <body>
   <header class="topbar">
@@ -28,7 +29,7 @@
       <p class="eyebrow" data-i18n="formEyebrow">人类图</p>
       <h1 data-i18n="formTitle">生成你的人类图</h1>
       <form id="chartForm">
-        <label><span data-i18n="name">姓名</span><input id="name" name="name" value="Test" maxlength="80" required></label>
+        <label><span data-i18n="name">姓名</span><input id="name" name="name" maxlength="80" autocomplete="off" required></label>
         <div class="grid3">
           <label><span data-i18n="year">年</span><select id="year" required></select></label>
           <label><span data-i18n="month">月</span><select id="month" required></select></label>
@@ -38,7 +39,8 @@
           <label><span data-i18n="hour">时</span><select id="hour" required></select></label>
           <label><span data-i18n="minute">分</span><select id="minute" required></select></label>
           <label><span data-i18n="ampm">上午/下午</span>
-            <select id="ampm">
+            <select id="ampm" required>
+              <option value="" selected disabled>--</option>
               <option value="pm" data-i18n="pm">下午</option>
               <option value="am" data-i18n="am">上午</option>
             </select>
@@ -46,7 +48,7 @@
         </div>
         <label><span data-i18n="birthLocation">出生地点</span>
           <div class="location-combobox">
-            <input id="location" name="location" type="search" role="combobox" value="Shanghai, China" placeholder="城市、区县或地区" autocomplete="off" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="locationResults" aria-expanded="false" aria-describedby="status" required>
+            <input id="location" name="location" type="search" role="combobox" placeholder="城市、区县或地区" autocomplete="off" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="locationResults" aria-expanded="false" aria-describedby="status" required>
             <ul id="locationResults" class="location-results" role="listbox" aria-label="出生地点建议" hidden></ul>
           </div>
         </label>
@@ -90,8 +92,8 @@
       <div id="properties" class="properties"></div>
     </section>
   </main>
-  <script src="vendor/tz-lookup/tz.js?v=20260712-2"></script>
-  <script src="vendor/html2canvas/html2canvas.min.js?v=20260712-2"></script>
-  <script type="module" src="app.js?v=20260712-2"></script>
+  <script src="vendor/tz-lookup/tz.js?v=20260712-3"></script>
+  <script src="vendor/html2canvas/html2canvas.min.js?v=20260712-3"></script>
+  <script type="module" src="app.js?v=20260712-3"></script>
 </body>
 </html>

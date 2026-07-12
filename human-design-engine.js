@@ -1,5 +1,5 @@
-import { SwissEphemeris } from "./vendor/swisseph/swisseph-browser.js?v=20260712-8";
-import { getIncarnationCross } from "./vendor/natalengine/incarnation-crosses.js?v=20260712-8";
+import { SwissEphemeris } from "./vendor/swisseph/swisseph-browser.js?v=20260712-9";
+import { getIncarnationCross } from "./vendor/natalengine/incarnation-crosses.js?v=20260712-9";
 
 const Planet = {
   Sun: 0, Moon: 1, Mercury: 2, Venus: 3, Mars: 4, Jupiter: 5,

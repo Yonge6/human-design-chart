@@ -1,4 +1,4 @@
-import { calculateHumanDesign, localToUtcCandidates } from "./human-design-engine.js?v=20260712-8";
+import { calculateHumanDesign, localToUtcCandidates } from "./human-design-engine.js?v=20260712-9";
 
 const planets = ["Sun", "Earth", "North Node", "South Node", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 const graph = document.querySelector("#bodygraph");
@@ -384,7 +384,7 @@ async function loadExportBackground() {
 
 async function loadGraphTemplate() {
   if (!graphTemplate) {
-    const response = await fetch("./assets/bodygraph-template.svg?v=20260712-8");
+    const response = await fetch("./assets/bodygraph-template.svg?v=20260712-9");
     if (!response.ok) throw new Error("BodyGraph template failed to load");
     graphTemplate = await response.text();
   }

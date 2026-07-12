@@ -1,39 +1,52 @@
 final result: passed
 
-**Visual target and evidence**
+**Source visual truth**
 
-- Reference direction: the user-selected Pluto Human Design concept and the existing dark bronze visual system.
-- Mobile Image2 asset: `/Users/yongyuan/Documents/人类图/assets/pluto-form-mobile-v4.png`.
-- Seamless Image2 export asset: `/Users/yongyuan/Documents/人类图/assets/pluto-vellum-bg-v4.png`.
-- Mobile form at 390 x 844: `/Users/yongyuan/Documents/人类图/qa-mobile-form-v5.png`.
-- Mobile generated result at 390px wide: `/Users/yongyuan/Documents/人类图/qa-mobile-result-v5.png`.
-- Reopened production PNG: `/Users/yongyuan/Downloads/Mobile-human-design-chart.png` (`2256 x 2302`).
+- Previous mobile implementation: `/Users/yongyuan/Documents/人类图/qa-mobile-form-v5.png`.
+- Existing selected Image2 asset: `/Users/yongyuan/Documents/人类图/assets/pluto-form-mobile-v4.png`.
+- User requirement: fit the complete form and Pluto composition in one iPhone viewport, then order the mobile result as graph, Design/Personality, and properties.
 
-**Design comparison**
+**Implementation evidence**
 
-- The mobile form preserves the selected near-black, antique bronze, crescent, celestial-orbit, and Pluto-planet direction without embedding UI or text in the bitmap.
-- The primary action uses the same antique-gold fill as the selected language control.
-- The mobile hierarchy fits 390px with no horizontal overflow; the Pluto planet rises from the bottom without obscuring controls.
-- The result keeps the production BodyGraph readable and uses the ivory celestial vellum direction selected for the chart.
-- The regenerated vellum is a continuous sheet. The exported PNG has no center fold, vertical seam, stale mobile-width frame, or visible chart action buttons.
+- Full-view before/after comparison: `/Users/yongyuan/Documents/人类图/qa-mobile-home-comparison-v8.png`.
+- Final empty mobile home: `/Users/yongyuan/Documents/人类图/qa-mobile-home-v8.png`.
+- Final mobile result first viewport: `/Users/yongyuan/Documents/人类图/qa-mobile-result-v8.png`.
+- Focused Design/Personality region: `/Users/yongyuan/Documents/人类图/qa-mobile-columns-v8.png`.
+- Reopened mobile-triggered download: `/Users/yongyuan/Downloads/顺序验证-human-design-chart.png` (`2256 x 2424`).
 
-**Required states and interactions**
+**Viewport and state**
 
-- Initial state: form visible, chart hidden.
-- Chinese location state: `湖南省湘潭市雨湖区` returns a selectable Photon result on mobile.
-- Selected location stores coordinates and resolves mainland China to `Asia/Shanghai` internally without showing a timezone field.
-- Submit state: calculation completes locally, form hides, chart appears, and viewport scrolls to the result.
-- Edit state: `重新填写` restores the populated form and clears stale status text.
-- Language state: Chinese and English labels switch correctly; English attribution is `Location search by Photon.`
-- Export state: a real PNG downloads and reopens successfully with deterministic `2256 x 2302` geometry.
+- Primary viewport: `390 x 844`, empty Chinese form.
+- Secondary viewport: `375 x 812`, populated Chinese form.
+- Generated state: `顺序验证`, 1990-01-01 12:00, `湖南省湘潭市雨湖区`.
+- Both mobile home states have document height equal to viewport height and no horizontal or vertical page scroll.
+
+**Findings**
+
+- No P0/P1/P2 issues remain.
+- Typography: the display face, compact labels, and button hierarchy remain consistent with the Pluto visual direction; no text clips at either iPhone width.
+- Spacing: the mobile header, controls, and form rhythm were compressed without reducing controls below 40px. The full form and Pluto artwork now end inside the first viewport.
+- Colors: antique gold, near-black, ivory, and bronze remain unchanged from the selected direction.
+- Image quality: the original Image2 Pluto bitmap is reused at native mobile proportions with bottom anchoring; no stretched or replacement artwork was introduced.
+- Copy: all bilingual labels and Photon attribution remain unchanged.
+- Result order: the BodyGraph is first, Design is second, Personality is third, and the property grid is last.
+- Download: mobile and desktop use the same fixed desktop export composition. The reopened PNG contains the complete BodyGraph, both planetary columns, and all properties without clipping.
+
+**Comparison history**
+
+- Pass 1 found that the old mobile form extended beyond the viewport and hid the Pluto subject below the fold.
+- Fix: reduced mobile-only vertical spacing, used a viewport-bound form shell, and bottom-anchored the existing Image2 asset.
+- Pass 2 confirmed `390 x 844` and `375 x 812` both have zero page overflow and show the Pluto composition in one screen.
+- Pass 3 changed mobile visual ordering with CSS only, preserving the desktop DOM and export layout.
+- Pass 4 reopened the real `2256 x 2424` PNG and confirmed the previously clipped export frame is now fully visible.
 
 **Functional verification**
 
-- Mobile viewport: `390 x 844`, document width `390`, no horizontal scrolling.
-- Swiss Ephemeris calculation completed with 13 Design and 13 Personality activations.
+- Chinese Photon location selection and local Swiss Ephemeris generation completed successfully.
+- Mobile edit and download actions remain functional.
 - Seven engine regression tests pass.
-- `node --check`, test suite, and diff whitespace checks pass.
+- `node --check` and `git diff --check` pass.
 
-**Remaining polish**
+**Follow-up polish**
 
-- P3 only: the mobile result is intentionally long so all gates, activations, and properties remain legible instead of being compressed into an unreadable poster.
+- P3 only: on very short legacy iPhone heights, less of the surrounding star field is visible, but the page still remains a single screen and all controls stay accessible.

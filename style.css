@@ -368,7 +368,7 @@ button:disabled { cursor: not-allowed; opacity: .52; }
   grid-template-columns: 170px 408px 170px !important;
   gap: 28px !important;
 }
-.chart-panel.export-mode .chart-frame { max-height: 760px; overflow: hidden; padding: 18px 34px 10px !important; }
+.chart-panel.export-mode .chart-frame { max-height: none; overflow: visible; padding: 18px 34px 10px !important; }
 .chart-panel.export-mode .watermark { display: none; }
 .chart-panel.export-mode .planet-list { grid-template-columns: 1fr !important; }
 .chart-panel.export-mode .side-column > p { text-align: left !important; }
@@ -411,24 +411,41 @@ button:disabled { cursor: not-allowed; opacity: .52; }
   .properties { grid-template-columns: repeat(2, minmax(150px, 1fr)); }
 }
 @media (max-width: 560px) {
-  .topbar { min-height: 64px; padding: 0 14px; }
+  .topbar { min-height: 58px; padding: 0 12px; }
   .brand { font-size: 18px; }
   .topbar-actions { gap: 0; }
   .topbar nav { display: none; }
-  .shell { padding: 14px; }
+  .shell { padding: 8px; }
   .shell.form-view, .shell.result-view { width: 100%; }
+  .shell.form-view {
+    height: calc(100dvh - 58px);
+    min-height: 0;
+    overflow: hidden;
+  }
   .form-panel {
-    min-height: 920px;
-    padding: 24px;
+    height: 100%;
+    min-height: 0;
+    padding: 18px 20px;
     background:
       linear-gradient(180deg, rgba(8, 12, 16, .18), rgba(6, 9, 13, .34)),
-      url("assets/pluto-form-mobile-v4.png") center / cover no-repeat,
+      url("assets/pluto-form-mobile-v4.png") center bottom / cover no-repeat,
       var(--panel);
   }
+  .form-panel .eyebrow { margin-bottom: 5px; }
+  .form-panel h1 { margin-bottom: 12px; font-size: 34px; }
+  .form-panel label { gap: 5px; margin-bottom: 9px; }
+  .form-panel input,
+  .form-panel select,
+  .form-panel button { min-height: 40px; }
+  .form-panel .place-attribution { margin: -2px 0 9px; }
+  .form-panel #status { min-height: 16px; font-size: 11px; }
   .chart-panel { padding: 22px 16px; }
   .chart-meta { display: grid; }
   .chart-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
   .chart-actions button { width: 100%; }
+  .chart-graph { order: 1; }
+  .side-column:not(.right) { order: 2; }
+  .side-column.right { order: 3; }
   .properties, .planet-list { grid-template-columns: 1fr; }
   .location-results { max-height: 240px; }
   .gate-label { font-size: 13px; }

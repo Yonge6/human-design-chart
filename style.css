@@ -92,6 +92,33 @@ body {
   width: min(1184px, 100%);
   margin: 0 auto;
 }
+.result-panel {
+  width: min(600px, 100%);
+  margin: 0 auto;
+}
+.result-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+.result-toolbar .chart-actions {
+  width: min(100%, 294px);
+}
+.chart-preview {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid rgba(199, 164, 110, .55);
+  background: #0d0b12;
+  box-shadow: 0 24px 72px rgba(0, 0, 0, .42);
+}
+.result-panel[aria-busy="true"] .chart-preview { opacity: .56; }
+.capture-source {
+  position: fixed !important;
+  top: 0 !important;
+  left: -10000px !important;
+  pointer-events: none !important;
+}
 .form-panel, .chart-panel {
   background: var(--panel);
   border: 1px solid rgba(181, 124, 76, .42);
@@ -314,6 +341,7 @@ button:disabled { cursor: not-allowed; opacity: .52; }
 .planet-list li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid rgba(133, 92, 46, .18); }
 .planet-list li:last-child { border-bottom: 0; }
 .planet-list span { display: flex; align-items: center; gap: 10px; color: #5f534c; font-style: italic; }
+.planet-list em { font-style: inherit; }
 .planet-list i {
   width: 16px;
   color: #7e5a35;
@@ -439,7 +467,7 @@ button:disabled { cursor: not-allowed; opacity: .52; }
 }
 .chart-panel.export-mobile #bodygraph {
   width: 240px !important;
-  transform: translateX(-23px) !important;
+  transform: none !important;
 }
 .chart-panel.export-mobile .watermark {
   margin-top: 8px !important;
@@ -466,7 +494,7 @@ button:disabled { cursor: not-allowed; opacity: .52; }
 }
 .chart-panel.export-mobile .planet-list li {
   display: grid !important;
-  grid-template-columns: minmax(0, 1fr) 28px !important;
+  grid-template-columns: minmax(0, 1fr) 24px !important;
   align-items: center !important;
   min-height: 0 !important;
   gap: 2px !important;
@@ -474,34 +502,42 @@ button:disabled { cursor: not-allowed; opacity: .52; }
   border-color: rgba(210, 174, 118, .16) !important;
 }
 .chart-panel.export-mobile .planet-list span {
+  display: grid !important;
+  grid-template-columns: 10px minmax(0, 1fr) !important;
   grid-column: 1 !important;
   grid-row: 1 !important;
   min-width: 0 !important;
-  gap: 2px !important;
+  gap: 3px !important;
   justify-content: flex-start !important;
   color: #d1b786 !important;
-  font: italic 9px/1.05 Georgia, "Times New Roman", serif !important;
+  font: italic 8px/1 Georgia, "Times New Roman", serif !important;
   white-space: nowrap !important;
 }
 html[lang="en"] .chart-panel.export-mobile .planet-list span {
-  font-size: 7px !important;
+  font-size: 6.5px !important;
 }
 .chart-panel.export-mobile .planet-list i {
-  width: 11px !important;
-  flex: 0 0 11px !important;
+  width: 10px !important;
+  min-width: 0 !important;
   color: #d1b786 !important;
-  font-size: 12px !important;
+  font-size: 10px !important;
+  text-align: center !important;
+}
+.chart-panel.export-mobile .planet-list em {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
 }
 .chart-panel.export-mobile .planet-list b {
   grid-column: 2 !important;
   grid-row: 1 !important;
-  width: 28px !important;
+  width: 24px !important;
   text-align: right !important;
   color: #fff3df !important;
-  font: 700 10px/1 ui-sans-serif, system-ui, sans-serif !important;
+  font: 700 9px/1 ui-sans-serif, system-ui, sans-serif !important;
 }
 .chart-panel.export-mobile .right li {
-  grid-template-columns: 28px minmax(0, 1fr) !important;
+  grid-template-columns: 24px minmax(0, 1fr) !important;
 }
 .chart-panel.export-mobile .right .planet-list b {
   grid-column: 1 !important;
@@ -509,10 +545,11 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
 }
 .chart-panel.export-mobile .right .planet-list span {
   grid-column: 2 !important;
-  flex-direction: row-reverse !important;
-  justify-content: flex-start !important;
+  grid-template-columns: minmax(0, 1fr) 10px !important;
   text-align: right !important;
 }
+.chart-panel.export-mobile .right .planet-list i { grid-column: 2 !important; grid-row: 1 !important; }
+.chart-panel.export-mobile .right .planet-list em { grid-column: 1 !important; grid-row: 1 !important; }
 .chart-panel.export-mobile .properties {
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   max-width: 520px !important;

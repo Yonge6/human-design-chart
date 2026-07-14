@@ -23,6 +23,8 @@ const editButton = document.querySelector("#editChart");
 const shell = document.querySelector(".shell");
 const formPanel = document.querySelector(".form-panel");
 const chartPanel = document.querySelector("#capture");
+const chartResult = document.querySelector("#chartResult");
+const chartPreview = document.querySelector("#chartPreview");
 const navCreate = document.querySelector("#navCreate");
 const navChart = document.querySelector("#navChart");
 const languageButtons = [...document.querySelectorAll("[data-language]")];
@@ -35,7 +37,7 @@ const copy = {
     locationPlaceholder: "城市、区县或地区", locationSuggestions: "出生地点建议", clockOccurrence: "重复时刻",
     navLabel: "主导航", bodygraphLabel: "人类图身体图",
     firstOccurrence: "第一次出现", secondOccurrence: "第二次出现", attribution: "可直接输入完整地点，无需选择候选。",
-    generate: "生成人类图", yourChart: "你的人类图", emptyChart: "填写出生资料后生成。", editChart: "重新填写", download: "下载 图片",
+    generate: "生成人类图", yourChart: "你的人类图", emptyChart: "填写出生资料后生成。", editChart: "重新填写", download: "下载 图片", previewAlt: "人类图海报",
     design: "设计", personality: "人格", watermark: "Swiss Ephemeris · 精确 88° 太阳弧",
     searchingPlace: "正在搜索地点…", noPlace: "暂未显示候选，仍可直接点击生成人类图。", placeUnavailable: "搜索建议暂时未加载，仍可直接点击生成人类图。",
     resolvingPlace: "正在确认地点和当地时间…", placeNeedsDetail: "暂时无法确认这个地点，请补充城市、省/州和国家后再试。", enterName: "请输入姓名。",
@@ -50,7 +52,7 @@ const copy = {
     locationPlaceholder: "City, district or region", locationSuggestions: "Birth location suggestions", clockOccurrence: "Clock occurrence",
     navLabel: "Primary", bodygraphLabel: "Human Design bodygraph",
     firstOccurrence: "First occurrence", secondOccurrence: "Second occurrence", attribution: "Enter the full place directly; selecting a suggestion is optional.",
-    generate: "Generate Chart", yourChart: "Your Chart", emptyChart: "Enter details to generate.", editChart: "Edit Details", download: "Download Image",
+    generate: "Generate Chart", yourChart: "Your Chart", emptyChart: "Enter details to generate.", editChart: "Edit Details", download: "Download Image", previewAlt: "Human Design chart poster",
     design: "Design", personality: "Personality", watermark: "Swiss Ephemeris · exact 88° solar arc",
     searchingPlace: "Searching locations…", noPlace: "No suggestions yet. You can still generate the chart directly.", placeUnavailable: "Suggestions did not load. You can still generate the chart directly.",
     resolvingPlace: "Confirming the place and its local time…", placeNeedsDetail: "We could not confirm this place. Add the city, state or region, and country, then try again.", enterName: "Enter a name.",
@@ -129,6 +131,9 @@ const centerColors = {
 
 let graphTemplate;
 let lastData;
+let posterBlob;
+let posterUrl;
+let posterRenderVersion = 0;
 let placeMatches = [];
 let placeLabels = [];
 let activePlaceIndex = -1;
@@ -486,7 +491,7 @@ async function paintBodygraph(data) {
 function row(name, item) {
   const iconClass = `wb-${name.replaceAll(" ", "-")}`;
   const label = language === "zh" ? planetNames[name] : name;
-  return `<li><span><i class="${iconClass}" aria-hidden="true"></i>${label}</span><b>${item.Gate}.${item.Line}</b></li>`;
+  return `<li><span><i class="${iconClass}" aria-hidden="true"></i><em>${label}</em></span><b>${item.Gate}.${item.Line}</b></li>`;
 }
 
 async function render(data) {
@@ -500,13 +505,61 @@ async function render(data) {
     const label = language === "zh" ? propertyNames[key] : key;
     return `<div class="property"><b>${label}</b><span>${translatedValue(key, data.Properties[key])}</span></div>`;
   }).join("");
-  downloadButton.disabled = false;
+}
+
+function clearPoster() {
+  posterRenderVersion += 1;
+  posterBlob = undefined;
+  if (posterUrl) URL.revokeObjectURL(posterUrl);
+  posterUrl = undefined;
+  chartPreview.removeAttribute("src");
+  chartResult.removeAttribute("aria-busy");
+  downloadButton.disabled = true;
+  languageButtons.forEach((button) => { button.disabled = false; });
+}
+
+async function createPosterImage() {
+  const renderVersion = ++posterRenderVersion;
+  chartResult.setAttribute("aria-busy", "true");
+  downloadButton.disabled = true;
+  languageButtons.forEach((button) => { button.disabled = true; });
+  try {
+    await Promise.all([document.fonts.ready, loadExportBackground()]);
+    const canvas = await window.html2canvas(chartPanel, {
+      backgroundColor: "#0d0b12",
+      logging: false,
+      scale: 2,
+      useCORS: true,
+      windowWidth: 660,
+      scrollX: 0,
+      scrollY: 0,
+      onclone: (documentClone) => {
+        const source = documentClone.querySelector("#capture");
+        source.classList.remove("capture-source");
+        source.style.position = "static";
+      },
+    });
+    const nextBlob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+    if (!nextBlob) throw new Error("Canvas could not be encoded");
+    if (renderVersion !== posterRenderVersion) return;
+    if (posterUrl) URL.revokeObjectURL(posterUrl);
+    posterBlob = nextBlob;
+    posterUrl = URL.createObjectURL(nextBlob);
+    chartPreview.src = posterUrl;
+    if (chartPreview.decode) await chartPreview.decode();
+    downloadButton.disabled = false;
+  } finally {
+    if (renderVersion === posterRenderVersion) {
+      chartResult.removeAttribute("aria-busy");
+      languageButtons.forEach((button) => { button.disabled = false; });
+    }
+  }
 }
 
 function showFormView() {
   setStatus(null);
   closePlaceResults();
-  chartPanel.hidden = true;
+  chartResult.hidden = true;
   formPanel.hidden = false;
   shell.classList.remove("result-view");
   shell.classList.add("form-view");
@@ -515,7 +568,7 @@ function showFormView() {
 
 function showChartView() {
   formPanel.hidden = true;
-  chartPanel.hidden = false;
+  chartResult.hidden = false;
   shell.classList.remove("form-view");
   shell.classList.add("result-view");
   window.scrollTo({ top: 0, behavior: "auto" });
@@ -529,6 +582,9 @@ function applyLanguage(nextLanguage, rerender = true) {
   document.querySelectorAll("[data-i18n]").forEach((element) => {
     element.textContent = t(element.dataset.i18n);
   });
+  document.querySelectorAll("[data-i18n-alt]").forEach((element) => {
+    element.alt = t(element.dataset.i18nAlt);
+  });
   fields.location.placeholder = t("locationPlaceholder");
   locationResults.setAttribute("aria-label", t("locationSuggestions"));
   document.querySelector(".topbar nav").setAttribute("aria-label", t("navLabel"));
@@ -536,7 +592,11 @@ function applyLanguage(nextLanguage, rerender = true) {
   graph.querySelector("svg")?.setAttribute("aria-label", t("bodygraphLabel"));
   languageButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.language === language)));
   if (statusState) status.textContent = t(statusState.key, statusState.values);
-  if (rerender && lastData) render(lastData).catch((error) => { setStatus("failed", { message: error.message }); });
+  if (rerender && lastData) {
+    render(lastData)
+      .then(createPosterImage)
+      .catch((error) => { setStatus("exportFailed", { message: error.message }); });
+  }
 }
 
 languageButtons.forEach((button) => button.addEventListener("click", () => applyLanguage(button.dataset.language)));
@@ -554,7 +614,7 @@ navChart.addEventListener("click", (event) => {
 function invalidateChart() {
   if (!lastData) return;
   lastData = undefined;
-  downloadButton.disabled = true;
+  clearPoster();
   document.querySelector("#personName").textContent = "-";
   document.querySelector("#birthLine").textContent = t("emptyChart");
   document.querySelector("#designList").replaceChildren();
@@ -617,6 +677,8 @@ chartForm.addEventListener("submit", async (event) => {
     });
     await render(data);
     lastData = data;
+    setStatus("preparing");
+    await createPosterImage();
     setStatus("calculated");
     showChartView();
   } catch (error) {
@@ -628,52 +690,26 @@ chartForm.addEventListener("submit", async (event) => {
 });
 
 downloadButton.addEventListener("click", async () => {
-  if (!lastData) return;
+  if (!lastData || !posterBlob || !posterUrl) return;
   const exportData = lastData;
-  const formControls = [...chartForm.elements];
-  const disabledStates = formControls.map((control) => control.disabled);
-  setStatus("preparing");
   downloadButton.disabled = true;
-  formControls.forEach((control) => { control.disabled = true; });
-  languageButtons.forEach((button) => { button.disabled = true; });
   try {
-    await Promise.all([document.fonts.ready, loadExportBackground()]);
-    const canvas = await window.html2canvas(document.querySelector("#capture"), {
-      backgroundColor: "#0d0b12",
-      logging: false,
-      scale: 2,
-      useCORS: true,
-      windowWidth: 660,
-      scrollX: 0,
-      scrollY: 0,
-      onclone: (documentClone) => {
-        const panel = documentClone.querySelector("#capture");
-        panel.classList.add("export-mobile");
-        documentClone.querySelector(".chart-actions").style.display = "none";
-      },
-    });
-    const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
-    if (!blob) throw new Error("Canvas could not be encoded");
-    const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     const safeName = (exportData.Properties.Name || "human-design")
       .replace(/[<>:"/\\|?*\u0000-\u001f]/g, "-")
       .trim()
       .slice(0, 80) || "human-design";
     link.download = `${safeName}-human-design-chart.png`;
-    link.href = url;
+    link.href = posterUrl;
     document.body.append(link);
     link.click();
     link.remove();
-    window.setTimeout(() => URL.revokeObjectURL(url), 30000);
     setStatus("downloaded");
   } catch (error) {
     console.error(error);
     setStatus("exportFailed", { message: error.message });
   } finally {
-    downloadButton.disabled = !lastData;
-    formControls.forEach((control, index) => { control.disabled = disabledStates[index]; });
-    languageButtons.forEach((button) => { button.disabled = false; });
+    downloadButton.disabled = !lastData || !posterBlob;
   }
 });
 

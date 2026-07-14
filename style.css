@@ -510,7 +510,7 @@ button:disabled { cursor: not-allowed; opacity: .52; }
   gap: 3px !important;
   justify-content: flex-start !important;
   color: #d1b786 !important;
-  font: italic 8px/1 Georgia, "Times New Roman", serif !important;
+  font: italic 8px/1.45 "Songti SC", "STSong", Georgia, "Times New Roman", serif !important;
   white-space: nowrap !important;
 }
 html[lang="en"] .chart-panel.export-mobile .planet-list span {
@@ -521,10 +521,13 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
   min-width: 0 !important;
   color: #d1b786 !important;
   font-size: 10px !important;
+  line-height: 1.2 !important;
   text-align: center !important;
 }
 .chart-panel.export-mobile .planet-list em {
+  display: block !important;
   min-width: 0 !important;
+  padding: 1px 0 2px !important;
   overflow: hidden !important;
   text-overflow: clip !important;
 }
@@ -534,7 +537,7 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
   width: 24px !important;
   text-align: right !important;
   color: #fff3df !important;
-  font: 700 9px/1 ui-sans-serif, system-ui, sans-serif !important;
+  font: 700 9px/1.3 ui-sans-serif, system-ui, sans-serif !important;
 }
 .chart-panel.export-mobile .right li {
   grid-template-columns: 24px minmax(0, 1fr) !important;

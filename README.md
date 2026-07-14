@@ -12,7 +12,7 @@ Open `http://127.0.0.1:8789/`.
 
 Run the engine regression suite with `npm test`.
 
-The birth data stays in the browser during chart calculation. Birth locations support global OpenStreetMap-powered search. Selecting a result maps its coordinates to an IANA timezone locally; the timezone is used internally for accurate UTC conversion and is not shown as a separate form field.
+The birth data stays in the browser during chart calculation. Birth locations support global type-ahead search with a second geocoder fallback. Suggestions are optional: submitting a typed address resolves it automatically, and mainland Chinese addresses can use the nationwide civil timezone even when search suggestions are unavailable. Coordinates map to an IANA timezone locally; the timezone is used internally for accurate UTC conversion and is not shown as a separate form field.
 
 ## Calculation
 

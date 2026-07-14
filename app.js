@@ -1,4 +1,5 @@
 import { calculateHumanDesign, localToUtcCandidates } from "./human-design-engine.js?v=20260712-9";
+import { fetchPlaceCandidates, inferTimezoneFromAddress } from "./location-service.js?v=20260715-2";
 
 const planets = ["Sun", "Earth", "North Node", "South Node", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 const graph = document.querySelector("#bodygraph");
@@ -33,11 +34,11 @@ const copy = {
     hour: "时", minute: "分", ampm: "上午/下午", am: "上午", pm: "下午", birthLocation: "出生地点",
     locationPlaceholder: "城市、区县或地区", locationSuggestions: "出生地点建议", clockOccurrence: "重复时刻",
     navLabel: "主导航", bodygraphLabel: "人类图身体图",
-    firstOccurrence: "第一次出现", secondOccurrence: "第二次出现", attribution: "地点搜索由 Photon 提供。",
+    firstOccurrence: "第一次出现", secondOccurrence: "第二次出现", attribution: "可直接输入完整地点，无需选择候选。",
     generate: "生成人类图", yourChart: "你的人类图", emptyChart: "填写出生资料后生成。", editChart: "重新填写", download: "下载 图片",
     design: "设计", personality: "人格", watermark: "Swiss Ephemeris · 精确 88° 太阳弧",
-    searchingPlace: "正在搜索地点…", noPlace: "没有找到匹配地点，请尝试输入城市、地区和国家。", placeUnavailable: "地点搜索暂时不可用，请检查网络后重试。",
-    selectPlace: "请从搜索结果中选择出生地点。", enterName: "请输入姓名。",
+    searchingPlace: "正在搜索地点…", noPlace: "暂未显示候选，仍可直接点击生成人类图。", placeUnavailable: "搜索建议暂时未加载，仍可直接点击生成人类图。",
+    resolvingPlace: "正在确认地点和当地时间…", placeNeedsDetail: "暂时无法确认这个地点，请补充城市、省/州和国家后再试。", enterName: "请输入姓名。",
     missingTime: "该出生时刻因夏令时向前调整而不存在。", repeatedTime: "这个时刻出现过两次，请选择出生记录对应的那一次。",
     futureTime: "出生日期和时间不能晚于现在。", calculating: "正在计算行星位置…", calculated: "已使用 Swiss Ephemeris 在本地完成计算。",
     failed: "计算失败：{message}", preparing: "正在生成图片…", downloaded: "图片已下载。", exportFailed: "图片导出失败：{message}",
@@ -48,11 +49,11 @@ const copy = {
     hour: "Hour", minute: "Minute", ampm: "AM/PM", am: "AM", pm: "PM", birthLocation: "Birth location",
     locationPlaceholder: "City, district or region", locationSuggestions: "Birth location suggestions", clockOccurrence: "Clock occurrence",
     navLabel: "Primary", bodygraphLabel: "Human Design bodygraph",
-    firstOccurrence: "First occurrence", secondOccurrence: "Second occurrence", attribution: "Location search by Photon.",
+    firstOccurrence: "First occurrence", secondOccurrence: "Second occurrence", attribution: "Enter the full place directly; selecting a suggestion is optional.",
     generate: "Generate Chart", yourChart: "Your Chart", emptyChart: "Enter details to generate.", editChart: "Edit Details", download: "Download Image",
     design: "Design", personality: "Personality", watermark: "Swiss Ephemeris · exact 88° solar arc",
-    searchingPlace: "Searching locations…", noPlace: "No matching place found. Try city, region, and country.", placeUnavailable: "Location search unavailable. Check your connection and try again.",
-    selectPlace: "Select a birth location from the search results.", enterName: "Enter a name.",
+    searchingPlace: "Searching locations…", noPlace: "No suggestions yet. You can still generate the chart directly.", placeUnavailable: "Suggestions did not load. You can still generate the chart directly.",
+    resolvingPlace: "Confirming the place and its local time…", placeNeedsDetail: "We could not confirm this place. Add the city, state or region, and country, then try again.", enterName: "Enter a name.",
     missingTime: "This local birth time did not exist because the clocks moved forward.", repeatedTime: "This clock time occurred twice. Choose which occurrence is on the birth record.",
     futureTime: "Birth date and time cannot be in the future.", calculating: "Calculating planetary positions…", calculated: "Chart calculated locally with Swiss Ephemeris.",
     failed: "Failed: {message}", preparing: "Preparing image…", downloaded: "Image downloaded.", exportFailed: "Image export failed: {message}",
@@ -229,10 +230,10 @@ function selectPlace(index) {
   if (!place) return;
   const [longitude, latitude] = place.geometry.coordinates;
   if (![longitude, latitude].every(Number.isFinite)) return;
-  // Mainland Chinese civil records use China Standard Time nationwide.
-  const timezone = place.properties.countrycode === "CN" ? "Asia/Shanghai" : window.tzlookup(latitude, longitude);
-  if (!isValidTimezone(timezone)) return;
   const label = placeLabels[index] || placeLabel(place.properties);
+  const timezone = inferTimezoneFromAddress(label)
+    || (place.properties.countrycode === "CN" ? "Asia/Shanghai" : window.tzlookup(latitude, longitude));
+  if (!isValidTimezone(timezone)) return;
   fields.location.value = label;
   selectedPlace = { label, coordinates: [longitude, latitude], timezone };
   fields.location.removeAttribute("aria-invalid");
@@ -294,18 +295,8 @@ async function searchPlaces(query, queryVersion) {
     request.abort();
   }, 12000);
   try {
-    const url = new URL("https://photon.komoot.io/api/");
-    const apiQuery = /[\u3400-\u9fff]/.test(query)
-      ? query.replace(/([省市区县州旗])(?=[\u3400-\u9fff])/g, "$1 ")
-      : query;
-    const params = { q: apiQuery, limit: "7" };
-    if (language === "en") params.lang = "en";
-    url.search = new URLSearchParams(params);
-    const response = await fetch(url, { signal: request.signal });
-    if (!response.ok) throw new Error("Place search unavailable");
-    const data = await response.json();
+    const features = await fetchPlaceCandidates(query, { language, signal: request.signal });
     if (queryVersion !== placeQueryVersion || fields.location.value.trim() !== query) return;
-    const features = data.features || [];
     placeCache.set(cacheKey, features);
     renderPlaceResults(features, query);
   } catch (error) {
@@ -363,7 +354,53 @@ fields.location.addEventListener("keydown", (event) => {
   }
 });
 
-fields.location.addEventListener("blur", () => window.setTimeout(cancelPlaceSearch, 420));
+fields.location.addEventListener("blur", () => window.setTimeout(closePlaceResults, 180));
+
+function selectionFromPlace(place, label) {
+  const [longitude, latitude] = place.geometry.coordinates;
+  if (![longitude, latitude].every(Number.isFinite)) return null;
+  const timezone = inferTimezoneFromAddress(label)
+    || (place.properties.countrycode === "CN" ? "Asia/Shanghai" : window.tzlookup(latitude, longitude));
+  if (!isValidTimezone(timezone)) return null;
+  return { label, coordinates: [longitude, latitude], timezone };
+}
+
+async function resolveTypedPlace(query) {
+  const inferredTimezone = inferTimezoneFromAddress(query);
+  if (inferredTimezone) return { label: query, coordinates: null, timezone: inferredTimezone };
+
+  setStatus("resolvingPlace");
+  fields.location.setAttribute("aria-busy", "true");
+  window.clearTimeout(placeTimer);
+  placeQueryVersion += 1;
+  closePlaceResults();
+  placeRequest?.abort();
+  const request = new AbortController();
+  placeRequest = request;
+  try {
+    const cached = placeCache.get(`${language}:${query}`);
+    const matches = cached?.length ? cached : await fetchPlaceCandidates(query, {
+      language,
+      signal: request.signal,
+      fallbackDelay: 0,
+    });
+    const resolved = matches.map((place) => selectionFromPlace(place, query)).find(Boolean);
+    if (resolved) {
+      selectedPlace = resolved;
+      fields.location.removeAttribute("aria-invalid");
+      return resolved;
+    }
+  } catch (error) {
+    if (error.name === "AbortError") return null;
+  } finally {
+    fields.location.removeAttribute("aria-busy");
+  }
+
+  fields.location.setAttribute("aria-invalid", "true");
+  fields.location.focus();
+  setStatus("placeNeedsDetail");
+  return null;
+}
 
 function time24(hour, minute, ampm) {
   let value = Number(hour);
@@ -538,12 +575,6 @@ chartForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const submit = event.submitter || document.querySelector("#chartForm button[type='submit']");
   if (submit.disabled) return;
-  if (!selectedPlace || fields.location.value.trim() !== selectedPlace.label) {
-    fields.location.setAttribute("aria-invalid", "true");
-    fields.location.focus();
-    setStatus("selectPlace");
-    return;
-  }
   const name = fields.name.value.trim();
   if (!name) {
     fields.name.setAttribute("aria-invalid", "true");
@@ -553,10 +584,15 @@ chartForm.addEventListener("submit", async (event) => {
   }
   fields.name.removeAttribute("aria-invalid");
   const time = time24(fields.hour.value, fields.minute.value, fields.ampm.value);
+  submit.disabled = true;
   try {
+    const locationQuery = fields.location.value.trim();
+    const place = selectedPlace?.label === locationQuery ? selectedPlace : await resolveTypedPlace(locationQuery);
+    if (!place) return;
+    selectedPlace = place;
     const candidates = localToUtcCandidates(
       Number(fields.year.value), Number(fields.month.value), Number(fields.day.value),
-      time.hour, time.minute, selectedPlace.timezone,
+      time.hour, time.minute, place.timezone,
     );
     if (!candidates.length) throw new RangeError(t("missingTime"));
     if (candidates.length > 1 && clockOccurrenceField.hidden) {
@@ -568,16 +604,15 @@ chartForm.addEventListener("submit", async (event) => {
     const selectedUtc = fields.clockOccurrence.value === "later" ? candidates[candidates.length - 1] : candidates[0];
     if (selectedUtc > Date.now()) throw new RangeError(t("futureTime"));
     setStatus("calculating");
-    submit.disabled = true;
     const data = await calculateHumanDesign({
       name,
-      location: selectedPlace.label,
+      location: place.label,
       year: Number(fields.year.value),
       month: Number(fields.month.value),
       day: Number(fields.day.value),
       hour: time.hour,
       minute: time.minute,
-      timezone: selectedPlace.timezone,
+      timezone: place.timezone,
       timeDisambiguation: fields.clockOccurrence.value,
     });
     await render(data);

@@ -9,7 +9,7 @@
   <link rel="preload" as="image" href="assets/pluto-vellum-bg-v4.png">
   <link rel="preload" as="image" href="assets/pluto-form-bg-v3.png">
   <link rel="preload" as="image" href="assets/pluto-form-mobile-v4.png" media="(max-width: 560px)">
-  <link rel="stylesheet" href="style.css?v=20260715-10">
+  <link rel="stylesheet" href="style.css?v=20260715-11">
 </head>
 <body>
   <header class="topbar">
@@ -24,7 +24,7 @@
   <main class="shell form-view">
     <section class="form-panel">
       <p class="eyebrow" data-i18n="formEyebrow">人生使用说明书</p>
-      <h1 data-i18n="formTitle">免费获取</h1>
+      <h1 data-i18n="formTitle">认识你自己</h1>
       <form id="chartForm">
         <label><span data-i18n="name">姓名</span><input id="name" name="name" maxlength="80" autocomplete="off" required></label>
         <div class="grid3">
@@ -36,12 +36,12 @@
           <label><span data-i18n="hour">时</span><select id="hour" required></select></label>
           <label><span data-i18n="minute">分</span><select id="minute" required></select></label>
           <div class="ampm-field">
-            <span id="ampmLabel" data-i18n="ampm">上午/下午</span>
+            <span id="ampmLabel" class="sr-only" data-i18n="ampm">上午/下午</span>
             <div id="ampmSwitch" class="ampm-switch" role="group" aria-labelledby="ampmLabel">
-              <button type="button" data-ampm="am" data-i18n="am" aria-pressed="false">上午</button>
+              <button type="button" data-ampm="am" data-i18n="am" aria-pressed="true">上午</button>
               <button type="button" data-ampm="pm" data-i18n="pm" aria-pressed="false">下午</button>
             </div>
-            <input id="ampm" name="ampm" type="hidden">
+            <input id="ampm" name="ampm" type="hidden" value="am">
           </div>
         </div>
         <label><span data-i18n="birthLocation">出生地点</span>
@@ -57,7 +57,7 @@
           </select>
         </label>
         <p class="place-attribution" data-i18n="attribution">可直接输入完整地点，无需选择候选。</p>
-        <button type="submit" data-i18n="generate">生成人生使用说明书</button>
+        <button type="submit" data-i18n="generate">免费获取人生使用说明书</button>
         <p id="status" role="status" aria-live="polite"></p>
       </form>
     </section>
@@ -108,13 +108,19 @@
           </div>
           <div class="chart-graph">
             <div id="bodygraph" role="img" aria-label="Life Manual bodygraph"></div>
-            <p class="watermark" data-i18n="watermark">Swiss Ephemeris · 精确 88° 太阳弧</p>
+            <p class="watermark" data-i18n="watermark">Swiss Ephemeris · 出生前回溯 88° 太阳弧 · True Node</p>
           </div>
           <div class="side-column right">
             <p data-i18n="personality">人格</p>
             <ol id="personalityList" class="planet-list right"></ol>
           </div>
         </div>
+        <footer class="poster-footer">
+          <div class="qr-block">
+            <img id="chartQr" src="assets/chart-qr.png" width="360" height="360" alt="" aria-hidden="true">
+            <p data-i18n="qrLabel">扫码生成你的人生使用说明书</p>
+          </div>
+        </footer>
       </div>
       <section class="interpretation" aria-labelledby="interpretationTitle">
         <p id="interpretationTitle" class="interpretation-title" data-i18n="interpretationTitle">解读</p>
@@ -122,23 +128,17 @@
       </section>
       <section class="celebrity-matches" aria-labelledby="celebrityTitle">
         <div class="celebrity-heading">
-          <p id="celebrityTitle" class="celebrity-title" data-i18n="celebrityTitle">与你最相似的名人</p>
-          <p data-i18n="celebrityBasis">依据类型、内在权威、人生角色与定义匹配</p>
+          <p id="celebrityTitle" class="celebrity-title" data-i18n="celebrityTitle">拥有相似基础配置的人物</p>
+          <p data-i18n="celebrityBasis">基于类型、权威、人生角色与定义匹配</p>
         </div>
         <div id="celebrityMatches" class="celebrity-grid"></div>
         <p class="celebrity-note" data-i18n="celebrityNote">名人结构参考公开出生资料；相似仅指图谱结构，不代表性格、经历或命运相同。</p>
       </section>
       <div id="properties" class="properties"></div>
-      <footer class="poster-footer">
-        <div class="qr-block">
-          <img id="chartQr" src="assets/chart-qr.png" width="360" height="360" alt="" aria-hidden="true">
-          <p data-i18n="qrLabel">扫码生成你的人生使用说明书</p>
-        </div>
-      </footer>
     </section>
   </main>
-  <script src="vendor/tz-lookup/tz.js?v=20260715-10"></script>
-  <script src="vendor/html2canvas/html2canvas.min.js?v=20260715-10"></script>
-  <script type="module" src="app.js?v=20260715-10"></script>
+  <script src="vendor/tz-lookup/tz.js?v=20260715-11"></script>
+  <script src="vendor/html2canvas/html2canvas.min.js?v=20260715-11"></script>
+  <script type="module" src="app.js?v=20260715-11"></script>
 </body>
 </html>

@@ -70,8 +70,9 @@ body {
   color: #1b121a;
 }
 .ampm-field {
-  display: grid;
-  gap: 7px;
+  display: flex;
+  align-self: stretch;
+  align-items: flex-end;
   margin-bottom: 14px;
   font: 600 13px/1.3 ui-sans-serif, system-ui, sans-serif;
 }
@@ -79,14 +80,16 @@ body {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   width: 100%;
-  min-height: 44px;
+  height: var(--form-control-height, 44px);
+  min-height: var(--form-control-height, 44px);
   padding: 2px;
   border: 1px solid rgba(216, 177, 125, .45);
   border-radius: 5px;
   background: rgba(12, 10, 16, .74);
 }
 .ampm-switch button {
-  min-height: 38px;
+  height: calc(var(--form-control-height, 44px) - 4px);
+  min-height: 0;
   padding: 0;
   border: 0;
   border-radius: 3px;
@@ -111,6 +114,13 @@ body {
   display: block;
   width: min(540px, 100%);
   margin: 0 auto;
+}
+.form-panel { --form-control-height: 44px; }
+.form-panel input,
+.form-panel select,
+.form-panel form > button {
+  height: var(--form-control-height);
+  min-height: var(--form-control-height);
 }
 .shell.result-view {
   display: block;
@@ -724,8 +734,9 @@ button:disabled { cursor: not-allowed; opacity: .52; }
 .chart-panel.export-mobile .watermark {
   margin-top: 8px !important;
   color: rgba(218, 190, 148, .64) !important;
-  font-size: 9px !important;
+  font-size: 7.5px !important;
   letter-spacing: .08em !important;
+  white-space: nowrap !important;
 }
 .chart-panel.export-mobile .side-column > p {
   margin: 18px 0 10px !important;
@@ -827,7 +838,8 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
 }
 .chart-panel.export-mobile .property span { margin-top: 4px !important; }
 .chart-panel.export-mobile .interpretation {
-  max-width: 488px !important;
+  width: 536px !important;
+  max-width: 536px !important;
   margin-top: 16px !important;
   padding: 17px 18px 18px !important;
   border-color: rgba(210, 174, 118, .38) !important;
@@ -879,20 +891,26 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
 .chart-panel.export-mobile .celebrity-card p { color: #d8cbbb !important; font: 8px/1.5 "Songti SC", "STSong", Georgia, serif !important; }
 .chart-panel.export-mobile .celebrity-note { margin: 10px 0 0 !important; color: #9f9081 !important; font-size: 7px !important; }
 .chart-panel.export-mobile .poster-footer {
-  max-width: 488px !important;
-  margin-top: 17px !important;
+  position: absolute !important;
+  z-index: 4 !important;
+  right: 112px !important;
+  bottom: 32px !important;
+  width: auto !important;
+  max-width: none !important;
+  margin: 0 !important;
 }
 .chart-panel.export-mobile .qr-block img {
-  width: 82px !important;
-  height: 82px !important;
-  padding: 4px !important;
+  width: 58px !important;
+  height: 58px !important;
+  padding: 3px !important;
   border-color: rgba(210, 174, 118, .56) !important;
   background: #f3e8d7 !important;
 }
 .chart-panel.export-mobile .qr-block p {
-  max-width: 120px !important;
+  max-width: 82px !important;
+  margin-top: 4px !important;
   color: #cba673 !important;
-  font-size: 8px !important;
+  font-size: 6.5px !important;
   letter-spacing: .05em !important;
 }
 .center { fill: rgba(248, 239, 226, .90); stroke: #9e7a48; stroke-width: 2.1; filter: drop-shadow(0 2px 2px rgba(43, 31, 22, .14)); }
@@ -943,6 +961,7 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
     overflow: hidden;
   }
   .form-panel {
+    --form-control-height: 40px;
     height: 100%;
     min-height: 0;
     padding: 18px 20px;
@@ -954,10 +973,13 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
   .form-panel .eyebrow { margin-bottom: 5px; }
   .form-panel h1 { margin-bottom: 12px; font-size: 34px; }
   .form-panel label { gap: 5px; margin-bottom: 9px; }
-  .form-panel .ampm-field { gap: 5px; margin-bottom: 9px; }
+  .form-panel .ampm-field { margin-bottom: 9px; }
   .form-panel input,
   .form-panel select,
-  .form-panel button { min-height: 40px; }
+  .form-panel form > button {
+    height: var(--form-control-height);
+    min-height: var(--form-control-height);
+  }
   .form-panel .place-attribution { margin: -2px 0 9px; }
   .form-panel #status { min-height: 16px; font-size: 11px; }
   .chart-panel { padding: 22px 16px; }

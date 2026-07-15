@@ -88,6 +88,12 @@ const DETERMINATION = {
 const COGNITION = { 1: "Smell", 2: "Taste", 3: "Outer Vision", 4: "Inner Vision", 5: "Feeling", 6: "Touch" };
 const ENVIRONMENT = { 1: "Caves", 2: "Markets", 3: "Kitchens", 4: "Mountains", 5: "Valleys", 6: "Shores" };
 
+function getEnvironment(color, leftEnvironment) {
+  const environment = ENVIRONMENT[color];
+  if (environment !== "Shores") return environment;
+  return leftEnvironment ? "Natural Shores" : "Artificial Shores";
+}
+
 let swePromise;
 
 async function getSwissEphemeris() {
@@ -350,7 +356,7 @@ export async function calculateHumanDesign({ name, location, year, month, day, h
       "Not Self Theme": TYPE_META[type].notSelf,
       Digestion: DETERMINATION[design.Sun.Color][leftDetermination ? 0 : 1],
       Sense: COGNITION[design.Sun.Tone],
-      Environment: ENVIRONMENT[design["North Node"].Color],
+      Environment: getEnvironment(design["North Node"].Color, leftEnvironment),
     },
     Personality: personality,
     Design: design,
@@ -373,4 +379,4 @@ export async function calculateHumanDesign({ name, location, year, month, day, h
   };
 }
 
-export { GATE_ORDER, CHANNELS, getAuthority, localToUtcCandidates, localToUtcMs, longitudeToActivation };
+export { GATE_ORDER, CHANNELS, getAuthority, getEnvironment, localToUtcCandidates, localToUtcMs, longitudeToActivation };

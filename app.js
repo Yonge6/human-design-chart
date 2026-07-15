@@ -1,4 +1,4 @@
-import { calculateHumanDesign, localToUtcCandidates } from "./human-design-engine.js?v=20260712-9";
+import { calculateHumanDesign, localToUtcCandidates } from "./human-design-engine.js?v=20260715-11";
 import { fetchPlaceCandidates, inferTimezoneFromAddress } from "./location-service.js?v=20260715-2";
 
 const planets = ["Sun", "Earth", "North Node", "South Node", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
@@ -40,13 +40,13 @@ const languageButtons = [...document.querySelectorAll("[data-language]")];
 const copy = {
   zh: {
     brand: "Pluto 人生使用说明书",
-    formEyebrow: "人生使用说明书", formTitle: "免费获取", name: "姓名", year: "年", month: "月", day: "日",
+    formEyebrow: "人生使用说明书", formTitle: "认识你自己", name: "姓名", year: "年", month: "月", day: "日",
     hour: "时", minute: "分", ampm: "上午/下午", am: "上午", pm: "下午", birthLocation: "出生地点",
     locationPlaceholder: "城市、区县或地区", locationSuggestions: "出生地点建议", clockOccurrence: "重复时刻",
     bodygraphLabel: "人生使用说明书图谱",
     firstOccurrence: "第一次出现", secondOccurrence: "第二次出现", attribution: "可直接输入完整地点，无需选择候选。",
-    generate: "生成人生使用说明书", yourChart: "你的人生使用说明书", emptyChart: "填写出生资料后生成。", editChart: "重新填写", download: "保存图片", share: "分享", previewAlt: "人生使用说明书",
-    design: "设计", personality: "人格", watermark: "Swiss Ephemeris · 精确 88° 太阳弧", interpretationTitle: "解读", celebrityTitle: "与你最相似的名人", celebrityBasis: "依据类型、内在权威、人生角色与定义匹配", celebrityNote: "名人结构参考公开出生资料；相似仅指图谱结构，不代表性格、经历或命运相同。", qrLabel: "扫码生成你的人生使用说明书", privacyMode: "隐私模式",
+    generate: "免费获取人生使用说明书", yourChart: "你的人生使用说明书", emptyChart: "填写出生资料后生成。", editChart: "重新填写", download: "保存图片", share: "分享", previewAlt: "人生使用说明书",
+    design: "设计", personality: "人格", watermark: "Swiss Ephemeris · 出生前回溯 88° 太阳弧 · True Node", interpretationTitle: "解读", celebrityTitle: "拥有相似基础配置的人物", celebrityBasis: "基于类型、权威、人生角色与定义匹配", celebrityNote: "名人结构参考公开出生资料；相似仅指基础配置，不代表完整图谱、性格、经历或命运相同。", qrLabel: "扫码生成你的人生使用说明书", privacyMode: "隐私模式",
     searchingPlace: "正在搜索地点…", noPlace: "暂未显示候选，仍可直接点击生成人生使用说明书。", placeUnavailable: "搜索建议暂时未加载，仍可直接点击生成人生使用说明书。",
     resolvingPlace: "正在确认地点和当地时间…", placeNeedsDetail: "暂时无法确认这个地点，请补充城市、省/州和国家后再试。", enterName: "请输入姓名。",
     missingTime: "该出生时刻因夏令时向前调整而不存在。", repeatedTime: "这个时刻出现过两次，请选择出生记录对应的那一次。",
@@ -56,13 +56,13 @@ const copy = {
   },
   en: {
     brand: "Pluto Life Manual",
-    formEyebrow: "Life Manual", formTitle: "Get Yours Free", name: "Name", year: "Year", month: "Month", day: "Day",
+    formEyebrow: "Life Manual", formTitle: "Know Yourself", name: "Name", year: "Year", month: "Month", day: "Day",
     hour: "Hour", minute: "Minute", ampm: "AM/PM", am: "AM", pm: "PM", birthLocation: "Birth location",
     locationPlaceholder: "City, district or region", locationSuggestions: "Birth location suggestions", clockOccurrence: "Clock occurrence",
     bodygraphLabel: "Life Manual bodygraph",
     firstOccurrence: "First occurrence", secondOccurrence: "Second occurrence", attribution: "Enter the full place directly; selecting a suggestion is optional.",
-    generate: "Create Life Manual", yourChart: "Your Life Manual", emptyChart: "Enter details to generate.", editChart: "Edit Details", download: "Save Image", share: "Share", previewAlt: "Personal life manual",
-    design: "Design", personality: "Personality", watermark: "Swiss Ephemeris · exact 88° solar arc", interpretationTitle: "Reading", celebrityTitle: "Famous People Most Like Your Design", celebrityBasis: "Matched by type, authority, profile, and definition", celebrityNote: "Celebrity structures use public birth records; similarity means chart structure, not personality, experience, or destiny.", qrLabel: "Scan to create your life manual", privacyMode: "Privacy mode",
+    generate: "Get Your Life Manual Free", yourChart: "Your Life Manual", emptyChart: "Enter details to generate.", editChart: "Edit Details", download: "Save Image", share: "Share", previewAlt: "Personal life manual",
+    design: "Design", personality: "Personality", watermark: "Swiss Ephemeris · 88° pre-birth solar-arc · True Node", interpretationTitle: "Reading", celebrityTitle: "People with Similar Core Configurations", celebrityBasis: "Matched by type, authority, profile, and definition", celebrityNote: "Celebrity structures use public birth records; similarity means core configuration, not a complete chart, personality, experience, or destiny.", qrLabel: "Scan to create your life manual", privacyMode: "Privacy mode",
     searchingPlace: "Searching locations…", noPlace: "No suggestions yet. You can still generate the chart directly.", placeUnavailable: "Suggestions did not load. You can still generate the chart directly.",
     resolvingPlace: "Confirming the place and its local time…", placeNeedsDetail: "We could not confirm this place. Add the city, state or region, and country, then try again.", enterName: "Enter a name.",
     missingTime: "This local birth time did not exist because the clocks moved forward.", repeatedTime: "This clock time occurred twice. Choose which occurrence is on the birth record.",
@@ -78,7 +78,7 @@ const planetNames = {
 };
 const propertyNames = {
   Type: "类型", Strategy: "策略", "Inner Authority": "内在权威", Profile: "人生角色", Definition: "定义",
-  "Incarnation Cross": "轮回交叉", "Not Self Theme": "非自己主题", Digestion: "消化", Sense: "感知", Environment: "环境",
+  "Incarnation Cross": "轮回交叉", "Not Self Theme": "非自己主题", Digestion: "消化", Sense: "认知感官", Environment: "环境",
 };
 const valueNames = {
   Generator: "生产者", "Manifesting Generator": "显示生产者", Manifestor: "显现者", Projector: "投射者", Reflector: "反映者",
@@ -86,11 +86,11 @@ const valueNames = {
   "Emotional - Solar Plexus": "情绪权威 · 太阳神经丛", Sacral: "荐骨权威", Splenic: "脾脏权威", "Ego Manifested": "意志显现权威",
   "Ego Projected": "意志投射权威", "Self-Projected": "自我投射权威", Lunar: "月亮权威", "Mental - Environment": "环境权威",
   "No Definition": "无定义", "Single Definition": "一分人", "Split Definition": "二分人", "Triple Split Definition": "三分人", "Quadruple Split Definition": "四分人",
-  Frustration: "挫败", Anger: "愤怒", Bitterness: "苦涩", Disappointment: "失望",
+  Frustration: "挫败", Anger: "愤怒", Bitterness: "苦涩", Disappointment: "失望", Satisfaction: "满足感", Peace: "平和", Success: "成功", Surprise: "惊喜",
   "Consecutive Appetite": "连续食欲", "Alternating Appetite": "交替食欲", "Open Taste": "开放味觉", "Closed Taste": "封闭味觉",
   "Hot Thirst": "热渴", "Cold Thirst": "冷渴", "Calm Touch": "平静触觉", "Nervous Touch": "紧张触觉", "High Sound": "高声音", "Low Sound": "低声音",
   "Direct Light": "直接光", "Indirect Light": "间接光", Smell: "嗅觉", Taste: "味觉", "Outer Vision": "外在视觉", "Inner Vision": "内在视觉",
-  Feeling: "感觉", Touch: "触觉", Caves: "洞穴", Markets: "市场", Kitchens: "厨房", Mountains: "山脉", Valleys: "山谷", Shores: "海岸",
+  Feeling: "感觉", Touch: "触觉", Caves: "洞穴", Markets: "市场", Kitchens: "厨房", Mountains: "山脉", Valleys: "山谷", Shores: "海岸", "Natural Shores": "自然海岸", "Artificial Shores": "人工海岸",
 };
 const profileRoles = { Investigator: "研究者", Martyr: "体验者", Opportunist: "机会主义者", Hermit: "隐士", Heretic: "异端者", "Role Model": "榜样" };
 const strategyGuidance = {
@@ -130,6 +130,20 @@ const profileLineGuidance = {
   4: "4号线的机会往往来自稳定的人际网络与信任",
   5: "5号线容易承接他人期待，说清边界会保护你的影响力",
   6: "6号线会在人生不同阶段中沉淀经验，最终以身作则地影响别人",
+};
+const profileGuidanceZh = {
+  "5/1": "你倾向先深入调查、建立可靠基础，再向他人提供实际可行的解决方案。别人容易期待你解决问题，因此需要管理承诺与外界投射，避免承担并不属于你的责任",
+};
+const profileGuidanceEn = {
+  "5/1": "You tend to investigate deeply, build a reliable foundation, and then offer practical solutions. Others may project the role of problem-solver onto you, so clear promises and boundaries matter",
+};
+const environmentGuidanceZh = {
+  "Artificial Shores": "人工海岸不只指海边，更包括城市与郊区、商业与住宅、室内与室外，以及不同人群或行业交汇的过渡地带",
+  "Natural Shores": "自然海岸不只指海边，也包括自然形成的边界、林地与空地、水域与陆地等过渡地带",
+};
+const environmentGuidanceEn = {
+  "Artificial Shores": "Artificial Shores includes designed transition zones: city and suburb, commercial and residential areas, indoors and outdoors, or places where different groups and fields meet",
+  "Natural Shores": "Natural Shores includes organically formed edges between land and water, woodland and open ground, or other natural transition zones",
 };
 const gateThemesZh = {
   1: "原创表达", 2: "感知方向", 3: "在混乱中开创新秩序", 4: "把疑问形成答案", 5: "建立稳定节奏", 6: "辨认关系边界", 7: "引导共同方向", 8: "以个人风格作出贡献",
@@ -210,15 +224,18 @@ function interpretation(data) {
   const designSun = data.Design.Sun.Gate;
   const designEarth = data.Design.Earth.Gate;
   if (language === "en") {
-    return `As a ${properties.Type}, follow your strategy of ${properties.Strategy.toLowerCase()} and let ${properties["Inner Authority"]} authority guide important choices. Your visible gift is ${gateThemesEn[consciousSun]}, grounded by ${gateThemesEn[consciousEarth]}.\n\nYour mission repeatedly weaves together ${gateThemesEn[consciousSun]}, ${gateThemesEn[consciousEarth]}, ${gateThemesEn[designSun]}, and ${gateThemesEn[designEarth]}. It is a contribution theme, not a fixed career. Your ${properties.Profile} profile and ${properties.Definition.toLowerCase()} shape how it develops. When ${properties["Not Self Theme"].toLowerCase()} repeats, pause and return to your own timing.`;
+    const profile = profileCode(properties.Profile);
+    const profileText = profileGuidanceEn[profile] || `Your ${profile} profile combines two different ways of learning, contributing, and being perceived by others`;
+    return `You are a ${properties.Type} with ${properties["Inner Authority"]} authority. When a specific person, task, or opportunity appears, let your strategy of ${properties.Strategy.toLowerCase()} reveal whether your body is genuinely available before committing energy.\n\n${profileText}. Your visible gift is ${gateThemesEn[consciousSun]}, grounded by ${gateThemesEn[consciousEarth]}.\n\nYour mission is better understood as a life theme: ${gateThemesEn[consciousSun]}, ${gateThemesEn[consciousEarth]}, ${gateThemesEn[designSun]}, and ${gateThemesEn[designEarth]} may repeatedly meet in your work, relationships, and creations. It does not prescribe a career. Seeing what needs correction is a gift; timing and receptivity determine whether it becomes help or friction.\n\nAligned engagement tends to bring ${properties.Sign.toLowerCase()}. When ${properties["Not Self Theme"].toLowerCase()} persists, pause and check whether pressure or expectation is pushing you ahead of a real response.`;
   }
   const type = translatedValue("Type", properties.Type);
-  const profile = properties.Profile.split(":", 1)[0];
+  const profile = profileCode(properties.Profile);
   const theme = translatedValue("Not Self Theme", properties["Not Self Theme"]);
+  const sign = translatedValue("Sign", properties.Sign);
   const strategy = strategyGuidance[properties.Strategy] || translatedValue("Strategy", properties.Strategy);
   const authority = authorityGuidance[properties["Inner Authority"]] || `依照${translatedValue("Inner Authority", properties["Inner Authority"])}做选择`;
-  const definition = translatedValue("Definition", properties.Definition);
-  return `你是${type}，更适合${strategy}。重要选择时，${authority}。你的${profile}人生角色会让你从真实经历中形成自己的方法。最容易被看见的天赋是${gateThemesZh[consciousSun]}，并通过${gateThemesZh[consciousEarth]}把它落到现实。\n\n你的使命会反复串联${gateThemesZh[consciousSun]}、${gateThemesZh[consciousEarth]}、${gateThemesZh[designSun]}与${gateThemesZh[designEarth]}，逐渐形成独特贡献；它不是指定职业。${definition}决定了你的整合节奏。若常感到${theme}，先停一下，回到自己的策略与权威。`;
+  const profileText = profileGuidanceZh[profile] || `你的${profile}人生角色结合了两种不同的学习、贡献和被他人看见的方式`;
+  return `你是${translatedValue("Inner Authority", properties["Inner Authority"])}的${type}。面对具体的人、事情与机会时，更适合${strategy}，再决定是否投入能量。重要选择不必只依赖头脑分析，可以${authority}。\n\n${profileText}。你最容易被看见的天赋是${gateThemesZh[consciousSun]}，并通过${gateThemesZh[consciousEarth]}把它落到现实。\n\n你的使命更适合理解为生命主题：${gateThemesZh[consciousSun]}、${gateThemesZh[consciousEarth]}、${gateThemesZh[designSun]}与${gateThemesZh[designEarth]}，可能反复出现在工作、关系和创作中；它不指定某一种职业。看见哪里需要修正是天赋，但对方是否准备好、表达时机与方式，决定它会成为帮助还是冲突。\n\n当你按照身体回应投入正确的事情时，通常更容易体验${sign}；当${theme}持续出现时，可以暂停一下，检查是否正被焦虑、证明或外界期待推着前进。`;
 }
 
 function detailedReadingSections(data) {
@@ -228,15 +245,17 @@ function detailedReadingSections(data) {
   const consciousEarth = data.Personality.Earth.Gate;
   const designSun = data.Design.Sun.Gate;
   const designEarth = data.Design.Earth.Gate;
+  const profileCodeValue = profileCode(properties.Profile);
+  const environmentGuidance = language === "zh" ? environmentGuidanceZh[properties.Environment] : environmentGuidanceEn[properties.Environment];
   if (language === "en") {
     return [
       { title: "Core energy and strategy", text: `Your type is ${properties.Type}. Your strategy is ${properties.Strategy.toLowerCase()}. This is less about waiting passively and more about noticing which opportunities create a clear, sustainable engagement before committing your energy.` },
       { title: "Your natural gift", text: `Your conscious Sun is Gate ${consciousSun}, highlighting a visible gift for ${gateThemesEn[consciousSun]}. Profile line ${firstLine} shapes how you develop and express it. Gate ${consciousEarth} grounds this talent through ${gateThemesEn[consciousEarth]}, helping it become practical rather than remaining only potential.` },
-      { title: "Your recurring mission", text: `Your incarnation cross is ${properties["Incarnation Cross"]}. In plain language, your life repeatedly brings together ${gateThemesEn[consciousSun]}, ${gateThemesEn[consciousEarth]}, ${gateThemesEn[designSun]}, and ${gateThemesEn[designEarth]}. Mission here is a recurring contribution and learning theme, not a single job title or a fate you must force.` },
+      { title: "Your life theme (mission)", text: `Your incarnation cross is ${properties["Incarnation Cross"]}. In plain language, your life may repeatedly bring together ${gateThemesEn[consciousSun]}, ${gateThemesEn[consciousEarth]}, ${gateThemesEn[designSun]}, and ${gateThemesEn[designEarth]}. This is a recurring contribution and learning theme, not a job title or a fate you must force. You may notice what needs correcting quickly; timing, tone, and the other person's receptivity determine whether that insight becomes help or friction.` },
       { title: "How to make important decisions", text: `Your authority is ${properties["Inner Authority"]}. Give this inner signal more weight than urgency, other people's expectations, or the need to explain yourself immediately. For major choices, create enough space to recognize the same answer more than once.` },
-      { title: "Profile and relationships", text: `Your ${properties.Profile} profile combines two distinct ways of learning and being seen. One describes how you consciously approach life; the other often shows up naturally in how others experience you. Your incarnation cross, ${properties["Incarnation Cross"]}, adds a recurring life theme rather than a fixed job description.` },
+      { title: "Profile and relationships", text: `${profileGuidanceEn[profileCodeValue] || `Your ${properties.Profile} profile combines two distinct ways of learning and being seen`}. One line describes how you consciously approach life; the other often appears naturally in how others experience you.` },
       { title: "Inner connections and pace", text: `Your ${properties.Definition.toLowerCase()} describes how defined areas of the chart communicate. Notice whether clarity arrives best alone, through conversation, or after moving between different people and settings. Your own repeatable pattern matters more than someone else's ideal routine.` },
-      { title: "Body and environment clues", text: `${properties.Digestion}, ${properties.Sense}, and ${properties.Environment} are practical observation points. Experiment gently with how you take in food and information, which sensory signal feels most trustworthy, and which surroundings help your nervous system settle.` },
+      { title: "Body and environment clues", text: `${properties.Digestion}, Cognition: ${properties.Sense}, and ${properties.Environment} are practical observation points. ${environmentGuidance || "Experiment gently with which surroundings help your nervous system settle"}. Treat these as observations to test, not rigid rules.` },
       { title: "Drift and reset", text: `${properties["Not Self Theme"]} is a useful warning light, not a personal failure. When it repeats, reduce pressure, return to your strategy and authority, and review what your body was responding to when the choice began. Treat this manual as a set of experiments, not rigid rules.` },
     ];
   }
@@ -252,11 +271,11 @@ function detailedReadingSections(data) {
   return [
     { title: "核心能量与策略", text: `你是${type}。${typeGuidance[properties.Type] || "你需要观察自己的能量在哪些事情上会自然打开"}。你的策略是${strategy}。这不是被动等待，而是先辨认身体是否真的被某个人、机会或问题触发，再决定要不要投入。` },
     { title: "你的天赋", text: `你的人格太阳落在${consciousSun}号闸门，最容易被看见的天赋是${gateThemesZh[consciousSun]}。人格太阳的${firstLine}号线决定了你会怎样有意识地发展和表达它。${consciousEarth}号闸门的${gateThemesZh[consciousEarth]}是这份天赋的落地点，能帮助它从潜力变成别人真正感受到的价值。` },
-    { title: "你的使命", text: `你的轮回交叉是${cross}。用大白话说，你的一生会反复遇到与${gateThemesZh[consciousSun]}、${gateThemesZh[consciousEarth]}、${gateThemesZh[designSun]}和${gateThemesZh[designEarth]}有关的人与课题，并逐渐把这些能力整合成自己的贡献方式。使命不是指定职业，也不是必须强求的命运任务，而是你活得越真实就越自然显现的长期主题。` },
+    { title: "你的生命主题（使命）", text: `你的轮回交叉是${cross}。用大白话说，你的人生中可能反复出现${gateThemesZh[consciousSun]}、${gateThemesZh[consciousEarth]}、${gateThemesZh[designSun]}和${gateThemesZh[designEarth]}等主题，并逐渐把它们整合成自己的贡献方式。它不指定职业，也不是必须强求的命运任务。你可能很容易看见哪里不对，但对方是否准备好、表达时机与方式，决定修正会成为帮助还是冲突。` },
     { title: "重要决定怎么做", text: `你的内在权威是${authorityName}。${authority}。当选择涉及关系、工作、金钱或长期承诺时，不要让时间压力、别人的期待或“我应该马上回答”代替这个内在信号。给自己一点空间，看答案是否仍然稳定。` },
-    { title: "人生角色与关系", text: `你的人生角色是${profile}。${profileGuidance}。这两条线一条更像你有意识的学习方式，另一条常是别人自然感受到的你。你的轮回交叉是${cross}，可以把它理解为人生中反复出现的主题，而不是必须完成的职业任务。` },
+    { title: "人生角色与关系", text: `你的人生角色是${profile}。${profileGuidanceZh[profileCodeValue] || profileGuidance}。两条线一条更像你有意识的学习方式，另一条常是别人自然感受到的你。` },
     { title: "内在连接与行动节奏", text: `${definition}。观察自己是在独处时更容易理清，还是需要通过对话、换环境或接触不同的人才会慢慢完整。不要强迫自己套用别人的高效模板，找到可重复、不透支的节奏更重要。` },
-    { title: "身体与环境线索", text: `你的消化是${translatedValue("Digestion", properties.Digestion)}，感知是${translatedValue("Sense", properties.Sense)}，适合的环境是${translatedValue("Environment", properties.Environment)}。它们分别指向你如何接收食物与信息、哪种感官线索更值得留意，以及什么空间更容易让神经系统放松。建议小范围实验，用真实感受验证，不用一次性改变全部生活。` },
+    { title: "身体与环境线索", text: `你的消化是${translatedValue("Digestion", properties.Digestion)}，认知感官是${translatedValue("Sense", properties.Sense)}，适合的环境是${translatedValue("Environment", properties.Environment)}。${environmentGuidance || "这些线索指向什么空间更容易让神经系统放松"}。建议小范围实验，用真实感受验证，不用一次性改变全部生活。` },
     { title: "偏离信号与复位", text: `你的非自己主题是${theme}。它不代表你做错了，更像一盏警示灯：可能你正在用头脑强推、为证明自己而勉强投入，或留在不适合的关系与环境中。当它反复出现，先降低压力，回到自己的策略和权威，再回看当初的身体信号。把这份说明书当成实验地图，而不是僵硬规则。` },
   ];
 }
@@ -275,7 +294,7 @@ function renderDetailedReading(data) {
   const celebrityHeading = document.createElement("h3");
   const celebrityList = document.createElement("div");
   celebritySection.className = "detail-celebrities";
-  celebrityHeading.textContent = language === "zh" ? "与你相似的名人：详细说明" : "Famous design matches: in detail";
+  celebrityHeading.textContent = language === "zh" ? "相似基础配置人物：详细说明" : "Similar core configurations: in detail";
   celebrityList.className = "detail-celebrity-list";
   celebrityList.replaceChildren(...getCelebrityMatches(data).map((celebrity) => {
     const item = document.createElement("article");
@@ -456,11 +475,14 @@ function updateDays() {
 
 function initializeSelectors() {
   const currentYear = new Date().getFullYear();
-  appendOptions(fields.year, Array.from({ length: currentYear - 1899 }, (_, index) => ({ value: currentYear - index })), null);
-  appendOptions(fields.month, Array.from({ length: 12 }, (_, index) => ({ value: index + 1 })), null);
-  appendOptions(fields.hour, Array.from({ length: 12 }, (_, index) => ({ value: index + 1 })), null);
-  appendOptions(fields.minute, Array.from({ length: 60 }, (_, index) => ({ value: index })), null);
+  appendOptions(fields.year, Array.from({ length: currentYear - 1899 }, (_, index) => ({ value: currentYear - index })), 1997);
+  appendOptions(fields.month, Array.from({ length: 12 }, (_, index) => ({ value: index + 1 })), 7);
+  appendOptions(fields.hour, Array.from({ length: 12 }, (_, index) => ({ value: index + 1 })), 7);
+  appendOptions(fields.minute, Array.from({ length: 60 }, (_, index) => ({ value: index })), 7);
   updateDays();
+  fields.day.value = "07";
+  fields.ampm.value = "am";
+  ampmButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.ampm === "am")));
 }
 
 function placeLabel(properties) {
@@ -784,7 +806,7 @@ async function render(data) {
   document.querySelector("#personalityList").innerHTML = planets.map((planet) => row(planet, data.Personality[planet])).join("");
   const keys = ["Type", "Strategy", "Inner Authority", "Profile", "Definition", "Incarnation Cross", "Not Self Theme", "Digestion", "Sense", "Environment"];
   document.querySelector("#properties").innerHTML = keys.map((key) => {
-    const label = language === "zh" ? propertyNames[key] : key;
+    const label = language === "zh" ? propertyNames[key] : (key === "Sense" ? "Cognition" : key);
     return `<div class="property"><b>${label}</b><span>${translatedValue(key, data.Properties[key])}</span></div>`;
   }).join("");
   document.querySelector("#interpretationText").textContent = interpretation(data);

@@ -5,6 +5,7 @@ import {
   GATE_ORDER,
   CHANNELS,
   getAuthority,
+  getEnvironment,
   localToUtcCandidates,
   localToUtcMs,
   longitudeToActivation,
@@ -72,4 +73,10 @@ test("ego authority distinguishes manifested and projected configurations", () =
   const centers = new Set(["heart", "throat"]);
   assert.equal(getAuthority(centers, [[[21, 45], ["heart", "throat"]]]), "Ego Manifested");
   assert.equal(getAuthority(new Set(["heart", "g"]), [[[25, 51], ["g", "heart"]]]), "Ego Projected");
+});
+
+test("shore environments preserve the node orientation", () => {
+  assert.equal(getEnvironment(6, true), "Natural Shores");
+  assert.equal(getEnvironment(6, false), "Artificial Shores");
+  assert.equal(getEnvironment(4, false), "Mountains");
 });

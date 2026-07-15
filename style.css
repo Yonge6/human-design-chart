@@ -46,13 +46,7 @@ body {
   font-size: 24px;
   letter-spacing: .01em;
 }
-.topbar-actions { display: flex; align-items: center; gap: 26px; }
-.topbar nav { display: flex; gap: 24px; }
-.topbar a {
-  color: #dbc7ba;
-  text-decoration: none;
-  font: 600 13px/1 ui-sans-serif, system-ui, sans-serif;
-}
+.topbar-actions { display: flex; align-items: center; }
 .language-switch {
   display: grid;
   grid-template-columns: repeat(2, 48px);
@@ -75,6 +69,37 @@ body {
   background: #cfad79;
   color: #1b121a;
 }
+.ampm-field {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 14px;
+  font: 600 13px/1.3 ui-sans-serif, system-ui, sans-serif;
+}
+.ampm-switch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: 100%;
+  min-height: 44px;
+  padding: 2px;
+  border: 1px solid rgba(216, 177, 125, .45);
+  border-radius: 5px;
+  background: rgba(12, 10, 16, .74);
+}
+.ampm-switch button {
+  min-height: 38px;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: #c6b5a8;
+  font: 700 12px/1 ui-sans-serif, system-ui, sans-serif;
+}
+.ampm-switch button[aria-pressed="true"] {
+  background: #cfad79;
+  color: #1b121a;
+  box-shadow: inset 0 0 0 1px rgba(255, 247, 232, .24);
+}
+.ampm-switch[aria-invalid="true"] { border-color: #c45565; box-shadow: 0 0 0 2px rgba(196, 85, 101, .18); }
 .shell {
   display: grid;
   grid-template-columns: minmax(310px, 380px) minmax(760px, 1fr);
@@ -156,6 +181,93 @@ body {
   border: 1px solid rgba(199, 164, 110, .55);
   background: #0d0b12;
   box-shadow: 0 24px 72px rgba(0, 0, 0, .42);
+}
+.preview-stage { position: relative; }
+.detail-fab {
+  position: absolute;
+  z-index: 5;
+  top: 18px;
+  left: -112px;
+  width: 100px;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 10px;
+  border: 1px solid rgba(224, 194, 147, .76);
+  border-radius: 4px;
+  background: rgba(18, 13, 21, .94);
+  color: #dfc18f;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .30);
+  font: 700 12px/1 ui-sans-serif, system-ui, sans-serif;
+}
+.detail-fab:hover { background: #cfad79; color: #1b121a; }
+.detail-dialog {
+  width: min(680px, calc(100% - 32px));
+  max-height: 86dvh;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(216, 177, 125, .58);
+  border-radius: 6px;
+  background: #15111a;
+  color: #eee2d2;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, .62);
+}
+.detail-dialog[open] { display: grid; grid-template-rows: auto minmax(0, 1fr); }
+.detail-dialog::backdrop { background: rgba(7, 5, 10, .76); backdrop-filter: blur(5px); }
+.detail-dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 24px 26px 18px;
+  border-bottom: 1px solid rgba(216, 177, 125, .24);
+  background: rgba(27, 18, 29, .96);
+}
+.detail-dialog-header .eyebrow { margin-bottom: 6px; }
+.detail-dialog-header h2 { margin: 0; color: #fff6e9; font-size: 30px; line-height: 1.1; }
+.dialog-close {
+  width: 36px;
+  min-height: 36px;
+  padding: 0;
+  border: 1px solid rgba(216, 177, 125, .36);
+  border-radius: 3px;
+  background: transparent;
+  color: #dfc18f;
+  font: 400 26px/1 ui-sans-serif, system-ui, sans-serif;
+}
+.dialog-close:hover { background: rgba(207, 173, 121, .14); }
+.detail-content { overflow-y: auto; padding: 0 26px 28px; }
+.detail-content section { padding: 20px 0; border-bottom: 1px solid rgba(216, 177, 125, .18); }
+.detail-content section:last-child { border-bottom: 0; }
+.detail-content h3 {
+  margin: 0 0 8px;
+  color: #d7b77f;
+  font: 700 14px/1.3 ui-sans-serif, system-ui, sans-serif;
+}
+.detail-content p { margin: 0; color: #d9cdc0; font: 14px/1.85 "Songti SC", "STSong", Georgia, serif; }
+.detail-celebrity-list { display: grid; gap: 13px; margin-top: 13px; }
+.detail-celebrity-list article {
+  padding: 15px 16px;
+  border: 1px solid rgba(216, 177, 125, .20);
+  background: rgba(207, 173, 121, .05);
+}
+.detail-celebrity-list h4 {
+  margin: 0 0 7px;
+  color: #fff0d8;
+  font: 700 13px/1.3 ui-sans-serif, system-ui, sans-serif;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 .result-panel[aria-busy="true"] .chart-preview { opacity: .56; }
 .capture-source {
@@ -269,14 +381,14 @@ button {
 }
 button:disabled { cursor: not-allowed; opacity: .52; }
 #chartForm button[type="submit"],
-#editChart {
+.chart-actions button {
   border: 1px solid #e0c293;
   background: #cfad79;
   color: #1b121a;
   box-shadow: inset 0 0 0 1px rgba(255, 247, 232, .24), 0 8px 22px rgba(0, 0, 0, .18);
 }
 #chartForm button[type="submit"]:hover,
-#editChart:hover { background: #ddbd89; }
+.chart-actions button:hover { background: #ddbd89; }
 .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 #status { min-height: 20px; font: 13px ui-sans-serif, system-ui, sans-serif; color: #d8b17d; }
 .chart-meta {
@@ -303,7 +415,19 @@ button:disabled { cursor: not-allowed; opacity: .52; }
   align-items: center;
   gap: 8px;
 }
-.chart-actions button { width: 130px; }
+.chart-actions button {
+  width: 130px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 10px;
+  font-size: 13px;
+}
+.button-icon {
+  flex: 0 0 auto;
+  font: 700 17px/1 ui-sans-serif, system-ui, sans-serif;
+}
 #birthLine { margin: -8px 0 0; color: #7b6d62; }
 .chart-frame {
   position: relative;
@@ -453,6 +577,46 @@ button:disabled { cursor: not-allowed; opacity: .52; }
   font: 14px/1.8 Georgia, "Times New Roman", serif;
   white-space: pre-line;
 }
+.celebrity-matches {
+  max-width: 930px;
+  margin: 16px auto 0;
+  position: relative;
+  z-index: 1;
+  padding: 20px 24px 17px;
+  border: 1px solid rgba(125, 87, 47, .38);
+  background: rgba(252, 246, 236, .18);
+}
+.celebrity-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+.celebrity-heading p { margin: 0; }
+.celebrity-title {
+  color: #8b3042;
+  font: 700 11px/1.2 ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.celebrity-heading p:last-child,
+.celebrity-note { color: #776960; font: 10px/1.4 ui-sans-serif, system-ui, sans-serif; }
+.celebrity-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.celebrity-card {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 9px;
+  min-width: 0;
+  padding: 3px 15px 3px 0;
+  border-right: 1px solid rgba(125, 87, 47, .24);
+}
+.celebrity-card + .celebrity-card { padding-left: 15px; }
+.celebrity-card:last-child { padding-right: 0; border-right: 0; }
+.celebrity-rank { color: rgba(139, 48, 66, .62); font: 18px/1 Georgia, serif; }
+.celebrity-card h3 { margin: 0 0 5px; color: #342a29; font: 700 13px/1.25 ui-sans-serif, system-ui, sans-serif; }
+.celebrity-card p { margin: 0; color: #5d524d; font: 11px/1.55 Georgia, "Songti SC", "STSong", serif; }
+.celebrity-note { margin: 13px 0 0; }
 .poster-footer {
   max-width: 930px;
   margin: 18px auto 0;
@@ -644,7 +808,7 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
 .chart-panel.export-mobile .properties {
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   max-width: 488px !important;
-  margin-top: 4px !important;
+  margin-top: 16px !important;
   border-color: rgba(210, 174, 118, .40) !important;
   background: rgba(12, 10, 16, .70) !important;
   box-shadow: inset 0 0 0 1px rgba(255, 244, 225, .03) !important;
@@ -680,6 +844,40 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
   font: 10.5px/1.75 "Songti SC", "STSong", Georgia, "Times New Roman", serif !important;
   text-align: justify !important;
 }
+.chart-panel.export-mobile .celebrity-matches {
+  max-width: 488px !important;
+  margin-top: 14px !important;
+  padding: 15px 16px 13px !important;
+  border-color: rgba(210, 174, 118, .38) !important;
+  background: rgba(12, 10, 16, .52) !important;
+}
+.chart-panel.export-mobile .celebrity-heading {
+  margin-bottom: 11px !important;
+  gap: 10px !important;
+}
+.chart-panel.export-mobile .celebrity-title {
+  color: #cba673 !important;
+  font-size: 9px !important;
+  letter-spacing: .10em !important;
+}
+.chart-panel.export-mobile .celebrity-heading p:last-child {
+  max-width: 230px !important;
+  color: #a99887 !important;
+  font-size: 7.5px !important;
+  text-align: right !important;
+}
+.chart-panel.export-mobile .celebrity-card {
+  grid-template-columns: 20px minmax(0, 1fr) !important;
+  gap: 5px !important;
+  padding: 2px 10px 2px 0 !important;
+  border-color: rgba(210, 174, 118, .20) !important;
+}
+.chart-panel.export-mobile .celebrity-card + .celebrity-card { padding-left: 10px !important; }
+.chart-panel.export-mobile .celebrity-card:last-child { padding-right: 0 !important; }
+.chart-panel.export-mobile .celebrity-rank { color: rgba(203, 166, 115, .62) !important; font-size: 13px !important; }
+.chart-panel.export-mobile .celebrity-card h3 { margin-bottom: 4px !important; color: #fff3df !important; font-size: 9px !important; }
+.chart-panel.export-mobile .celebrity-card p { color: #d8cbbb !important; font: 8px/1.5 "Songti SC", "STSong", Georgia, serif !important; }
+.chart-panel.export-mobile .celebrity-note { margin: 10px 0 0 !important; color: #9f9081 !important; font-size: 7px !important; }
 .chart-panel.export-mobile .poster-footer {
   max-width: 488px !important;
   margin-top: 17px !important;
@@ -737,7 +935,6 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
   .topbar { min-height: 58px; padding: 0 12px; }
   .brand { font-size: 18px; }
   .topbar-actions { gap: 0; }
-  .topbar nav { display: none; }
   .shell { padding: 8px; }
   .shell.form-view, .shell.result-view { width: 100%; }
   .shell.form-view {
@@ -757,6 +954,7 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
   .form-panel .eyebrow { margin-bottom: 5px; }
   .form-panel h1 { margin-bottom: 12px; font-size: 34px; }
   .form-panel label { gap: 5px; margin-bottom: 9px; }
+  .form-panel .ampm-field { gap: 5px; margin-bottom: 9px; }
   .form-panel input,
   .form-panel select,
   .form-panel button { min-height: 40px; }
@@ -768,6 +966,25 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
   .privacy-toggle { justify-self: start; }
   .result-toolbar .chart-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; }
   .chart-actions button { width: 100%; }
+  .detail-fab {
+    position: fixed;
+    z-index: 60;
+    top: auto;
+    left: 50%;
+    bottom: calc(14px + env(safe-area-inset-bottom));
+    width: 136px;
+    min-height: 44px;
+    transform: translateX(-50%);
+    background: #cfad79;
+    color: #1b121a;
+    box-shadow: 0 12px 34px rgba(0, 0, 0, .48);
+  }
+  .detail-dialog { width: calc(100% - 16px); max-height: 90dvh; }
+  .detail-dialog-header { padding: 20px 18px 15px; }
+  .detail-dialog-header h2 { font-size: 25px; }
+  .detail-content { padding: 0 18px 22px; }
+  .detail-content section { padding: 17px 0; }
+  .detail-content p { font-size: 13px; line-height: 1.75; }
   .chart-graph { order: 1; }
   .side-column:not(.right) { order: 2; }
   .side-column.right { order: 3; }

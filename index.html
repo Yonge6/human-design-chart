@@ -9,16 +9,12 @@
   <link rel="preload" as="image" href="assets/pluto-vellum-bg-v4.png">
   <link rel="preload" as="image" href="assets/pluto-form-bg-v3.png">
   <link rel="preload" as="image" href="assets/pluto-form-mobile-v4.png" media="(max-width: 560px)">
-  <link rel="stylesheet" href="style.css?v=20260715-8">
+  <link rel="stylesheet" href="style.css?v=20260715-10">
 </head>
 <body>
   <header class="topbar">
     <div class="brand" data-i18n="brand">Pluto 人生使用说明书</div>
     <div class="topbar-actions">
-      <nav aria-label="Primary">
-        <a href="#chartForm" id="navCreate" data-i18n="navCreate">创建人生使用说明书</a>
-        <a href="#capture" id="navChart" data-i18n="navChart">我的人生使用说明书</a>
-      </nav>
       <div class="language-switch" role="group" aria-label="Language / 语言">
         <button type="button" data-language="zh" aria-pressed="true">中文</button>
         <button type="button" data-language="en" aria-pressed="false">EN</button>
@@ -28,7 +24,7 @@
   <main class="shell form-view">
     <section class="form-panel">
       <p class="eyebrow" data-i18n="formEyebrow">人生使用说明书</p>
-      <h1 data-i18n="formTitle">生成你的人生使用说明书</h1>
+      <h1 data-i18n="formTitle">免费获取</h1>
       <form id="chartForm">
         <label><span data-i18n="name">姓名</span><input id="name" name="name" maxlength="80" autocomplete="off" required></label>
         <div class="grid3">
@@ -39,13 +35,14 @@
         <div class="grid3">
           <label><span data-i18n="hour">时</span><select id="hour" required></select></label>
           <label><span data-i18n="minute">分</span><select id="minute" required></select></label>
-          <label><span data-i18n="ampm">上午/下午</span>
-            <select id="ampm" required>
-              <option value="" selected disabled>--</option>
-              <option value="pm" data-i18n="pm">下午</option>
-              <option value="am" data-i18n="am">上午</option>
-            </select>
-          </label>
+          <div class="ampm-field">
+            <span id="ampmLabel" data-i18n="ampm">上午/下午</span>
+            <div id="ampmSwitch" class="ampm-switch" role="group" aria-labelledby="ampmLabel">
+              <button type="button" data-ampm="am" data-i18n="am" aria-pressed="false">上午</button>
+              <button type="button" data-ampm="pm" data-i18n="pm" aria-pressed="false">下午</button>
+            </div>
+            <input id="ampm" name="ampm" type="hidden">
+          </div>
         </div>
         <label><span data-i18n="birthLocation">出生地点</span>
           <div class="location-combobox">
@@ -73,13 +70,27 @@
           <span data-i18n="privacyMode">隐私模式</span>
         </label>
         <div class="chart-actions">
-          <button id="editChart" type="button" data-i18n="editChart">重新填写</button>
-          <button id="download" type="button" disabled data-i18n="download">保存图片</button>
-          <button id="share" type="button" disabled data-i18n="share">分享</button>
+          <button id="editChart" type="button"><span class="button-icon" aria-hidden="true">↺</span><span data-i18n="editChart">重新填写</span></button>
+          <button id="download" type="button" disabled><span class="button-icon" aria-hidden="true">↓</span><span data-i18n="download">保存图片</span></button>
+          <button id="share" type="button" disabled><span class="button-icon" aria-hidden="true">↗</span><span data-i18n="share">分享</span></button>
         </div>
       </div>
-      <img id="chartPreview" class="chart-preview" alt="人生使用说明书" data-i18n-alt="previewAlt">
+      <div class="preview-stage">
+        <button id="detailReading" class="detail-fab" type="button"><span class="button-icon" aria-hidden="true">☷</span><span data-i18n="detailReading">详细解读</span></button>
+        <img id="chartPreview" class="chart-preview" alt="人生使用说明书" data-i18n-alt="previewAlt">
+      </div>
     </section>
+
+    <dialog id="detailDialog" class="detail-dialog">
+      <div class="detail-dialog-header">
+        <div>
+          <p class="eyebrow" data-i18n="brand">Pluto 人生使用说明书</p>
+          <h2 data-i18n="detailReading">详细解读</h2>
+        </div>
+        <button id="closeDetail" class="dialog-close" type="button"><span aria-hidden="true">×</span><span class="sr-only" data-i18n="close">关闭</span></button>
+      </div>
+      <div id="detailContent" class="detail-content"></div>
+    </dialog>
 
     <section class="chart-panel export-mobile capture-source" id="capture" aria-hidden="true">
       <div class="chart-meta">
@@ -105,11 +116,19 @@
           </div>
         </div>
       </div>
-      <div id="properties" class="properties"></div>
       <section class="interpretation" aria-labelledby="interpretationTitle">
         <p id="interpretationTitle" class="interpretation-title" data-i18n="interpretationTitle">解读</p>
         <p id="interpretationText"></p>
       </section>
+      <section class="celebrity-matches" aria-labelledby="celebrityTitle">
+        <div class="celebrity-heading">
+          <p id="celebrityTitle" class="celebrity-title" data-i18n="celebrityTitle">与你最相似的名人</p>
+          <p data-i18n="celebrityBasis">依据类型、内在权威、人生角色与定义匹配</p>
+        </div>
+        <div id="celebrityMatches" class="celebrity-grid"></div>
+        <p class="celebrity-note" data-i18n="celebrityNote">名人结构参考公开出生资料；相似仅指图谱结构，不代表性格、经历或命运相同。</p>
+      </section>
+      <div id="properties" class="properties"></div>
       <footer class="poster-footer">
         <div class="qr-block">
           <img id="chartQr" src="assets/chart-qr.png" width="360" height="360" alt="" aria-hidden="true">
@@ -118,8 +137,8 @@
       </footer>
     </section>
   </main>
-  <script src="vendor/tz-lookup/tz.js?v=20260715-8"></script>
-  <script src="vendor/html2canvas/html2canvas.min.js?v=20260715-8"></script>
-  <script type="module" src="app.js?v=20260715-8"></script>
+  <script src="vendor/tz-lookup/tz.js?v=20260715-10"></script>
+  <script src="vendor/html2canvas/html2canvas.min.js?v=20260715-10"></script>
+  <script type="module" src="app.js?v=20260715-10"></script>
 </body>
 </html>

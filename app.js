@@ -19,6 +19,7 @@ const clockOccurrenceField = document.querySelector("#clockOccurrenceField");
 const status = document.querySelector("#status");
 const chartForm = document.querySelector("#chartForm");
 const downloadButton = document.querySelector("#download");
+const shareButton = document.querySelector("#share");
 const editButton = document.querySelector("#editChart");
 const shell = document.querySelector(".shell");
 const formPanel = document.querySelector(".form-panel");
@@ -33,34 +34,36 @@ const languageButtons = [...document.querySelectorAll("[data-language]")];
 
 const copy = {
   zh: {
-    navCreate: "创建人类图", navChart: "我的人类图",
-    formEyebrow: "人类图", formTitle: "生成你的人类图", name: "姓名", year: "年", month: "月", day: "日",
+    brand: "Pluto 人生使用说明书", navCreate: "创建人生使用说明书", navChart: "我的人生使用说明书",
+    formEyebrow: "人生使用说明书", formTitle: "生成你的人生使用说明书", name: "姓名", year: "年", month: "月", day: "日",
     hour: "时", minute: "分", ampm: "上午/下午", am: "上午", pm: "下午", birthLocation: "出生地点",
     locationPlaceholder: "城市、区县或地区", locationSuggestions: "出生地点建议", clockOccurrence: "重复时刻",
-    navLabel: "主导航", bodygraphLabel: "人类图身体图",
+    navLabel: "主导航", bodygraphLabel: "人生使用说明书图谱",
     firstOccurrence: "第一次出现", secondOccurrence: "第二次出现", attribution: "可直接输入完整地点，无需选择候选。",
-    generate: "生成人类图", yourChart: "你的人类图", emptyChart: "填写出生资料后生成。", editChart: "重新填写", download: "下载 图片", previewAlt: "人类图海报",
-    design: "设计", personality: "人格", watermark: "Swiss Ephemeris · 精确 88° 太阳弧", interpretationTitle: "解读", qrLabel: "扫码生成你的人类图", privacyMode: "隐私模式",
-    searchingPlace: "正在搜索地点…", noPlace: "暂未显示候选，仍可直接点击生成人类图。", placeUnavailable: "搜索建议暂时未加载，仍可直接点击生成人类图。",
+    generate: "生成人生使用说明书", yourChart: "你的人生使用说明书", emptyChart: "填写出生资料后生成。", editChart: "重新填写", download: "保存图片", share: "分享", previewAlt: "人生使用说明书",
+    design: "设计", personality: "人格", watermark: "Swiss Ephemeris · 精确 88° 太阳弧", interpretationTitle: "解读", qrLabel: "扫码生成你的人生使用说明书", privacyMode: "隐私模式",
+    searchingPlace: "正在搜索地点…", noPlace: "暂未显示候选，仍可直接点击生成人生使用说明书。", placeUnavailable: "搜索建议暂时未加载，仍可直接点击生成人生使用说明书。",
     resolvingPlace: "正在确认地点和当地时间…", placeNeedsDetail: "暂时无法确认这个地点，请补充城市、省/州和国家后再试。", enterName: "请输入姓名。",
     missingTime: "该出生时刻因夏令时向前调整而不存在。", repeatedTime: "这个时刻出现过两次，请选择出生记录对应的那一次。",
     futureTime: "出生日期和时间不能晚于现在。", calculating: "正在计算行星位置…", calculated: "已使用 Swiss Ephemeris 在本地完成计算。",
-    failed: "计算失败：{message}", preparing: "正在生成图片…", downloaded: "图片已下载。", exportFailed: "图片导出失败：{message}",
+    failed: "计算失败：{message}", preparing: "正在生成图片…", downloaded: "图片已保存。", chooseSaveImage: "请在系统菜单中选择“存储图像”保存到相册。", shared: "分享已完成。", linkCopied: "当前设备不支持分享图片，网站链接已复制。", exportFailed: "图片导出失败：{message}",
+    shareTitle: "我的人生使用说明书", shareText: "这是我的人生使用说明书。",
   },
   en: {
-    navCreate: "Create Chart", navChart: "My Chart",
-    formEyebrow: "Human Design Chart", formTitle: "Get Your Human Design Chart", name: "Name", year: "Year", month: "Month", day: "Day",
+    brand: "Pluto Life Manual", navCreate: "Create Life Manual", navChart: "My Life Manual",
+    formEyebrow: "Life Manual", formTitle: "Create Your Life Manual", name: "Name", year: "Year", month: "Month", day: "Day",
     hour: "Hour", minute: "Minute", ampm: "AM/PM", am: "AM", pm: "PM", birthLocation: "Birth location",
     locationPlaceholder: "City, district or region", locationSuggestions: "Birth location suggestions", clockOccurrence: "Clock occurrence",
-    navLabel: "Primary", bodygraphLabel: "Human Design bodygraph",
+    navLabel: "Primary", bodygraphLabel: "Life Manual bodygraph",
     firstOccurrence: "First occurrence", secondOccurrence: "Second occurrence", attribution: "Enter the full place directly; selecting a suggestion is optional.",
-    generate: "Generate Chart", yourChart: "Your Chart", emptyChart: "Enter details to generate.", editChart: "Edit Details", download: "Download Image", previewAlt: "Human Design chart poster",
-    design: "Design", personality: "Personality", watermark: "Swiss Ephemeris · exact 88° solar arc", interpretationTitle: "Reading", qrLabel: "Scan to create your chart", privacyMode: "Privacy mode",
+    generate: "Create Life Manual", yourChart: "Your Life Manual", emptyChart: "Enter details to generate.", editChart: "Edit Details", download: "Save Image", share: "Share", previewAlt: "Personal life manual",
+    design: "Design", personality: "Personality", watermark: "Swiss Ephemeris · exact 88° solar arc", interpretationTitle: "Reading", qrLabel: "Scan to create your life manual", privacyMode: "Privacy mode",
     searchingPlace: "Searching locations…", noPlace: "No suggestions yet. You can still generate the chart directly.", placeUnavailable: "Suggestions did not load. You can still generate the chart directly.",
     resolvingPlace: "Confirming the place and its local time…", placeNeedsDetail: "We could not confirm this place. Add the city, state or region, and country, then try again.", enterName: "Enter a name.",
     missingTime: "This local birth time did not exist because the clocks moved forward.", repeatedTime: "This clock time occurred twice. Choose which occurrence is on the birth record.",
     futureTime: "Birth date and time cannot be in the future.", calculating: "Calculating planetary positions…", calculated: "Chart calculated locally with Swiss Ephemeris.",
-    failed: "Failed: {message}", preparing: "Preparing image…", downloaded: "Image downloaded.", exportFailed: "Image export failed: {message}",
+    failed: "Failed: {message}", preparing: "Preparing image…", downloaded: "Image saved.", chooseSaveImage: "Choose Save Image in the system menu to add it to Photos.", shared: "Shared.", linkCopied: "Image sharing is unavailable on this device. The site link was copied.", exportFailed: "Image export failed: {message}",
+    shareTitle: "My Life Manual", shareText: "Here is my personal life manual.",
   },
 };
 
@@ -485,7 +488,7 @@ async function loadGraphTemplate() {
   svg.removeAttribute("width");
   svg.removeAttribute("height");
   svg.setAttribute("role", "img");
-  svg.setAttribute("aria-label", "Human Design BodyGraph");
+  svg.setAttribute("aria-label", "Life Manual BodyGraph");
   return svg;
 }
 
@@ -566,6 +569,7 @@ function clearPoster() {
   chartPreview.removeAttribute("src");
   chartResult.removeAttribute("aria-busy");
   downloadButton.disabled = true;
+  shareButton.disabled = true;
   privacyToggle.disabled = false;
   languageButtons.forEach((button) => { button.disabled = false; });
 }
@@ -574,6 +578,7 @@ async function createPosterImage() {
   const renderVersion = ++posterRenderVersion;
   chartResult.setAttribute("aria-busy", "true");
   downloadButton.disabled = true;
+  shareButton.disabled = true;
   privacyToggle.disabled = true;
   languageButtons.forEach((button) => { button.disabled = true; });
   try {
@@ -601,6 +606,7 @@ async function createPosterImage() {
     chartPreview.src = posterUrl;
     if (chartPreview.decode) await chartPreview.decode();
     downloadButton.disabled = false;
+    shareButton.disabled = false;
   } finally {
     if (renderVersion === posterRenderVersion) {
       chartResult.removeAttribute("aria-busy");
@@ -632,7 +638,7 @@ function applyLanguage(nextLanguage, rerender = true) {
   language = nextLanguage === "en" ? "en" : "zh";
   localStorage.setItem("pluto-language", language);
   document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
-  document.title = language === "zh" ? "Pluto 人类图" : "Pluto Human Design Chart";
+  document.title = language === "zh" ? "Pluto 人生使用说明书" : "Pluto Life Manual";
   document.querySelectorAll("[data-i18n]").forEach((element) => {
     element.textContent = t(element.dataset.i18n);
   });
@@ -750,28 +756,84 @@ chartForm.addEventListener("submit", async (event) => {
   }
 });
 
+function posterFileName() {
+  const fileName = privacyToggle.checked ? "private" : (lastData?.Properties.Name || "life-manual");
+  const safeName = fileName
+    .replace(/[<>:"/\\|?*\u0000-\u001f]/g, "-")
+    .trim()
+    .slice(0, 80) || "life-manual";
+  return `${safeName}-life-manual.png`;
+}
+
+function posterFile() {
+  return new File([posterBlob], posterFileName(), { type: "image/png" });
+}
+
+function canShareFile(file) {
+  try {
+    return Boolean(navigator.share && navigator.canShare?.({ files: [file] }));
+  } catch {
+    return false;
+  }
+}
+
+function downloadPoster() {
+  const link = document.createElement("a");
+  link.download = posterFileName();
+  link.href = posterUrl;
+  document.body.append(link);
+  link.click();
+  link.remove();
+}
+
 downloadButton.addEventListener("click", async () => {
   if (!lastData || !posterBlob || !posterUrl) return;
-  const exportData = lastData;
   downloadButton.disabled = true;
   try {
-    const link = document.createElement("a");
-    const fileName = privacyToggle.checked ? "private" : (exportData.Properties.Name || "human-design");
-    const safeName = fileName
-      .replace(/[<>:"/\\|?*\u0000-\u001f]/g, "-")
-      .trim()
-      .slice(0, 80) || "human-design";
-    link.download = `${safeName}-human-design-chart.png`;
-    link.href = posterUrl;
-    document.body.append(link);
-    link.click();
-    link.remove();
-    setStatus("downloaded");
+    const file = posterFile();
+    const mobile = matchMedia("(pointer: coarse)").matches || /Android|iPad|iPhone|iPod/i.test(navigator.userAgent);
+    if (mobile && canShareFile(file)) {
+      setStatus("chooseSaveImage");
+      await navigator.share({ files: [file] });
+      setStatus("downloaded");
+    } else {
+      downloadPoster();
+      setStatus("downloaded");
+    }
   } catch (error) {
-    console.error(error);
-    setStatus("exportFailed", { message: error.message });
+    if (error.name === "AbortError") setStatus("calculated");
+    else {
+      console.error(error);
+      setStatus("exportFailed", { message: error.message });
+    }
   } finally {
     downloadButton.disabled = !lastData || !posterBlob;
+  }
+});
+
+shareButton.addEventListener("click", async () => {
+  if (!lastData || !posterBlob || !posterUrl) return;
+  shareButton.disabled = true;
+  try {
+    const file = posterFile();
+    if (canShareFile(file)) {
+      await navigator.share({ files: [file], title: t("shareTitle"), text: t("shareText") });
+      setStatus("shared");
+    } else if (navigator.share) {
+      await navigator.share({ title: t("shareTitle"), text: t("shareText"), url: `${location.origin}${location.pathname}` });
+      setStatus("shared");
+    } else {
+      await navigator.clipboard.writeText(`${location.origin}${location.pathname}`);
+      setStatus("linkCopied");
+    }
+  } catch (error) {
+    if (error.name === "AbortError") setStatus("calculated");
+    else {
+      console.error(error);
+      setStatus("exportFailed", { message: error.message });
+    }
+  } finally {
+    shareButton.disabled = !lastData || !posterBlob;
   }
 });
 

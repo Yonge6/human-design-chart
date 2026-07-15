@@ -98,12 +98,57 @@ body {
 }
 .result-toolbar {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   margin-bottom: 10px;
 }
 .result-toolbar .chart-actions {
   width: min(100%, 294px);
 }
+.privacy-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  color: #d7c6b9;
+  font: 700 12px/1 ui-sans-serif, system-ui, sans-serif;
+  cursor: pointer;
+  user-select: none;
+}
+.privacy-toggle input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.toggle-track {
+  width: 36px;
+  height: 20px;
+  padding: 2px;
+  border: 1px solid rgba(207, 173, 121, .58);
+  border-radius: 10px;
+  background: rgba(21, 17, 28, .78);
+  transition: background .18s ease, border-color .18s ease;
+}
+.toggle-track span {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #aa967a;
+  transition: transform .18s ease, background .18s ease;
+}
+.privacy-toggle input:checked + .toggle-track {
+  border-color: #e0c293;
+  background: #cfad79;
+}
+.privacy-toggle input:checked + .toggle-track span {
+  transform: translateX(16px);
+  background: #1b121a;
+}
+.privacy-toggle input:focus-visible + .toggle-track { outline: 2px solid #ead2a9; outline-offset: 2px; }
+.privacy-toggle input:disabled ~ span { opacity: .55; cursor: wait; }
 .chart-preview {
   display: block;
   width: 100%;
@@ -406,6 +451,7 @@ button:disabled { cursor: not-allowed; opacity: .52; }
   margin: 0;
   color: #4f4541;
   font: 14px/1.8 Georgia, "Times New Roman", serif;
+  white-space: pre-line;
 }
 .poster-footer {
   max-width: 930px;
@@ -718,7 +764,9 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
   .form-panel #status { min-height: 16px; font-size: 11px; }
   .chart-panel { padding: 22px 16px; }
   .chart-meta { display: grid; }
-  .chart-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+  .result-toolbar { display: grid; gap: 8px; }
+  .privacy-toggle { justify-self: start; }
+  .result-toolbar .chart-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
   .chart-actions button { width: 100%; }
   .chart-graph { order: 1; }
   .side-column:not(.right) { order: 2; }

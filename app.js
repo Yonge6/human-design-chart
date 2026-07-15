@@ -25,6 +25,7 @@ const formPanel = document.querySelector(".form-panel");
 const chartPanel = document.querySelector("#capture");
 const chartResult = document.querySelector("#chartResult");
 const chartPreview = document.querySelector("#chartPreview");
+const chartQr = document.querySelector("#chartQr");
 const navCreate = document.querySelector("#navCreate");
 const navChart = document.querySelector("#navChart");
 const languageButtons = [...document.querySelectorAll("[data-language]")];
@@ -38,7 +39,7 @@ const copy = {
     navLabel: "主导航", bodygraphLabel: "人类图身体图",
     firstOccurrence: "第一次出现", secondOccurrence: "第二次出现", attribution: "可直接输入完整地点，无需选择候选。",
     generate: "生成人类图", yourChart: "你的人类图", emptyChart: "填写出生资料后生成。", editChart: "重新填写", download: "下载 图片", previewAlt: "人类图海报",
-    design: "设计", personality: "人格", watermark: "Swiss Ephemeris · 精确 88° 太阳弧",
+    design: "设计", personality: "人格", watermark: "Swiss Ephemeris · 精确 88° 太阳弧", interpretationTitle: "大白话解读", qrLabel: "扫码生成你的人类图",
     searchingPlace: "正在搜索地点…", noPlace: "暂未显示候选，仍可直接点击生成人类图。", placeUnavailable: "搜索建议暂时未加载，仍可直接点击生成人类图。",
     resolvingPlace: "正在确认地点和当地时间…", placeNeedsDetail: "暂时无法确认这个地点，请补充城市、省/州和国家后再试。", enterName: "请输入姓名。",
     missingTime: "该出生时刻因夏令时向前调整而不存在。", repeatedTime: "这个时刻出现过两次，请选择出生记录对应的那一次。",
@@ -53,7 +54,7 @@ const copy = {
     navLabel: "Primary", bodygraphLabel: "Human Design bodygraph",
     firstOccurrence: "First occurrence", secondOccurrence: "Second occurrence", attribution: "Enter the full place directly; selecting a suggestion is optional.",
     generate: "Generate Chart", yourChart: "Your Chart", emptyChart: "Enter details to generate.", editChart: "Edit Details", download: "Download Image", previewAlt: "Human Design chart poster",
-    design: "Design", personality: "Personality", watermark: "Swiss Ephemeris · exact 88° solar arc",
+    design: "Design", personality: "Personality", watermark: "Swiss Ephemeris · exact 88° solar arc", interpretationTitle: "In Plain Language", qrLabel: "Scan to create your chart",
     searchingPlace: "Searching locations…", noPlace: "No suggestions yet. You can still generate the chart directly.", placeUnavailable: "Suggestions did not load. You can still generate the chart directly.",
     resolvingPlace: "Confirming the place and its local time…", placeNeedsDetail: "We could not confirm this place. Add the city, state or region, and country, then try again.", enterName: "Enter a name.",
     missingTime: "This local birth time did not exist because the clocks moved forward.", repeatedTime: "This clock time occurred twice. Choose which occurrence is on the birth record.",
@@ -83,6 +84,22 @@ const valueNames = {
   Feeling: "感觉", Touch: "触觉", Caves: "洞穴", Markets: "市场", Kitchens: "厨房", Mountains: "山脉", Valleys: "山谷", Shores: "海岸",
 };
 const profileRoles = { Investigator: "研究者", Martyr: "体验者", Opportunist: "机会主义者", Hermit: "隐士", Heretic: "异端者", "Role Model": "榜样" };
+const strategyGuidance = {
+  "To Respond": "等待身体对眼前的人和事产生明确回应",
+  "To Inform": "行动前先告知可能受影响的人",
+  "Wait for the Invitation": "等待自己被看见，再接受真正合适的邀请",
+  "Wait a Lunar Cycle": "给自己一个完整的月亮周期看清答案",
+};
+const authorityGuidance = {
+  "Emotional - Solar Plexus": "不必当场答应，等情绪波浪平稳后再确认",
+  Sacral: "留意身体当下自然出现的“愿意”或“不愿意”",
+  Splenic: "相信当下安静、短暂却清楚的直觉",
+  "Ego Manifested": "先确认自己是否真心想要，并愿意为它投入",
+  "Ego Projected": "在正确的邀请中，听听自己真正想要什么",
+  "Self-Projected": "把选择说出来，从自己的声音里听见方向",
+  Lunar: "不急着定论，让不同时刻的感受帮你看清全貌",
+  "Mental - Environment": "去到让自己舒服的环境，在值得信任的人面前说出想法",
+};
 let language = localStorage.getItem("pluto-language") || (navigator.language?.toLowerCase().startsWith("zh") ? "zh" : "en");
 let statusState;
 
@@ -107,6 +124,19 @@ function translatedValue(key, value) {
       .replace(/^Juxtaposition Cross of /, "并列交叉 · ");
   }
   return valueNames[value] || value;
+}
+
+function interpretation(data) {
+  const properties = data.Properties;
+  if (language === "en") {
+    return `As a ${properties.Type}, you work best when you follow your strategy: ${properties.Strategy.toLowerCase()}. Let your ${properties["Inner Authority"]} authority guide important choices instead of outside pressure. Your ${properties.Profile} profile learns its own reliable way through real experience. When ${properties["Not Self Theme"].toLowerCase()} keeps appearing, pause and return to the pace that feels genuinely right for you.`;
+  }
+  const type = translatedValue("Type", properties.Type);
+  const profile = properties.Profile.split(":", 1)[0];
+  const theme = translatedValue("Not Self Theme", properties["Not Self Theme"]);
+  const strategy = strategyGuidance[properties.Strategy] || translatedValue("Strategy", properties.Strategy);
+  const authority = authorityGuidance[properties["Inner Authority"]] || `依照${translatedValue("Inner Authority", properties["Inner Authority"])}做选择`;
+  return `你是${type}，更适合${strategy}，不必急着迎合外界。重要选择时，${authority}。你的${profile}人生角色会让你从亲身经历中形成自己的方法。若常感到${theme}，就停一下，回到适合自己的节奏。`;
 }
 
 function formattedBirth(data) {
@@ -414,14 +444,18 @@ function time24(hour, minute, ampm) {
   return { hour: value, minute: Number(minute) };
 }
 
-async function loadExportBackground() {
-  const image = new Image();
-  image.src = "./assets/pluto-chart-mobile-v1.png";
+async function decodeImage(image) {
   if (image.decode) await image.decode();
   else if (!image.complete) await new Promise((resolve, reject) => {
     image.addEventListener("load", resolve, { once: true });
     image.addEventListener("error", reject, { once: true });
   });
+}
+
+async function loadExportAssets() {
+  const background = new Image();
+  background.src = "./assets/pluto-chart-mobile-v1.png";
+  await Promise.all([decodeImage(background), decodeImage(chartQr)]);
 }
 
 async function loadGraphTemplate() {
@@ -505,6 +539,7 @@ async function render(data) {
     const label = language === "zh" ? propertyNames[key] : key;
     return `<div class="property"><b>${label}</b><span>${translatedValue(key, data.Properties[key])}</span></div>`;
   }).join("");
+  document.querySelector("#interpretationText").textContent = interpretation(data);
 }
 
 function clearPoster() {
@@ -524,7 +559,7 @@ async function createPosterImage() {
   downloadButton.disabled = true;
   languageButtons.forEach((button) => { button.disabled = true; });
   try {
-    await Promise.all([document.fonts.ready, loadExportBackground()]);
+    await Promise.all([document.fonts.ready, loadExportAssets()]);
     const canvas = await window.html2canvas(chartPanel, {
       backgroundColor: "#0d0b12",
       logging: false,
@@ -620,6 +655,7 @@ function invalidateChart() {
   document.querySelector("#designList").replaceChildren();
   document.querySelector("#personalityList").replaceChildren();
   document.querySelector("#properties").replaceChildren();
+  document.querySelector("#interpretationText").textContent = "";
   paintBodygraph({ Design: {}, Personality: {}, "Defined Centers": [] }).catch((error) => {
     setStatus("failed", { message: error.message });
   });

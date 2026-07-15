@@ -386,6 +386,48 @@ button:disabled { cursor: not-allowed; opacity: .52; }
 }
 .property b { display: block; color: #8b3042; letter-spacing: .04em; text-transform: uppercase; }
 .property span { display: block; margin-top: 3px; line-height: 1.3; }
+.interpretation {
+  max-width: 930px;
+  margin: 18px auto 0;
+  position: relative;
+  z-index: 1;
+  padding: 22px 26px;
+  border-top: 1px solid rgba(125, 87, 47, .38);
+  border-bottom: 1px solid rgba(125, 87, 47, .38);
+}
+.interpretation-title {
+  margin: 0 0 9px;
+  color: #8b3042;
+  font: 700 11px/1 ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+#interpretationText {
+  margin: 0;
+  color: #4f4541;
+  font: 14px/1.8 Georgia, "Times New Roman", serif;
+}
+.poster-footer {
+  max-width: 930px;
+  margin: 18px auto 0;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+.qr-block { text-align: center; }
+.qr-block img {
+  display: block;
+  width: 82px;
+  height: 82px;
+  margin-left: auto;
+  border: 1px solid rgba(125, 87, 47, .46);
+}
+.qr-block p {
+  margin: 7px 0 0;
+  color: #6a5545;
+  font: 10px/1.35 ui-sans-serif, system-ui, sans-serif;
+}
 .chart-panel.export-mobile {
   width: 600px !important;
   max-width: none !important;
@@ -555,25 +597,60 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
 .chart-panel.export-mobile .right .planet-list em { grid-column: 1 !important; grid-row: 1 !important; }
 .chart-panel.export-mobile .properties {
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  max-width: 520px !important;
+  max-width: 488px !important;
   margin-top: 4px !important;
   border-color: rgba(210, 174, 118, .40) !important;
   background: rgba(12, 10, 16, .70) !important;
   box-shadow: inset 0 0 0 1px rgba(255, 244, 225, .03) !important;
 }
 .chart-panel.export-mobile .property {
-  min-height: 74px !important;
-  padding: 13px 15px !important;
+  min-height: 64px !important;
+  padding: 10px 13px !important;
   border-color: rgba(210, 174, 118, .20) !important;
   color: #f2e7d7 !important;
-  font-size: 12px !important;
+  font-size: 11px !important;
 }
 .chart-panel.export-mobile .property b {
   color: #cba673 !important;
-  font-size: 10px !important;
+  font-size: 9px !important;
   letter-spacing: .08em !important;
 }
-.chart-panel.export-mobile .property span { margin-top: 5px !important; }
+.chart-panel.export-mobile .property span { margin-top: 4px !important; }
+.chart-panel.export-mobile .interpretation {
+  max-width: 488px !important;
+  margin-top: 16px !important;
+  padding: 17px 18px 18px !important;
+  border-color: rgba(210, 174, 118, .38) !important;
+  background: rgba(12, 10, 16, .52) !important;
+}
+.chart-panel.export-mobile .interpretation-title {
+  margin-bottom: 9px !important;
+  color: #cba673 !important;
+  font-size: 9px !important;
+  letter-spacing: .12em !important;
+}
+.chart-panel.export-mobile #interpretationText {
+  color: #e7dbcb !important;
+  font: 10.5px/1.75 "Songti SC", "STSong", Georgia, "Times New Roman", serif !important;
+  text-align: justify !important;
+}
+.chart-panel.export-mobile .poster-footer {
+  max-width: 488px !important;
+  margin-top: 17px !important;
+}
+.chart-panel.export-mobile .qr-block img {
+  width: 82px !important;
+  height: 82px !important;
+  padding: 4px !important;
+  border-color: rgba(210, 174, 118, .56) !important;
+  background: #f3e8d7 !important;
+}
+.chart-panel.export-mobile .qr-block p {
+  max-width: 120px !important;
+  color: #cba673 !important;
+  font-size: 8px !important;
+  letter-spacing: .05em !important;
+}
 .center { fill: rgba(248, 239, 226, .90); stroke: #9e7a48; stroke-width: 2.1; filter: drop-shadow(0 2px 2px rgba(43, 31, 22, .14)); }
 .center.head { fill: #a9a17a; }
 .center.ajna { fill: #6f6a61; }

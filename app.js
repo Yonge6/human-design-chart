@@ -46,7 +46,7 @@ const copy = {
     bodygraphLabel: "人生使用说明书图谱",
     firstOccurrence: "第一次出现", secondOccurrence: "第二次出现", attribution: "可直接输入完整地点，无需选择候选。",
     generate: "免费获取人生使用说明书", yourChart: "你的人生使用说明书", emptyChart: "填写出生资料后生成。", editChart: "重新填写", download: "保存图片", share: "分享", previewAlt: "人生使用说明书",
-    design: "设计", personality: "人格", watermark: "Swiss Ephemeris · 出生前回溯 88° 太阳弧 · True Node", interpretationTitle: "解读", celebrityTitle: "拥有相似基础配置的人物", celebrityBasis: "基于类型、权威、人生角色与定义匹配", celebrityNote: "名人结构参考公开出生资料；相似仅指基础配置，不代表完整图谱、性格、经历或命运相同。", qrLabel: "扫码生成你的人生使用说明书", privacyMode: "隐私模式",
+    design: "设计", personality: "人格", watermark: "Swiss Ephemeris · 出生前回溯 88° 太阳弧 · True Node", interpretationTitle: "解读", celebrityTitle: "拥有相似基础配置的人物", celebrityBasis: "基于类型、权威、人生角色与定义匹配", celebrityNote: "名人结构参考公开出生资料；相似仅指基础配置，不代表完整图谱、性格、经历或命运相同。", qrLabel: "扫码获取", privacyMode: "隐私模式",
     searchingPlace: "正在搜索地点…", noPlace: "暂未显示候选，仍可直接点击生成人生使用说明书。", placeUnavailable: "搜索建议暂时未加载，仍可直接点击生成人生使用说明书。",
     resolvingPlace: "正在确认地点和当地时间…", placeNeedsDetail: "暂时无法确认这个地点，请补充城市、省/州和国家后再试。", enterName: "请输入姓名。",
     missingTime: "该出生时刻因夏令时向前调整而不存在。", repeatedTime: "这个时刻出现过两次，请选择出生记录对应的那一次。",
@@ -62,7 +62,7 @@ const copy = {
     bodygraphLabel: "Life Manual bodygraph",
     firstOccurrence: "First occurrence", secondOccurrence: "Second occurrence", attribution: "Enter the full place directly; selecting a suggestion is optional.",
     generate: "Get Your Life Manual Free", yourChart: "Your Life Manual", emptyChart: "Enter details to generate.", editChart: "Edit Details", download: "Save Image", share: "Share", previewAlt: "Personal life manual",
-    design: "Design", personality: "Personality", watermark: "Swiss Ephemeris · 88° pre-birth solar-arc · True Node", interpretationTitle: "Reading", celebrityTitle: "People with Similar Core Configurations", celebrityBasis: "Matched by type, authority, profile, and definition", celebrityNote: "Celebrity structures use public birth records; similarity means core configuration, not a complete chart, personality, experience, or destiny.", qrLabel: "Scan to create your life manual", privacyMode: "Privacy mode",
+    design: "Design", personality: "Personality", watermark: "Swiss Ephemeris · 88° pre-birth solar-arc · True Node", interpretationTitle: "Reading", celebrityTitle: "People with Similar Core Configurations", celebrityBasis: "Matched by type, authority, profile, and definition", celebrityNote: "Celebrity structures use public birth records; similarity means core configuration, not a complete chart, personality, experience, or destiny.", qrLabel: "Scan to get", privacyMode: "Privacy mode",
     searchingPlace: "Searching locations…", noPlace: "No suggestions yet. You can still generate the chart directly.", placeUnavailable: "Suggestions did not load. You can still generate the chart directly.",
     resolvingPlace: "Confirming the place and its local time…", placeNeedsDetail: "We could not confirm this place. Add the city, state or region, and country, then try again.", enterName: "Enter a name.",
     missingTime: "This local birth time did not exist because the clocks moved forward.", repeatedTime: "This clock time occurred twice. Choose which occurrence is on the birth record.",
@@ -116,12 +116,53 @@ const definitionGuidance = {
   "Triple Split Definition": "你需要在不同关系与场景间流动，思路才更容易慢慢整合",
   "Quadruple Split Definition": "你有多个相对独立的处理区块，给自己充足时间会更从容",
 };
-const typeGuidance = {
-  Generator: "你拥有较稳定的生命力，当身体对一件事有真实回应时，持续投入会让你越做越有能量",
-  "Manifesting Generator": "你的能量运作得快且容许多线推进，边做边调整很正常，关键是先有身体回应再加速",
-  Manifestor: "你适合从内在冲动发起行动，不需要等待所有人认可，但事前告知会显著减少阻力",
-  Projector: "你的优势在于看见人和系统如何更高效运作，与其长时间硬撑，不如把精力留给真正认可你的邀请",
-  Reflector: "你对人群与环境的状态非常敏感，不急于固定定义自己，给时间观察变化更容易看清真实答案",
+const typeStrengthsZh = {
+  Generator: "你的核心优势是稳定、可持续的生命力，以及在真正有回应的事情上持续练习并形成专业深度的能力",
+  "Manifesting Generator": "你的核心优势是多线整合、快速试验与边做边优化，能用较短路径把想法推向结果",
+  Manifestor: "你的核心优势是发起、开路与创造行动势能，能够让原本停滞的事情开始运转",
+  Projector: "你的核心优势是看见人、资源与系统如何更有效运作，并用精准观察帮助他人少走弯路",
+  Reflector: "你的核心优势是敏锐读取群体与环境的真实状态，发现别人已经习惯而忽略的变化",
+};
+const typeStrengthsEn = {
+  Generator: "Your core strength is sustainable life-force energy and the ability to build mastery through consistent engagement with work your body genuinely responds to",
+  "Manifesting Generator": "Your core strength is integrating multiple tracks, testing quickly, and improving as you move, often finding a shorter path from idea to result",
+  Manifestor: "Your core strength is initiating movement, opening new paths, and giving stalled situations the momentum to begin",
+  Projector: "Your core strength is seeing how people, resources, and systems can work more effectively, then guiding attention toward the highest-leverage adjustment",
+  Reflector: "Your core strength is sensing the true condition of a group or environment and noticing changes that others may have normalized",
+};
+const authorityStrengthsZh = {
+  "Emotional - Solar Plexus": "你的优势是能从不同情绪位置看见事情的完整度，等波浪平稳后通常更容易作出经得起时间的决定",
+  Sacral: "你的优势是身体会对眼前选项给出直接反馈，能帮助你快速识别什么值得持续投入",
+  Splenic: "你的优势是对风险、时机与当下状态有快速而细腻的直觉辨识",
+  "Ego Manifested": "你的优势是清楚感受自己真正想争取什么，并把意愿转化成有力量的行动",
+  "Ego Projected": "你的优势是辨认什么承诺真正值得投入意志力，并在正确关系中发挥影响力",
+  "Self-Projected": "你的优势是通过说出想法听见真实方向，声音常能帮你把身份与选择对齐",
+  Lunar: "你的优势是拥有多角度观察力，让时间与不同环境帮助你形成更完整的判断",
+  "Mental - Environment": "你的优势是借由合适环境与高质量对话整理思路，能够从交流中听见自己的清晰",
+};
+const authorityStrengthsEn = {
+  "Emotional - Solar Plexus": "Your strength is seeing a decision from several emotional positions; once the wave settles, your choices can carry more depth and durability",
+  Sacral: "Your strength is direct bodily feedback to what is in front of you, helping you recognize where sustained energy is genuinely available",
+  Splenic: "Your strength is fast, subtle recognition of timing, risk, and what is healthy in the present moment",
+  "Ego Manifested": "Your strength is knowing what you truly want and converting authentic will into decisive action",
+  "Ego Projected": "Your strength is recognizing which commitments deserve your willpower and where your influence is genuinely invited",
+  "Self-Projected": "Your strength is hearing direction through your own voice, using expression to align identity and choice",
+  Lunar: "Your strength is multi-angle awareness, allowing time and changing environments to reveal a more complete decision",
+  "Mental - Environment": "Your strength is clarifying thought through the right environment and high-quality dialogue",
+};
+const definitionStrengthsZh = {
+  "No Definition": "你拥有很强的环境感受力与适应性，能够映照不同人群的状态",
+  "Single Definition": "你的内在连接较完整，常能独立整合信息并形成连续行动",
+  "Split Definition": "你的优势会在高质量连接中被激活，对话与协作常能带来关键启发",
+  "Triple Split Definition": "你擅长从不同人群与场景中吸收信息，再把多个视角整合成更全面的理解",
+  "Quadruple Split Definition": "你拥有多个稳定而专注的内部处理区域，适合给复杂问题足够时间逐层成熟",
+};
+const definitionStrengthsEn = {
+  "No Definition": "You bring strong environmental sensitivity and adaptability, often reflecting the condition of a group with unusual clarity",
+  "Single Definition": "Your internal connections are relatively self-contained, supporting independent integration and continuous action",
+  "Split Definition": "Your strengths often activate through high-quality connection; conversation and collaboration can unlock key insight",
+  "Triple Split Definition": "You can gather information across different people and settings, then synthesize several perspectives into a fuller view",
+  "Quadruple Split Definition": "You have several stable internal processing areas and benefit from letting complex questions mature layer by layer",
 };
 const profileLineGuidance = {
   1: "1号线需要先研究和建立安全的基础",
@@ -132,10 +173,32 @@ const profileLineGuidance = {
   6: "6号线会在人生不同阶段中沉淀经验，最终以身作则地影响别人",
 };
 const profileGuidanceZh = {
+  "1/3": "你擅长先研究清楚，再通过真实试验检验答案；优势是能把理论变成经得起现实验证的方法",
+  "1/4": "你会先建立扎实基础，再通过稳定关系分享价值；优势是专业深度与信任影响力可以彼此放大",
+  "2/4": "你拥有需要独处滋养的自然才能，也容易通过熟悉的人际网络被看见；优势是不用过度推销，也能在信任中获得机会",
+  "2/5": "你既有自然天赋，也容易被期待提供解决方案；优势是能把看似轻松的能力转化为别人真正用得上的方法",
+  "3/5": "你擅长通过试验快速识别什么有效，再把经验提炼成可复制的解决方案；优势是适应力、恢复力和实战判断",
+  "3/6": "你会从亲身经验中积累智慧，并逐渐形成更长远的观察；优势是既理解现实复杂度，也能看见更成熟的方向",
+  "4/6": "你的影响力来自关系信任与长期示范；优势是能连接合适的人，并用稳定行动让别人看见一种可行的生活方式",
+  "4/1": "你拥有相对稳定的内在基础，并通过熟悉网络发挥影响力；优势是立场清楚、关系可靠，适合长期建设",
   "5/1": "你倾向先深入调查、建立可靠基础，再向他人提供实际可行的解决方案。别人容易期待你解决问题，因此需要管理承诺与外界投射，避免承担并不属于你的责任",
+  "5/2": "你结合了自然才能与解决复杂问题的影响力；优势是能在被正确看见时，用简洁方式回应现实需要，同时保留必要的独处与边界",
+  "6/2": "你拥有自然才能，也会随着人生经验逐渐形成榜样式影响力；优势是既能在独处中沉淀能力，也能用更成熟的视角启发别人",
+  "6/3": "你通过真实经历理解世界，并把经验沉淀成长期智慧；优势是面对变化有恢复力，最终能以真实而非完美的方式影响他人",
 };
 const profileGuidanceEn = {
+  "1/3": "You investigate before testing ideas in real life; your strength is turning theory into methods that can survive practical reality",
+  "1/4": "You build a solid foundation and share value through trusted relationships; depth and relational influence reinforce one another",
+  "2/4": "Your natural talents are restored in solitude and often recognized through familiar networks; trusted relationships can bring opportunity without constant self-promotion",
+  "2/5": "You combine natural talent with the projection of being a practical problem-solver; your strength is turning what feels intuitive into something genuinely useful",
+  "3/5": "You learn quickly through experimentation and can translate lived experience into scalable solutions; adaptability and practical judgment are central strengths",
+  "3/6": "You accumulate wisdom through direct experience and gradually develop a longer view; your strength is understanding real complexity while seeing a more mature direction",
+  "4/6": "Your influence grows through trusted relationships and long-term example; you connect the right people and make possibility visible through consistent action",
+  "4/1": "You bring a relatively stable inner foundation and influence through familiar networks; clarity, reliability, and long-term building are key strengths",
   "5/1": "You tend to investigate deeply, build a reliable foundation, and then offer practical solutions. Others may project the role of problem-solver onto you, so clear promises and boundaries matter",
+  "5/2": "You combine natural talent with strong problem-solving influence; when correctly recognized, you can answer real needs simply while protecting essential solitude and boundaries",
+  "6/2": "You combine natural talent with an influence that matures into role-model wisdom; solitude refines your gifts, while perspective helps those gifts inspire others",
+  "6/3": "You understand life through direct experience and gradually distill it into durable wisdom; resilience and honest example become important strengths",
 };
 const environmentGuidanceZh = {
   "Artificial Shores": "人工海岸不只指海边，更包括城市与郊区、商业与住宅、室内与室外，以及不同人群或行业交汇的过渡地带",
@@ -226,7 +289,10 @@ function interpretation(data) {
   if (language === "en") {
     const profile = profileCode(properties.Profile);
     const profileText = profileGuidanceEn[profile] || `Your ${profile} profile combines two different ways of learning, contributing, and being perceived by others`;
-    return `You are a ${properties.Type} with ${properties["Inner Authority"]} authority. When a specific person, task, or opportunity appears, let your strategy of ${properties.Strategy.toLowerCase()} reveal whether your body is genuinely available before committing energy.\n\n${profileText}. Your visible gift is ${gateThemesEn[consciousSun]}, grounded by ${gateThemesEn[consciousEarth]}.\n\nYour mission is better understood as a life theme: ${gateThemesEn[consciousSun]}, ${gateThemesEn[consciousEarth]}, ${gateThemesEn[designSun]}, and ${gateThemesEn[designEarth]} may repeatedly meet in your work, relationships, and creations. It does not prescribe a career. Seeing what needs correction is a gift; timing and receptivity determine whether it becomes help or friction.\n\nAligned engagement tends to bring ${properties.Sign.toLowerCase()}. When ${properties["Not Self Theme"].toLowerCase()} persists, pause and check whether pressure or expectation is pushing you ahead of a real response.`;
+    const typeStrength = typeStrengthsEn[properties.Type];
+    const authorityStrength = authorityStrengthsEn[properties["Inner Authority"]];
+    const definitionStrength = definitionStrengthsEn[properties.Definition];
+    return `Core advantage: ${typeStrength}. ${authorityStrength}. Your strategy of ${properties.Strategy.toLowerCase()} helps direct these strengths toward people, work, and opportunities that can truly use them.\n\nTalent combination: ${profileText}. Your visible gift is ${gateThemesEn[consciousSun]}, grounded through ${gateThemesEn[consciousEarth]}. Together, these qualities help you turn natural ability into value that other people can recognize and use.\n\nLife theme: ${gateThemesEn[consciousSun]}, ${gateThemesEn[consciousEarth]}, ${gateThemesEn[designSun]}, and ${gateThemesEn[designEarth]} may repeatedly meet in your work, relationships, and creations. This does not prescribe a career; it describes the kind of contribution that becomes stronger as you trust your own design. Your ability to notice what can be improved is especially valuable when timing and receptivity are present.\n\nBest expression: ${definitionStrength}. Aligned engagement tends to bring ${properties.Sign.toLowerCase()}. If ${properties["Not Self Theme"].toLowerCase()} persists, treat it as a useful recalibration signal rather than a flaw: reduce pressure, return to your authority, and redirect your strengths toward what produces a genuine inner yes.`;
   }
   const type = translatedValue("Type", properties.Type);
   const profile = profileCode(properties.Profile);
@@ -235,7 +301,10 @@ function interpretation(data) {
   const strategy = strategyGuidance[properties.Strategy] || translatedValue("Strategy", properties.Strategy);
   const authority = authorityGuidance[properties["Inner Authority"]] || `依照${translatedValue("Inner Authority", properties["Inner Authority"])}做选择`;
   const profileText = profileGuidanceZh[profile] || `你的${profile}人生角色结合了两种不同的学习、贡献和被他人看见的方式`;
-  return `你是${translatedValue("Inner Authority", properties["Inner Authority"])}的${type}。面对具体的人、事情与机会时，更适合${strategy}，再决定是否投入能量。重要选择不必只依赖头脑分析，可以${authority}。\n\n${profileText}。你最容易被看见的天赋是${gateThemesZh[consciousSun]}，并通过${gateThemesZh[consciousEarth]}把它落到现实。\n\n你的使命更适合理解为生命主题：${gateThemesZh[consciousSun]}、${gateThemesZh[consciousEarth]}、${gateThemesZh[designSun]}与${gateThemesZh[designEarth]}，可能反复出现在工作、关系和创作中；它不指定某一种职业。看见哪里需要修正是天赋，但对方是否准备好、表达时机与方式，决定它会成为帮助还是冲突。\n\n当你按照身体回应投入正确的事情时，通常更容易体验${sign}；当${theme}持续出现时，可以暂停一下，检查是否正被焦虑、证明或外界期待推着前进。`;
+  const typeStrength = typeStrengthsZh[properties.Type];
+  const authorityStrength = authorityStrengthsZh[properties["Inner Authority"]];
+  const definitionStrength = definitionStrengthsZh[properties.Definition];
+  return `核心优势：${typeStrength}。${authorityStrength}。你的策略是${strategy}，它能帮助你把宝贵能量放到真正值得的人、事情与机会中。\n\n天赋组合：${profileText}。你最容易被看见的天赋是${gateThemesZh[consciousSun]}，并能通过${gateThemesZh[consciousEarth]}把它落到现实。这组组合让你的优势不只停留在想法，也更容易转化成别人能感受到的价值。\n\n生命主题：${gateThemesZh[consciousSun]}、${gateThemesZh[consciousEarth]}、${gateThemesZh[designSun]}与${gateThemesZh[designEarth]}，可能反复出现在工作、关系和创作中。它不指定职业，而是在提醒你：越信任自己的节奏与判断，这些能力越容易形成独特贡献。你看见改善空间的能力很珍贵，在对方准备好时表达，会更有影响力。\n\n最佳发挥方式：${definitionStrength}。重要选择时可以${authority}。当你把优势用在正确方向，通常更容易体验${sign}；若${theme}持续出现，把它当成校准信号，而不是缺点，先降低压力，再回到真正让身体有回应的方向。`;
 }
 
 function detailedReadingSections(data) {
@@ -249,14 +318,14 @@ function detailedReadingSections(data) {
   const environmentGuidance = language === "zh" ? environmentGuidanceZh[properties.Environment] : environmentGuidanceEn[properties.Environment];
   if (language === "en") {
     return [
-      { title: "Core energy and strategy", text: `Your type is ${properties.Type}. Your strategy is ${properties.Strategy.toLowerCase()}. This is less about waiting passively and more about noticing which opportunities create a clear, sustainable engagement before committing your energy.` },
-      { title: "Your natural gift", text: `Your conscious Sun is Gate ${consciousSun}, highlighting a visible gift for ${gateThemesEn[consciousSun]}. Profile line ${firstLine} shapes how you develop and express it. Gate ${consciousEarth} grounds this talent through ${gateThemesEn[consciousEarth]}, helping it become practical rather than remaining only potential.` },
-      { title: "Your life theme (mission)", text: `Your incarnation cross is ${properties["Incarnation Cross"]}. In plain language, your life may repeatedly bring together ${gateThemesEn[consciousSun]}, ${gateThemesEn[consciousEarth]}, ${gateThemesEn[designSun]}, and ${gateThemesEn[designEarth]}. This is a recurring contribution and learning theme, not a job title or a fate you must force. You may notice what needs correcting quickly; timing, tone, and the other person's receptivity determine whether that insight becomes help or friction.` },
-      { title: "How to make important decisions", text: `Your authority is ${properties["Inner Authority"]}. Give this inner signal more weight than urgency, other people's expectations, or the need to explain yourself immediately. For major choices, create enough space to recognize the same answer more than once.` },
-      { title: "Profile and relationships", text: `${profileGuidanceEn[profileCodeValue] || `Your ${properties.Profile} profile combines two distinct ways of learning and being seen`}. One line describes how you consciously approach life; the other often appears naturally in how others experience you.` },
-      { title: "Inner connections and pace", text: `Your ${properties.Definition.toLowerCase()} describes how defined areas of the chart communicate. Notice whether clarity arrives best alone, through conversation, or after moving between different people and settings. Your own repeatable pattern matters more than someone else's ideal routine.` },
-      { title: "Body and environment clues", text: `${properties.Digestion}, Cognition: ${properties.Sense}, and ${properties.Environment} are practical observation points. ${environmentGuidance || "Experiment gently with which surroundings help your nervous system settle"}. Treat these as observations to test, not rigid rules.` },
-      { title: "Drift and reset", text: `${properties["Not Self Theme"]} is a useful warning light, not a personal failure. When it repeats, reduce pressure, return to your strategy and authority, and review what your body was responding to when the choice began. Treat this manual as a set of experiments, not rigid rules.` },
+      { title: "Core energy advantage", text: `${typeStrengthsEn[properties.Type]}. Your strategy is ${properties.Strategy.toLowerCase()}. This strategy protects your strongest resource by helping you distinguish genuine engagement from pressure, urgency, or the wish to prove yourself. When the fit is right, your energy can become both productive and deeply satisfying.` },
+      { title: "Your natural talent combination", text: `Your conscious Sun is Gate ${consciousSun}, highlighting a visible gift for ${gateThemesEn[consciousSun]}. Gate ${consciousEarth} grounds that gift through ${gateThemesEn[consciousEarth]}, helping it become useful in real situations. Profile line ${firstLine} shapes how you consciously develop the talent, while line ${secondLine} influences how others naturally experience it. The advantage is not one isolated trait, but the way these qualities reinforce one another.` },
+      { title: "Your life theme and contribution", text: `Your incarnation cross is ${properties["Incarnation Cross"]}. In practical terms, ${gateThemesEn[consciousSun]}, ${gateThemesEn[consciousEarth]}, ${gateThemesEn[designSun]}, and ${gateThemesEn[designEarth]} may repeatedly meet in your work, relationships, and creations. This is not a fixed occupation. It points to a contribution pattern that grows stronger as you trust your design. If you quickly notice what can be corrected, that discernment becomes a major strength when paired with good timing, tone, and receptivity.` },
+      { title: "Decision-making strength", text: `Your authority is ${properties["Inner Authority"]}. ${authorityStrengthsEn[properties["Inner Authority"]]}. Give this signal more weight than urgency, outside expectations, or the need to explain yourself immediately. The goal is not perfect certainty; it is a decision that your whole system can support without sustained inner resistance.` },
+      { title: "Profile, influence, and relationships", text: `${profileGuidanceEn[profileCodeValue] || `Your ${properties.Profile} profile combines two distinct ways of learning and being seen`}. This profile can become a social advantage: one part develops capability, while the other shapes how that capability reaches people. Clear boundaries let others benefit from your strengths without turning their expectations into obligations you never chose.` },
+      { title: "Integration and working rhythm", text: `${definitionStrengthsEn[properties.Definition]}. Your ${properties.Definition.toLowerCase()} describes how defined areas of the chart communicate. Notice where clarity comes most naturally: independently, through conversation, or through movement between people and settings. Designing work around this natural rhythm can improve both consistency and the quality of your decisions.` },
+      { title: "Body, cognition, and environment", text: `${properties.Digestion}, Cognition: ${properties.Sense}, and ${properties.Environment} offer practical ways to support your strengths. ${environmentGuidance || "Experiment gently with which surroundings help your nervous system settle"}. Your cognition points to the sensory channel that may notice useful information before the mind has fully explained it. Test these clues gradually and keep what produces steadier attention, energy, and ease.` },
+      { title: "Success signal and recalibration", text: `${properties.Sign} is the signature that often appears when your strengths are being used in the right context. ${properties["Not Self Theme"]} is not a weakness or verdict; it is an early warning that your energy may be pointed at the wrong demand. When it repeats, reduce pressure, return to your strategy and authority, and review where you were genuinely engaged. This turns discomfort into useful navigation rather than self-criticism.` },
     ];
   }
   const type = translatedValue("Type", properties.Type);
@@ -268,15 +337,16 @@ function detailedReadingSections(data) {
   const definition = definitionGuidance[properties.Definition] || `你的${translatedValue("Definition", properties.Definition)}描述了内在信息的连接方式`;
   const cross = translatedValue("Incarnation Cross", properties["Incarnation Cross"]);
   const theme = translatedValue("Not Self Theme", properties["Not Self Theme"]);
+  const sign = translatedValue("Sign", properties.Sign);
   return [
-    { title: "核心能量与策略", text: `你是${type}。${typeGuidance[properties.Type] || "你需要观察自己的能量在哪些事情上会自然打开"}。你的策略是${strategy}。这不是被动等待，而是先辨认身体是否真的被某个人、机会或问题触发，再决定要不要投入。` },
-    { title: "你的天赋", text: `你的人格太阳落在${consciousSun}号闸门，最容易被看见的天赋是${gateThemesZh[consciousSun]}。人格太阳的${firstLine}号线决定了你会怎样有意识地发展和表达它。${consciousEarth}号闸门的${gateThemesZh[consciousEarth]}是这份天赋的落地点，能帮助它从潜力变成别人真正感受到的价值。` },
-    { title: "你的生命主题（使命）", text: `你的轮回交叉是${cross}。用大白话说，你的人生中可能反复出现${gateThemesZh[consciousSun]}、${gateThemesZh[consciousEarth]}、${gateThemesZh[designSun]}和${gateThemesZh[designEarth]}等主题，并逐渐把它们整合成自己的贡献方式。它不指定职业，也不是必须强求的命运任务。你可能很容易看见哪里不对，但对方是否准备好、表达时机与方式，决定修正会成为帮助还是冲突。` },
-    { title: "重要决定怎么做", text: `你的内在权威是${authorityName}。${authority}。当选择涉及关系、工作、金钱或长期承诺时，不要让时间压力、别人的期待或“我应该马上回答”代替这个内在信号。给自己一点空间，看答案是否仍然稳定。` },
-    { title: "人生角色与关系", text: `你的人生角色是${profile}。${profileGuidanceZh[profileCodeValue] || profileGuidance}。两条线一条更像你有意识的学习方式，另一条常是别人自然感受到的你。` },
-    { title: "内在连接与行动节奏", text: `${definition}。观察自己是在独处时更容易理清，还是需要通过对话、换环境或接触不同的人才会慢慢完整。不要强迫自己套用别人的高效模板，找到可重复、不透支的节奏更重要。` },
-    { title: "身体与环境线索", text: `你的消化是${translatedValue("Digestion", properties.Digestion)}，认知感官是${translatedValue("Sense", properties.Sense)}，适合的环境是${translatedValue("Environment", properties.Environment)}。${environmentGuidance || "这些线索指向什么空间更容易让神经系统放松"}。建议小范围实验，用真实感受验证，不用一次性改变全部生活。` },
-    { title: "偏离信号与复位", text: `你的非自己主题是${theme}。它不代表你做错了，更像一盏警示灯：可能你正在用头脑强推、为证明自己而勉强投入，或留在不适合的关系与环境中。当它反复出现，先降低压力，回到自己的策略和权威，再回看当初的身体信号。把这份说明书当成实验地图，而不是僵硬规则。` },
+    { title: "核心能量优势", text: `你是${type}。${typeStrengthsZh[properties.Type]}。你的策略是${strategy}，它不是限制，而是保护优势的筛选机制：帮助你区分真正值得投入的方向，和只是由焦虑、催促或证明欲推动的事情。方向正确时，你的能量更容易形成持续成果，也更容易从过程中获得满足。` },
+    { title: "你的天赋组合", text: `你的人格太阳落在${consciousSun}号闸门，最容易被别人看见的天赋是${gateThemesZh[consciousSun]}；${consciousEarth}号闸门的${gateThemesZh[consciousEarth]}，则帮助这份天赋落地。${firstLine}号线影响你主动发展能力的方式，${secondLine}号线影响别人自然感受到的你。你的真正优势不是某一个标签，而是这些能力彼此配合后，既能看见方向，也能形成实际价值。` },
+    { title: "生命主题与独特贡献", text: `你的轮回交叉是${cross}。用大白话说，${gateThemesZh[consciousSun]}、${gateThemesZh[consciousEarth]}、${gateThemesZh[designSun]}和${gateThemesZh[designEarth]}，可能反复出现在工作、关系与创作中。它不指定职业，而是在描述你越活得真实、越容易形成的贡献方式。你可能很快发现哪里可以优化，这种辨识力本身就是优势；配合合适的表达时机和对方的接受度，更容易转化为真正的帮助与影响力。` },
+    { title: "做决定的优势", text: `你的内在权威是${authorityName}。${authorityStrengthsZh[properties["Inner Authority"]]}。实际使用时，可以${authority}。面对关系、工作、金钱或长期承诺，不必追求头脑里的百分之百确定，而是给内在信号足够空间，找到一个身体愿意支持、之后不需要持续对抗自己的答案。` },
+    { title: "人生角色与影响力", text: `你的人生角色是${profile}。${profileGuidanceZh[profileCodeValue] || profileGuidance}。两条线一条更像你主动学习和建立能力的方式，另一条常是别人自然感受到的你。它们组合后的优势，是既有自己的成长路径，又能以独特方式影响他人。把边界、承诺和可提供的价值说清楚，会让你的影响力更稳定。` },
+    { title: "整合方式与工作节奏", text: `${definitionStrengthsZh[properties.Definition]}。${definition}。观察自己是在独处时更容易理清，还是在对话、协作、换环境后出现关键连接。顺着天然整合方式设计工作流程，比强迫自己模仿别人的效率模板更容易保持专注，也更能发挥判断质量。` },
+    { title: "身体、认知与环境优势", text: `你的消化是${translatedValue("Digestion", properties.Digestion)}，认知感官是${translatedValue("Sense", properties.Sense)}，适合的环境是${translatedValue("Environment", properties.Environment)}。${environmentGuidance || "这些线索指向什么空间更容易让神经系统放松"}。认知感官提示了你可能优先捕捉有效信息的通道。可以小范围测试光线、声音、空间和信息输入方式，保留那些让注意力更稳定、身体更放松的条件。` },
+    { title: "成功信号与复位能力", text: `你的正向信号是${sign}，它常提示优势正在正确场景中运作。${theme}不是缺点，而是很有价值的预警：提醒你可能正在用头脑强推、承接不属于自己的期待，或把能力放在错误方向。当它反复出现，先降低压力，回到策略与权威，再回看最初的身体信号。你具备的不只是行动能力，也包括随时校准并重新选择的能力。` },
   ];
 }
 
@@ -350,7 +420,7 @@ function getCelebrityMatches(data) {
   return celebrities
     .map((celebrity) => ({ ...celebrity, score: celebrityScore(data.Properties, celebrity) }))
     .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name))
-    .slice(0, 3);
+    .slice(0, 2);
 }
 
 function celebrityDetailedReason(properties, celebrity) {
@@ -369,7 +439,7 @@ function celebrityDetailedReason(properties, celebrity) {
         ? `You share profile line ${sharedLines.join(" and ")}, while the other line changes how that quality is learned and expressed.`
         : `Your profiles differ, so the learning style and social role are not the same.`;
     const definitionText = sameDefinition ? ` Both charts also have ${properties.Definition.toLowerCase()}, adding a similar pattern of internal processing.` : "";
-    return `The strongest connection is the shared ${properties.Type} energy type. ${authorityText} ${profileText}${definitionText} This is a structural comparison, not a prediction that your personality or life will resemble theirs.`;
+    return `The strongest connection is the shared ${properties.Type} energy type, which points to a similar foundation for using energy and creating momentum. ${authorityText} ${profileText}${definitionText} The useful comparison is the shared strength pattern: how capacity, decisions, and influence may be directed. It is structural inspiration, not a prediction that your personality or life will resemble theirs.`;
   }
   const type = translatedValue("Type", properties.Type);
   const authorityText = sameAuthority
@@ -381,7 +451,7 @@ function celebrityDetailedReason(properties, celebrity) {
       ? `你们共享${sharedLines.join("、")}号线特质，但另一条线不同，会改变这种特质的学习路径与外在表达。`
       : "你们的人生角色不同，因此学习方式与关系位置并不相同。";
   const definitionText = sameDefinition ? `你们也同为${translatedValue("Definition", properties.Definition)}，内在信息的整合节奏更接近。` : "";
-  return `最强的共同点是同为${type}，因此能量启动与行动策略有相似底层逻辑。${authorityText}${profileText}${definitionText}这只是结构对照，不代表你的性格、经历或人生结果会复制对方。`;
+  return `最强的共同点是同为${type}，因此能量启动与行动策略有相似底层逻辑，也可能共享某些把优势转化为成果的方式。${authorityText}${profileText}${definitionText}真正值得参考的是相似配置如何支持能力、判断与影响力，而不是模仿对方的人生选择。这只是结构对照，不代表你的性格、经历或人生结果会复制对方。`;
 }
 
 function renderCelebrityMatches(data) {

@@ -612,7 +612,7 @@ button:disabled { cursor: not-allowed; opacity: .52; }
 }
 .celebrity-heading p:last-child,
 .celebrity-note { color: #776960; font: 10px/1.4 ui-sans-serif, system-ui, sans-serif; }
-.celebrity-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.celebrity-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .celebrity-card {
   display: grid;
   grid-template-columns: 28px minmax(0, 1fr);
@@ -686,7 +686,7 @@ button:disabled { cursor: not-allowed; opacity: .52; }
   max-height: none !important;
   overflow: visible !important;
   margin-top: 0 !important;
-  padding: 14px 0 20px !important;
+  padding: 14px 0 0 !important;
 }
 .chart-panel.export-mobile .chart-frame::before {
   top: 42% !important;
@@ -818,7 +818,8 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
 .chart-panel.export-mobile .right .planet-list em { grid-column: 1 !important; grid-row: 1 !important; }
 .chart-panel.export-mobile .properties {
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  max-width: 488px !important;
+  width: 536px !important;
+  max-width: 536px !important;
   margin-top: 16px !important;
   border-color: rgba(210, 174, 118, .40) !important;
   background: rgba(12, 10, 16, .70) !important;
@@ -840,7 +841,7 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
 .chart-panel.export-mobile .interpretation {
   width: 536px !important;
   max-width: 536px !important;
-  margin-top: 16px !important;
+  margin-top: 5px !important;
   padding: 17px 18px 18px !important;
   border-color: rgba(210, 174, 118, .38) !important;
   background: rgba(12, 10, 16, .52) !important;
@@ -857,7 +858,8 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
   text-align: justify !important;
 }
 .chart-panel.export-mobile .celebrity-matches {
-  max-width: 488px !important;
+  width: 536px !important;
+  max-width: 536px !important;
   margin-top: 14px !important;
   padding: 15px 16px 13px !important;
   border-color: rgba(210, 174, 118, .38) !important;
@@ -907,7 +909,7 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
   background: #f3e8d7 !important;
 }
 .chart-panel.export-mobile .qr-block p {
-  max-width: 82px !important;
+  max-width: 58px !important;
   margin-top: 4px !important;
   color: #cba673 !important;
   font-size: 6.5px !important;

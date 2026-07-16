@@ -237,6 +237,27 @@ body {
 }
 .detail-dialog-header .eyebrow { margin-bottom: 6px; }
 .detail-dialog-header h2 { margin: 0; color: #fff6e9; font-size: 30px; line-height: 1.1; }
+.detail-dialog-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+.detail-share {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid rgba(216, 177, 125, .36);
+  border-radius: 3px;
+  background: rgba(207, 173, 121, .10);
+  color: #dfc18f;
+  font: 700 12px/1 ui-sans-serif, system-ui, sans-serif;
+}
+.detail-share:hover { background: rgba(207, 173, 121, .18); }
+.detail-share .button-icon { font-size: 14px; }
 .dialog-close {
   width: 36px;
   min-height: 36px;
@@ -1011,6 +1032,7 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
   .detail-dialog { width: calc(100% - 16px); max-height: 90dvh; }
   .detail-dialog-header { padding: 20px 18px 15px; }
   .detail-dialog-header h2 { font-size: 25px; }
+  .detail-share { min-height: 34px; padding: 0 10px; }
   .detail-content { padding: 0 18px 22px; }
   .detail-content section { padding: 17px 0; }
   .detail-content p { font-size: 13px; line-height: 1.75; }

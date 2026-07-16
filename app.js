@@ -33,6 +33,8 @@ const ampmButtons = [...document.querySelectorAll("[data-ampm]")];
 const detailButton = document.querySelector("#detailReading");
 const detailDialog = document.querySelector("#detailDialog");
 const closeDetailButton = document.querySelector("#closeDetail");
+const shareDetailButton = document.querySelector("#shareDetail");
+const shareDetailLabel = document.querySelector("[data-detail-share-label]");
 const detailContent = document.querySelector("#detailContent");
 const celebrityMatches = document.querySelector("#celebrityMatches");
 const languageButtons = [...document.querySelectorAll("[data-language]")];
@@ -52,7 +54,7 @@ const copy = {
     missingTime: "该出生时刻因夏令时向前调整而不存在。", repeatedTime: "这个时刻出现过两次，请选择出生记录对应的那一次。",
     futureTime: "出生日期和时间不能晚于现在。", calculating: "正在计算行星位置…", calculated: "已使用 Swiss Ephemeris 在本地完成计算。",
     failed: "计算失败：{message}", preparing: "正在生成图片…", downloaded: "图片已保存。", chooseSaveImage: "请在系统菜单中选择“存储图像”保存到相册。", shared: "分享已完成。", linkCopied: "当前设备不支持分享图片，网站链接已复制。", exportFailed: "图片导出失败：{message}",
-    shareTitle: "我的人生使用说明书", shareText: "这是我的人生使用说明书。", selectAmPm: "请选择上午或下午。", detailReading: "详细解读", close: "关闭",
+    shareTitle: "我的人生使用说明书", shareText: "这是我的人生使用说明书。", shareReading: "分享", shareReadingText: "免费生成你的人生使用说明书与详细解读。", linkCopiedShort: "已复制", selectAmPm: "请选择上午或下午。", detailReading: "详细解读", close: "关闭",
   },
   en: {
     brand: "Pluto Life Manual",
@@ -68,7 +70,7 @@ const copy = {
     missingTime: "This local birth time did not exist because the clocks moved forward.", repeatedTime: "This clock time occurred twice. Choose which occurrence is on the birth record.",
     futureTime: "Birth date and time cannot be in the future.", calculating: "Calculating planetary positions…", calculated: "Chart calculated locally with Swiss Ephemeris.",
     failed: "Failed: {message}", preparing: "Preparing image…", downloaded: "Image saved.", chooseSaveImage: "Choose Save Image in the system menu to add it to Photos.", shared: "Shared.", linkCopied: "Image sharing is unavailable on this device. The site link was copied.", exportFailed: "Image export failed: {message}",
-    shareTitle: "My Life Manual", shareText: "Here is my personal life manual.", selectAmPm: "Choose AM or PM.", detailReading: "Detailed Reading", close: "Close",
+    shareTitle: "My Life Manual", shareText: "Here is my personal life manual.", shareReading: "Share", shareReadingText: "Create your free Life Manual and detailed reading.", linkCopiedShort: "Copied", selectAmPm: "Choose AM or PM.", detailReading: "Detailed Reading", close: "Close",
   },
 };
 
@@ -1050,6 +1052,23 @@ detailButton.addEventListener("click", () => {
   if (lastData) detailDialog.showModal();
 });
 closeDetailButton.addEventListener("click", () => detailDialog.close());
+shareDetailButton.addEventListener("click", async () => {
+  const url = new URL(location.pathname, location.origin).href;
+  shareDetailButton.disabled = true;
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: t("shareTitle"), text: t("shareReadingText"), url });
+    } else {
+      await navigator.clipboard.writeText(url);
+      shareDetailLabel.textContent = t("linkCopiedShort");
+      window.setTimeout(() => { shareDetailLabel.textContent = t("shareReading"); }, 1800);
+    }
+  } catch (error) {
+    if (error.name !== "AbortError") console.error(error);
+  } finally {
+    shareDetailButton.disabled = false;
+  }
+});
 detailDialog.addEventListener("click", (event) => {
   if (event.target === detailDialog) detailDialog.close();
 });

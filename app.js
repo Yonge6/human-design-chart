@@ -1,6 +1,7 @@
 import { calculateHumanDesign, localToUtcCandidates } from "./human-design-engine.js?v=20260715-11";
 import { fetchPlaceCandidates, inferTimezoneFromAddress } from "./location-service.js?v=20260715-2";
 
+const publicAppUrl = "https://yonge6.github.io/human-design-chart/";
 const planets = ["Sun", "Earth", "North Node", "South Node", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 const graph = document.querySelector("#bodygraph");
 const fields = {
@@ -38,6 +39,13 @@ const shareDetailLabel = document.querySelector("[data-detail-share-label]");
 const detailContent = document.querySelector("#detailContent");
 const celebrityMatches = document.querySelector("#celebrityMatches");
 const languageButtons = [...document.querySelectorAll("[data-language]")];
+
+function currentShareUrl() {
+  if (location.protocol === "http:" || location.protocol === "https:") {
+    return new URL(location.pathname, location.origin).href;
+  }
+  return publicAppUrl;
+}
 
 const copy = {
   zh: {
@@ -1053,7 +1061,7 @@ detailButton.addEventListener("click", () => {
 });
 closeDetailButton.addEventListener("click", () => detailDialog.close());
 shareDetailButton.addEventListener("click", async () => {
-  const url = new URL(location.pathname, location.origin).href;
+  const url = currentShareUrl();
   shareDetailButton.disabled = true;
   try {
     if (navigator.share) {
@@ -1226,10 +1234,10 @@ shareButton.addEventListener("click", async () => {
       await navigator.share({ files: [file], title: t("shareTitle"), text: t("shareText") });
       setStatus("shared");
     } else if (navigator.share) {
-      await navigator.share({ title: t("shareTitle"), text: t("shareText"), url: `${location.origin}${location.pathname}` });
+      await navigator.share({ title: t("shareTitle"), text: t("shareText"), url: currentShareUrl() });
       setStatus("shared");
     } else {
-      await navigator.clipboard.writeText(`${location.origin}${location.pathname}`);
+      await navigator.clipboard.writeText(currentShareUrl());
       setStatus("linkCopied");
     }
   } catch (error) {

@@ -1,3 +1,10 @@
 *.png
+!ios/App/App/Assets.xcassets/**/*.png
 __pycache__/
 .DS_Store
+node_modules/
+dist/
+build/
+ios/App/DerivedData/
+ios/App/App.xcodeproj/xcuserdata/
+ios/App/App.xcodeproj/project.xcworkspace/xcuserdata/

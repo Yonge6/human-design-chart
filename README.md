@@ -24,6 +24,10 @@ npx cap open ios
 
 Run `npm run ios:build` for a repeatable unsigned simulator build.
 
+The iOS shell adds native Save to Photos and system sharing, plus on-device
+chart history, offline reopening, privacy defaults, and local data deletion.
+These features keep working with the shared web calculation and rendering core.
+
 Use the `App` scheme in Xcode. The first setup uses:
 
 - App name: `Pluto 人生使用说明书`

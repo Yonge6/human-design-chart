@@ -39,6 +39,18 @@ const shareDetailLabel = document.querySelector("[data-detail-share-label]");
 const detailContent = document.querySelector("#detailContent");
 const celebrityMatches = document.querySelector("#celebrityMatches");
 const languageButtons = [...document.querySelectorAll("[data-language]")];
+const openHistoryButton = document.querySelector("#openHistory");
+const openSettingsButton = document.querySelector("#openSettings");
+const historyDialog = document.querySelector("#historyDialog");
+const settingsDialog = document.querySelector("#settingsDialog");
+const closeHistoryButton = document.querySelector("#closeHistory");
+const closeSettingsButton = document.querySelector("#closeSettings");
+const historyList = document.querySelector("#historyList");
+const historyEmpty = document.querySelector("#historyEmpty");
+const defaultPrivacyInput = document.querySelector("#defaultPrivacy");
+const saveHistoryInput = document.querySelector("#saveHistory");
+const clearHistoryButton = document.querySelector("#clearHistory");
+const nativePlugin = globalThis.Capacitor?.registerPlugin?.("PlutoNative") || null;
 
 function currentShareUrl() {
   if (location.protocol === "http:" || location.protocol === "https:") {
@@ -50,6 +62,7 @@ function currentShareUrl() {
 const copy = {
   zh: {
     brand: "Pluto 人生使用说明书",
+    brandShort: "人生使用说明书",
     formEyebrow: "人生使用说明书", formTitle: "认识你自己", name: "姓名", year: "年", month: "月", day: "日",
     hour: "时", minute: "分", ampm: "上午/下午", am: "上午", pm: "下午", birthLocation: "出生地点",
     locationPlaceholder: "城市、区县或地区", locationSuggestions: "出生地点建议", clockOccurrence: "重复时刻",
@@ -63,9 +76,12 @@ const copy = {
     futureTime: "出生日期和时间不能晚于现在。", calculating: "正在计算行星位置…", calculated: "已使用 Swiss Ephemeris 在本地完成计算。",
     failed: "计算失败：{message}", preparing: "正在生成图片…", downloaded: "图片已保存。", chooseSaveImage: "请在系统菜单中选择“存储图像”保存到相册。", shared: "分享已完成。", linkCopied: "当前设备不支持分享图片，网站链接已复制。", exportFailed: "图片导出失败：{message}",
     shareTitle: "我的人生使用说明书", shareText: "这是我的人生使用说明书。", shareReading: "分享", shareReadingText: "免费生成你的人生使用说明书与详细解读。", linkCopiedShort: "已复制", selectAmPm: "请选择上午或下午。", detailReading: "详细解读", close: "关闭",
+    history: "历史记录", settings: "隐私设置", localOnly: "仅保存在此设备", historyEmpty: "还没有保存的人生使用说明书。", openHistory: "打开", deleteHistory: "删除",
+    defaultPrivacy: "默认开启隐私模式", defaultPrivacyHint: "生成图片时自动隐藏姓名、日期、时间和地点。", saveHistory: "保存本地历史记录", saveHistoryHint: "可离线重新打开最近生成的说明书。", clearHistory: "清空历史记录", privacyNote: "出生资料和图谱仅存储在当前设备，不上传到服务器。", historyCleared: "历史记录已清空。",
   },
   en: {
     brand: "Pluto Life Manual",
+    brandShort: "Life Manual",
     formEyebrow: "Life Manual", formTitle: "Know Yourself", name: "Name", year: "Year", month: "Month", day: "Day",
     hour: "Hour", minute: "Minute", ampm: "AM/PM", am: "AM", pm: "PM", birthLocation: "Birth location",
     locationPlaceholder: "City, district or region", locationSuggestions: "Birth location suggestions", clockOccurrence: "Clock occurrence",
@@ -79,6 +95,8 @@ const copy = {
     futureTime: "Birth date and time cannot be in the future.", calculating: "Calculating planetary positions…", calculated: "Chart calculated locally with Swiss Ephemeris.",
     failed: "Failed: {message}", preparing: "Preparing image…", downloaded: "Image saved.", chooseSaveImage: "Choose Save Image in the system menu to add it to Photos.", shared: "Shared.", linkCopied: "Image sharing is unavailable on this device. The site link was copied.", exportFailed: "Image export failed: {message}",
     shareTitle: "My Life Manual", shareText: "Here is my personal life manual.", shareReading: "Share", shareReadingText: "Create your free Life Manual and detailed reading.", linkCopiedShort: "Copied", selectAmPm: "Choose AM or PM.", detailReading: "Detailed Reading", close: "Close",
+    history: "History", settings: "Privacy", localOnly: "Stored only on this device", historyEmpty: "No saved Life Manuals yet.", openHistory: "Open", deleteHistory: "Delete",
+    defaultPrivacy: "Privacy mode by default", defaultPrivacyHint: "Hide name, date, time, and location in generated images.", saveHistory: "Save local history", saveHistoryHint: "Reopen recent Life Manuals while offline.", clearHistory: "Clear history", privacyNote: "Birth data and charts stay on this device and are not uploaded to a server.", historyCleared: "History cleared.",
   },
 };
 
@@ -302,6 +320,27 @@ const celebrities = [
   { name: "Kim Gordon", nameZh: "金·戈登", type: "Reflector", profile: "1/3", authority: "Lunar", definition: "No Definition" },
   { name: "Uri Geller", nameZh: "尤里·盖勒", type: "Reflector", profile: "6/2", authority: "Lunar", definition: "No Definition" },
 ];
+const historyStorageKey = "pluto-chart-history-v1";
+const settingsStorageKey = "pluto-app-settings-v1";
+const defaultSettings = { privacyByDefault: false, keepHistory: true };
+
+function readStoredJson(key, fallback) {
+  try {
+    const value = JSON.parse(localStorage.getItem(key));
+    return value ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+let appSettings = { ...defaultSettings, ...readStoredJson(settingsStorageKey, {}) };
+let historyEntries = readStoredJson(historyStorageKey, []);
+if (!Array.isArray(historyEntries)) historyEntries = [];
+historyEntries = historyEntries.filter((entry) => (
+  typeof entry?.id === "string"
+  && entry.data?.Properties
+  && entry.data?.Meta
+));
 let language = localStorage.getItem("pluto-language") || (navigator.language?.toLowerCase().startsWith("zh") ? "zh" : "en");
 let statusState;
 
@@ -570,6 +609,109 @@ let placeRequest;
 let placeQueryVersion = 0;
 const placeCache = new Map();
 let selectedPlace = null;
+
+function persistSettings() {
+  try { localStorage.setItem(settingsStorageKey, JSON.stringify(appSettings)); } catch { /* Storage can be disabled. */ }
+}
+
+function persistHistory() {
+  try { localStorage.setItem(historyStorageKey, JSON.stringify(historyEntries)); } catch { /* Storage can be disabled. */ }
+}
+
+function saveChartHistory(data, input) {
+  if (!appSettings.keepHistory) return;
+  const id = `${data.Meta?.BirthIso || ""}|${data.Properties.Name}|${data.Properties.Location}`;
+  historyEntries = [
+    { id, createdAt: Date.now(), data, input },
+    ...historyEntries.filter((entry) => entry.id !== id),
+  ].slice(0, 10);
+  persistHistory();
+  renderHistory();
+}
+
+function renderHistory() {
+  historyList.replaceChildren();
+  historyEmpty.hidden = historyEntries.length > 0;
+  clearHistoryButton.disabled = historyEntries.length === 0;
+
+  historyEntries.forEach((entry) => {
+    const card = document.createElement("article");
+    card.className = "history-card";
+
+    const details = document.createElement("div");
+    const name = document.createElement("h3");
+    name.textContent = entry.data?.Properties?.Name || "-";
+    const birth = document.createElement("p");
+    birth.textContent = entry.data ? formattedBirth(entry.data) : "";
+    const type = document.createElement("p");
+    const properties = entry.data?.Properties || {};
+    type.textContent = [
+      properties.Type ? translatedValue("Type", properties.Type) : "",
+      properties.Profile ? translatedValue("Profile", properties.Profile) : "",
+    ].filter(Boolean).join(" · ");
+    details.append(name, birth, type);
+
+    const actions = document.createElement("div");
+    actions.className = "history-card-actions";
+    const open = document.createElement("button");
+    open.type = "button";
+    open.className = "history-open";
+    open.dataset.historyOpen = entry.id;
+    open.textContent = t("openHistory");
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = "history-delete";
+    remove.dataset.historyDelete = entry.id;
+    remove.setAttribute("aria-label", t("deleteHistory"));
+    remove.title = t("deleteHistory");
+    remove.textContent = "×";
+    actions.append(open, remove);
+    card.append(details, actions);
+    historyList.append(card);
+  });
+}
+
+function hydrateForm(input) {
+  if (!input) return;
+  fields.name.value = input.name || "";
+  fields.year.value = String(input.year || "");
+  fields.month.value = String(input.month || "").padStart(2, "0");
+  updateDays();
+  fields.day.value = String(input.day || "").padStart(2, "0");
+  fields.hour.value = String(input.hour || "").padStart(2, "0");
+  fields.minute.value = String(input.minute || "").padStart(2, "0");
+  fields.ampm.value = input.ampm === "pm" ? "pm" : "am";
+  ampmButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.ampm === fields.ampm.value)));
+  fields.location.value = input.location || input.place?.label || "";
+  selectedPlace = input.place || null;
+}
+
+async function openHistoryEntry(entry) {
+  if (!entry?.data) return;
+  historyDialog.close();
+  clearPoster();
+  hydrateForm(entry.input);
+  privacyToggle.checked = appSettings.privacyByDefault;
+  lastData = entry.data;
+  setStatus("preparing");
+  showChartView();
+  await render(lastData);
+  await createPosterImage();
+  setStatus("calculated");
+}
+
+function isNativeApp() {
+  return Boolean(nativePlugin && globalThis.Capacitor?.isNativePlatform?.());
+}
+
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result).split(",")[1] || "");
+    reader.onerror = () => reject(reader.error || new Error("The image could not be read."));
+    reader.readAsDataURL(blob);
+  });
+}
 
 function appendOptions(select, values, selected, includePlaceholder = true) {
   const options = values.map(({ value, label }) => {
@@ -1030,12 +1172,18 @@ function applyLanguage(nextLanguage, rerender = true) {
   document.querySelectorAll("[data-i18n-alt]").forEach((element) => {
     element.alt = t(element.dataset.i18nAlt);
   });
+  document.querySelectorAll("[data-i18n-aria-label]").forEach((element) => {
+    const label = t(element.dataset.i18nAriaLabel);
+    element.setAttribute("aria-label", label);
+    element.title = label;
+  });
   fields.location.placeholder = t("locationPlaceholder");
   locationResults.setAttribute("aria-label", t("locationSuggestions"));
   graph.setAttribute("aria-label", t("bodygraphLabel"));
   graph.querySelector("svg")?.setAttribute("aria-label", t("bodygraphLabel"));
   languageButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.language === language)));
   if (statusState) status.textContent = t(statusState.key, statusState.values);
+  renderHistory();
   if (rerender && lastData) {
     render(lastData)
       .then(createPosterImage)
@@ -1044,6 +1192,53 @@ function applyLanguage(nextLanguage, rerender = true) {
 }
 
 languageButtons.forEach((button) => button.addEventListener("click", () => applyLanguage(button.dataset.language)));
+openHistoryButton.addEventListener("click", () => {
+  renderHistory();
+  historyDialog.showModal();
+});
+openSettingsButton.addEventListener("click", () => settingsDialog.showModal());
+closeHistoryButton.addEventListener("click", () => historyDialog.close());
+closeSettingsButton.addEventListener("click", () => settingsDialog.close());
+[historyDialog, settingsDialog].forEach((dialog) => dialog.addEventListener("click", (event) => {
+  if (event.target === dialog) dialog.close();
+}));
+historyList.addEventListener("click", (event) => {
+  const openButton = event.target.closest("[data-history-open]");
+  const deleteButton = event.target.closest("[data-history-delete]");
+  if (openButton) {
+    const entry = historyEntries.find((item) => item.id === openButton.dataset.historyOpen);
+    openHistoryEntry(entry).catch((error) => {
+      console.error(error);
+      setStatus("failed", { message: error.message });
+    });
+  }
+  if (deleteButton) {
+    historyEntries = historyEntries.filter((entry) => entry.id !== deleteButton.dataset.historyDelete);
+    persistHistory();
+    renderHistory();
+  }
+});
+defaultPrivacyInput.addEventListener("change", () => {
+  appSettings.privacyByDefault = defaultPrivacyInput.checked;
+  persistSettings();
+  privacyToggle.checked = defaultPrivacyInput.checked;
+  if (lastData) {
+    render(lastData)
+      .then(createPosterImage)
+      .catch((error) => { setStatus("exportFailed", { message: error.message }); });
+  }
+});
+saveHistoryInput.addEventListener("change", () => {
+  appSettings.keepHistory = saveHistoryInput.checked;
+  persistSettings();
+});
+clearHistoryButton.addEventListener("click", () => {
+  if (!window.confirm(`${t("clearHistory")}?`)) return;
+  historyEntries = [];
+  persistHistory();
+  renderHistory();
+  setStatus("historyCleared");
+});
 ampmButtons.forEach((button) => button.addEventListener("click", () => {
   fields.ampm.value = button.dataset.ampm;
   ampmButtons.forEach((option) => option.setAttribute("aria-pressed", String(option === button)));
@@ -1064,7 +1259,9 @@ shareDetailButton.addEventListener("click", async () => {
   const url = currentShareUrl();
   shareDetailButton.disabled = true;
   try {
-    if (navigator.share) {
+    if (isNativeApp()) {
+      await nativePlugin.shareLink({ text: t("shareReadingText"), url });
+    } else if (navigator.share) {
       await navigator.share({ title: t("shareTitle"), text: t("shareReadingText"), url });
     } else {
       await navigator.clipboard.writeText(url);
@@ -1158,6 +1355,17 @@ chartForm.addEventListener("submit", async (event) => {
     });
     await render(data);
     lastData = data;
+    saveChartHistory(data, {
+      name,
+      year: Number(fields.year.value),
+      month: Number(fields.month.value),
+      day: Number(fields.day.value),
+      hour: fields.hour.value,
+      minute: fields.minute.value,
+      ampm: fields.ampm.value,
+      location: place.label,
+      place: { label: place.label, timezone: place.timezone },
+    });
     setStatus("preparing");
     await createPosterImage();
     setStatus("calculated");
@@ -1206,7 +1414,11 @@ downloadButton.addEventListener("click", async () => {
   try {
     const file = posterFile();
     const mobile = matchMedia("(pointer: coarse)").matches || /Android|iPad|iPhone|iPod/i.test(navigator.userAgent);
-    if (mobile && canShareFile(file)) {
+    if (isNativeApp()) {
+      const base64 = await blobToBase64(posterBlob);
+      await nativePlugin.saveImage({ base64, fileName: posterFileName() });
+      setStatus("downloaded");
+    } else if (mobile && canShareFile(file)) {
       setStatus("chooseSaveImage");
       await navigator.share({ files: [file] });
       setStatus("downloaded");
@@ -1230,7 +1442,16 @@ shareButton.addEventListener("click", async () => {
   shareButton.disabled = true;
   try {
     const file = posterFile();
-    if (canShareFile(file)) {
+    if (isNativeApp()) {
+      const base64 = await blobToBase64(posterBlob);
+      const result = await nativePlugin.shareImage({
+        base64,
+        fileName: posterFileName(),
+        text: t("shareText"),
+        url: currentShareUrl(),
+      });
+      setStatus(result.completed === false ? "calculated" : "shared");
+    } else if (canShareFile(file)) {
       await navigator.share({ files: [file], title: t("shareTitle"), text: t("shareText") });
       setStatus("shared");
     } else if (navigator.share) {
@@ -1255,4 +1476,7 @@ paintBodygraph({ Design: {}, Personality: {}, "Defined Centers": [] }).catch((er
   setStatus("failed", { message: error.message });
 });
 initializeSelectors();
+defaultPrivacyInput.checked = appSettings.privacyByDefault;
+saveHistoryInput.checked = appSettings.keepHistory;
+privacyToggle.checked = appSettings.privacyByDefault;
 applyLanguage(language, false);

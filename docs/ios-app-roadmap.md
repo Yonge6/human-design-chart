@@ -11,6 +11,9 @@ calculation engine, chart renderer, bilingual copy, and export logic.
 - Runtime: Capacitor 8 with WKWebView
 - Minimum supported iOS version: iOS 15
 - Native dependency manager: Swift Package Manager
+- Native services: Save to Photos and iOS share sheet
+- On-device features: chart history, offline reopening, privacy defaults, and data deletion
+- App icon: custom Pluto artwork generated for this product
 
 ## Update Workflow
 
@@ -92,17 +95,19 @@ near-identical reskin of App A or App B.
 
 ## App Store Readiness
 
-The generated iOS project is suitable for development and TestFlight
-preparation. Before App Store submission, add native value beyond a web
-wrapper:
+The iOS project now includes native value beyond a web wrapper:
 
-- Native chart history stored on device
-- Native share sheet and Save to Photos
-- Offline chart access
-- App icon and launch screen
+- Native chart history stored on device (complete)
+- Native share sheet and Save to Photos (complete)
+- Offline access to previously generated charts (complete)
+- On-device privacy defaults and local data deletion (complete)
+- Custom App icon and branded launch screen (complete)
+
+Before TestFlight and App Store submission, complete the remaining release work:
+
 - Privacy policy and support links
-- On-device settings and data deletion
 - Accessibility and real-device QA
+- Signed archive and App Store Connect metadata
 
 This also gives each future app a clear reason to exist and reduces the risk
 of submitting multiple substantially similar apps.
@@ -118,9 +123,10 @@ of submitting multiple substantially similar apps.
 
 ### Phase 2: Native Product Quality
 
-- Add native share and photo saving
-- Add local chart history
-- Add app icon and launch screen
+- Add native share and photo saving (complete)
+- Add local chart history and offline reopening (complete)
+- Add local privacy settings and data deletion (complete)
+- Add custom app icon and branded launch screen (complete)
 - Add privacy and support pages
 - Test on a physical iPhone
 

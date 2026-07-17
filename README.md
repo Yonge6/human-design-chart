@@ -62,7 +62,7 @@ The endpoint executes the repository's shared Swiss Ephemeris engine; it does no
 
 ## Profile snapshot
 
-Every API chart is a `HumanDesignProfileSnapshot` containing `schemaVersion`, `engineVersion`, a deterministic `chartHash`, normalized input, core properties, activations, structure, and calculation metadata. The stable v1 contract is defined in [JSON Schema](schemas/human-design-profile-v1.schema.json) and [the schema guide](docs/human-design-profile-schema.md).
+Every API chart is an `engine_verified` `HumanDesignProfileSnapshot` containing `schemaVersion`, `engineVersion`, a deterministic `chartHash`, normalized input, core properties, activations, structure, and calculation metadata. Browser cloud saves are marked `client_asserted` after strict structure and hash validation and are not a substitute for server recalculation. The stable v1 contract is defined in [JSON Schema](schemas/human-design-profile-v1.schema.json) and [the schema guide](docs/human-design-profile-schema.md).
 
 ## Privacy
 

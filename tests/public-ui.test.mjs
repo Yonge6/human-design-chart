@@ -54,6 +54,9 @@ test("cloud saving and anonymous analytics are explicit opt-ins", () => {
   assert.match(backend, /cloudSave: false/);
   assert.match(backend, /productAnalytics: false/);
   assert.match(html, /id="deleteCloudData"/);
+  assert.match(html, /删除云端图谱与个人资料/);
+  assert.match(app, /Delete Cloud Charts and Personal Data/);
+  assert.match(app, /匿名使用事件会移除用户标识，并最多保留180天/);
 });
 
 test("dialog controls use consistent fixed dimensions", () => {

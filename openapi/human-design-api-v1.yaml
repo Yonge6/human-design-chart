@@ -97,10 +97,11 @@ components:
     ProfileSnapshot:
       type: object
       additionalProperties: false
-      required: [schemaVersion, engineVersion, chartHash, generatedAt, input, core, activations, structure, meta]
+      required: [schemaVersion, engineVersion, verificationStatus, chartHash, generatedAt, input, core, activations, structure, meta]
       properties:
         schemaVersion: { const: "1.0" }
-        engineVersion: { type: string, examples: ["1.0.0"] }
+        engineVersion: { const: "1.0.0" }
+        verificationStatus: { const: "engine_verified" }
         chartHash: { type: string, pattern: "^sha256:[a-f0-9]{64}$" }
         generatedAt: { type: string, format: date-time }
         input: { $ref: "#/components/schemas/ChartRequest" }

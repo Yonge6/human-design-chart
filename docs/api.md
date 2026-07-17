@@ -22,7 +22,7 @@ For repeated daylight-saving clock times, retry with `"timeDisambiguation":"earl
 Success returns a schema-valid `HumanDesignProfileSnapshot`:
 
 ```json
-{"data":{"schemaVersion":"1.0","engineVersion":"1.0.0","chartHash":"sha256:..."},"requestId":"...","error":null}
+{"data":{"schemaVersion":"1.0","engineVersion":"1.0.0","verificationStatus":"engine_verified","chartHash":"sha256:..."},"requestId":"...","error":null}
 ```
 
 Errors use the same envelope:

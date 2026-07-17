@@ -21,9 +21,14 @@ const response = await fetch(
 
 if (!response.ok) throw new Error("Chart request failed");
 const { data } = await response.json();
+if (data.verificationStatus !== "engine_verified") {
+  throw new Error("An authoritative engine result is required");
+}
 ```
 
 A lightweight client may contain only HTTP requests, public TypeScript types, timeout/retry behavior, and public error handling. It must not contain Swiss Ephemeris, WASM, calculation rules, or BodyGraph rendering code. The example under `examples/http-client/` follows that boundary.
+
+Future proprietary products must obtain authoritative charts directly from `POST /v1/charts`. A cloud record marked `client_asserted` proves only schema, canonical-hash, and structural validation; it must not be treated as proof that the server reran Swiss Ephemeris.
 
 ## Prohibited
 

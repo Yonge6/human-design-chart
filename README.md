@@ -66,7 +66,8 @@ Every API chart is an `engine_verified` `HumanDesignProfileSnapshot` containing 
 
 ## Privacy
 
-- Local calculation, image generation, and local history are the default.
+- Local calculation and image generation are the default; privacy mode starts on.
+- Local history is off by default and is stored only after explicit opt-in. Turning it off clears existing local history after in-app confirmation.
 - Cloud chart saving is off by default and requires explicit consent.
 - Anonymous product analytics are a separate switch and are off by default.
 - Place-search text is sent only when the user searches for a location.

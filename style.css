@@ -35,6 +35,7 @@ body {
     radial-gradient(circle at 22% 82%, rgba(126, 31, 46, .16), transparent 28%),
     linear-gradient(135deg, #120d15 0%, #241625 48%, #0e0c12 100%);
   font-family: Georgia, "Songti SC", "STSong", "Times New Roman", serif;
+  overflow-x: hidden;
 }
 .topbar {
   display: flex;
@@ -302,6 +303,7 @@ body {
 .confirm-dialog-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 24px 24px; }
 .confirm-dialog-actions button { width: 100%; height: 44px; min-height: 44px; margin: 0; }
 .secondary-button { border: 1px solid rgba(216, 177, 125, .35); background: transparent; color: #ead9c0; }
+.settings-dialog { overflow-y: auto; }
 .settings-dialog[open] { grid-template-rows: auto auto auto auto auto; }
 .settings-list { display: grid; padding: 6px 22px; }
 .settings-row {
@@ -517,6 +519,11 @@ input, select, button {
   font: 15px ui-sans-serif, system-ui, sans-serif;
 }
 input::placeholder { color: #7c6c67; }
+input[aria-invalid="true"],
+select[aria-invalid="true"] {
+  border-color: #c45565;
+  box-shadow: 0 0 0 2px rgba(196, 85, 101, .18);
+}
 input[type="search"]::-webkit-search-cancel-button { opacity: .55; }
 .location-combobox { position: relative; }
 .location-results {
@@ -1134,14 +1141,14 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
   .shell { padding: 8px; }
   .shell.form-view, .shell.result-view { width: 100%; }
   .shell.form-view {
-    height: calc(100dvh - 58px);
-    min-height: 0;
-    overflow: hidden;
+    height: auto;
+    min-height: calc(100dvh - 58px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    overflow: visible;
   }
   .form-panel {
     --form-control-height: 40px;
-    height: 100%;
-    min-height: 0;
+    height: auto;
+    min-height: calc(100dvh - 74px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
     padding: 18px 20px;
     background:
       linear-gradient(180deg, rgba(8, 12, 16, .18), rgba(6, 9, 13, .34)),

@@ -15,6 +15,48 @@ test("history deletion requires the confirmation dialog", () => {
   assert.doesNotMatch(app, /remove\.textContent\s*=\s*"×"/);
 });
 
+test("privacy-first defaults and destructive actions use in-app confirmation", () => {
+  const html = read("index.html");
+  const app = read("app.js");
+
+  assert.match(app, /defaultSettings = \{ privacyByDefault: true, keepHistory: false/);
+  assert.match(app, /historyEntries\.length && !appSettings\.keepHistory/);
+  assert.match(html, /id="confirmationDialog"/);
+  assert.match(app, /requestConfirmation\(\{/);
+  assert.match(app, /historyEntries = \[\];[\s\S]*persistHistory\(\)/);
+  assert.doesNotMatch(app, /window\.confirm\(/);
+});
+
+test("birth selectors start empty and use shared validation", () => {
+  const app = read("app.js");
+
+  assert.doesNotMatch(app, /appendOptions\(fields\.year[^\n]*1997/);
+  assert.doesNotMatch(app, /fields\.day\.value = "07"/);
+  assert.match(app, /validateBirthSelection\(\{/);
+});
+
+test("mobile form remains vertically scrollable", () => {
+  const css = read("style.css");
+
+  assert.match(css, /\.shell\.form-view \{\s*height: auto;\s*min-height:[^;]+;\s*overflow: visible;/);
+  assert.doesNotMatch(css, /\.shell\.form-view \{\s*height: calc\(100dvh - 58px\);\s*min-height: 0;\s*overflow: hidden;/);
+  assert.match(css, /\.settings-dialog \{ overflow-y: auto; \}/);
+});
+
+test("result has an accessible summary and social discovery metadata", () => {
+  const html = read("index.html");
+  const app = read("app.js");
+
+  assert.match(html, /id="resultSummary"[^>]*role="status"[^>]*aria-live="polite"/);
+  assert.match(html, /aria-describedby="resultSummary"/);
+  assert.match(app, /updateAccessibleResultSummary/);
+  assert.match(html, /rel="canonical" href="https:\/\/human-design\.wonderelian\.com\/"/);
+  assert.match(html, /property="og:image"/);
+  assert.match(html, /name="twitter:card" content="summary_large_image"/);
+  assert.match(read("robots.txt"), /sitemap\.xml/);
+  assert.match(read("sitemap.xml"), /human-design\.wonderelian\.com/);
+});
+
 test("public pages expose source, license, and build provenance", () => {
   const index = read("index.html");
   const legal = read("legal.html");

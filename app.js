@@ -6,6 +6,7 @@ import { canUseSystemShare, isMobileDevice, sharePageLink } from "./src/services
 import { readStoredJson, writeStoredJson } from "./src/services/storage-service.js";
 import { createBodygraphRenderer } from "./src/renderer/bodygraph-renderer.js";
 import { renderPosterElement } from "./src/renderer/poster-renderer.js";
+import { validateBirthSelection } from "./src/app/form-validation.js";
 
 const publicAppUrl = "https://human-design.wonderelian.com/";
 const planets = ["Sun", "Earth", "North Node", "South Node", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
@@ -34,6 +35,7 @@ const formPanel = document.querySelector(".form-panel");
 const chartPanel = document.querySelector("#capture");
 const chartResult = document.querySelector("#chartResult");
 const chartPreview = document.querySelector("#chartPreview");
+const resultSummary = document.querySelector("#resultSummary");
 const chartQr = document.querySelector("#chartQr");
 const privacyToggle = document.querySelector("#privacyMode");
 const ampmSwitch = document.querySelector("#ampmSwitch");
@@ -63,6 +65,11 @@ const cloudSaveInput = document.querySelector("#cloudSave");
 const productAnalyticsInput = document.querySelector("#productAnalytics");
 const deleteCloudDataButton = document.querySelector("#deleteCloudData");
 const clearHistoryButton = document.querySelector("#clearHistory");
+const confirmationDialog = document.querySelector("#confirmationDialog");
+const confirmationTitle = document.querySelector("#confirmationTitle");
+const confirmationMessage = document.querySelector("#confirmationMessage");
+const cancelConfirmationButton = document.querySelector("#cancelConfirmation");
+const acceptConfirmationButton = document.querySelector("#acceptConfirmation");
 const nativePlugin = globalThis.Capacitor?.registerPlugin?.("PlutoNative") || null;
 
 function currentShareUrl() {
@@ -90,7 +97,7 @@ const copy = {
     failed: "计算失败：{message}", preparing: "正在生成图片…", downloaded: "图片已保存。", chooseSaveImage: "请在系统菜单中选择“存储图像”保存到相册。", shared: "分享已完成。", linkCopied: "当前设备不支持分享图片，网站链接已复制。", exportFailed: "图片导出失败：{message}",
     shareTitle: "我的人生使用说明书", shareText: "这是我的人生使用说明书。", shareReading: "分享", shareReadingText: "免费生成你的人生使用说明书与详细解读。", openingShareShort: "正在打开…", linkCopiedShort: "已复制", sharedShort: "已分享", cancelledShort: "已取消", downloadedShort: "已下载", selectAmPm: "请选择上午或下午。", detailReading: "详细解读", close: "关闭",
     history: "历史记录", settings: "隐私设置", localOnly: "仅保存在此设备", historyEmpty: "还没有保存的人生使用说明书。", openHistory: "打开", deleteHistory: "删除", confirmDeleteTitle: "删除这条记录？", confirmDeleteHint: "删除后无法恢复。", cancel: "取消", confirmDelete: "确认删除", openSource: "源代码",
-    defaultPrivacy: "默认开启隐私模式", defaultPrivacyHint: "生成图片时自动隐藏姓名、日期、时间和地点。", saveHistory: "保存本地历史记录", saveHistoryHint: "可离线重新打开最近生成的说明书。", cloudSave: "将新生成的说明书保存到云端", cloudSaveHint: "关闭时不上传姓名、出生资料或图谱；默认关闭。", productAnalytics: "帮助我们改进 Pluto", productAnalyticsHint: "仅发送允许的匿名操作事件，不包含出生资料或完整图谱；默认关闭。", deleteCloudData: "删除云端图谱与个人资料", deleteCloudConfirm: "这会删除当前匿名身份保存的姓名、出生资料和人类图记录。本地历史不会删除。已经记录的匿名使用事件会移除用户标识，并最多保留180天用于汇总统计。", cloudDeleted: "云端图谱与个人资料已删除；匿名事件已去标识，本地历史保留。", clearHistory: "清空历史记录", privacyPolicy: "隐私政策", support: "帮助与支持", legalNotice: "法律声明", privacyNote: "云端保存和匿名统计均默认关闭；删除云端图谱与个人资料不会删除本设备的历史记录。", historyCleared: "历史记录已清空。",
+    defaultPrivacy: "默认开启隐私模式", defaultPrivacyHint: "生成图片时自动隐藏姓名、日期、时间和地点；默认开启。", saveHistory: "保存本地历史记录", saveHistoryHint: "默认关闭；开启后可离线重新打开最近生成的说明书。关闭时会清除已保存的本地历史。", cloudSave: "将新生成的说明书保存到云端", cloudSaveHint: "关闭时不上传姓名、出生资料或图谱；默认关闭。", productAnalytics: "帮助我们改进 Pluto", productAnalyticsHint: "仅发送允许的匿名操作事件，不包含出生资料或完整图谱；默认关闭。", deleteCloudData: "删除云端图谱与个人资料", deleteCloudConfirm: "这会删除当前匿名身份保存的姓名、出生资料和人类图记录。本地历史不会删除。已经记录的匿名使用事件会移除用户标识，并最多保留180天用于汇总统计。", deleteCloudTitle: "删除云端资料？", cloudDeleted: "云端图谱与个人资料已删除；匿名事件已去标识，本地历史保留。", clearHistory: "清空历史记录", clearHistoryTitle: "清空全部本地历史？", clearHistoryConfirm: "本设备保存的人生使用说明书会被永久删除，且无法恢复。", disableHistoryTitle: "关闭并清除本地历史？", disableHistoryConfirm: "关闭本地历史后，本设备已有记录会立即清除。今后生成的说明书也不会保存在历史中。", confirmDisableHistory: "关闭并清除", pleaseConfirm: "请确认", confirmAction: "确认", privacyPolicy: "隐私政策", support: "帮助与支持", legalNotice: "法律声明", privacyNote: "隐私模式默认开启；本地历史、云端保存和匿名统计均默认关闭。本地历史关闭时会清除本设备已有记录；删除云端资料不会删除本地历史。", historyCleared: "历史记录已清空。", selectDate: "请选择完整的出生日期。", invalidDate: "请输入有效的出生日期。", selectTime: "请选择完整的出生时间。", invalidTime: "请输入有效的出生时间。", enterLocation: "请输入出生地点。",
   },
   en: {
     brand: "Pluto Life Manual",
@@ -109,7 +116,7 @@ const copy = {
     failed: "Failed: {message}", preparing: "Preparing image…", downloaded: "Image saved.", chooseSaveImage: "Choose Save Image in the system menu to add it to Photos.", shared: "Shared.", linkCopied: "Image sharing is unavailable on this device. The site link was copied.", exportFailed: "Image export failed: {message}",
     shareTitle: "My Life Manual", shareText: "Here is my personal life manual.", shareReading: "Share", shareReadingText: "Create your free Life Manual and detailed reading.", openingShareShort: "Opening…", linkCopiedShort: "Copied", sharedShort: "Shared", cancelledShort: "Cancelled", downloadedShort: "Downloaded", selectAmPm: "Choose AM or PM.", detailReading: "Detailed Reading", close: "Close",
     history: "History", settings: "Privacy", localOnly: "Stored only on this device", historyEmpty: "No saved Life Manuals yet.", openHistory: "Open", deleteHistory: "Delete", confirmDeleteTitle: "Delete this record?", confirmDeleteHint: "This action cannot be undone.", cancel: "Cancel", confirmDelete: "Delete", openSource: "Open Source",
-    defaultPrivacy: "Privacy mode by default", defaultPrivacyHint: "Hide name, date, time, and location in generated images.", saveHistory: "Save local history", saveHistoryHint: "Reopen recent Life Manuals while offline.", cloudSave: "Save new Life Manuals to the cloud", cloudSaveHint: "When off, names, birth details, and charts are not uploaded. Off by default.", productAnalytics: "Help us improve Pluto", productAnalyticsHint: "Send only allowlisted anonymous actions, never birth details or a full chart. Off by default.", deleteCloudData: "Delete Cloud Charts and Personal Data", deleteCloudConfirm: "This deletes the name, birth details, and Human Design records saved for the current anonymous identity. Local history is not deleted. Previously recorded anonymous usage events are deidentified and retained for no more than 180 days for aggregate statistics.", cloudDeleted: "Cloud charts and personal data deleted. Events were deidentified; local history remains.", clearHistory: "Clear history", privacyPolicy: "Privacy Policy", support: "Help & Support", legalNotice: "Legal Notice", privacyNote: "Cloud saving and anonymous analytics are off by default. Deleting cloud charts and personal data does not delete this device's local history.", historyCleared: "History cleared.",
+    defaultPrivacy: "Privacy mode by default", defaultPrivacyHint: "Hide name, date, time, and location in generated images. On by default.", saveHistory: "Save local history", saveHistoryHint: "Off by default. Turn it on to reopen recent Life Manuals offline. Turning it off clears saved local history.", cloudSave: "Save new Life Manuals to the cloud", cloudSaveHint: "When off, names, birth details, and charts are not uploaded. Off by default.", productAnalytics: "Help us improve Pluto", productAnalyticsHint: "Send only allowlisted anonymous actions, never birth details or a full chart. Off by default.", deleteCloudData: "Delete Cloud Charts and Personal Data", deleteCloudConfirm: "This deletes the name, birth details, and Human Design records saved for the current anonymous identity. Local history is not deleted. Previously recorded anonymous usage events are deidentified and retained for no more than 180 days for aggregate statistics.", deleteCloudTitle: "Delete cloud data?", cloudDeleted: "Cloud charts and personal data deleted. Events were deidentified; local history remains.", clearHistory: "Clear history", clearHistoryTitle: "Clear all local history?", clearHistoryConfirm: "Every Life Manual saved on this device will be permanently deleted. This cannot be undone.", disableHistoryTitle: "Turn off and clear local history?", disableHistoryConfirm: "Turning off local history immediately clears records already saved on this device. Future Life Manuals will not be added to history.", confirmDisableHistory: "Turn Off & Clear", pleaseConfirm: "Please confirm", confirmAction: "Confirm", privacyPolicy: "Privacy Policy", support: "Help & Support", legalNotice: "Legal Notice", privacyNote: "Privacy mode is on by default. Local history, cloud saving, and anonymous analytics are off by default. Turning local history off clears saved records; deleting cloud data does not delete local history.", historyCleared: "History cleared.", selectDate: "Choose a complete birth date.", invalidDate: "Enter a valid birth date.", selectTime: "Choose a complete birth time.", invalidTime: "Enter a valid birth time.", enterLocation: "Enter a birth location.",
   },
 };
 
@@ -335,9 +342,10 @@ const celebrities = [
 ];
 const historyStorageKey = "pluto-chart-history-v1";
 const settingsStorageKey = "pluto-app-settings-v1";
-const defaultSettings = { privacyByDefault: false, keepHistory: true, ...DEFAULT_CONSENT };
+const defaultSettings = { privacyByDefault: true, keepHistory: false, ...DEFAULT_CONSENT };
 
-let appSettings = { ...defaultSettings, ...readStoredJson(settingsStorageKey, {}) };
+const storedSettings = readStoredJson(settingsStorageKey, {});
+let appSettings = { ...defaultSettings, ...storedSettings };
 let historyEntries = readStoredJson(historyStorageKey, []);
 if (!Array.isArray(historyEntries)) historyEntries = [];
 historyEntries = historyEntries.filter((entry) => (
@@ -345,6 +353,10 @@ historyEntries = historyEntries.filter((entry) => (
   && entry.data?.Properties
   && entry.data?.Meta
 ));
+// Keep legacy entries visible until the user explicitly confirms their deletion.
+if (historyEntries.length && !appSettings.keepHistory) {
+  appSettings.keepHistory = true;
+}
 let language = localStorage.getItem("pluto-language") || (navigator.language?.toLowerCase().startsWith("zh") ? "zh" : "en");
 let statusState;
 
@@ -613,6 +625,7 @@ let placeQueryVersion = 0;
 const placeCache = new Map();
 let selectedPlace = null;
 let pendingHistoryDeleteId = null;
+let pendingConfirmation = null;
 const paintBodygraph = createBodygraphRenderer({
   container: graph,
   templateUrl: "./assets/bodygraph-template.svg?v=20260717-12",
@@ -626,6 +639,23 @@ function persistSettings() {
 
 function persistHistory() {
   writeStoredJson(historyStorageKey, historyEntries);
+}
+
+function settleConfirmation(accepted) {
+  const resolve = pendingConfirmation;
+  pendingConfirmation = null;
+  if (confirmationDialog.open) confirmationDialog.close();
+  resolve?.(accepted);
+}
+
+function requestConfirmation({ titleKey, messageKey, confirmKey = "confirmAction" }) {
+  if (pendingConfirmation) settleConfirmation(false);
+  confirmationTitle.textContent = t(titleKey);
+  confirmationMessage.textContent = t(messageKey);
+  acceptConfirmationButton.textContent = t(confirmKey);
+  confirmationDialog.showModal();
+  window.setTimeout(() => cancelConfirmationButton.focus(), 0);
+  return new Promise((resolve) => { pendingConfirmation = resolve; });
 }
 
 function currentConsent() {
@@ -788,12 +818,11 @@ function updateDays() {
 
 function initializeSelectors() {
   const currentYear = new Date().getFullYear();
-  appendOptions(fields.year, Array.from({ length: currentYear - 1899 }, (_, index) => ({ value: currentYear - index })), 1997);
-  appendOptions(fields.month, Array.from({ length: 12 }, (_, index) => ({ value: index + 1 })), 7);
-  appendOptions(fields.hour, Array.from({ length: 12 }, (_, index) => ({ value: index + 1 })), 7);
-  appendOptions(fields.minute, Array.from({ length: 60 }, (_, index) => ({ value: index })), 7);
+  appendOptions(fields.year, Array.from({ length: currentYear - 1899 }, (_, index) => ({ value: currentYear - index })), null);
+  appendOptions(fields.month, Array.from({ length: 12 }, (_, index) => ({ value: index + 1 })), null);
+  appendOptions(fields.hour, Array.from({ length: 12 }, (_, index) => ({ value: index + 1 })), null);
+  appendOptions(fields.minute, Array.from({ length: 60 }, (_, index) => ({ value: index })), null);
   updateDays();
-  fields.day.value = "07";
   fields.ampm.value = "am";
   ampmButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.ampm === "am")));
 }
@@ -1020,13 +1049,6 @@ async function resolveTypedPlace(query) {
   return null;
 }
 
-function time24(hour, minute, ampm) {
-  let value = Number(hour);
-  if (value === 12) value = 0;
-  if (ampm === "pm") value += 12;
-  return { hour: value, minute: Number(minute) };
-}
-
 async function decodeImage(image) {
   if (image.decode) await image.decode();
   else if (!image.complete) await new Promise((resolve, reject) => {
@@ -1047,6 +1069,24 @@ function row(name, item) {
   return `<li><span><i class="${iconClass}" aria-hidden="true"></i><em>${label}</em></span><b>${item.Gate}.${item.Line}</b></li>`;
 }
 
+function updateAccessibleResultSummary(data) {
+  if (!data?.Properties) {
+    resultSummary.textContent = "";
+    return;
+  }
+  const properties = data.Properties;
+  const values = [
+    translatedValue("Type", properties.Type),
+    translatedValue("Strategy", properties.Strategy),
+    translatedValue("Inner Authority", properties["Inner Authority"]),
+    translatedValue("Profile", properties.Profile),
+    translatedValue("Definition", properties.Definition),
+  ];
+  resultSummary.textContent = language === "zh"
+    ? `结果摘要：类型${values[0]}；策略${values[1]}；内在权威${values[2]}；人生角色${values[3]}；定义${values[4]}。`
+    : `Result summary: Type ${values[0]}; strategy ${values[1]}; authority ${values[2]}; profile ${values[3]}; definition ${values[4]}.`;
+}
+
 async function render(data) {
   await paintBodygraph(data);
   document.querySelector("#personName").textContent = privacyToggle.checked ? "***" : data.Properties.Name;
@@ -1061,6 +1101,7 @@ async function render(data) {
   document.querySelector("#interpretationText").textContent = interpretation(data);
   renderCelebrityMatches(data);
   renderDetailedReading(data);
+  updateAccessibleResultSummary(data);
 }
 
 function clearPoster() {
@@ -1120,13 +1161,16 @@ function showChartView() {
   shell.classList.remove("form-view");
   shell.classList.add("result-view");
   window.scrollTo({ top: 0, behavior: "auto" });
+  window.setTimeout(() => resultSummary.focus({ preventScroll: true }), 0);
 }
 
 function applyLanguage(nextLanguage, rerender = true) {
   language = nextLanguage === "en" ? "en" : "zh";
   localStorage.setItem("pluto-language", language);
   document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
-  document.title = language === "zh" ? "Pluto 人生使用说明书" : "Pluto Life Manual";
+  document.title = language === "zh"
+    ? "Pluto 人生使用说明书 | Human Design Chart"
+    : "Pluto Life Manual | Human Design Chart";
   document.querySelectorAll("[data-i18n]").forEach((element) => {
     element.textContent = t(element.dataset.i18n);
   });
@@ -1194,6 +1238,15 @@ deleteHistoryDialog.addEventListener("click", (event) => {
   if (event.target === deleteHistoryDialog) deleteHistoryDialog.close();
 });
 deleteHistoryDialog.addEventListener("close", () => { pendingHistoryDeleteId = null; });
+cancelConfirmationButton.addEventListener("click", () => settleConfirmation(false));
+acceptConfirmationButton.addEventListener("click", () => settleConfirmation(true));
+confirmationDialog.addEventListener("cancel", (event) => {
+  event.preventDefault();
+  settleConfirmation(false);
+});
+confirmationDialog.addEventListener("click", (event) => {
+  if (event.target === confirmationDialog) settleConfirmation(false);
+});
 defaultPrivacyInput.addEventListener("change", () => {
   appSettings.privacyByDefault = defaultPrivacyInput.checked;
   persistSettings();
@@ -1204,9 +1257,28 @@ defaultPrivacyInput.addEventListener("change", () => {
       .catch((error) => { setStatus("exportFailed", { message: error.message }); });
   }
 });
-saveHistoryInput.addEventListener("change", () => {
-  appSettings.keepHistory = saveHistoryInput.checked;
+saveHistoryInput.addEventListener("change", async () => {
+  if (saveHistoryInput.checked) {
+    appSettings.keepHistory = true;
+    persistSettings();
+    return;
+  }
+  if (historyEntries.length) {
+    const accepted = await requestConfirmation({
+      titleKey: "disableHistoryTitle",
+      messageKey: "disableHistoryConfirm",
+      confirmKey: "confirmDisableHistory",
+    });
+    if (!accepted) {
+      saveHistoryInput.checked = true;
+      return;
+    }
+  }
+  appSettings.keepHistory = false;
+  historyEntries = [];
   persistSettings();
+  persistHistory();
+  renderHistory();
 });
 cloudSaveInput.addEventListener("change", () => {
   appSettings.cloudSave = cloudSaveInput.checked;
@@ -1220,7 +1292,8 @@ productAnalyticsInput.addEventListener("change", () => {
   trackEvent("privacy_mode_changed", { setting: "productAnalytics", enabled: productAnalyticsInput.checked });
 });
 deleteCloudDataButton.addEventListener("click", async () => {
-  if (!window.confirm(t("deleteCloudConfirm"))) return;
+  const accepted = await requestConfirmation({ titleKey: "deleteCloudTitle", messageKey: "deleteCloudConfirm", confirmKey: "deleteCloudData" });
+  if (!accepted) return;
   deleteCloudDataButton.disabled = true;
   try {
     await deleteCloudData(currentConsent());
@@ -1235,8 +1308,9 @@ deleteCloudDataButton.addEventListener("click", async () => {
     deleteCloudDataButton.disabled = false;
   }
 });
-clearHistoryButton.addEventListener("click", () => {
-  if (!window.confirm(`${t("clearHistory")}?`)) return;
+clearHistoryButton.addEventListener("click", async () => {
+  const accepted = await requestConfirmation({ titleKey: "clearHistoryTitle", messageKey: "clearHistoryConfirm", confirmKey: "clearHistory" });
+  if (!accepted) return;
   historyEntries = [];
   persistHistory();
   renderHistory();
@@ -1297,6 +1371,7 @@ function invalidateChart() {
   document.querySelector("#interpretationText").textContent = "";
   celebrityMatches.replaceChildren();
   detailContent.replaceChildren();
+  updateAccessibleResultSummary(null);
   paintBodygraph({ Design: {}, Personality: {}, "Defined Centers": [] }).catch((error) => {
     setStatus("failed", { message: error.message });
   });
@@ -1305,9 +1380,29 @@ function invalidateChart() {
 fields.year.addEventListener("change", updateDays);
 fields.month.addEventListener("change", updateDays);
 [fields.year, fields.month, fields.day, fields.hour, fields.minute, fields.ampm].forEach((field) => field.addEventListener("change", resetClockOccurrence));
+[fields.year, fields.month, fields.day, fields.hour, fields.minute].forEach((field) => field.addEventListener("change", () => field.removeAttribute("aria-invalid")));
+fields.name.addEventListener("input", () => fields.name.removeAttribute("aria-invalid"));
+fields.location.addEventListener("input", () => fields.location.removeAttribute("aria-invalid"));
 chartForm.addEventListener("input", invalidateChart);
 chartForm.addEventListener("change", invalidateChart);
 chartForm.addEventListener("input", () => trackEvent("form_started"), { once: true });
+
+function clearBirthValidationState() {
+  [fields.year, fields.month, fields.day, fields.hour, fields.minute].forEach((field) => field.removeAttribute("aria-invalid"));
+  ampmSwitch.removeAttribute("aria-invalid");
+}
+
+function focusBirthValidationError(validation) {
+  clearBirthValidationState();
+  if (validation.field === "ampm") {
+    ampmSwitch.setAttribute("aria-invalid", "true");
+    ampmButtons[0].focus();
+  } else {
+    fields[validation.field]?.setAttribute("aria-invalid", "true");
+    fields[validation.field]?.focus();
+  }
+  setStatus(validation.code);
+}
 
 chartForm.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -1321,18 +1416,31 @@ chartForm.addEventListener("submit", async (event) => {
     return;
   }
   fields.name.removeAttribute("aria-invalid");
-  if (!fields.ampm.value) {
-    ampmSwitch.setAttribute("aria-invalid", "true");
-    ampmButtons[0].focus();
-    setStatus("selectAmPm");
+  const birthValidation = validateBirthSelection({
+    year: fields.year.value,
+    month: fields.month.value,
+    day: fields.day.value,
+    hour: fields.hour.value,
+    minute: fields.minute.value,
+    ampm: fields.ampm.value,
+  });
+  if (!birthValidation.valid) {
+    focusBirthValidationError(birthValidation);
     return;
   }
-  ampmSwitch.removeAttribute("aria-invalid");
-  const time = time24(fields.hour.value, fields.minute.value, fields.ampm.value);
+  clearBirthValidationState();
+  const time = { hour: birthValidation.value.hour24, minute: birthValidation.value.minute };
+  const locationQuery = fields.location.value.trim();
+  if (!locationQuery) {
+    fields.location.setAttribute("aria-invalid", "true");
+    fields.location.focus();
+    setStatus("enterLocation");
+    return;
+  }
+  fields.location.removeAttribute("aria-invalid");
   submit.disabled = true;
   trackEvent("chart_generate_started");
   try {
-    const locationQuery = fields.location.value.trim();
     const place = selectedPlace?.label === locationQuery ? selectedPlace : await resolveTypedPlace(locationQuery);
     if (!place) return;
     selectedPlace = place;

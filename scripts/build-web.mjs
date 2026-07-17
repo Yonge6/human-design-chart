@@ -14,6 +14,8 @@ const files = [
   "build-provenance.js",
   "human-design-engine.js",
   "location-service.js",
+  "robots.txt",
+  "sitemap.xml",
   "LICENSE",
   "THIRD_PARTY_NOTICES.md",
 ];

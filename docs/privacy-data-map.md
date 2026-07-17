@@ -14,5 +14,6 @@
 | Allowlisted product event | App action | Pseudonymous | No | Optional | Analytics switch explicitly enabled | `product_events` | Define and publish production retention before enabling | Not part of chart deletion after anonymization; identity is nulled on user deletion | Admin aggregate access only |
 | Generated poster | Local renderer | Yes if unmasked | Temporary blob/download | Never | Not uploaded by this project | None | Browser session/Photos library | User deletes local file | None |
 | Local history | User device | Yes | Optional, default on | Never unless separate cloud consent | Local-history switch | Browser/Capacitor storage | Until clear/off/uninstall | Clear local history | None |
+| Cloud deletion receipt | Delete action | Pseudonymous | No | Generated server-side | User requests cloud deletion | `data_deletion_audit_logs` | Production operator must publish a retention period | Not linked through a reversible user ID | No ordinary-user access |
 
 Cloud deletion and local-history deletion are intentionally independent. Production deployment must publish a concrete event-retention schedule before enabling analytics.

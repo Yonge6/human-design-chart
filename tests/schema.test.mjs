@@ -58,13 +58,25 @@ test("chart hash is stable across names, generated times, labels, and key order"
   const reordered = reverseKeys(snapshot);
   const changedPresentation = {
     ...snapshot,
+    name: "A display-only name",
+    language: "zh",
     generatedAt: "2030-01-01T00:00:00.000Z",
-    input: { ...snapshot.input, locationLabel: "武汉" },
+    input: { ...snapshot.input, name: "Another display-only name", locationLabel: "武汉" },
   };
 
   assert.equal(await createChartHash(changedPresentation), snapshot.chartHash);
   assert.equal(await createChartHash(reordered), snapshot.chartHash);
   assert.equal("name" in snapshot.input, false);
+});
+
+test("real chart identity includes schema, engine, and calculation output", async () => {
+  const snapshot = await exampleSnapshot();
+  assert.notEqual(await createChartHash({ ...snapshot, schemaVersion: "1.1" }), snapshot.chartHash);
+  assert.notEqual(await createChartHash({ ...snapshot, engineVersion: "1.0.1" }), snapshot.chartHash);
+  assert.notEqual(await createChartHash({
+    ...snapshot,
+    core: { ...snapshot.core, authority: "Changed calculation output" },
+  }), snapshot.chartHash);
 });
 
 test("core calculation fixture remains unchanged after module separation", async () => {

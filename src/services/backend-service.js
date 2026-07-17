@@ -11,6 +11,10 @@ const FORBIDDEN_EVENT_FIELDS = new Set([
   "name", "birthDate", "birthTime", "location", "locationLabel", "query", "latitude",
   "longitude", "chart", "snapshot", "text", "contacts", "clipboard", "userAgent", "stack",
 ]);
+const EVENT_PROPERTY_FIELDS = new Set([
+  "language", "setting", "enabled", "environment", "schemaVersion", "engineVersion",
+  "category", "format", "surface", "platform",
+]);
 
 export const DEFAULT_CONSENT = Object.freeze({ cloudSave: false, productAnalytics: false });
 
@@ -25,6 +29,7 @@ export function sanitizeProductEvent(eventName, properties = {}) {
     if (value !== null && !["string", "number", "boolean"].includes(typeof value)) {
       throw new TypeError("Event properties must be flat scalar values.");
     }
+    if (!EVENT_PROPERTY_FIELDS.has(key)) throw new TypeError(`Unsupported event field: ${key}`);
   }
   const encoded = JSON.stringify(properties);
   if (encoded.length > 2048) throw new TypeError("Event properties are too large.");
@@ -97,16 +102,13 @@ async function invoke(functionName, body) {
 
 export async function saveChartToCloud(snapshot, personalData, consent = DEFAULT_CONSENT) {
   if (!consent.cloudSave || !hasSupabaseConfig()) return { skipped: true };
-  return invoke("save-chart", { snapshot, personalData, consentVersion: "1.0", consent });
+  await updateConsent(consent);
+  return invoke("save-chart", { snapshot, personalData });
 }
 
 export async function recordProductEvent(eventName, properties, consent = DEFAULT_CONSENT) {
   if (!consent.productAnalytics || !hasSupabaseConfig()) return { skipped: true };
-  return invoke("record-event", {
-    ...sanitizeProductEvent(eventName, properties),
-    consentVersion: "1.0",
-    consent,
-  });
+  return invoke("record-event", sanitizeProductEvent(eventName, properties));
 }
 
 export async function deleteCloudData(consent = DEFAULT_CONSENT) {

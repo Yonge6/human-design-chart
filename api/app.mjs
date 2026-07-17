@@ -6,7 +6,12 @@ import { createHumanDesignProfileSnapshot, PROFILE_SCHEMA_VERSION } from "../src
 import { installNodeFileFetch } from "./node-file-fetch.mjs";
 
 const MAX_BODY_BYTES = 16 * 1024;
-const DEFAULT_ORIGINS = ["https://human-design.wonderelian.com", "http://127.0.0.1:8789"];
+export const DEFAULT_ORIGINS = Object.freeze([
+  "https://human-design.wonderelian.com",
+  "http://127.0.0.1:8789",
+  "http://localhost:8789",
+  "capacitor://localhost",
+]);
 const ERROR_CODES = new Set([
   "INVALID_REQUEST",
   "INVALID_BIRTH_DATE",
@@ -168,16 +173,30 @@ export function createApiServer(options = {}) {
   };
   if (!config.origins.size) DEFAULT_ORIGINS.forEach((origin) => config.origins.add(origin));
   const rateLimit = createRateLimiter(config.rateLimit);
+  const calculate = options.calculateSnapshot || calculateSnapshot;
+  const log = options.logger || ((entry) => console.info(JSON.stringify(entry)));
 
   const server = createServer(async (request, response) => {
     const requestId = randomUUID();
+    const startedAt = performance.now();
+    let route = "unknown";
+    let errorCode = null;
     const origin = request.headers.origin;
     const corsHeaders = origin && config.origins.has(origin)
       ? { "Access-Control-Allow-Origin": origin, Vary: "Origin" }
       : {};
+    response.once("finish", () => log({
+      requestId,
+      method: request.method,
+      route,
+      status: response.statusCode,
+      errorCode,
+      durationMs: Math.round(performance.now() - startedAt),
+    }));
     try {
+      if (origin && !config.origins.has(origin)) throw new ApiError(403, "INVALID_REQUEST", "Origin is not allowed.");
       if (request.method === "OPTIONS") {
-        if (origin && !config.origins.has(origin)) throw new ApiError(403, "INVALID_REQUEST", "Origin is not allowed.");
+        route = "preflight";
         response.writeHead(204, {
           ...corsHeaders,
           "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
@@ -188,10 +207,12 @@ export function createApiServer(options = {}) {
         return;
       }
       if (request.method === "GET" && request.url === "/v1/health") {
+        route = "/v1/health";
         json(response, 200, envelope(requestId, { status: "ok" }), corsHeaders);
         return;
       }
       if (request.method === "GET" && request.url === "/v1/version") {
+        route = "/v1/version";
         json(response, 200, envelope(requestId, {
           appVersion: config.appVersion,
           gitCommit: config.gitCommit,
@@ -202,13 +223,25 @@ export function createApiServer(options = {}) {
         return;
       }
       if (request.method === "POST" && request.url === "/v1/charts") {
+        route = "/v1/charts";
+        // Deliberately ignore X-Forwarded-For. A trusted production gateway must
+        // apply distributed client-aware rate limiting before this process.
         const client = request.socket.remoteAddress || "unknown";
         const rate = rateLimit(client);
         response.setHeader("X-RateLimit-Limit", String(config.rateLimit));
         response.setHeader("X-RateLimit-Remaining", String(rate.remaining));
         if (!rate.allowed) throw new ApiError(429, "RATE_LIMITED", "Too many requests; try again later.");
         const input = parseChartInput(await readJsonBody(request));
-        const snapshot = await calculateSnapshot(input);
+        let snapshot;
+        try {
+          snapshot = await calculate(input);
+        } catch (error) {
+          if (error instanceof ApiError) throw error;
+          if (/Swiss Ephemeris|WASM|ephemeris/i.test(error?.message || "")) {
+            throw new ApiError(503, "ENGINE_UNAVAILABLE", "The calculation engine is temporarily unavailable.");
+          }
+          throw error;
+        }
         json(response, 200, envelope(requestId, snapshot), corsHeaders);
         return;
       }
@@ -218,6 +251,7 @@ export function createApiServer(options = {}) {
         ? error
         : new ApiError(500, "INTERNAL_ERROR", "An internal error occurred.");
       const code = ERROR_CODES.has(safe.code) ? safe.code : "INTERNAL_ERROR";
+      errorCode = code;
       json(response, safe.status || 500, envelope(requestId, null, { code, message: safe.message }), corsHeaders);
     }
   });

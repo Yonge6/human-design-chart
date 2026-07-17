@@ -13,3 +13,15 @@ export async function authenticatedClients(request: Request) {
   await adminClient.from("app_users").upsert({ id: data.user.id }, { onConflict: "id" });
   return { user: data.user, adminClient };
 }
+
+export async function requireCurrentConsent(adminClient: ReturnType<typeof createClient>, userId: string, field: "cloud_save" | "product_analytics") {
+  const { data, error } = await adminClient
+    .from("consent_records")
+    .select(`sequence_no,${field}`)
+    .eq("user_id", userId)
+    .order("sequence_no", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data?.[field]) throw new Error("FORBIDDEN");
+}

@@ -37,3 +37,16 @@ test("database migration enables RLS and owner-only chart access", async () => {
   assert.match(migration, /users read own charts[\s\S]+user_id = auth\.uid\(\)/i);
   assert.doesNotMatch(migration, /create policy [^;]+product_events for select[^;]+auth\.uid/i);
 });
+
+test("all write Edge Functions share JWT, CORS, size, and allowlist guards", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const config = await readFile(new URL("../supabase/config.toml", import.meta.url), "utf8");
+  for (const name of ["save-chart", "record-event", "update-consent", "delete-cloud-data"]) {
+    const source = await readFile(new URL(`../supabase/functions/${name}/index.ts`, import.meta.url), "utf8");
+    assert.match(config, new RegExp(`functions\\.${name.replace("-", "\\-")}\\][\\s\\S]*?verify_jwt = true`));
+    assert.match(source, /authenticatedClients\(request\)/);
+    assert.match(source, /originAllowed\(request\)/);
+    assert.match(source, /limitedJson\(request,/);
+    assert.doesNotMatch(source, /console\.(?:log|info|warn|error)|request\.text\(\)/);
+  }
+});

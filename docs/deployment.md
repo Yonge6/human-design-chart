@@ -16,7 +16,7 @@ Publish `dist/` to `https://human-design.wonderelian.com`. The build creates `ru
 
 ## API
 
-Run `node api/server.mjs` behind HTTPS at `https://api-human-design.wonderelian.com`. Set `PLUTO_CORS_ORIGINS`, provenance variables, host/port, and a production gateway rate limiter. The working directory must include the vendored WASM and ephemeris files. Run `npm run test:api` in the exact container/image before deployment.
+Run `npm run build:api`, then `node api/server.mjs` from `dist-api/` behind HTTPS at `https://api-human-design.wonderelian.com`. Set `PLUTO_CORS_ORIGINS`, provenance variables, host/port, and a production gateway rate limiter. The in-process `Map` limiter is single-instance only and ignores `X-Forwarded-For`; the trusted gateway must apply client-aware distributed limiting. Run `npm run test:api` against the exact release environment before deployment.
 
 ## Supabase
 
@@ -26,6 +26,8 @@ Run `node api/server.mjs` behind HTTPS at `https://api-human-design.wonderelian.
 4. Set Edge Function `PLUTO_CORS_ORIGINS`; keep the service-role key only in Supabase secrets.
 5. Put only project URL and publishable/anon key in web build variables.
 6. Run RLS integration tests against a disposable project before production.
+
+The Edge Functions centrally allow only `https://human-design.wonderelian.com`, the two port-8789 local origins, and `capacitor://localhost` unless `PLUTO_CORS_ORIGINS` overrides them. They also reject disallowed `Origin` values on the actual write request. Supabase CLI's local Kong currently adds a wildcard CORS header at its outer gateway even though direct function responses are origin-specific. Before production, verify the public hosted/custom gateway end to end; production readiness requires the exposed gateway not to replace the function allowlist with permissive CORS. Put a restrictive reverse proxy in front if the hosted gateway cannot satisfy that requirement.
 
 ## DNS
 

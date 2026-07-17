@@ -49,7 +49,8 @@ The Node service imports `src/engine/human-design-engine.js`, the same module us
 
 - Requests are limited to explicit fields and lengths.
 - CORS uses `PLUTO_CORS_ORIGINS`; sensitive endpoints never return `Access-Control-Allow-Origin: *`.
-- A per-process baseline rate limit defaults to 30 chart requests/minute/IP; production should add a gateway/distributed limiter.
+- A per-process `Map` limiter defaults to 30 chart requests/minute/socket address. It is a single-instance safety net, not production-grade distributed rate limiting. Multi-instance production must add Cloudflare, a trusted reverse proxy, a managed platform limiter, or a Redis-backed limiter.
+- The Node process deliberately ignores `X-Forwarded-For` and never persists an IP. A trusted gateway must perform client-aware limiting before proxying; do not enable blanket proxy trust in the app process.
 - Logs must contain request ID, route, status, latency, and coarse error code only. Do not log request bodies, names, birth details, places, snapshots, or stack traces.
 - Responses never expose server stacks.
 - The API is stateless and does not save chart requests to Supabase.

@@ -26,4 +26,6 @@
 
 The hash excludes name, `generatedAt`, random/request IDs, language, and `locationLabel`. This makes the same chart reproducible across bilingual presentations and repeated generation. A change to calculation output or a relevant engine version intentionally changes the hash.
 
+Both `schemaVersion` and `engineVersion` are intentionally included in identity. If calculation behavior changes, publish a new engine version: old and new records remain distinguishable by both version fields and `chartHash`. A breaking protocol change uses a new major schema version and therefore also produces a new hash namespace. Consumers must compare versions before treating two snapshots as semantically equivalent.
+
 Names are never part of the core snapshot protocol. An explicitly consented cloud record may store a name separately from the snapshot/hash.

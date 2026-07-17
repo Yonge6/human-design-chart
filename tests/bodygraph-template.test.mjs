@@ -33,3 +33,19 @@ test("gate capsules stay fully inside the 422 by 813 canvas", () => {
     assert.ok(y >= 0 && y + 15 <= 813, `gate capsule at y ${y} stays inside the viewBox`);
   }
 });
+
+test("BodyGraph geometry stays outside the engine, API, and snapshot protocol", async () => {
+  const sources = await Promise.all([
+    "../src/engine/human-design-engine.js",
+    "../src/engine/profile-snapshot.js",
+    "../src/engine/chart-hash.js",
+    "../api/app.mjs",
+    "../schemas/human-design-profile-v1.schema.json",
+  ].map((path) => readFile(new URL(path, import.meta.url), "utf8")));
+  for (const source of sources) {
+    assert.doesNotMatch(source, /bodygraph-template|<path\b|renderer\/bodygraph/i);
+  }
+  const renderer = await readFile(new URL("../src/renderer/bodygraph-renderer.js", import.meta.url), "utf8");
+  assert.match(renderer, /templateUrl/);
+  assert.match(renderer, /fetch\(templateUrl\)/);
+});

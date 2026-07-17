@@ -10,7 +10,9 @@
     "test:schema": "node --test tests/schema.test.mjs",
     "test:privacy": "node --test tests/privacy.test.mjs",
     "test:security": "node --test tests/build-security.test.mjs",
+    "test:supabase": "node scripts/run-supabase-tests.mjs",
     "build": "node scripts/build-web.mjs",
+    "build:api": "node scripts/build-api-package.mjs",
     "api:start": "node api/server.mjs",
     "ios:add": "npm run build && npx cap add ios --packagemanager SPM",
     "ios:sync": "npm run build && npx cap sync ios",
@@ -24,6 +26,7 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^8.0.0",
+    "@supabase/supabase-js": "2.57.4",
     "ajv": "^8.18.0"
   }
 }

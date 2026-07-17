@@ -10,6 +10,7 @@ create table public.app_users (
 
 create table public.consent_records (
   id uuid primary key default gen_random_uuid(),
+  sequence_no bigint generated always as identity unique,
   user_id uuid not null references public.app_users(id) on delete cascade,
   consent_version text not null check (char_length(consent_version) between 1 and 32),
   cloud_save boolean not null default false,
@@ -60,6 +61,29 @@ create table public.admin_audit_logs (
   created_at timestamptz not null default now()
 );
 
+create table public.data_deletion_audit_logs (
+  id bigint generated always as identity primary key,
+  subject_hash text not null check (subject_hash ~ '^sha256:[a-f0-9]{64}$'),
+  request_id uuid not null unique,
+  deleted_chart_count integer not null default 0 check (deleted_chart_count >= 0),
+  created_at timestamptz not null default now()
+);
+
+create or replace function public.set_updated_at()
+returns trigger
+language plpgsql
+set search_path = public
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+create trigger app_users_set_updated_at
+before update on public.app_users
+for each row execute function public.set_updated_at();
+
 create or replace function public.is_pluto_admin()
 returns boolean
 language sql
@@ -80,12 +104,39 @@ as $$
     and not exists (
       select 1 from jsonb_each(properties) as item
       where jsonb_typeof(item.value) in ('object', 'array')
+        or item.key not in (
+          'language', 'setting', 'enabled', 'environment', 'schemaVersion',
+          'engineVersion', 'category', 'format', 'surface', 'platform'
+        )
     )
-    and not (properties ?| array[
-      'name', 'birthDate', 'birthTime', 'location', 'locationLabel', 'query',
-      'latitude', 'longitude', 'chart', 'snapshot', 'text', 'contacts',
-      'clipboard', 'userAgent', 'stack'
-    ]);
+    and not exists (
+      select 1 from jsonb_each(properties) as item
+      where regexp_replace(lower(item.key), '[^a-z0-9]', '', 'g') = any(array[
+        'name', 'birthdate', 'birthtime', 'location', 'locationlabel', 'query',
+        'latitude', 'longitude', 'coordinates', 'chart', 'snapshot', 'text',
+        'contacts', 'clipboard', 'useragent', 'stack'
+      ])
+    );
+$$;
+
+create or replace function public.has_current_consent(consent_kind text)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select coalesce((
+    select case consent_kind
+      when 'cloud_chart_storage' then record.cloud_save
+      when 'product_analytics' then record.product_analytics
+      else false
+    end
+    from public.consent_records as record
+    where record.user_id = auth.uid()
+    order by record.sequence_no desc
+    limit 1
+  ), false);
 $$;
 
 alter table public.product_events
@@ -98,6 +149,7 @@ alter table public.chart_records enable row level security;
 alter table public.product_events enable row level security;
 alter table public.admin_users enable row level security;
 alter table public.admin_audit_logs enable row level security;
+alter table public.data_deletion_audit_logs enable row level security;
 
 create policy "users read own profile" on public.app_users for select using (id = auth.uid());
 create policy "users create own profile" on public.app_users for insert with check (id = auth.uid());
@@ -109,20 +161,44 @@ create policy "users create own consent" on public.consent_records for insert wi
 create policy "admins read consent" on public.consent_records for select using (public.is_pluto_admin());
 
 create policy "users read own charts" on public.chart_records for select using (user_id = auth.uid());
-create policy "users create own charts" on public.chart_records for insert with check (user_id = auth.uid());
-create policy "users update own charts" on public.chart_records for update using (user_id = auth.uid()) with check (user_id = auth.uid());
+create policy "users create own charts" on public.chart_records for insert with check (
+  user_id = auth.uid() and public.has_current_consent('cloud_chart_storage')
+);
+create policy "users update own charts" on public.chart_records for update using (
+  user_id = auth.uid() and public.has_current_consent('cloud_chart_storage')
+) with check (
+  user_id = auth.uid() and public.has_current_consent('cloud_chart_storage')
+);
 create policy "users delete own charts" on public.chart_records for delete using (user_id = auth.uid());
 create policy "admins read charts" on public.chart_records for select using (public.is_pluto_admin());
 
-create policy "users create anonymous events" on public.product_events for insert with check (user_id = auth.uid());
+create policy "users create anonymous events" on public.product_events for insert with check (
+  user_id = auth.uid() and public.has_current_consent('product_analytics')
+);
 create policy "admins read events" on public.product_events for select using (public.is_pluto_admin());
 
 create policy "admins read admin membership" on public.admin_users for select using (public.is_pluto_admin());
 create policy "admins read audit logs" on public.admin_audit_logs for select using (public.is_pluto_admin());
 create policy "admins create audit logs" on public.admin_audit_logs for insert with check (admin_user_id = auth.uid() and public.is_pluto_admin());
 
-create index consent_records_user_id_idx on public.consent_records(user_id, recorded_at desc);
+create index consent_records_user_id_idx on public.consent_records(user_id, sequence_no desc);
 create index chart_records_user_id_idx on public.chart_records(user_id, created_at desc);
 create index product_events_created_at_idx on public.product_events(created_at desc);
+create index data_deletion_audit_logs_created_at_idx on public.data_deletion_audit_logs(created_at desc);
+
+grant usage on schema public to authenticated;
+grant usage on schema public to service_role;
+grant select, insert, update on public.app_users to authenticated;
+grant select, insert on public.consent_records to authenticated;
+grant select, insert, update, delete on public.chart_records to authenticated;
+grant insert on public.product_events to authenticated;
+grant select on public.admin_users, public.admin_audit_logs to authenticated;
+grant usage, select on all sequences in schema public to authenticated;
+grant execute on function public.is_pluto_admin() to authenticated;
+grant execute on function public.has_current_consent(text) to authenticated;
+grant all on all tables in schema public to service_role;
+grant all on all sequences in schema public to service_role;
+grant execute on all functions in schema public to service_role;
+revoke all on public.data_deletion_audit_logs from anon, authenticated;
 
 commit;

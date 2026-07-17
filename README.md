@@ -25,7 +25,9 @@ Open `http://127.0.0.1:8789/`. Calculation and poster generation remain local an
 npm test              # all unit, regression, schema, API, privacy, and UI tests
 npm run test:schema   # snapshot protocol and deterministic hash tests
 npm run test:api      # starts a real local API and calls Swiss Ephemeris
+npm run test:supabase # real local Auth, JWT, RLS, PostgreSQL, and Edge tests
 npm run build         # static web build in dist/
+npm run build:api     # standalone API package in dist-api/
 npm run api:start     # local API on 127.0.0.1:8790
 npm run ios:sync      # build and sync the Capacitor iOS project
 npm run ios:build     # unsigned iOS simulator build

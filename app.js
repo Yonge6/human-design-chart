@@ -42,11 +42,14 @@ const languageButtons = [...document.querySelectorAll("[data-language]")];
 const openHistoryButton = document.querySelector("#openHistory");
 const openSettingsButton = document.querySelector("#openSettings");
 const historyDialog = document.querySelector("#historyDialog");
+const deleteHistoryDialog = document.querySelector("#deleteHistoryDialog");
 const settingsDialog = document.querySelector("#settingsDialog");
 const closeHistoryButton = document.querySelector("#closeHistory");
 const closeSettingsButton = document.querySelector("#closeSettings");
 const historyList = document.querySelector("#historyList");
 const historyEmpty = document.querySelector("#historyEmpty");
+const cancelHistoryDeleteButton = document.querySelector("#cancelHistoryDelete");
+const confirmHistoryDeleteButton = document.querySelector("#confirmHistoryDelete");
 const defaultPrivacyInput = document.querySelector("#defaultPrivacy");
 const saveHistoryInput = document.querySelector("#saveHistory");
 const clearHistoryButton = document.querySelector("#clearHistory");
@@ -76,8 +79,8 @@ const copy = {
     futureTime: "出生日期和时间不能晚于现在。", calculating: "正在计算行星位置…", calculated: "已使用 Swiss Ephemeris 在本地完成计算。",
     failed: "计算失败：{message}", preparing: "正在生成图片…", downloaded: "图片已保存。", chooseSaveImage: "请在系统菜单中选择“存储图像”保存到相册。", shared: "分享已完成。", linkCopied: "当前设备不支持分享图片，网站链接已复制。", exportFailed: "图片导出失败：{message}",
     shareTitle: "我的人生使用说明书", shareText: "这是我的人生使用说明书。", shareReading: "分享", shareReadingText: "免费生成你的人生使用说明书与详细解读。", linkCopiedShort: "已复制", selectAmPm: "请选择上午或下午。", detailReading: "详细解读", close: "关闭",
-    history: "历史记录", settings: "隐私设置", localOnly: "仅保存在此设备", historyEmpty: "还没有保存的人生使用说明书。", openHistory: "打开", deleteHistory: "删除",
-    defaultPrivacy: "默认开启隐私模式", defaultPrivacyHint: "生成图片时自动隐藏姓名、日期、时间和地点。", saveHistory: "保存本地历史记录", saveHistoryHint: "可离线重新打开最近生成的说明书。", clearHistory: "清空历史记录", privacyPolicy: "隐私政策", support: "帮助与支持", openSource: "开源与法律声明", privacyNote: "姓名、出生时间和图谱保存在设备本地；仅地点搜索文字会发送给地理编码服务。", historyCleared: "历史记录已清空。",
+    history: "历史记录", settings: "隐私设置", localOnly: "仅保存在此设备", historyEmpty: "还没有保存的人生使用说明书。", openHistory: "打开", deleteHistory: "删除", confirmDeleteTitle: "删除这条记录？", confirmDeleteHint: "删除后无法恢复。", cancel: "取消", confirmDelete: "确认删除",
+    defaultPrivacy: "默认开启隐私模式", defaultPrivacyHint: "生成图片时自动隐藏姓名、日期、时间和地点。", saveHistory: "保存本地历史记录", saveHistoryHint: "可离线重新打开最近生成的说明书。", clearHistory: "清空历史记录", privacyPolicy: "隐私政策", support: "帮助与支持", legalNotice: "法律声明", privacyNote: "姓名、出生时间和图谱保存在设备本地；仅地点搜索文字会发送给地理编码服务。", historyCleared: "历史记录已清空。",
   },
   en: {
     brand: "Pluto Life Manual",
@@ -95,8 +98,8 @@ const copy = {
     futureTime: "Birth date and time cannot be in the future.", calculating: "Calculating planetary positions…", calculated: "Chart calculated locally with Swiss Ephemeris.",
     failed: "Failed: {message}", preparing: "Preparing image…", downloaded: "Image saved.", chooseSaveImage: "Choose Save Image in the system menu to add it to Photos.", shared: "Shared.", linkCopied: "Image sharing is unavailable on this device. The site link was copied.", exportFailed: "Image export failed: {message}",
     shareTitle: "My Life Manual", shareText: "Here is my personal life manual.", shareReading: "Share", shareReadingText: "Create your free Life Manual and detailed reading.", linkCopiedShort: "Copied", selectAmPm: "Choose AM or PM.", detailReading: "Detailed Reading", close: "Close",
-    history: "History", settings: "Privacy", localOnly: "Stored only on this device", historyEmpty: "No saved Life Manuals yet.", openHistory: "Open", deleteHistory: "Delete",
-    defaultPrivacy: "Privacy mode by default", defaultPrivacyHint: "Hide name, date, time, and location in generated images.", saveHistory: "Save local history", saveHistoryHint: "Reopen recent Life Manuals while offline.", clearHistory: "Clear history", privacyPolicy: "Privacy Policy", support: "Help & Support", openSource: "Open Source & Legal", privacyNote: "Your name, birth time, and chart stay on this device; only place-search text is sent to geocoding providers.", historyCleared: "History cleared.",
+    history: "History", settings: "Privacy", localOnly: "Stored only on this device", historyEmpty: "No saved Life Manuals yet.", openHistory: "Open", deleteHistory: "Delete", confirmDeleteTitle: "Delete this record?", confirmDeleteHint: "This action cannot be undone.", cancel: "Cancel", confirmDelete: "Delete",
+    defaultPrivacy: "Privacy mode by default", defaultPrivacyHint: "Hide name, date, time, and location in generated images.", saveHistory: "Save local history", saveHistoryHint: "Reopen recent Life Manuals while offline.", clearHistory: "Clear history", privacyPolicy: "Privacy Policy", support: "Help & Support", legalNotice: "Legal Notice", privacyNote: "Your name, birth time, and chart stay on this device; only place-search text is sent to geocoding providers.", historyCleared: "History cleared.",
   },
 };
 
@@ -609,6 +612,7 @@ let placeRequest;
 let placeQueryVersion = 0;
 const placeCache = new Map();
 let selectedPlace = null;
+let pendingHistoryDeleteId = null;
 
 function persistSettings() {
   try { localStorage.setItem(settingsStorageKey, JSON.stringify(appSettings)); } catch { /* Storage can be disabled. */ }
@@ -664,7 +668,7 @@ function renderHistory() {
     remove.dataset.historyDelete = entry.id;
     remove.setAttribute("aria-label", t("deleteHistory"));
     remove.title = t("deleteHistory");
-    remove.textContent = "×";
+    remove.textContent = t("deleteHistory");
     actions.append(open, remove);
     card.append(details, actions);
     historyList.append(card);
@@ -1003,7 +1007,7 @@ async function loadExportAssets() {
 
 async function loadGraphTemplate() {
   if (!graphTemplate) {
-    const response = await fetch("./assets/bodygraph-template.svg?v=20260717-10");
+    const response = await fetch("./assets/bodygraph-template.svg?v=20260717-11");
     if (!response.ok) throw new Error("BodyGraph template failed to load");
     graphTemplate = await response.text();
   }
@@ -1041,12 +1045,16 @@ async function paintBodygraph(data) {
     const gate = Number(line.dataset.gateLine);
     const hasDesign = active.design.has(gate);
     const hasPersonality = active.personality.has(gate);
-    let color = "transparent";
-    if (hasDesign && hasPersonality) color = line.dataset.gateLineType === "design" ? "#8c3040" : "#302936";
-    else if (hasDesign) color = "#8c3040";
-    else if (hasPersonality) color = "#302936";
-    line.style.fill = "none";
-    line.style.stroke = color;
+    if (hasDesign && hasPersonality) {
+      line.style.fill = line.dataset.gateLineType === "design" ? "#8c3040" : "#302936";
+    } else if (hasDesign) {
+      line.style.fill = "#8c3040";
+    } else if (hasPersonality) {
+      line.style.fill = "#302936";
+    } else {
+      line.style.fill = "transparent";
+    }
+    line.style.stroke = "none";
   });
 
   Object.entries(centerColors).forEach(([id]) => {
@@ -1210,11 +1218,23 @@ historyList.addEventListener("click", (event) => {
     });
   }
   if (deleteButton) {
-    historyEntries = historyEntries.filter((entry) => entry.id !== deleteButton.dataset.historyDelete);
+    pendingHistoryDeleteId = deleteButton.dataset.historyDelete;
+    deleteHistoryDialog.showModal();
+  }
+});
+cancelHistoryDeleteButton.addEventListener("click", () => deleteHistoryDialog.close());
+confirmHistoryDeleteButton.addEventListener("click", () => {
+  if (pendingHistoryDeleteId) {
+    historyEntries = historyEntries.filter((entry) => entry.id !== pendingHistoryDeleteId);
     persistHistory();
     renderHistory();
   }
+  deleteHistoryDialog.close();
 });
+deleteHistoryDialog.addEventListener("click", (event) => {
+  if (event.target === deleteHistoryDialog) deleteHistoryDialog.close();
+});
+deleteHistoryDialog.addEventListener("close", () => { pendingHistoryDeleteId = null; });
 defaultPrivacyInput.addEventListener("change", () => {
   appSettings.privacyByDefault = defaultPrivacyInput.checked;
   persistSettings();

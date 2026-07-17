@@ -1,9 +1,8 @@
 import { authenticatedClients, requireCurrentConsent } from "../_shared/auth.ts";
 import { errorResponse, exactObject, HttpError, json, limitedJson, originAllowed, preflight } from "../_shared/http.ts";
-import { validProfileSnapshot } from "../_shared/snapshot.ts";
+import { createChartHash, PROFILE_VERIFICATION, validateHumanDesignProfileSnapshot } from "../_shared/snapshot.ts";
 
 const PERSONAL_FIELDS = ["name", "birthDate", "birthTime", "locationLabel", "timezone"];
-const SNAPSHOT_FIELDS = ["schemaVersion", "engineVersion", "chartHash", "generatedAt", "input", "core", "activations", "structure", "meta"];
 const BODY_FIELDS = ["snapshot", "personalData"];
 
 function validTimezone(value: unknown) {
@@ -30,10 +29,15 @@ Deno.serve(async (request) => {
   try {
     const { user, adminClient } = await authenticatedClients(request);
     const body = await limitedJson(request, 64 * 1024);
-    if (!exactObject(body, BODY_FIELDS) || !exactObject(body?.personalData, PERSONAL_FIELDS) || !exactObject(body?.snapshot, SNAPSHOT_FIELDS) || !validProfileSnapshot(body?.snapshot)) {
+    if (!exactObject(body, BODY_FIELDS) || !exactObject(body?.personalData, PERSONAL_FIELDS)) {
       throw new HttpError(400, "INVALID_REQUEST");
     }
-    if (!/^sha256:[a-f0-9]{64}$/.test(body.snapshot.chartHash || "")) throw new HttpError(400, "INVALID_CHART_HASH");
+    const validation = validateHumanDesignProfileSnapshot(body?.snapshot, {
+      allowedVerificationStatuses: [PROFILE_VERIFICATION.CLIENT_ASSERTED],
+    });
+    if (!validation.valid) throw new HttpError(400, validation.reason === "INVALID_VERIFICATION_STATUS" ? "INVALID_VERIFICATION_STATUS" : "INVALID_REQUEST");
+    const serverHash = await createChartHash(body.snapshot);
+    if (serverHash !== body.snapshot.chartHash) throw new HttpError(400, "CHART_HASH_MISMATCH");
     if (typeof body.personalData.name !== "string" || body.personalData.name.length < 1 || body.personalData.name.length > 80) throw new HttpError(400, "INVALID_NAME");
     if (typeof body.personalData.locationLabel !== "string" || body.personalData.locationLabel.length > 160) throw new HttpError(400, "INVALID_LOCATION");
     if (!validDate(body.personalData.birthDate)) throw new HttpError(400, "INVALID_BIRTH_DATE");
@@ -46,18 +50,18 @@ Deno.serve(async (request) => {
       || body.personalData.timezone !== body.snapshot.input.timezone
     ) throw new HttpError(400, "SNAPSHOT_INPUT_MISMATCH");
     await requireCurrentConsent(adminClient, user.id, "cloud_save");
-    const { error } = await adminClient.from("chart_records").upsert({
-      user_id: user.id,
-      chart_hash: body.snapshot.chartHash,
-      schema_version: body.snapshot.schemaVersion,
-      engine_version: body.snapshot.engineVersion,
-      name: body.personalData.name,
-      birth_date: body.personalData.birthDate,
-      birth_time: body.personalData.birthTime,
-      location_label: body.personalData.locationLabel,
-      timezone: body.personalData.timezone,
-      snapshot: body.snapshot,
-    }, { onConflict: "user_id,chart_hash" });
+    const { error } = await adminClient.rpc("save_client_asserted_chart", {
+      p_user_id: user.id,
+      p_chart_hash: body.snapshot.chartHash,
+      p_schema_version: body.snapshot.schemaVersion,
+      p_engine_version: body.snapshot.engineVersion,
+      p_name: body.personalData.name,
+      p_birth_date: body.personalData.birthDate,
+      p_birth_time: body.personalData.birthTime,
+      p_location_label: body.personalData.locationLabel,
+      p_timezone: body.personalData.timezone,
+      p_snapshot: body.snapshot,
+    });
     if (error) throw error;
     return json(request, 200, { saved: true });
   } catch (error) {

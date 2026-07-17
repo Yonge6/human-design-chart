@@ -1,7 +1,8 @@
 import { createChartHash } from "./chart-hash.js";
 import { ENGINE_VERSION } from "./human-design-engine.js";
+import { PROFILE_SCHEMA_VERSION, PROFILE_VERIFICATION } from "../../shared/human-design-profile-contract.js";
 
-export const PROFILE_SCHEMA_VERSION = "1.0";
+export { PROFILE_SCHEMA_VERSION } from "../../shared/human-design-profile-contract.js";
 
 const activationNames = {
   Sun: "sun",
@@ -46,10 +47,16 @@ function normalizeVariables(variables) {
   };
 }
 
-export async function createHumanDesignProfileSnapshot({ input, result, generatedAt = new Date().toISOString() }) {
+export async function createHumanDesignProfileSnapshot({
+  input,
+  result,
+  generatedAt = new Date().toISOString(),
+  verificationStatus = PROFILE_VERIFICATION.CLIENT_ASSERTED,
+}) {
   const snapshot = {
     schemaVersion: PROFILE_SCHEMA_VERSION,
     engineVersion: ENGINE_VERSION,
+    verificationStatus,
     chartHash: "",
     generatedAt: new Date(generatedAt).toISOString(),
     input: {

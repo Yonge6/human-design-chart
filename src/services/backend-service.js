@@ -1,38 +1,13 @@
 import { hasSupabaseConfig, runtimeConfig } from "../config/runtime-config.js";
+import { PRODUCT_EVENT_NAMES, validateProductEvent } from "../../shared/product-event-contract.js";
 
-export const PRODUCT_EVENTS = Object.freeze([
-  "app_open", "form_started", "chart_generate_started", "chart_generate_succeeded",
-  "chart_generate_failed", "detail_opened", "poster_saved", "share_started",
-  "share_completed", "share_cancelled", "language_changed", "privacy_mode_changed",
-]);
-
-const EVENT_SET = new Set(PRODUCT_EVENTS);
-const FORBIDDEN_EVENT_FIELDS = new Set([
-  "name", "birthDate", "birthTime", "location", "locationLabel", "query", "latitude",
-  "longitude", "chart", "snapshot", "text", "contacts", "clipboard", "userAgent", "stack",
-]);
-const EVENT_PROPERTY_FIELDS = new Set([
-  "language", "setting", "enabled", "environment", "schemaVersion", "engineVersion",
-  "category", "format", "surface", "platform",
-]);
+export const PRODUCT_EVENTS = PRODUCT_EVENT_NAMES;
 
 export const DEFAULT_CONSENT = Object.freeze({ cloudSave: false, productAnalytics: false });
 
 export function sanitizeProductEvent(eventName, properties = {}) {
-  if (!EVENT_SET.has(eventName)) throw new TypeError("Unsupported product event.");
-  if (!properties || typeof properties !== "object" || Array.isArray(properties)) {
-    throw new TypeError("Event properties must be an object.");
-  }
-  for (const key of Object.keys(properties)) {
-    if (FORBIDDEN_EVENT_FIELDS.has(key)) throw new TypeError(`Sensitive event field is not allowed: ${key}`);
-    const value = properties[key];
-    if (value !== null && !["string", "number", "boolean"].includes(typeof value)) {
-      throw new TypeError("Event properties must be flat scalar values.");
-    }
-    if (!EVENT_PROPERTY_FIELDS.has(key)) throw new TypeError(`Unsupported event field: ${key}`);
-  }
-  const encoded = JSON.stringify(properties);
-  if (encoded.length > 2048) throw new TypeError("Event properties are too large.");
+  const validation = validateProductEvent(eventName, properties);
+  if (!validation.valid) throw new TypeError(validation.reason);
   return { eventName, properties };
 }
 

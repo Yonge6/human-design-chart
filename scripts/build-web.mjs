@@ -17,7 +17,7 @@ const files = [
   "LICENSE",
   "THIRD_PARTY_NOTICES.md",
 ];
-const directories = ["assets", "vendor", "src", "schemas"];
+const directories = ["assets", "vendor", "src", "shared", "schemas"];
 
 await rm(output, { recursive: true, force: true });
 await mkdir(output, { recursive: true });
@@ -30,6 +30,10 @@ await Promise.all([
     { recursive: true },
   )),
 ]);
+await mkdir(resolve(output, "supabase/functions/_shared"), { recursive: true });
+for (const contract of ["human-design-profile-contract.js", "product-event-contract.js"]) {
+  await cp(resolve(root, "supabase/functions/_shared", contract), resolve(output, "supabase/functions/_shared", contract));
+}
 
 const packageJson = JSON.parse(await readFile(resolve(root, "package.json"), "utf8"));
 const runtimeConfig = {

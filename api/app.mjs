@@ -3,6 +3,7 @@ import { createServer } from "node:http";
 
 import { calculateHumanDesign, ENGINE_VERSION, localToUtcCandidates } from "../src/engine/human-design-engine.js";
 import { createHumanDesignProfileSnapshot, PROFILE_SCHEMA_VERSION } from "../src/engine/profile-snapshot.js";
+import { PROFILE_VERIFICATION } from "../shared/human-design-profile-contract.js";
 import { installNodeFileFetch } from "./node-file-fetch.mjs";
 
 const MAX_BODY_BYTES = 16 * 1024;
@@ -145,6 +146,7 @@ async function calculateSnapshot(input) {
       locationLabel: input.locationLabel,
     },
     result,
+    verificationStatus: PROFILE_VERIFICATION.ENGINE_VERIFIED,
   });
 }
 

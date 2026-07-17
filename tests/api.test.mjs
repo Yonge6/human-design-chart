@@ -4,6 +4,7 @@ import test, { after, before } from "node:test";
 import { createApiServer, DEFAULT_ORIGINS } from "../api/app.mjs";
 import { calculateHumanDesign } from "../src/engine/human-design-engine.js";
 import { createHumanDesignProfileSnapshot } from "../src/engine/profile-snapshot.js";
+import { PROFILE_VERIFICATION } from "../shared/human-design-profile-contract.js";
 
 let api;
 let baseUrl;
@@ -75,7 +76,13 @@ test("chart API really uses the shared Swiss Ephemeris engine", async () => {
 
   assert.equal(apiResult.response.status, 200);
   assert.equal(apiResult.body.error, null);
-  assert.deepEqual(apiResult.body.data, browserSnapshot);
+  assert.equal(apiResult.body.data.verificationStatus, PROFILE_VERIFICATION.ENGINE_VERIFIED);
+  assert.equal(browserSnapshot.verificationStatus, PROFILE_VERIFICATION.CLIENT_ASSERTED);
+  assert.equal(apiResult.body.data.chartHash, browserSnapshot.chartHash);
+  assert.deepEqual(
+    { ...apiResult.body.data, verificationStatus: PROFILE_VERIFICATION.CLIENT_ASSERTED },
+    browserSnapshot,
+  );
   assert.equal(apiResult.body.data.meta.ephemeris, "Swiss Ephemeris");
   assert.equal(apiResult.body.data.meta.nodeType, "True Node");
   assert.equal(apiResult.body.data.meta.designSolarArc, 88);
@@ -100,7 +107,12 @@ test("browser and API snapshots match for another fixed birth fixture", async ()
     timezone: input.timezone,
     timeDisambiguation: "earlier",
   });
-  const direct = await createHumanDesignProfileSnapshot({ input, result, generatedAt: apiResult.body.data.generatedAt });
+  const direct = await createHumanDesignProfileSnapshot({
+    input,
+    result,
+    generatedAt: apiResult.body.data.generatedAt,
+    verificationStatus: PROFILE_VERIFICATION.ENGINE_VERIFIED,
+  });
 
   assert.equal(apiResult.response.status, 200);
   assert.deepEqual(apiResult.body.data, direct);

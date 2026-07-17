@@ -7,6 +7,7 @@ import { createClient } from "@supabase/supabase-js";
 
 import { calculateHumanDesign } from "../src/engine/human-design-engine.js";
 import { createHumanDesignProfileSnapshot } from "../src/engine/profile-snapshot.js";
+import { createChartHash, PROFILE_VERIFICATION } from "../shared/human-design-profile-contract.js";
 import { installNodeFileFetch } from "../api/node-file-fetch.mjs";
 
 installNodeFileFetch();
@@ -110,7 +111,8 @@ test("migration creates protected tables, constraints, indexes, functions, and t
   assert.equal(await psql("select count(*) from pg_tables where schemaname='public' and rowsecurity"), "7");
   assert.equal(await psql("select count(*) from pg_extension where extname='pgcrypto'"), "1");
   assert.equal(await psql("select count(*) from information_schema.triggers where trigger_schema='public' and trigger_name='app_users_set_updated_at'"), "1");
-  assert.equal(await psql("select count(*) from information_schema.routines where routine_schema='public' and routine_name in ('has_current_consent','is_pluto_admin','product_event_properties_are_safe','set_updated_at')"), "4");
+  assert.equal(await psql("select count(*) from information_schema.routines where routine_schema='public' and routine_name in ('has_current_consent','is_pluto_admin','product_event_properties_are_safe','set_updated_at','save_client_asserted_chart','record_product_event','delete_cloud_personal_data','cleanup_expired_privacy_records')"), "8");
+  assert.equal(await psql("select count(*) from information_schema.columns where table_schema='public' and table_name='chart_records' and column_name='verification_status'"), "1");
   assert.ok(Number(await psql("select count(*) from pg_indexes where schemaname='public'")) >= 10);
   assert.ok(Number(await psql("select count(*) from pg_constraint where connamespace='public'::regnamespace")) >= 20);
 });
@@ -133,7 +135,7 @@ test("two real anonymous JWT users are isolated by RLS", async () => {
   assert.equal((await invoke("save-chart", tokenB, { snapshot: snapshotB, personalData: personal("User B", snapshotB) })).response.status, 200);
   assert.deepEqual((await a.from("chart_records").select("id").eq("user_id", userB.id)).data, []);
   assert.deepEqual((await b.from("chart_records").select("id").eq("user_id", userA.id)).data, []);
-  assert.equal((await a.from("chart_records").update({ name: "attack" }).eq("user_id", userB.id).select()).data.length, 0);
+  assert.ok((await a.from("chart_records").update({ name: "attack" }).eq("user_id", userB.id).select()).error);
   assert.equal((await a.from("chart_records").delete().eq("user_id", userB.id).select()).data.length, 0);
   assert.equal((await b.from("chart_records").select("id")).data.length, 1);
 
@@ -163,21 +165,109 @@ test("cloud and analytics writes require the latest explicit consent", async () 
   assert.equal(denied.body.error, "CLOUD_STORAGE_CONSENT_REQUIRED");
 
   assert.equal((await consent(tokenA, true, false)).response.status, 200);
+  const directStillDenied = await a.from("chart_records").insert({
+    user_id: userA.id,
+    chart_hash: snapshotA2.chartHash,
+    schema_version: snapshotA2.schemaVersion,
+    engine_version: snapshotA2.engineVersion,
+    verification_status: "client_asserted",
+    name: "User A",
+    birth_date: snapshotA2.input.birthDate,
+    birth_time: snapshotA2.input.birthTime,
+    location_label: snapshotA2.input.locationLabel,
+    timezone: snapshotA2.input.timezone,
+    snapshot: snapshotA2,
+  });
+  assert.ok(directStillDenied.error);
+  const directEngineVerified = await a.from("chart_records").insert({
+    user_id: userA.id,
+    chart_hash: snapshotA2.chartHash,
+    schema_version: snapshotA2.schemaVersion,
+    engine_version: snapshotA2.engineVersion,
+    verification_status: "engine_verified",
+    name: "User A",
+    birth_date: snapshotA2.input.birthDate,
+    birth_time: snapshotA2.input.birthTime,
+    location_label: snapshotA2.input.locationLabel,
+    timezone: snapshotA2.input.timezone,
+    snapshot: { ...snapshotA2, verificationStatus: "engine_verified" },
+  });
+  assert.ok(directEngineVerified.error);
+  assert.ok((await a.rpc("save_client_asserted_chart", {
+    p_user_id: userA.id,
+    p_chart_hash: snapshotA2.chartHash,
+    p_schema_version: snapshotA2.schemaVersion,
+    p_engine_version: snapshotA2.engineVersion,
+    p_name: "User A",
+    p_birth_date: snapshotA2.input.birthDate,
+    p_birth_time: snapshotA2.input.birthTime,
+    p_location_label: snapshotA2.input.locationLabel,
+    p_timezone: snapshotA2.input.timezone,
+    p_snapshot: snapshotA2,
+  })).error);
   assert.equal((await invoke("save-chart", tokenA, { snapshot: snapshotA2, personalData: personal("User A", snapshotA2) })).response.status, 200);
   assert.equal((await invoke("save-chart", tokenA, { snapshot: snapshotA2, personalData: personal("User A", snapshotA2) })).response.status, 200);
   assert.equal((await a.from("chart_records").select("id", { count: "exact" }).eq("chart_hash", snapshotA2.chartHash)).count, 1);
 
   assert.equal((await consent(tokenA, false, false)).response.status, 200);
-  assert.equal((await invoke("save-chart", tokenA, { snapshot: { ...snapshotA2, chartHash: `sha256:${"a".repeat(64)}` }, personalData: personal("User A", snapshotA2) })).response.status, 403);
+  assert.equal((await invoke("save-chart", tokenA, { snapshot: snapshotA2, personalData: personal("User A", snapshotA2) })).response.status, 403);
   assert.equal((await invoke("record-event", tokenA, { eventName: "app_open", properties: {} })).response.status, 403);
   assert.ok((await a.from("product_events").insert({ user_id: userA.id, event_name: "app_open", properties: {} })).error);
+  assert.ok((await a.rpc("record_product_event", { p_user_id: userA.id, p_event_name: "app_open", p_properties: {} })).error);
 
   assert.equal((await consent(tokenA, false, true)).response.status, 200);
+  assert.ok((await a.from("product_events").insert({ user_id: userA.id, event_name: "app_open", properties: {} })).error);
   assert.equal((await invoke("record-event", tokenA, { eventName: "app_open", properties: { environment: "test" } })).response.status, 200);
   assert.equal((await invoke("record-event", tokenA, { eventName: "not_allowed", properties: {} })).response.status, 400);
   assert.equal((await invoke("record-event", tokenA, { eventName: "app_open", properties: { name: "private" } })).response.status, 400);
   assert.equal((await invoke("record-event", tokenA, { eventName: "app_open", properties: { birth_date: "1990-01-01" } })).response.status, 400);
+  assert.equal((await invoke("record-event", tokenA, { eventName: "app_open", properties: { platform: "张三，1990年1月1日出生于武汉" } })).response.status, 400);
+  assert.equal((await invoke("record-event", tokenA, { eventName: "app_open", properties: { category: "任意自由文本" } })).response.status, 400);
+  assert.equal((await invoke("record-event", tokenA, { eventName: "app_open", properties: { schemaVersion: "非法".repeat(40) } })).response.status, 400);
   assert.equal((await invoke("record-event", tokenA, { eventName: "app_open", properties: {}, unknown: true })).response.status, 400);
+  assert.ok((await admin.from("product_events").insert({ user_id: userA.id, event_name: "app_open", properties: { category: "任意自由文本" } })).error);
+});
+
+test("save-chart recomputes the canonical hash and enforces snapshot provenance and structure", async () => {
+  await consent(tokenA, true, false);
+  const changedContent = structuredClone(snapshotA);
+  changedContent.activations.personality.sun.longitude += 0.001;
+  const changedContentResult = await invoke("save-chart", tokenA, { snapshot: changedContent, personalData: personal("A", changedContent) });
+  assert.equal(changedContentResult.response.status, 400);
+  assert.equal(changedContentResult.body.error, "CHART_HASH_MISMATCH");
+
+  const changedHash = { ...snapshotA, chartHash: `sha256:${"a".repeat(64)}` };
+  const changedHashResult = await invoke("save-chart", tokenA, { snapshot: changedHash, personalData: personal("A", changedHash) });
+  assert.equal(changedHashResult.response.status, 400);
+  assert.equal(changedHashResult.body.error, "CHART_HASH_MISMATCH");
+
+  for (const mutate of [
+    (value) => { value.activations.personality.sun.gate = 65; },
+    (value) => { value.activations.personality.sun.line = 0; },
+    (value) => { value.activations.personality.sun.color = 7; },
+    (value) => { value.activations.personality.sun.tone = 7; },
+    (value) => { value.activations.personality.sun.base = 6; },
+    (value) => { value.core.type = "Invalid"; },
+    (value) => { value.core.authority = "Invalid"; },
+    (value) => { value.core.profile = "1/1"; },
+    (value) => { value.core.definition = "Invalid"; },
+  ]) {
+    const invalid = structuredClone(snapshotA);
+    mutate(invalid);
+    invalid.chartHash = await createChartHash(invalid);
+    assert.equal((await invoke("save-chart", tokenA, { snapshot: invalid, personalData: personal("A", invalid) })).response.status, 400);
+  }
+
+  const forgedProvenance = { ...snapshotA, verificationStatus: PROFILE_VERIFICATION.ENGINE_VERIFIED };
+  const forgedResult = await invoke("save-chart", tokenA, { snapshot: forgedProvenance, personalData: personal("A", forgedProvenance) });
+  assert.equal(forgedResult.response.status, 400);
+  assert.equal(forgedResult.body.error, "INVALID_VERIFICATION_STATUS");
+
+  assert.equal((await invoke("save-chart", tokenA, { snapshot: snapshotA, personalData: personal("A", snapshotA) })).response.status, 200);
+  const stored = await admin.from("chart_records").select("verification_status,snapshot").eq("user_id", userA.id).eq("chart_hash", snapshotA.chartHash).single();
+  assert.ifError(stored.error);
+  assert.equal(stored.data.verification_status, "client_asserted");
+  assert.equal(stored.data.snapshot.verificationStatus, "client_asserted");
 });
 
 test("Edge Functions reject forged identities, invalid fields, and oversized input", async () => {
@@ -238,19 +328,76 @@ test("central CORS permits Web and Capacitor origins and rejects all others", as
   assert.doesNotMatch(directRejected, /access-control-allow-origin:/i);
 });
 
-test("deletion affects only the caller, preserves local history, and writes no birth data to its receipt", async () => {
+test("retention cleanup removes anonymous events after 180 days and deletion receipts after 365 days", async () => {
+  const now = "2026-07-18T00:00:00.000Z";
+  const oldEvent = await admin.from("product_events").insert({
+    user_id: null, event_name: "app_open", properties: { environment: "test" }, created_at: "2026-01-18T23:59:59.000Z",
+  }).select("id").single();
+  const recentEvent = await admin.from("product_events").insert({
+    user_id: null, event_name: "app_open", properties: { environment: "test" }, created_at: "2026-01-19T00:00:01.000Z",
+  }).select("id").single();
+  assert.ifError(oldEvent.error);
+  assert.ifError(recentEvent.error);
+  const oldReceipt = await admin.from("data_deletion_audit_logs").insert({
+    subject_hash: `sha256:${"c".repeat(64)}`, request_id: crypto.randomUUID(), created_at: "2025-07-17T23:59:59.000Z",
+  }).select("id").single();
+  const recentReceipt = await admin.from("data_deletion_audit_logs").insert({
+    subject_hash: `sha256:${"d".repeat(64)}`, request_id: crypto.randomUUID(), created_at: "2025-07-18T00:00:01.000Z",
+  }).select("id").single();
+  assert.ifError(oldReceipt.error);
+  assert.ifError(recentReceipt.error);
+
+  const cleanup = await admin.rpc("cleanup_expired_privacy_records", { p_now: now });
+  assert.ifError(cleanup.error);
+  assert.equal((await admin.from("product_events").select("id").eq("id", oldEvent.data.id)).data.length, 0);
+  assert.equal((await admin.from("product_events").select("id").eq("id", recentEvent.data.id)).data.length, 1);
+  assert.equal((await admin.from("data_deletion_audit_logs").select("id").eq("id", oldReceipt.data.id)).data.length, 0);
+  assert.equal((await admin.from("data_deletion_audit_logs").select("id").eq("id", recentReceipt.data.id)).data.length, 1);
+  await admin.from("product_events").delete().eq("id", recentEvent.data.id);
+  await admin.from("data_deletion_audit_logs").delete().eq("id", recentReceipt.data.id);
+});
+
+test("cloud deletion is atomic, idempotent, deidentifies events, and preserves local history", async () => {
   const localHistory = [{ chartHash: "local-only" }];
-  await consent(tokenA, true, false);
+  await consent(tokenA, true, true);
   await invoke("save-chart", tokenA, { snapshot: snapshotA, personalData: personal("Delete Me", snapshotA) });
+  await invoke("record-event", tokenA, { eventName: "app_open", properties: { environment: "test" } });
+  const aEvent = await admin.from("product_events").select("id").eq("user_id", userA.id).limit(1).single();
+  assert.ifError(aEvent.error);
   const beforeB = (await admin.from("chart_records").select("id", { count: "exact", head: true }).eq("user_id", userB.id)).count;
+
+  await psql(`
+    create or replace function public.test_fail_deletion_receipt() returns trigger language plpgsql as $$
+    begin raise exception 'TEST_RECEIPT_FAILURE'; end; $$;
+    create trigger test_fail_deletion_receipt before insert on public.data_deletion_audit_logs
+    for each row execute function public.test_fail_deletion_receipt();
+  `);
+  try {
+    const failed = await invoke("delete-cloud-data", tokenA, { consentVersion: "1.0" });
+    assert.equal(failed.response.status, 500);
+    assert.ok((await admin.from("chart_records").select("id", { count: "exact", head: true }).eq("user_id", userA.id)).count > 0);
+    assert.ok((await admin.from("consent_records").select("id", { count: "exact", head: true }).eq("user_id", userA.id)).count > 0);
+    assert.equal((await admin.from("app_users").select("id", { count: "exact", head: true }).eq("id", userA.id)).count, 1);
+  } finally {
+    await psql("drop trigger if exists test_fail_deletion_receipt on public.data_deletion_audit_logs; drop function if exists public.test_fail_deletion_receipt();");
+  }
+
   const deletion = await invoke("delete-cloud-data", tokenA, { consentVersion: "1.0" });
   assert.equal(deletion.response.status, 200);
   assert.equal(deletion.body.localHistoryAffected, false);
   assert.deepEqual(localHistory, [{ chartHash: "local-only" }]);
   assert.equal((await admin.from("chart_records").select("id", { count: "exact", head: true }).eq("user_id", userA.id)).count, 0);
+  assert.equal((await admin.from("consent_records").select("id", { count: "exact", head: true }).eq("user_id", userA.id)).count, 0);
   assert.equal((await admin.from("chart_records").select("id", { count: "exact", head: true }).eq("user_id", userB.id)).count, beforeB);
+  assert.equal((await admin.from("product_events").select("user_id").eq("id", aEvent.data.id).single()).data.user_id, null);
 
-  const { data: receipts, error } = await admin.from("data_deletion_audit_logs").select("subject_hash,request_id,deleted_chart_count").eq("request_id", deletion.body.requestId);
+  const repeated = await invoke("delete-cloud-data", tokenA, { consentVersion: "1.0" });
+  assert.equal(repeated.response.status, 200);
+  assert.equal(repeated.body.requestId, deletion.body.requestId);
+  assert.equal(repeated.body.deletedChartCount, deletion.body.deletedChartCount);
+  assert.equal(repeated.body.deidentifiedEventCount, deletion.body.deidentifiedEventCount);
+
+  const { data: receipts, error } = await admin.from("data_deletion_audit_logs").select("subject_hash,request_id,deleted_chart_count,deidentified_event_count").eq("request_id", deletion.body.requestId);
   assert.ifError(error);
   assert.equal(receipts.length, 1);
   assert.match(receipts[0].subject_hash, /^sha256:[a-f0-9]{64}$/);
@@ -264,7 +411,6 @@ test("Edge Runtime logs do not contain submitted birth fields or request bodies"
   await consent(tokenB, true, false);
   const marked = {
     ...snapshotB,
-    chartHash: `sha256:${"b".repeat(64)}`,
     input: { ...snapshotB.input, locationLabel: markerLocation },
   };
   assert.equal((await invoke("save-chart", tokenB, { snapshot: marked, personalData: { ...personal(markerName, marked), locationLabel: markerLocation } })).response.status, 200);

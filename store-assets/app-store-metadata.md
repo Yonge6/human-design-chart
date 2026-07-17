@@ -5,9 +5,9 @@ Bundle ID: `com.yonge6.plutolifemanual`
 Primary category: Lifestyle  
 Price: Free  
 Copyright: © 2026 Yong Yuan  
-Support URL: https://yonge6.github.io/human-design-chart/support.html  
-Marketing URL: https://yonge6.github.io/human-design-chart/  
-Privacy Policy URL: https://yonge6.github.io/human-design-chart/privacy.html  
+Support URL: https://human-design.wonderelian.com/support.html
+Marketing URL: https://human-design.wonderelian.com/
+Privacy Policy URL: https://human-design.wonderelian.com/privacy.html
 Source code: https://github.com/Yonge6/human-design-chart
 
 ## English (U.S.)

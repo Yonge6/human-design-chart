@@ -1,7 +1,7 @@
 import { calculateHumanDesign, localToUtcCandidates } from "./human-design-engine.js?v=20260715-11";
 import { fetchPlaceCandidates, inferTimezoneFromAddress } from "./location-service.js?v=20260715-2";
 
-const publicAppUrl = "https://yonge6.github.io/human-design-chart/";
+const publicAppUrl = "https://human-design.wonderelian.com/";
 const planets = ["Sun", "Earth", "North Node", "South Node", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 const graph = document.querySelector("#bodygraph");
 const fields = {

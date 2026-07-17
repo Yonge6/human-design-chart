@@ -10,13 +10,14 @@ await mkdir(dockerConfig, { recursive: true });
 await writeFile(join(dockerConfig, "config.json"), '{"auths":{}}\n', { flag: "wx" }).catch(() => {});
 
 let stdout;
+const supabaseVersion = process.env.PLUTO_SUPABASE_CLI_VERSION || "2.109.1";
 try {
-  ({ stdout } = await execFileAsync("npx", ["supabase", "status", "-o", "env"], {
+  ({ stdout } = await execFileAsync("npx", ["--yes", `supabase@${supabaseVersion}`, "status", "-o", "env"], {
     cwd: new URL("../", import.meta.url),
     env: { ...process.env, DOCKER_CONFIG: dockerConfig },
   }));
 } catch (error) {
-  process.stderr.write("Local Supabase is required. Run `npx supabase start` first.\n");
+  process.stderr.write(`Local Supabase is required. Run \`npx supabase@${supabaseVersion} start\` first.\n`);
   throw error;
 }
 

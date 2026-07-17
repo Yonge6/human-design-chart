@@ -21,6 +21,7 @@ const status = document.querySelector("#status");
 const chartForm = document.querySelector("#chartForm");
 const downloadButton = document.querySelector("#download");
 const shareButton = document.querySelector("#share");
+const shareLabel = document.querySelector("[data-share-label]");
 const editButton = document.querySelector("#editChart");
 const shell = document.querySelector(".shell");
 const formPanel = document.querySelector(".form-panel");
@@ -78,7 +79,7 @@ const copy = {
     missingTime: "该出生时刻因夏令时向前调整而不存在。", repeatedTime: "这个时刻出现过两次，请选择出生记录对应的那一次。",
     futureTime: "出生日期和时间不能晚于现在。", calculating: "正在计算行星位置…", calculated: "已使用 Swiss Ephemeris 在本地完成计算。",
     failed: "计算失败：{message}", preparing: "正在生成图片…", downloaded: "图片已保存。", chooseSaveImage: "请在系统菜单中选择“存储图像”保存到相册。", shared: "分享已完成。", linkCopied: "当前设备不支持分享图片，网站链接已复制。", exportFailed: "图片导出失败：{message}",
-    shareTitle: "我的人生使用说明书", shareText: "这是我的人生使用说明书。", shareReading: "分享", shareReadingText: "免费生成你的人生使用说明书与详细解读。", linkCopiedShort: "已复制", selectAmPm: "请选择上午或下午。", detailReading: "详细解读", close: "关闭",
+    shareTitle: "我的人生使用说明书", shareText: "这是我的人生使用说明书。", shareReading: "分享", shareReadingText: "免费生成你的人生使用说明书与详细解读。", openingShareShort: "正在打开…", linkCopiedShort: "已复制", sharedShort: "已分享", cancelledShort: "已取消", downloadedShort: "已下载", selectAmPm: "请选择上午或下午。", detailReading: "详细解读", close: "关闭",
     history: "历史记录", settings: "隐私设置", localOnly: "仅保存在此设备", historyEmpty: "还没有保存的人生使用说明书。", openHistory: "打开", deleteHistory: "删除", confirmDeleteTitle: "删除这条记录？", confirmDeleteHint: "删除后无法恢复。", cancel: "取消", confirmDelete: "确认删除",
     defaultPrivacy: "默认开启隐私模式", defaultPrivacyHint: "生成图片时自动隐藏姓名、日期、时间和地点。", saveHistory: "保存本地历史记录", saveHistoryHint: "可离线重新打开最近生成的说明书。", clearHistory: "清空历史记录", privacyPolicy: "隐私政策", support: "帮助与支持", legalNotice: "法律声明", privacyNote: "姓名、出生时间和图谱保存在设备本地；仅地点搜索文字会发送给地理编码服务。", historyCleared: "历史记录已清空。",
   },
@@ -97,7 +98,7 @@ const copy = {
     missingTime: "This local birth time did not exist because the clocks moved forward.", repeatedTime: "This clock time occurred twice. Choose which occurrence is on the birth record.",
     futureTime: "Birth date and time cannot be in the future.", calculating: "Calculating planetary positions…", calculated: "Chart calculated locally with Swiss Ephemeris.",
     failed: "Failed: {message}", preparing: "Preparing image…", downloaded: "Image saved.", chooseSaveImage: "Choose Save Image in the system menu to add it to Photos.", shared: "Shared.", linkCopied: "Image sharing is unavailable on this device. The site link was copied.", exportFailed: "Image export failed: {message}",
-    shareTitle: "My Life Manual", shareText: "Here is my personal life manual.", shareReading: "Share", shareReadingText: "Create your free Life Manual and detailed reading.", linkCopiedShort: "Copied", selectAmPm: "Choose AM or PM.", detailReading: "Detailed Reading", close: "Close",
+    shareTitle: "My Life Manual", shareText: "Here is my personal life manual.", shareReading: "Share", shareReadingText: "Create your free Life Manual and detailed reading.", openingShareShort: "Opening…", linkCopiedShort: "Copied", sharedShort: "Shared", cancelledShort: "Cancelled", downloadedShort: "Downloaded", selectAmPm: "Choose AM or PM.", detailReading: "Detailed Reading", close: "Close",
     history: "History", settings: "Privacy", localOnly: "Stored only on this device", historyEmpty: "No saved Life Manuals yet.", openHistory: "Open", deleteHistory: "Delete", confirmDeleteTitle: "Delete this record?", confirmDeleteHint: "This action cannot be undone.", cancel: "Cancel", confirmDelete: "Delete",
     defaultPrivacy: "Privacy mode by default", defaultPrivacyHint: "Hide name, date, time, and location in generated images.", saveHistory: "Save local history", saveHistoryHint: "Reopen recent Life Manuals while offline.", clearHistory: "Clear history", privacyPolicy: "Privacy Policy", support: "Help & Support", legalNotice: "Legal Notice", privacyNote: "Your name, birth time, and chart stay on this device; only place-search text is sent to geocoding providers.", historyCleared: "History cleared.",
   },
@@ -717,6 +718,83 @@ function blobToBase64(blob) {
   });
 }
 
+async function copyText(text) {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch (error) {
+    console.warn("Clipboard API unavailable; using the compatibility fallback.", error);
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.readOnly = true;
+  textarea.setAttribute("aria-hidden", "true");
+  Object.assign(textarea.style, {
+    position: "fixed",
+    inset: "0 auto auto -9999px",
+    opacity: "0",
+  });
+  document.body.append(textarea);
+  textarea.focus({ preventScroll: true });
+  textarea.select();
+  textarea.setSelectionRange(0, textarea.value.length);
+  let copied = false;
+  try {
+    copied = document.execCommand("copy");
+  } catch (error) {
+    console.warn("Clipboard compatibility fallback failed.", error);
+  } finally {
+    textarea.remove();
+  }
+  return copied;
+}
+
+function flashShareLabel(label, key, resetKey) {
+  label.textContent = t(key);
+  window.setTimeout(() => {
+    label.textContent = t(resetKey);
+  }, 1800);
+}
+
+function isEmbeddedBrowser() {
+  return /MicroMessenger|Weibo|QQ\/|FBAN|FBAV|Instagram|Line\//i.test(navigator.userAgent || "");
+}
+
+function isMobileDevice() {
+  return /Android|iPad|iPhone|iPod/i.test(navigator.userAgent || "")
+    || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
+function canUseSystemShare() {
+  return Boolean(navigator.share && isMobileDevice() && !isEmbeddedBrowser());
+}
+
+async function shareLink(text) {
+  const url = currentShareUrl();
+  if (isNativeApp()) {
+    try {
+      const result = await nativePlugin.shareLink({ text, url });
+      return result?.completed === false ? "cancelled" : "shared";
+    } catch (error) {
+      if (error?.name === "AbortError") return "cancelled";
+      console.warn("Native link sharing failed; using the web fallback.", error);
+    }
+  }
+  if (canUseSystemShare()) {
+    try {
+      await navigator.share({ title: t("shareTitle"), text, url });
+      return "shared";
+    } catch (error) {
+      if (error?.name === "AbortError") return "cancelled";
+      console.warn("System link sharing failed; copying the link instead.", error);
+    }
+  }
+  return (await copyText(url)) ? "copied" : "unavailable";
+}
+
 function appendOptions(select, values, selected, includePlaceholder = true) {
   const options = values.map(({ value, label }) => {
     const option = document.createElement("option");
@@ -1273,20 +1351,20 @@ detailButton.addEventListener("click", () => {
 });
 closeDetailButton.addEventListener("click", () => detailDialog.close());
 shareDetailButton.addEventListener("click", async () => {
-  const url = currentShareUrl();
   shareDetailButton.disabled = true;
+  shareDetailLabel.textContent = t("openingShareShort");
   try {
-    if (isNativeApp()) {
-      await nativePlugin.shareLink({ text: t("shareReadingText"), url });
-    } else if (navigator.share) {
-      await navigator.share({ title: t("shareTitle"), text: t("shareReadingText"), url });
-    } else {
-      await navigator.clipboard.writeText(url);
-      shareDetailLabel.textContent = t("linkCopiedShort");
-      window.setTimeout(() => { shareDetailLabel.textContent = t("shareReading"); }, 1800);
+    const result = await shareLink(t("shareReadingText"));
+    if (result === "shared") flashShareLabel(shareDetailLabel, "sharedShort", "shareReading");
+    if (result === "copied") flashShareLabel(shareDetailLabel, "linkCopiedShort", "shareReading");
+    if (result === "cancelled") flashShareLabel(shareDetailLabel, "cancelledShort", "shareReading");
+    if (result === "unavailable") {
+      window.prompt(t("shareReadingText"), currentShareUrl());
+      shareDetailLabel.textContent = t("shareReading");
     }
   } catch (error) {
-    if (error.name !== "AbortError") console.error(error);
+    console.error(error);
+    shareDetailLabel.textContent = t("shareReading");
   } finally {
     shareDetailButton.disabled = false;
   }
@@ -1410,7 +1488,7 @@ function posterFile() {
 
 function canShareFile(file) {
   try {
-    return Boolean(navigator.share && navigator.canShare?.({ files: [file] }));
+    return Boolean(canUseSystemShare() && navigator.canShare?.({ files: [file] }));
   } catch {
     return false;
   }
@@ -1430,7 +1508,7 @@ downloadButton.addEventListener("click", async () => {
   downloadButton.disabled = true;
   try {
     const file = posterFile();
-    const mobile = matchMedia("(pointer: coarse)").matches || /Android|iPad|iPhone|iPod/i.test(navigator.userAgent);
+    const mobile = isMobileDevice() || matchMedia("(pointer: coarse)").matches;
     if (isNativeApp()) {
       const base64 = await blobToBase64(posterBlob);
       await nativePlugin.saveImage({ base64, fileName: posterFileName() });
@@ -1457,33 +1535,66 @@ downloadButton.addEventListener("click", async () => {
 shareButton.addEventListener("click", async () => {
   if (!lastData || !posterBlob || !posterUrl) return;
   shareButton.disabled = true;
+  shareLabel.textContent = t("openingShareShort");
   try {
     const file = posterFile();
     if (isNativeApp()) {
-      const base64 = await blobToBase64(posterBlob);
-      const result = await nativePlugin.shareImage({
-        base64,
-        fileName: posterFileName(),
-        text: t("shareText"),
-        url: currentShareUrl(),
-      });
-      setStatus(result.completed === false ? "calculated" : "shared");
-    } else if (canShareFile(file)) {
-      await navigator.share({ files: [file], title: t("shareTitle"), text: t("shareText") });
+      try {
+        const base64 = await blobToBase64(posterBlob);
+        const result = await nativePlugin.shareImage({
+          base64,
+          fileName: posterFileName(),
+          text: t("shareText"),
+          url: currentShareUrl(),
+        });
+        if (result?.completed === false) {
+          flashShareLabel(shareLabel, "cancelledShort", "share");
+          return;
+        }
+        setStatus("shared");
+        flashShareLabel(shareLabel, "sharedShort", "share");
+        return;
+      } catch (error) {
+        if (error?.name === "AbortError") {
+          flashShareLabel(shareLabel, "cancelledShort", "share");
+          return;
+        }
+        console.warn("Native image sharing failed; using the web fallback.", error);
+      }
+    }
+    if (canShareFile(file)) {
+      try {
+        await navigator.share({ files: [file], title: t("shareTitle"), text: t("shareText") });
+        setStatus("shared");
+        flashShareLabel(shareLabel, "sharedShort", "share");
+        return;
+      } catch (error) {
+        if (error?.name === "AbortError") {
+          flashShareLabel(shareLabel, "cancelledShort", "share");
+          return;
+        }
+        console.warn("System image sharing failed; sharing the page link instead.", error);
+      }
+    }
+    const result = await shareLink(t("shareText"));
+    if (result === "shared") {
       setStatus("shared");
-    } else if (navigator.share) {
-      await navigator.share({ title: t("shareTitle"), text: t("shareText"), url: currentShareUrl() });
-      setStatus("shared");
-    } else {
-      await navigator.clipboard.writeText(currentShareUrl());
+      flashShareLabel(shareLabel, "sharedShort", "share");
+    } else if (result === "copied") {
       setStatus("linkCopied");
+      flashShareLabel(shareLabel, "linkCopiedShort", "share");
+    } else if (result === "cancelled") {
+      flashShareLabel(shareLabel, "cancelledShort", "share");
+    } else if (result === "unavailable") {
+      downloadPoster();
+      setStatus("downloaded");
+      flashShareLabel(shareLabel, "downloadedShort", "share");
     }
   } catch (error) {
-    if (error.name === "AbortError") setStatus("calculated");
-    else {
-      console.error(error);
-      setStatus("exportFailed", { message: error.message });
-    }
+    console.error(error);
+    downloadPoster();
+    setStatus("downloaded");
+    flashShareLabel(shareLabel, "downloadedShort", "share");
   } finally {
     shareButton.disabled = !lastData || !posterBlob;
   }

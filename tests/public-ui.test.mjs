@@ -23,3 +23,34 @@ test("public pages keep legal notices without exposing the source repository", (
   }
   assert.match(read("index.html"), /data-i18n="legalNotice">法律声明</);
 });
+
+test("sharing falls back visibly when system sharing is unavailable", () => {
+  const html = read("index.html");
+  const app = read("app.js");
+
+  assert.match(html, /data-share-label/);
+  assert.match(app, /async function copyText\(text\)/);
+  assert.match(app, /document\.execCommand\("copy"\)/);
+  assert.match(app, /function isEmbeddedBrowser\(\)/);
+  assert.match(app, /function canUseSystemShare\(\)/);
+  assert.match(app, /openingShareShort/);
+  assert.match(app, /const result = await shareLink\(t\("shareReadingText"\)\)/);
+  assert.match(app, /result === "cancelled"/);
+  assert.match(app, /downloadPoster\(\);\n\s+setStatus\("downloaded"\)/);
+});
+
+test("dialog controls use consistent fixed dimensions", () => {
+  const css = read("style.css");
+
+  assert.match(css, /\.confirm-dialog-actions button \{[^}]*height: 44px;/s);
+  assert.match(css, /\.settings-links a \{[^}]*height: 44px;/s);
+  assert.match(css, /\.danger-button \{[^}]*height: 44px;/s);
+  assert.match(css, /\.dialog-close \{[^}]*width: 36px;[^}]*height: 36px;/s);
+});
+
+test("poster reading modules use legible mobile export type", () => {
+  const css = read("style.css");
+
+  assert.match(css, /\.chart-panel\.export-mobile #interpretationText \{[^}]*font: 11\.5px\/1\.78/s);
+  assert.match(css, /\.chart-panel\.export-mobile \.celebrity-card p \{[^}]*font: 9px\/1\.55/s);
+});

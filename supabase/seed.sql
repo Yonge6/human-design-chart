@@ -1,0 +1,2 @@
+-- Intentionally empty. Never seed production users, charts, events, or administrator accounts.
+-- Add an administrator manually only after verifying the target auth.users UUID.

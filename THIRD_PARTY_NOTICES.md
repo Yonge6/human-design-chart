@@ -11,7 +11,7 @@
 - SHA-256: `seas_18.se1` `a2cd8fc33807c78ca9a700c91c2e042258b12fc4796519e00781440b5ad8b2e2`
 - Local compatibility patch: the published browser bundle's unresolved enum defaults were replaced with their documented numeric constants.
 
-Swiss Ephemeris also offers a professional license. Obtain appropriate licensing before using this code in a closed-source commercial product.
+The repository uses the Swiss Ephemeris AGPL licensing option. Astrodienst also offers a professional license. Do not embed these components in a proprietary product without independently satisfying the applicable license terms.
 
 ## NatalEngine incarnation cross names
 
@@ -37,6 +37,6 @@ Swiss Ephemeris also offers a professional license. Obtain appropriate licensing
 - Package: `html2canvas` 1.4.1
 - License: MIT; full text in `vendor/html2canvas/LICENSE`
 
-## BodyGraph visual reference
+## BodyGraph transitional visual reference
 
-The restored BodyGraph template follows the project's earlier fidelity-study asset, which was captured from a publicly loaded My Human Design result-page SVG. Confirm permission and the target website's terms before commercial reuse of the exact visual template.
+The current BodyGraph template is transitional and has a separate visual-origin risk. AGPL licensing of this repository does not establish permission to reuse third-party visual expression. The project does not claim that the current SVG is cleared for commercial use. See `docs/bodygraph-original-redesign-plan.md`.

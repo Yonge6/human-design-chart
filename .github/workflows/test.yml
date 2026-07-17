@@ -9,11 +9,49 @@ permissions:
   contents: read
 
 jobs:
-  engine:
+  engine-web:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+      - run: npm ci
       - run: npm test
+      - run: npm run build
+
+  api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run test:api
+      - run: npm run test:schema
+      - run: npm run test:security
+      - run: npm run build:api
+
+  supabase:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PLUTO_SUPABASE_CLI_VERSION: 2.109.1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Start local Supabase
+        run: npx --yes supabase@${PLUTO_SUPABASE_CLI_VERSION} start -x studio,postgres-meta,realtime,storage-api,imgproxy,logflare,vector,mailpit
+      - name: Reset and migrate database
+        run: npx --yes supabase@${PLUTO_SUPABASE_CLI_VERSION} db reset
+      - run: npm run test:supabase
+      - name: Stop local Supabase
+        if: always()
+        run: npx --yes supabase@${PLUTO_SUPABASE_CLI_VERSION} stop --no-backup

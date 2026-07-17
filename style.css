@@ -319,7 +319,7 @@ body {
 .settings-row input { width: 42px; height: 24px; min-height: 24px; flex: 0 0 auto; accent-color: #cfad79; }
 .settings-links {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   padding: 16px 22px 4px;
   border-top: 1px solid rgba(207, 173, 121, .16);
@@ -340,6 +340,20 @@ body {
 }
 .settings-links a:focus-visible,
 .settings-links a:hover { background: rgba(207, 173, 121, .1); color: #fff3df; }
+.build-provenance {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px 14px;
+  margin: 14px 22px 0;
+  padding: 13px 0;
+  border-top: 1px solid rgba(207, 173, 121, .16);
+  color: #9f9187;
+  font: 10px/1.45 ui-sans-serif, system-ui, sans-serif;
+}
+.build-provenance div { display: flex; justify-content: space-between; gap: 8px; min-width: 0; }
+.build-provenance dt, .build-provenance dd { margin: 0; }
+.build-provenance dd { overflow: hidden; color: #d8c4a5; text-overflow: ellipsis; white-space: nowrap; }
+.build-provenance a { color: inherit; }
 .danger-button {
   width: calc(100% - 44px);
   height: 44px;

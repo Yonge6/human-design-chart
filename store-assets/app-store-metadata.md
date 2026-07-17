@@ -1,0 +1,189 @@
+# Pluto Life Manual - App Store Metadata
+
+Version: 1.0 (1)  
+Bundle ID: `com.yonge6.plutolifemanual`  
+Primary category: Lifestyle  
+Price: Free  
+Copyright: © 2026 Yong Yuan  
+Support URL: https://yonge6.github.io/human-design-chart/support.html  
+Marketing URL: https://yonge6.github.io/human-design-chart/  
+Privacy Policy URL: https://yonge6.github.io/human-design-chart/privacy.html  
+Source code: https://github.com/Yonge6/human-design-chart
+
+## English (U.S.)
+
+### Name
+
+Pluto Life Manual
+
+### Subtitle
+
+Know your gifts and decisions
+
+### Promotional Text
+
+Turn birth details into a private Life Manual for your energy, decisions, gifts, purpose, and everyday rhythm.
+
+### Keywords
+
+self discovery,human design,purpose,gifts,decisions,energy,growth,reflection
+
+### Description
+
+What if the parts of you that once felt difficult were simply asking for a different way of moving through life?
+
+Pluto Life Manual turns your birth date, time, and place into a personal chart and a clear, thoughtful reading. It is designed for reflection, not prediction: a calm place to understand how you use energy, make decisions, develop gifts, and contribute in your own way.
+
+YOUR PERSONAL CHART
+
+See all 64 gates, 36 channels, and 9 centers in a carefully rendered BodyGraph. Planetary positions are calculated locally with Swiss Ephemeris.
+
+A READING THAT SPEAKS LIKE A PERSON
+
+Explore your strengths, natural gifts, life purpose, decision-making style, relationships, work rhythm, environment, and the signals that help you return to yourself. The reading emphasizes what already works in you instead of treating you as a problem to fix.
+
+PRIVATE BY DEFAULT
+
+No account. No ads. No behavioral analytics. Your name, birth details, charts, generated images, and history remain on your device. Only place-search text is sent to geocoding providers to resolve coordinates and a time zone. Privacy Mode can mask personal details in any shared image.
+
+BUILT FOR iPHONE
+
+Save your Life Manual directly to Photos, share it with the iOS share sheet, and reopen recent charts offline from local history. The interface and every reading are available in English and Simplified Chinese.
+
+OPEN SOURCE
+
+The corresponding source code and third-party licenses are available at https://github.com/Yonge6/human-design-chart.
+
+Pluto Life Manual is an independent self-reflection and entertainment tool. It is not affiliated with official Human Design organizations or My Human Design and does not provide medical, psychological, legal, financial, or scientific advice.
+
+### What's New
+
+Welcome to Pluto Life Manual 1.0.
+
+• Generate a complete personal BodyGraph
+• Read strengths, gifts, purpose, decisions, and relationships
+• Save images to Photos and share with iOS
+• Keep private local history for offline viewing
+• Mask personal details with Privacy Mode
+• Switch between English and Simplified Chinese
+
+## Simplified Chinese
+
+### 名称
+
+Pluto 人生使用说明书
+
+### 副标题
+
+认识天赋，读懂选择与使命
+
+### 宣传文本
+
+从出生时间与地点生成专属人生使用说明书，读懂你的能量类型、决策方式、优势天赋与人生使命。
+
+### 关键词
+
+人生说明书,自我探索,人类图,天赋,使命,决策,能量,成长
+
+### 描述
+
+也许，那些曾经让你觉得“自己是不是哪里不对”的地方，只是在提醒你：你有一套不同的运作方式。
+
+Pluto 人生使用说明书会根据出生日期、时间与地点，生成一份专属图谱和清晰、走心的个人解读。它不预测命运，而是提供一个安静的自我探索空间，帮助你理解能量如何运作、怎样做决定、天赋如何成长，以及你更自然的贡献方式。
+
+【你的专属图谱】
+
+完整呈现 64 个闸门、36 条通道与 9 大中心。天体位置使用 Swiss Ephemeris 在设备端计算，图形根据每个人的真实结果动态生成。
+
+【像人说话一样的解读】
+
+围绕核心优势、自然天赋、人生使命、决策方式、关系模式、工作节奏、环境偏好和偏离自己的提醒展开。我们更关心你已经拥有的力量，而不是把你当成一个需要被修理的问题。
+
+【隐私优先】
+
+无需注册，没有广告，不接入行为分析。姓名、出生资料、图谱、生成图片与历史记录都保存在你的设备上。只有地点搜索文字会发送给地理编码服务，用于解析坐标与时区。开启隐私模式后，分享图片时可自动隐藏姓名、日期、时间和地点。
+
+【为 iPhone 认真设计】
+
+图片可原生保存到系统相册，也可通过 iOS 分享面板发送；最近生成的说明书会保存在本地，离线也能重新查看。界面与解读支持简体中文和英文。
+
+【开放源代码】
+
+对应版本源代码与第三方许可公开于 https://github.com/Yonge6/human-design-chart。
+
+Pluto 人生使用说明书是独立开发的自我探索与娱乐工具，不隶属于、未获 Human Design 官方机构或 My Human Design 背书，不提供医疗、心理、法律、财务或科学建议。
+
+### 此版本的新功能
+
+欢迎使用 Pluto 人生使用说明书 1.0。
+
+• 生成完整的个人 BodyGraph 图谱
+• 解读优势、天赋、使命、决策与关系
+• 原生保存图片到相册并调用系统分享
+• 本地保存历史记录，支持离线查看
+• 隐私模式隐藏个人出生资料
+• 简体中文与英文双语切换
+
+## App Review Notes
+
+Pluto Life Manual is a self-reflection and entertainment app. No login or test account is required.
+
+Suggested review flow:
+1. Enter any name.
+2. Keep the default date and time.
+3. Enter `Shanghai, China` as the birth location. Selecting a search suggestion is optional.
+4. Tap `Get Your Life Manual Free`.
+5. The app calculates the chart locally, then shows the generated image.
+6. Use Detailed Reading, Save Image, Share, History, and Privacy Settings to review native functionality.
+
+The app is more than a hosted website wrapper: it includes native Photos saving, the native iOS share sheet, device-only history, offline reopening, and privacy controls. The web code and ephemeris files ship inside the app bundle. Network access is used only for user-triggered place geocoding through Photon, with ArcGIS as a fallback.
+
+The app uses Swiss Ephemeris under AGPL-3.0. Corresponding source is public at https://github.com/Yonge6/human-design-chart and licenses are linked inside Privacy Settings. BodyGraph SVG coordinates are independently generated by this project.
+
+The app does not claim medical or scientific outcomes. It does not use accounts, purchases, ads, analytics, tracking, push notifications, or user-generated content.
+
+## App Privacy Answers
+
+- Tracking: No
+- Data linked to the user: No
+- Data used for tracking: No
+- Contact info: Not collected
+- Identifiers: Not collected
+- Usage data: Not collected
+- Diagnostics: Not collected
+- User content: Not collected by developer servers
+- Coarse location: Collected only as user-entered place-search text; not linked to identity; used for App Functionality; transmitted to Photon or fallback ArcGIS
+- Precise device location: Not collected
+- Data retained by developer: None
+
+## Age Rating Answers
+
+Recommended rating: 4+
+
+- Unrestricted web access: No
+- User-generated content: No
+- Messaging or chat: No
+- Advertising: No
+- Gambling, contests, or loot boxes: None
+- Sexual content or nudity: None
+- Violence: None
+- Profanity or crude humor: None
+- Horror or fear themes: None
+- Alcohol, tobacco, or drugs: None
+- Medical or wellness treatment claims: None
+
+## Export Compliance
+
+- Uses encryption: Only standard HTTPS provided by the operating system
+- Proprietary or non-standard encryption: No
+- `ITSAppUsesNonExemptEncryption`: `NO`
+
+## Availability Recommendation
+
+Release worldwide with English and Simplified Chinese localizations. Exclude mainland China from version 1.0 unless an ICP filing and the applicable China distribution requirements are confirmed. EU availability additionally requires the account holder to complete the Digital Services Act trader-status declaration.
+
+## Screenshot Files
+
+- English: `store-assets/screenshots/en/01-*.png` through `05-*.png`
+- Simplified Chinese: `store-assets/screenshots/zh/01-*.png` through `05-*.png`
+- Size: 1320 × 2868 pixels (6.9-inch iPhone portrait)

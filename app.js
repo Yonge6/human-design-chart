@@ -77,7 +77,7 @@ const copy = {
     failed: "计算失败：{message}", preparing: "正在生成图片…", downloaded: "图片已保存。", chooseSaveImage: "请在系统菜单中选择“存储图像”保存到相册。", shared: "分享已完成。", linkCopied: "当前设备不支持分享图片，网站链接已复制。", exportFailed: "图片导出失败：{message}",
     shareTitle: "我的人生使用说明书", shareText: "这是我的人生使用说明书。", shareReading: "分享", shareReadingText: "免费生成你的人生使用说明书与详细解读。", linkCopiedShort: "已复制", selectAmPm: "请选择上午或下午。", detailReading: "详细解读", close: "关闭",
     history: "历史记录", settings: "隐私设置", localOnly: "仅保存在此设备", historyEmpty: "还没有保存的人生使用说明书。", openHistory: "打开", deleteHistory: "删除",
-    defaultPrivacy: "默认开启隐私模式", defaultPrivacyHint: "生成图片时自动隐藏姓名、日期、时间和地点。", saveHistory: "保存本地历史记录", saveHistoryHint: "可离线重新打开最近生成的说明书。", clearHistory: "清空历史记录", privacyNote: "出生资料和图谱仅存储在当前设备，不上传到服务器。", historyCleared: "历史记录已清空。",
+    defaultPrivacy: "默认开启隐私模式", defaultPrivacyHint: "生成图片时自动隐藏姓名、日期、时间和地点。", saveHistory: "保存本地历史记录", saveHistoryHint: "可离线重新打开最近生成的说明书。", clearHistory: "清空历史记录", privacyPolicy: "隐私政策", support: "帮助与支持", openSource: "开源与法律声明", privacyNote: "姓名、出生时间和图谱保存在设备本地；仅地点搜索文字会发送给地理编码服务。", historyCleared: "历史记录已清空。",
   },
   en: {
     brand: "Pluto Life Manual",
@@ -96,7 +96,7 @@ const copy = {
     failed: "Failed: {message}", preparing: "Preparing image…", downloaded: "Image saved.", chooseSaveImage: "Choose Save Image in the system menu to add it to Photos.", shared: "Shared.", linkCopied: "Image sharing is unavailable on this device. The site link was copied.", exportFailed: "Image export failed: {message}",
     shareTitle: "My Life Manual", shareText: "Here is my personal life manual.", shareReading: "Share", shareReadingText: "Create your free Life Manual and detailed reading.", linkCopiedShort: "Copied", selectAmPm: "Choose AM or PM.", detailReading: "Detailed Reading", close: "Close",
     history: "History", settings: "Privacy", localOnly: "Stored only on this device", historyEmpty: "No saved Life Manuals yet.", openHistory: "Open", deleteHistory: "Delete",
-    defaultPrivacy: "Privacy mode by default", defaultPrivacyHint: "Hide name, date, time, and location in generated images.", saveHistory: "Save local history", saveHistoryHint: "Reopen recent Life Manuals while offline.", clearHistory: "Clear history", privacyNote: "Birth data and charts stay on this device and are not uploaded to a server.", historyCleared: "History cleared.",
+    defaultPrivacy: "Privacy mode by default", defaultPrivacyHint: "Hide name, date, time, and location in generated images.", saveHistory: "Save local history", saveHistoryHint: "Reopen recent Life Manuals while offline.", clearHistory: "Clear history", privacyPolicy: "Privacy Policy", support: "Help & Support", openSource: "Open Source & Legal", privacyNote: "Your name, birth time, and chart stay on this device; only place-search text is sent to geocoding providers.", historyCleared: "History cleared.",
   },
 };
 

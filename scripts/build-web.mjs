@@ -5,6 +5,10 @@ const root = resolve(import.meta.dirname, "..");
 const output = resolve(root, "dist");
 const files = [
   "index.html",
+  "privacy.html",
+  "support.html",
+  "legal.html",
+  "legal.css",
   "style.css",
   "app.js",
   "human-design-engine.js",

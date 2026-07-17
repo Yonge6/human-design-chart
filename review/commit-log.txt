@@ -1,0 +1,10 @@
+967c3b2 (HEAD -> codex/agpl-open-source-tool-foundation) test: complete deployment readiness acceptance
+1442fb1 test: cover schema API privacy and build security
+a67ede1 feat: add privacy-first open backend foundation
+44e5afc feat: add versioned engine snapshot and open API
+ce2a158 chore: establish open-source project foundation
+e74c55a (origin/main, main) Fix sharing and improve poster readability
+33163a3 Point chart QR code to WonderElian domain
+01b8bb8 Restore historical BodyGraph visual
+bad3b47 Restore precise BodyGraph geometry
+a985150 Bind Human Design to WonderElian subdomain

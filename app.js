@@ -1003,7 +1003,7 @@ async function loadExportAssets() {
 
 async function loadGraphTemplate() {
   if (!graphTemplate) {
-    const response = await fetch("./assets/bodygraph-template.svg?v=20260712-9");
+    const response = await fetch("./assets/bodygraph-template.svg?v=20260717-10");
     if (!response.ok) throw new Error("BodyGraph template failed to load");
     graphTemplate = await response.text();
   }
@@ -1041,15 +1041,12 @@ async function paintBodygraph(data) {
     const gate = Number(line.dataset.gateLine);
     const hasDesign = active.design.has(gate);
     const hasPersonality = active.personality.has(gate);
-    if (hasDesign && hasPersonality) {
-      line.style.fill = line.dataset.gateLineType === "design" ? "#8c3040" : "#302936";
-    } else if (hasDesign) {
-      line.style.fill = "#8c3040";
-    } else if (hasPersonality) {
-      line.style.fill = "#302936";
-    } else {
-      line.style.fill = "transparent";
-    }
+    let color = "transparent";
+    if (hasDesign && hasPersonality) color = line.dataset.gateLineType === "design" ? "#8c3040" : "#302936";
+    else if (hasDesign) color = "#8c3040";
+    else if (hasPersonality) color = "#302936";
+    line.style.fill = "none";
+    line.style.stroke = color;
   });
 
   Object.entries(centerColors).forEach(([id]) => {

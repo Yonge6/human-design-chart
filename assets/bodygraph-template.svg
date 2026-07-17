@@ -1,275 +1,277 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 422 813">
   <title>Pluto Life Manual BodyGraph</title>
-  <defs><radialGradient id="aura" cx="50%" cy="45%" r="62%"><stop offset="0" stop-color="#f8ead4" stop-opacity=".38"/><stop offset="1" stop-color="#f8ead4" stop-opacity="0"/></radialGradient></defs>
-  <ellipse cx="211" cy="430" rx="195" ry="360" fill="url(#aura)"/>
-  <g fill="none" stroke="#c08a3c" stroke-width="1" opacity=".22"><ellipse cx="211" cy="430" rx="174" ry="330"/><ellipse cx="211" cy="430" rx="142" ry="286"/></g>
-  <g fill="none" stroke="#d3993d" stroke-width="8" stroke-linecap="round" opacity=".88"><path d="M211 423 L211 354"/><path d="M187 514 L244 600"/><path d="M178 670 L211 738"/><path d="M246 174 L238 94"/><path d="M211 600 L258 475"/><path d="M340 551 L211 635"/><path d="M187 436 L188 354"/><path d="M244 635 L250 738"/><path d="M164 475 L256 344"/><path d="M164 475 L178 600"/><path d="M164 475 L101 494"/><path d="M238 207 L247 281"/><path d="M247 312 L321 494"/><path d="M235 436 L234 354"/><path d="M175 312 L67 514"/><path d="M184 207 L175 281"/><path d="M120 618 L211 773"/><path d="M230 773 L302 570"/><path d="M256 344 L178 600"/><path d="M256 344 L101 494"/><path d="M307 436 L166 344"/><path d="M211 281 L211 214"/><path d="M211 174 L211 94"/><path d="M235 514 L330 438"/><path d="M307 454 L120 526"/><path d="M244 670 L82 551"/><path d="M82 592 L192 773"/><path d="M178 635 L211 527"/><path d="M302 618 L211 751"/><path d="M120 570 L172 762"/><path d="M178 600 L101 494"/><path d="M211 312 L355 514"/><path d="M302 526 L330 456"/><path d="M250 762 L340 592"/><path d="M211 670 L172 738"/><path d="M176 174 L184 94"/></g>
-  <g fill="none" stroke="#f2e6d3" stroke-width="5.8" stroke-linecap="round" opacity=".96"><path d="M211 423 L211 354"/><path d="M187 514 L244 600"/><path d="M178 670 L211 738"/><path d="M246 174 L238 94"/><path d="M211 600 L258 475"/><path d="M340 551 L211 635"/><path d="M187 436 L188 354"/><path d="M244 635 L250 738"/><path d="M164 475 L256 344"/><path d="M164 475 L178 600"/><path d="M164 475 L101 494"/><path d="M238 207 L247 281"/><path d="M247 312 L321 494"/><path d="M235 436 L234 354"/><path d="M175 312 L67 514"/><path d="M184 207 L175 281"/><path d="M120 618 L211 773"/><path d="M230 773 L302 570"/><path d="M256 344 L178 600"/><path d="M256 344 L101 494"/><path d="M307 436 L166 344"/><path d="M211 281 L211 214"/><path d="M211 174 L211 94"/><path d="M235 514 L330 438"/><path d="M307 454 L120 526"/><path d="M244 670 L82 551"/><path d="M82 592 L192 773"/><path d="M178 635 L211 527"/><path d="M302 618 L211 751"/><path d="M120 570 L172 762"/><path d="M178 600 L101 494"/><path d="M211 312 L355 514"/><path d="M302 526 L330 456"/><path d="M250 762 L340 592"/><path d="M211 670 L172 738"/><path d="M176 174 L184 94"/></g>
-  <g fill="transparent"><polygon data-gate-line="1" data-gate-line-type="design" points="206.65,423.00 210.85,423.00 210.85,388.50 206.65,388.50"/><polygon data-gate-line="1" data-gate-line-type="personality" points="211.15,423.00 215.35,423.00 215.35,388.50 211.15,388.50"/><polygon data-gate-line="8" data-gate-line-type="design" points="215.35,354.00 211.15,354.00 211.15,388.50 215.35,388.50"/><polygon data-gate-line="8" data-gate-line-type="personality" points="210.85,354.00 206.65,354.00 206.65,388.50 210.85,388.50"/><polygon data-gate-line="2" data-gate-line-type="design" points="190.63,511.60 187.13,513.92 215.63,556.92 219.13,554.60"/><polygon data-gate-line="2" data-gate-line-type="personality" points="186.87,514.08 183.37,516.40 211.87,559.40 215.37,557.08"/><polygon data-gate-line="14" data-gate-line-type="design" points="240.37,602.40 243.87,600.08 215.37,557.08 211.87,559.40"/><polygon data-gate-line="14" data-gate-line-type="personality" points="244.13,599.92 247.63,597.60 219.13,554.60 215.63,556.92"/><polygon data-gate-line="3" data-gate-line-type="design" points="181.91,668.10 178.13,669.93 194.63,703.93 198.41,702.10"/><polygon data-gate-line="3" data-gate-line-type="personality" points="177.87,670.07 174.09,671.90 190.59,705.90 194.37,704.07"/><polygon data-gate-line="60" data-gate-line-type="design" points="207.09,739.90 210.87,738.07 194.37,704.07 190.59,705.90"/><polygon data-gate-line="60" data-gate-line-type="personality" points="211.13,737.93 214.91,736.10 198.41,702.10 194.63,703.93"/><polygon data-gate-line="4" data-gate-line-type="design" points="241.67,174.43 245.85,174.01 241.85,134.01 237.67,134.43"/><polygon data-gate-line="4" data-gate-line-type="personality" points="246.15,173.99 250.33,173.57 246.33,133.57 242.15,133.99"/><polygon data-gate-line="63" data-gate-line-type="design" points="242.33,93.57 238.15,93.99 242.15,133.99 246.33,133.57"/><polygon data-gate-line="63" data-gate-line-type="personality" points="237.85,94.01 233.67,94.43 237.67,134.43 241.85,134.01"/><polygon data-gate-line="5" data-gate-line-type="design" points="206.93,598.47 210.86,599.95 234.36,537.45 230.43,535.97"/><polygon data-gate-line="5" data-gate-line-type="personality" points="211.14,600.05 215.07,601.53 238.57,539.03 234.64,537.55"/><polygon data-gate-line="15" data-gate-line-type="design" points="262.07,476.53 258.14,475.05 234.64,537.55 238.57,539.03"/><polygon data-gate-line="15" data-gate-line-type="personality" points="257.86,474.95 253.93,473.47 230.43,535.97 234.36,537.45"/><polygon data-gate-line="6" data-gate-line-type="design" points="342.37,554.65 340.08,551.13 275.58,593.13 277.87,596.65"/><polygon data-gate-line="6" data-gate-line-type="personality" points="339.92,550.87 337.63,547.35 273.13,589.35 275.42,592.87"/><polygon data-gate-line="59" data-gate-line-type="design" points="208.63,631.35 210.92,634.87 275.42,592.87 273.13,589.35"/><polygon data-gate-line="59" data-gate-line-type="personality" points="211.08,635.13 213.37,638.65 277.87,596.65 275.58,593.13"/><polygon data-gate-line="7" data-gate-line-type="design" points="182.65,435.95 186.85,436.00 187.35,395.00 183.15,394.95"/><polygon data-gate-line="7" data-gate-line-type="personality" points="187.15,436.00 191.35,436.05 191.85,395.05 187.65,395.00"/><polygon data-gate-line="31" data-gate-line-type="design" points="192.35,354.05 188.15,354.00 187.65,395.00 191.85,395.05"/><polygon data-gate-line="31" data-gate-line-type="personality" points="187.85,354.00 183.65,353.95 183.15,394.95 187.35,395.00"/><polygon data-gate-line="9" data-gate-line-type="design" points="248.34,634.75 244.15,634.99 247.15,686.49 251.34,686.25"/><polygon data-gate-line="9" data-gate-line-type="personality" points="243.85,635.01 239.66,635.25 242.66,686.75 246.85,686.51"/><polygon data-gate-line="52" data-gate-line-type="design" points="245.66,738.25 249.85,738.01 246.85,686.51 242.66,686.75"/><polygon data-gate-line="52" data-gate-line-type="personality" points="250.15,737.99 254.34,737.75 251.34,686.25 247.15,686.49"/><polygon data-gate-line="10" data-gate-line-type="design" points="160.44,472.50 163.88,474.91 209.88,409.41 206.44,407.00"/><polygon data-gate-line="10" data-gate-line-type="personality" points="164.12,475.09 167.56,477.50 213.56,412.00 210.12,409.59"/><polygon data-gate-line="20" data-gate-line-type="design" points="259.56,346.50 256.12,344.09 210.12,409.59 213.56,412.00"/><polygon data-gate-line="20" data-gate-line-type="personality" points="255.88,343.91 252.44,341.50 206.44,407.00 209.88,409.41"/><polygon data-gate-line="10" data-gate-line-type="design" points="168.32,474.52 164.15,474.98 171.15,537.48 175.32,537.02"/><polygon data-gate-line="10" data-gate-line-type="personality" points="163.85,475.02 159.68,475.48 166.68,537.98 170.85,537.52"/><polygon data-gate-line="34" data-gate-line-type="design" points="173.68,600.48 177.85,600.02 170.85,537.52 166.68,537.98"/><polygon data-gate-line="34" data-gate-line-type="personality" points="178.15,599.98 182.32,599.52 175.32,537.02 171.15,537.48"/><polygon data-gate-line="10" data-gate-line-type="design" points="165.26,479.16 164.04,475.14 132.54,484.64 133.76,488.66"/><polygon data-gate-line="10" data-gate-line-type="personality" points="163.96,474.86 162.74,470.84 131.24,480.34 132.46,484.36"/><polygon data-gate-line="57" data-gate-line-type="design" points="99.74,489.84 100.96,493.86 132.46,484.36 131.24,480.34"/><polygon data-gate-line="57" data-gate-line-type="personality" points="101.04,494.14 102.26,498.16 133.76,488.66 132.54,484.64"/><polygon data-gate-line="11" data-gate-line-type="design" points="242.32,206.47 238.15,206.98 242.65,243.98 246.82,243.47"/><polygon data-gate-line="11" data-gate-line-type="personality" points="237.85,207.02 233.68,207.53 238.18,244.53 242.35,244.02"/><polygon data-gate-line="56" data-gate-line-type="design" points="242.68,281.53 246.85,281.02 242.35,244.02 238.18,244.53"/><polygon data-gate-line="56" data-gate-line-type="personality" points="247.15,280.98 251.32,280.47 246.82,243.47 242.65,243.98"/><polygon data-gate-line="12" data-gate-line-type="design" points="251.03,310.36 247.14,311.94 284.14,402.94 288.03,401.36"/><polygon data-gate-line="12" data-gate-line-type="personality" points="246.86,312.06 242.97,313.64 279.97,404.64 283.86,403.06"/><polygon data-gate-line="22" data-gate-line-type="design" points="316.97,495.64 320.86,494.06 283.86,403.06 279.97,404.64"/><polygon data-gate-line="22" data-gate-line-type="personality" points="321.14,493.94 325.03,492.36 288.03,401.36 284.14,402.94"/><polygon data-gate-line="13" data-gate-line-type="design" points="230.65,436.05 234.85,436.00 234.35,395.00 230.15,395.05"/><polygon data-gate-line="13" data-gate-line-type="personality" points="235.15,436.00 239.35,435.95 238.85,394.95 234.65,395.00"/><polygon data-gate-line="33" data-gate-line-type="design" points="238.35,353.95 234.15,354.00 234.65,395.00 238.85,394.95"/><polygon data-gate-line="33" data-gate-line-type="personality" points="233.85,354.00 229.65,354.05 230.15,395.05 234.35,395.00"/><polygon data-gate-line="16" data-gate-line-type="design" points="178.84,314.05 175.13,312.07 121.13,413.07 124.84,415.05"/><polygon data-gate-line="16" data-gate-line-type="personality" points="174.87,311.93 171.16,309.95 117.16,410.95 120.87,412.93"/><polygon data-gate-line="48" data-gate-line-type="design" points="63.16,511.95 66.87,513.93 120.87,412.93 117.16,410.95"/><polygon data-gate-line="48" data-gate-line-type="personality" points="67.13,514.07 70.84,516.05 124.84,415.05 121.13,413.07"/><polygon data-gate-line="17" data-gate-line-type="design" points="188.32,207.53 184.15,207.02 179.65,244.02 183.82,244.53"/><polygon data-gate-line="17" data-gate-line-type="personality" points="183.85,206.98 179.68,206.47 175.18,243.47 179.35,243.98"/><polygon data-gate-line="62" data-gate-line-type="design" points="170.68,280.47 174.85,280.98 179.35,243.98 175.18,243.47"/><polygon data-gate-line="62" data-gate-line-type="personality" points="175.15,281.02 179.32,281.53 183.82,244.53 179.65,244.02"/><polygon data-gate-line="18" data-gate-line-type="design" points="123.75,615.80 120.13,617.92 165.63,695.42 169.25,693.30"/><polygon data-gate-line="18" data-gate-line-type="personality" points="119.87,618.08 116.25,620.20 161.75,697.70 165.37,695.58"/><polygon data-gate-line="58" data-gate-line-type="design" points="207.25,775.20 210.87,773.08 165.37,695.58 161.75,697.70"/><polygon data-gate-line="58" data-gate-line-type="personality" points="211.13,772.92 214.75,770.80 169.25,693.30 165.63,695.42"/><polygon data-gate-line="19" data-gate-line-type="design" points="225.90,771.55 229.86,772.95 265.86,671.45 261.90,670.05"/><polygon data-gate-line="19" data-gate-line-type="personality" points="230.14,773.05 234.10,774.45 270.10,672.95 266.14,671.55"/><polygon data-gate-line="49" data-gate-line-type="design" points="306.10,571.45 302.14,570.05 266.14,671.55 270.10,672.95"/><polygon data-gate-line="49" data-gate-line-type="personality" points="301.86,569.95 297.90,568.55 261.90,670.05 265.86,671.45"/><polygon data-gate-line="20" data-gate-line-type="design" points="260.16,345.27 256.14,344.04 217.14,472.04 221.16,473.27"/><polygon data-gate-line="20" data-gate-line-type="personality" points="255.86,343.96 251.84,342.73 212.84,470.73 216.86,471.96"/><polygon data-gate-line="34" data-gate-line-type="design" points="173.84,598.73 177.86,599.96 216.86,471.96 212.84,470.73"/><polygon data-gate-line="34" data-gate-line-type="personality" points="178.14,600.04 182.16,601.27 221.16,473.27 217.14,472.04"/><polygon data-gate-line="20" data-gate-line-type="design" points="259.03,347.13 256.10,344.11 178.60,419.11 181.53,422.13"/><polygon data-gate-line="20" data-gate-line-type="personality" points="255.90,343.89 252.97,340.87 175.47,415.87 178.40,418.89"/><polygon data-gate-line="57" data-gate-line-type="design" points="97.97,490.87 100.90,493.89 178.40,418.89 175.47,415.87"/><polygon data-gate-line="57" data-gate-line-type="personality" points="101.10,494.11 104.03,497.13 181.53,422.13 178.60,419.11"/><polygon data-gate-line="21" data-gate-line-type="design" points="304.62,439.64 306.92,436.13 236.42,390.13 234.12,393.64"/><polygon data-gate-line="21" data-gate-line-type="personality" points="307.08,435.87 309.38,432.36 238.88,386.36 236.58,389.87"/><polygon data-gate-line="45" data-gate-line-type="design" points="168.38,340.36 166.08,343.87 236.58,389.87 238.88,386.36"/><polygon data-gate-line="45" data-gate-line-type="personality" points="165.92,344.13 163.62,347.64 234.12,393.64 236.42,390.13"/><polygon data-gate-line="23" data-gate-line-type="design" points="206.65,281.00 210.85,281.00 210.85,247.50 206.65,247.50"/><polygon data-gate-line="23" data-gate-line-type="personality" points="211.15,281.00 215.35,281.00 215.35,247.50 211.15,247.50"/><polygon data-gate-line="43" data-gate-line-type="design" points="215.35,214.00 211.15,214.00 211.15,247.50 215.35,247.50"/><polygon data-gate-line="43" data-gate-line-type="personality" points="210.85,214.00 206.65,214.00 206.65,247.50 210.85,247.50"/><polygon data-gate-line="24" data-gate-line-type="design" points="206.65,174.00 210.85,174.00 210.85,134.00 206.65,134.00"/><polygon data-gate-line="24" data-gate-line-type="personality" points="211.15,174.00 215.35,174.00 215.35,134.00 211.15,134.00"/><polygon data-gate-line="61" data-gate-line-type="design" points="215.35,94.00 211.15,94.00 211.15,134.00 215.35,134.00"/><polygon data-gate-line="61" data-gate-line-type="personality" points="210.85,94.00 206.65,94.00 206.65,134.00 210.85,134.00"/><polygon data-gate-line="25" data-gate-line-type="design" points="232.28,510.60 234.91,513.88 282.41,475.88 279.78,472.60"/><polygon data-gate-line="25" data-gate-line-type="personality" points="235.09,514.12 237.72,517.40 285.22,479.40 282.59,476.12"/><polygon data-gate-line="51" data-gate-line-type="design" points="332.72,441.40 330.09,438.12 282.59,476.12 285.22,479.40"/><polygon data-gate-line="51" data-gate-line-type="personality" points="329.91,437.88 327.28,434.60 279.78,472.60 282.41,475.88"/><polygon data-gate-line="26" data-gate-line-type="design" points="308.56,458.06 307.05,454.14 213.55,490.14 215.06,494.06"/><polygon data-gate-line="26" data-gate-line-type="personality" points="306.95,453.86 305.44,449.94 211.94,485.94 213.45,489.86"/><polygon data-gate-line="44" data-gate-line-type="design" points="118.44,521.94 119.95,525.86 213.45,489.86 211.94,485.94"/><polygon data-gate-line="44" data-gate-line-type="personality" points="120.05,526.14 121.56,530.06 215.06,494.06 213.55,490.14"/><polygon data-gate-line="27" data-gate-line-type="design" points="241.42,673.51 243.91,670.12 162.91,610.62 160.42,614.01"/><polygon data-gate-line="27" data-gate-line-type="personality" points="244.09,669.88 246.58,666.49 165.58,606.99 163.09,610.38"/><polygon data-gate-line="50" data-gate-line-type="design" points="84.58,547.49 82.09,550.88 163.09,610.38 165.58,606.99"/><polygon data-gate-line="50" data-gate-line-type="personality" points="81.91,551.12 79.42,554.51 160.42,614.01 162.91,610.62"/><polygon data-gate-line="28" data-gate-line-type="design" points="85.72,589.74 82.13,591.92 137.13,682.42 140.72,680.24"/><polygon data-gate-line="28" data-gate-line-type="personality" points="81.87,592.08 78.28,594.26 133.28,684.76 136.87,682.58"/><polygon data-gate-line="38" data-gate-line-type="design" points="188.28,775.26 191.87,773.08 136.87,682.58 133.28,684.76"/><polygon data-gate-line="38" data-gate-line-type="personality" points="192.13,772.92 195.72,770.74 140.72,680.24 137.13,682.42"/><polygon data-gate-line="29" data-gate-line-type="design" points="173.84,633.73 177.86,634.96 194.36,580.96 190.34,579.73"/><polygon data-gate-line="29" data-gate-line-type="personality" points="178.14,635.04 182.16,636.27 198.66,582.27 194.64,581.04"/><polygon data-gate-line="46" data-gate-line-type="design" points="215.16,528.27 211.14,527.04 194.64,581.04 198.66,582.27"/><polygon data-gate-line="46" data-gate-line-type="personality" points="210.86,526.96 206.84,525.73 190.34,579.73 194.36,580.96"/><polygon data-gate-line="30" data-gate-line-type="design" points="305.59,620.46 302.12,618.08 256.62,684.58 260.09,686.96"/><polygon data-gate-line="30" data-gate-line-type="personality" points="301.88,617.92 298.41,615.54 252.91,682.04 256.38,684.42"/><polygon data-gate-line="41" data-gate-line-type="design" points="207.41,748.54 210.88,750.92 256.38,684.42 252.91,682.04"/><polygon data-gate-line="41" data-gate-line-type="personality" points="211.12,751.08 214.59,753.46 260.09,686.96 256.62,684.58"/><polygon data-gate-line="32" data-gate-line-type="design" points="124.20,568.86 120.14,569.96 146.14,665.96 150.20,664.86"/><polygon data-gate-line="32" data-gate-line-type="personality" points="119.86,570.04 115.80,571.14 141.80,667.14 145.86,666.04"/><polygon data-gate-line="54" data-gate-line-type="design" points="167.80,763.14 171.86,762.04 145.86,666.04 141.80,667.14"/><polygon data-gate-line="54" data-gate-line-type="personality" points="172.14,761.96 176.20,760.86 150.20,664.86 146.14,665.96"/><polygon data-gate-line="34" data-gate-line-type="design" points="174.48,602.56 177.88,600.09 139.38,547.09 135.98,549.56"/><polygon data-gate-line="34" data-gate-line-type="personality" points="178.12,599.91 181.52,597.44 143.02,544.44 139.62,546.91"/><polygon data-gate-line="57" data-gate-line-type="design" points="104.52,491.44 101.12,493.91 139.62,546.91 143.02,544.44"/><polygon data-gate-line="57" data-gate-line-type="personality" points="100.88,494.09 97.48,496.56 135.98,549.56 139.38,547.09"/><polygon data-gate-line="35" data-gate-line-type="design" points="214.54,309.47 211.12,311.91 283.12,412.91 286.54,410.47"/><polygon data-gate-line="35" data-gate-line-type="personality" points="210.88,312.09 207.46,314.53 279.46,415.53 282.88,413.09"/><polygon data-gate-line="36" data-gate-line-type="design" points="351.46,516.53 354.88,514.09 282.88,413.09 279.46,415.53"/><polygon data-gate-line="36" data-gate-line-type="personality" points="355.12,513.91 358.54,511.47 286.54,410.47 283.12,412.91"/><polygon data-gate-line="37" data-gate-line-type="design" points="297.96,524.38 301.86,525.94 315.86,490.94 311.96,489.38"/><polygon data-gate-line="37" data-gate-line-type="personality" points="302.14,526.06 306.04,527.62 320.04,492.62 316.14,491.06"/><polygon data-gate-line="40" data-gate-line-type="design" points="334.04,457.62 330.14,456.06 316.14,491.06 320.04,492.62"/><polygon data-gate-line="40" data-gate-line-type="personality" points="329.86,455.94 325.96,454.38 311.96,489.38 315.86,490.94"/><polygon data-gate-line="39" data-gate-line-type="design" points="246.16,759.96 249.87,761.93 294.87,676.93 291.16,674.96"/><polygon data-gate-line="39" data-gate-line-type="personality" points="250.13,762.07 253.84,764.04 298.84,679.04 295.13,677.07"/><polygon data-gate-line="55" data-gate-line-type="design" points="343.84,594.04 340.13,592.07 295.13,677.07 298.84,679.04"/><polygon data-gate-line="55" data-gate-line-type="personality" points="339.87,591.93 336.16,589.96 291.16,674.96 294.87,676.93"/><polygon data-gate-line="42" data-gate-line-type="design" points="214.77,672.16 211.13,670.07 191.63,704.07 195.27,706.16"/><polygon data-gate-line="42" data-gate-line-type="personality" points="210.87,669.93 207.23,667.84 187.73,701.84 191.37,703.93"/><polygon data-gate-line="53" data-gate-line-type="design" points="168.23,735.84 171.87,737.93 191.37,703.93 187.73,701.84"/><polygon data-gate-line="53" data-gate-line-type="personality" points="172.13,738.07 175.77,740.16 195.27,706.16 191.63,704.07"/><polygon data-gate-line="47" data-gate-line-type="design" points="171.67,173.57 175.85,173.99 179.85,133.99 175.67,133.57"/><polygon data-gate-line="47" data-gate-line-type="personality" points="176.15,174.01 180.33,174.43 184.33,134.43 180.15,134.01"/><polygon data-gate-line="64" data-gate-line-type="design" points="188.33,94.43 184.15,94.01 180.15,134.01 184.33,134.43"/><polygon data-gate-line="64" data-gate-line-type="personality" points="183.85,93.99 179.67,93.57 175.67,133.57 179.85,133.99"/></g>
-  <g fill="#f9eedd" stroke="#a87945" stroke-width="2.4" stroke-linejoin="round"><path id="head-center" d="M211 28 151 129H271Z"/>
-    <path id="ajna-center" d="M151 151H271L211 243Z"/>
-    <rect id="throat-center" x="153" y="258" width="116" height="122" rx="12"/>
-    <path id="g-center" d="M211 397 290 475 211 553 132 475Z"/>
-    <path id="heart-center" d="M291 414 351 440 302 474Z"/>
-    <rect id="sacral-center" x="156" y="576" width="110" height="118" rx="13"/>
-    <path id="splenic-center" d="M44 503 137 457 137 648 44 602Z"/>
-    <path id="solar-plexus-center" d="M378 503 285 457 285 648 378 602Z"/>
-    <rect id="root-center" x="151" y="716" width="120" height="76" rx="13"/></g>
-  <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="8" font-weight="700" text-anchor="middle" dominant-baseline="middle">
+  <defs>
+    <radialGradient id="aura" cx="50%" cy="43%" r="62%"><stop offset="0" stop-color="#f8ead4" stop-opacity=".34"/><stop offset="1" stop-color="#f8ead4" stop-opacity="0"/></radialGradient>
+  </defs>
+  <ellipse cx="211" cy="406" rx="195" ry="348" fill="url(#aura)"/>
+  <g fill="none" stroke="#c08a3c" stroke-width="1" opacity=".2"><ellipse cx="211" cy="406" rx="174" ry="316"/><ellipse cx="211" cy="406" rx="142" ry="274"/></g>
+  <g fill="none" stroke="#d3993d" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity=".9"><path d="M211.00 374.00 L211.00 306.00"/><path d="M211.00 435.00 L211.00 518.00"/><path d="M187.00 582.00 L211.00 635.00"/><path d="M237.00 134.00 L237.00 76.00"/><path d="M187.00 518.00 Q166.00 468.00 190.00 424.00"/><path d="M334.00 540.00 L242.00 548.00"/><path d="M190.00 382.00 L195.00 306.00"/><path d="M235.00 582.00 L237.00 635.00"/><path d="M181.00 403.00 L243.00 306.00"/><path d="M181.00 403.00 Q165.00 475.00 180.00 548.00"/><path d="M181.00 403.00 Q126.00 420.00 82.00 486.00"/><path d="M237.00 184.00 L237.00 244.00"/><path d="M241.00 292.00 Q316.00 330.00 340.00 486.00"/><path d="M232.00 382.00 L227.00 306.00"/><path d="M181.00 270.00 Q92.00 346.00 36.00 507.00"/><path d="M185.00 184.00 L185.00 244.00"/><path d="M40.00 558.00 Q78.00 676.00 190.00 692.00"/><path d="M232.00 692.00 Q300.00 675.00 334.00 562.00"/><path d="M243.00 306.00 Q276.00 438.00 180.00 548.00"/><path d="M243.00 306.00 Q128.00 328.00 82.00 486.00"/><path d="M284.00 441.00 Q291.00 333.00 179.00 306.00"/><path d="M211.00 244.00 L211.00 184.00"/><path d="M211.00 134.00 L211.00 76.00"/><path d="M241.00 403.00 L298.00 448.00"/><path d="M292.00 468.00 Q190.00 454.00 88.00 516.00"/><path d="M180.00 571.00 L88.00 540.00"/><path d="M68.00 575.00 Q102.00 670.00 180.00 675.00"/><path d="M235.00 518.00 L232.00 424.00"/><path d="M382.00 558.00 Q330.00 660.00 242.00 654.00"/><path d="M88.00 562.00 Q112.00 650.00 180.00 654.00"/><path d="M180.00 548.00 Q132.00 530.00 82.00 486.00"/><path d="M241.00 270.00 Q330.00 350.00 386.00 507.00"/><path d="M334.00 516.00 L325.00 455.00"/><path d="M242.00 675.00 Q318.00 670.00 354.00 575.00"/><path d="M211.00 582.00 L185.00 635.00"/><path d="M185.00 134.00 L185.00 76.00"/></g>
+  <g fill="none" stroke="#f3e8d8" stroke-width="6.6" stroke-linecap="round" stroke-linejoin="round" opacity=".98"><path d="M211.00 374.00 L211.00 306.00"/><path d="M211.00 435.00 L211.00 518.00"/><path d="M187.00 582.00 L211.00 635.00"/><path d="M237.00 134.00 L237.00 76.00"/><path d="M187.00 518.00 Q166.00 468.00 190.00 424.00"/><path d="M334.00 540.00 L242.00 548.00"/><path d="M190.00 382.00 L195.00 306.00"/><path d="M235.00 582.00 L237.00 635.00"/><path d="M181.00 403.00 L243.00 306.00"/><path d="M181.00 403.00 Q165.00 475.00 180.00 548.00"/><path d="M181.00 403.00 Q126.00 420.00 82.00 486.00"/><path d="M237.00 184.00 L237.00 244.00"/><path d="M241.00 292.00 Q316.00 330.00 340.00 486.00"/><path d="M232.00 382.00 L227.00 306.00"/><path d="M181.00 270.00 Q92.00 346.00 36.00 507.00"/><path d="M185.00 184.00 L185.00 244.00"/><path d="M40.00 558.00 Q78.00 676.00 190.00 692.00"/><path d="M232.00 692.00 Q300.00 675.00 334.00 562.00"/><path d="M243.00 306.00 Q276.00 438.00 180.00 548.00"/><path d="M243.00 306.00 Q128.00 328.00 82.00 486.00"/><path d="M284.00 441.00 Q291.00 333.00 179.00 306.00"/><path d="M211.00 244.00 L211.00 184.00"/><path d="M211.00 134.00 L211.00 76.00"/><path d="M241.00 403.00 L298.00 448.00"/><path d="M292.00 468.00 Q190.00 454.00 88.00 516.00"/><path d="M180.00 571.00 L88.00 540.00"/><path d="M68.00 575.00 Q102.00 670.00 180.00 675.00"/><path d="M235.00 518.00 L232.00 424.00"/><path d="M382.00 558.00 Q330.00 660.00 242.00 654.00"/><path d="M88.00 562.00 Q112.00 650.00 180.00 654.00"/><path d="M180.00 548.00 Q132.00 530.00 82.00 486.00"/><path d="M241.00 270.00 Q330.00 350.00 386.00 507.00"/><path d="M334.00 516.00 L325.00 455.00"/><path d="M242.00 675.00 Q318.00 670.00 354.00 575.00"/><path d="M211.00 582.00 L185.00 635.00"/><path d="M185.00 134.00 L185.00 76.00"/></g>
+  <g fill="none" stroke="transparent" stroke-width="3.9" stroke-linecap="round" stroke-linejoin="round"><path data-gate-line="1" data-gate-line-type="design" d="M208.85 374.00 L208.85 340.00"/><path data-gate-line="1" data-gate-line-type="personality" d="M213.15 374.00 L213.15 340.00"/><path data-gate-line="8" data-gate-line-type="design" d="M213.15 306.00 L213.15 340.00"/><path data-gate-line="8" data-gate-line-type="personality" d="M208.85 306.00 L208.85 340.00"/><path data-gate-line="2" data-gate-line-type="design" d="M213.15 435.00 L213.15 476.50"/><path data-gate-line="2" data-gate-line-type="personality" d="M208.85 435.00 L208.85 476.50"/><path data-gate-line="14" data-gate-line-type="design" d="M208.85 518.00 L208.85 476.50"/><path data-gate-line="14" data-gate-line-type="personality" d="M213.15 518.00 L213.15 476.50"/><path data-gate-line="3" data-gate-line-type="design" d="M188.96 581.11 L200.96 607.61"/><path data-gate-line="3" data-gate-line-type="personality" d="M185.04 582.89 L197.04 609.39"/><path data-gate-line="60" data-gate-line-type="design" d="M209.04 635.89 L197.04 609.39"/><path data-gate-line="60" data-gate-line-type="personality" d="M212.96 634.11 L200.96 607.61"/><path data-gate-line="4" data-gate-line-type="design" d="M234.85 134.00 L234.85 105.00"/><path data-gate-line="4" data-gate-line-type="personality" d="M239.15 134.00 L239.15 105.00"/><path data-gate-line="63" data-gate-line-type="design" d="M239.15 76.00 L239.15 105.00"/><path data-gate-line="63" data-gate-line-type="personality" d="M234.85 76.00 L234.85 105.00"/><path data-gate-line="5" data-gate-line-type="design" d="M184.89 518.42 Q174.39 493.42 175.14 469.92"/><path data-gate-line="5" data-gate-line-type="personality" d="M189.11 517.58 Q178.61 492.58 179.36 469.08"/><path data-gate-line="15" data-gate-line-type="design" d="M192.07 424.58 Q180.07 446.58 179.32 470.08"/><path data-gate-line="15" data-gate-line-type="personality" d="M187.93 423.42 Q175.93 445.42 175.18 468.92"/><path data-gate-line="6" data-gate-line-type="design" d="M334.19 542.14 L288.19 546.14"/><path data-gate-line="6" data-gate-line-type="personality" d="M333.81 537.86 L287.81 541.86"/><path data-gate-line="59" data-gate-line-type="design" d="M241.81 545.86 L287.81 541.86"/><path data-gate-line="59" data-gate-line-type="personality" d="M242.19 550.14 L288.19 546.14"/><path data-gate-line="7" data-gate-line-type="design" d="M187.85 381.86 L190.35 343.86"/><path data-gate-line="7" data-gate-line-type="personality" d="M192.15 382.14 L194.65 344.14"/><path data-gate-line="31" data-gate-line-type="design" d="M197.15 306.14 L194.65 344.14"/><path data-gate-line="31" data-gate-line-type="personality" d="M192.85 305.86 L190.35 343.86"/><path data-gate-line="9" data-gate-line-type="design" d="M237.15 581.92 L238.15 608.42"/><path data-gate-line="9" data-gate-line-type="personality" d="M232.85 582.08 L233.85 608.58"/><path data-gate-line="52" data-gate-line-type="design" d="M234.85 635.08 L233.85 608.58"/><path data-gate-line="52" data-gate-line-type="personality" d="M239.15 634.92 L238.15 608.42"/><path data-gate-line="10" data-gate-line-type="design" d="M179.19 401.84 L210.19 353.34"/><path data-gate-line="10" data-gate-line-type="personality" d="M182.81 404.16 L213.81 355.66"/><path data-gate-line="20" data-gate-line-type="design" d="M244.81 307.16 L213.81 355.66"/><path data-gate-line="20" data-gate-line-type="personality" d="M241.19 304.84 L210.19 353.34"/><path data-gate-line="10" data-gate-line-type="design" d="M183.14 403.24 Q175.14 439.24 174.89 475.49"/><path data-gate-line="10" data-gate-line-type="personality" d="M178.86 402.76 Q170.86 438.76 170.61 475.01"/><path data-gate-line="34" data-gate-line-type="design" d="M177.86 548.21 Q170.36 511.71 170.61 475.46"/><path data-gate-line="34" data-gate-line-type="personality" d="M182.14 547.79 Q174.64 511.29 174.89 475.04"/><path data-gate-line="10" data-gate-line-type="design" d="M182.05 404.88 Q154.55 413.38 129.80 434.13"/><path data-gate-line="10" data-gate-line-type="personality" d="M179.95 401.12 Q152.45 409.62 127.70 430.37"/><path data-gate-line="57" data-gate-line-type="design" d="M80.38 484.59 Q102.38 451.59 127.13 430.84"/><path data-gate-line="57" data-gate-line-type="personality" d="M83.62 487.41 Q105.62 454.41 130.37 433.66"/><path data-gate-line="11" data-gate-line-type="design" d="M239.15 184.00 L239.15 214.00"/><path data-gate-line="11" data-gate-line-type="personality" d="M234.85 184.00 L234.85 214.00"/><path data-gate-line="56" data-gate-line-type="design" d="M234.85 244.00 L234.85 214.00"/><path data-gate-line="56" data-gate-line-type="personality" d="M239.15 244.00 L239.15 214.00"/><path data-gate-line="12" data-gate-line-type="design" d="M242.58 290.54 Q280.08 309.54 304.83 358.04"/><path data-gate-line="12" data-gate-line-type="personality" d="M239.42 293.46 Q276.92 312.46 301.67 360.96"/><path data-gate-line="22" data-gate-line-type="design" d="M337.94 486.60 Q325.94 408.60 301.19 360.10"/><path data-gate-line="22" data-gate-line-type="personality" d="M342.06 485.40 Q330.06 407.40 305.31 358.90"/><path data-gate-line="13" data-gate-line-type="design" d="M229.85 382.14 L227.35 344.14"/><path data-gate-line="13" data-gate-line-type="personality" d="M234.15 381.86 L231.65 343.86"/><path data-gate-line="33" data-gate-line-type="design" d="M229.15 305.86 L231.65 343.86"/><path data-gate-line="33" data-gate-line-type="personality" d="M224.85 306.14 L227.35 344.14"/><path data-gate-line="16" data-gate-line-type="design" d="M182.65 271.37 Q138.15 309.37 101.90 368.62"/><path data-gate-line="16" data-gate-line-type="personality" d="M179.35 268.63 Q134.85 306.63 98.60 365.88"/><path data-gate-line="48" data-gate-line-type="design" d="M34.05 506.10 Q62.05 425.60 98.30 366.35"/><path data-gate-line="48" data-gate-line-type="personality" d="M37.95 507.90 Q65.95 427.40 102.20 368.15"/><path data-gate-line="17" data-gate-line-type="design" d="M187.15 184.00 L187.15 214.00"/><path data-gate-line="17" data-gate-line-type="personality" d="M182.85 184.00 L182.85 214.00"/><path data-gate-line="62" data-gate-line-type="design" d="M182.85 244.00 L182.85 214.00"/><path data-gate-line="62" data-gate-line-type="personality" d="M187.15 244.00 L187.15 214.00"/><path data-gate-line="18" data-gate-line-type="design" d="M41.83 556.88 Q60.83 615.88 98.33 649.38"/><path data-gate-line="18" data-gate-line-type="personality" d="M38.17 559.12 Q57.17 618.12 94.67 651.62"/><path data-gate-line="58" data-gate-line-type="design" d="M189.13 693.97 Q133.13 685.97 95.63 652.47"/><path data-gate-line="58" data-gate-line-type="personality" d="M190.87 690.03 Q134.87 682.03 97.37 648.53"/><path data-gate-line="19" data-gate-line-type="design" d="M230.78 690.23 Q264.78 681.73 290.28 649.23"/><path data-gate-line="19" data-gate-line-type="personality" d="M233.22 693.77 Q267.22 685.27 292.72 652.77"/><path data-gate-line="49" data-gate-line-type="design" d="M335.94 562.93 Q318.94 619.43 293.44 651.93"/><path data-gate-line="49" data-gate-line-type="personality" d="M332.06 561.07 Q315.06 617.57 289.56 650.07"/><path data-gate-line="20" data-gate-line-type="design" d="M245.15 305.99 Q261.65 371.99 245.90 432.49"/><path data-gate-line="20" data-gate-line-type="personality" d="M240.85 306.01 Q257.35 372.01 241.60 432.51"/><path data-gate-line="34" data-gate-line-type="design" d="M178.12 546.96 Q226.12 491.96 241.87 431.46"/><path data-gate-line="34" data-gate-line-type="personality" d="M181.88 549.04 Q229.88 494.04 245.63 433.54"/><path data-gate-line="20" data-gate-line-type="design" d="M244.07 307.87 Q186.57 318.87 146.32 363.87"/><path data-gate-line="20" data-gate-line-type="personality" d="M241.93 304.13 Q184.43 315.13 144.18 360.13"/><path data-gate-line="57" data-gate-line-type="design" d="M80.08 485.02 Q103.08 406.02 143.33 361.02"/><path data-gate-line="57" data-gate-line-type="personality" d="M83.92 486.98 Q106.92 407.98 147.17 362.98"/><path data-gate-line="21" data-gate-line-type="design" d="M281.92 441.54 Q285.42 387.54 259.17 353.79"/><path data-gate-line="21" data-gate-line-type="personality" d="M286.08 440.46 Q289.58 386.46 263.33 352.71"/><path data-gate-line="45" data-gate-line-type="design" d="M180.07 304.14 Q236.07 317.64 262.32 351.39"/><path data-gate-line="45" data-gate-line-type="personality" d="M177.93 307.86 Q233.93 321.36 260.18 355.11"/><path data-gate-line="23" data-gate-line-type="design" d="M208.85 244.00 L208.85 214.00"/><path data-gate-line="23" data-gate-line-type="personality" d="M213.15 244.00 L213.15 214.00"/><path data-gate-line="43" data-gate-line-type="design" d="M213.15 184.00 L213.15 214.00"/><path data-gate-line="43" data-gate-line-type="personality" d="M208.85 184.00 L208.85 214.00"/><path data-gate-line="24" data-gate-line-type="design" d="M208.85 134.00 L208.85 105.00"/><path data-gate-line="24" data-gate-line-type="personality" d="M213.15 134.00 L213.15 105.00"/><path data-gate-line="61" data-gate-line-type="design" d="M213.15 76.00 L213.15 105.00"/><path data-gate-line="61" data-gate-line-type="personality" d="M208.85 76.00 L208.85 105.00"/><path data-gate-line="25" data-gate-line-type="design" d="M242.33 401.31 L270.83 423.81"/><path data-gate-line="25" data-gate-line-type="personality" d="M239.67 404.69 L268.17 427.19"/><path data-gate-line="51" data-gate-line-type="design" d="M296.67 449.69 L268.17 427.19"/><path data-gate-line="51" data-gate-line-type="personality" d="M299.33 446.31 L270.83 423.81"/><path data-gate-line="26" data-gate-line-type="design" d="M292.11 470.15 Q241.11 463.15 190.11 475.15"/><path data-gate-line="26" data-gate-line-type="personality" d="M291.89 465.85 Q240.89 458.85 189.89 470.85"/><path data-gate-line="44" data-gate-line-type="design" d="M87.16 514.02 Q138.16 483.02 189.16 471.02"/><path data-gate-line="44" data-gate-line-type="personality" d="M88.84 517.98 Q139.84 486.98 190.84 474.98"/><path data-gate-line="27" data-gate-line-type="design" d="M179.31 573.04 L133.31 557.54"/><path data-gate-line="27" data-gate-line-type="personality" d="M180.69 568.96 L134.69 553.46"/><path data-gate-line="50" data-gate-line-type="design" d="M88.69 537.96 L134.69 553.46"/><path data-gate-line="50" data-gate-line-type="personality" d="M87.31 542.04 L133.31 557.54"/><path data-gate-line="28" data-gate-line-type="design" d="M69.83 573.87 Q86.83 621.37 114.83 646.37"/><path data-gate-line="28" data-gate-line-type="personality" d="M66.17 576.13 Q83.17 623.63 111.17 648.63"/><path data-gate-line="38" data-gate-line-type="design" d="M179.18 676.99 Q140.18 674.49 112.18 649.49"/><path data-gate-line="38" data-gate-line-type="personality" d="M180.82 673.01 Q141.82 670.51 113.82 645.51"/><path data-gate-line="29" data-gate-line-type="design" d="M232.85 518.07 L231.35 471.07"/><path data-gate-line="29" data-gate-line-type="personality" d="M237.15 517.93 L235.65 470.93"/><path data-gate-line="46" data-gate-line-type="design" d="M234.15 423.93 L235.65 470.93"/><path data-gate-line="46" data-gate-line-type="personality" d="M229.85 424.07 L231.35 471.07"/><path data-gate-line="30" data-gate-line-type="design" d="M383.67 559.36 Q357.67 610.36 322.67 634.36"/><path data-gate-line="30" data-gate-line-type="personality" d="M380.33 556.64 Q354.33 607.64 319.33 631.64"/><path data-gate-line="41" data-gate-line-type="design" d="M241.45 651.92 Q285.45 654.92 320.45 630.92"/><path data-gate-line="41" data-gate-line-type="personality" d="M242.55 656.08 Q286.55 659.08 321.55 635.08"/><path data-gate-line="32" data-gate-line-type="design" d="M89.91 561.00 Q101.91 605.00 124.91 628.00"/><path data-gate-line="32" data-gate-line-type="personality" d="M86.09 563.00 Q98.09 607.00 121.09 630.00"/><path data-gate-line="54" data-gate-line-type="design" d="M179.14 655.97 Q145.14 653.97 122.14 630.97"/><path data-gate-line="54" data-gate-line-type="personality" d="M180.86 652.03 Q146.86 650.03 123.86 627.03"/><path data-gate-line="34" data-gate-line-type="design" d="M179.03 549.92 Q155.03 540.92 130.53 525.42"/><path data-gate-line="34" data-gate-line-type="personality" d="M180.97 546.08 Q156.97 537.08 132.47 521.58"/><path data-gate-line="57" data-gate-line-type="design" d="M83.30 484.29 Q108.30 506.29 132.80 521.79"/><path data-gate-line="57" data-gate-line-type="personality" d="M80.70 487.71 Q105.70 509.71 130.20 525.21"/><path data-gate-line="35" data-gate-line-type="design" d="M242.67 268.64 Q287.17 308.64 323.42 367.89"/><path data-gate-line="35" data-gate-line-type="personality" d="M239.33 271.36 Q283.83 311.36 320.08 370.61"/><path data-gate-line="36" data-gate-line-type="design" d="M384.05 507.91 Q356.05 429.41 319.80 370.16"/><path data-gate-line="36" data-gate-line-type="personality" d="M387.95 506.09 Q359.95 427.59 323.70 368.34"/><path data-gate-line="37" data-gate-line-type="design" d="M331.87 516.31 L327.37 485.81"/><path data-gate-line="37" data-gate-line-type="personality" d="M336.13 515.69 L331.63 485.19"/><path data-gate-line="40" data-gate-line-type="design" d="M327.13 454.69 L331.63 485.19"/><path data-gate-line="40" data-gate-line-type="personality" d="M322.87 455.31 L327.37 485.81"/><path data-gate-line="39" data-gate-line-type="design" d="M241.17 673.02 Q279.17 670.52 307.17 645.52"/><path data-gate-line="39" data-gate-line-type="personality" d="M242.83 676.98 Q280.83 674.48 308.83 649.48"/><path data-gate-line="55" data-gate-line-type="design" d="M355.82 576.15 Q337.82 623.65 309.82 648.65"/><path data-gate-line="55" data-gate-line-type="personality" d="M352.18 573.85 Q334.18 621.35 306.18 646.35"/><path data-gate-line="42" data-gate-line-type="design" d="M212.93 582.95 L199.93 609.45"/><path data-gate-line="42" data-gate-line-type="personality" d="M209.07 581.05 L196.07 607.55"/><path data-gate-line="53" data-gate-line-type="design" d="M183.07 634.05 L196.07 607.55"/><path data-gate-line="53" data-gate-line-type="personality" d="M186.93 635.95 L199.93 609.45"/><path data-gate-line="47" data-gate-line-type="design" d="M182.85 134.00 L182.85 105.00"/><path data-gate-line="47" data-gate-line-type="personality" d="M187.15 134.00 L187.15 105.00"/><path data-gate-line="64" data-gate-line-type="design" d="M187.15 76.00 L187.15 105.00"/><path data-gate-line="64" data-gate-line-type="personality" d="M182.85 76.00 L182.85 105.00"/></g>
+  <g fill="#f9eedd" stroke="#a87945" stroke-width="2.2" stroke-linejoin="round" style="paint-order:stroke fill"><path id="head-center" d="M206.56 22.83 Q211 15 215.44 22.83 Q253 89 244 89 Q169 89 173.44 81.17 Z"/>
+    <path id="ajna-center" d="M173.22 128.95 Q169 121 178 121 Q253 121 248.78 128.95 Q211 200 206.78 192.05 Z"/>
+    <rect id="throat-center" x="169" y="231" width="84" height="88" rx="11"/>
+    <path id="g-center" d="M204.64 366.36 Q211 360 217.36 366.36 Q254 403 247.64 409.36 Q211 446 204.64 439.64 Q168 403 174.36 396.64 Z"/>
+    <path id="heart-center" d="M273.01 430.94 Q272 423 279.41 426.01 Q341 451 334.06 454.98 Q280 486 278.99 478.06 Z"/>
+    <rect id="sacral-center" x="169" y="503" width="84" height="94" rx="11"/>
+    <path id="splenic-center" d="M21 513 Q21 504 29.11 500.1 Q98 467 98 476 Q98 592 89.89 588.1 Q21 555 21 546 Z"/>
+    <path id="solar-plexus-center" d="M401 513 Q401 504 392.89 500.1 Q324 467 324 476 Q324 592 332.11 588.1 Q401 555 401 546 Z"/>
+    <rect id="root-center" x="169" y="621" width="84" height="82" rx="11"/></g>
+  <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="6.4" font-weight="700" text-anchor="middle" dominant-baseline="middle">
     <g class="gate">
-      <circle cx="184" cy="94" r="9"/>
-      <text x="184" y="94.5" data-gate-number="64">64</text>
+      <circle cx="185" cy="76" r="7.1"/>
+      <text x="185" y="76.25" data-gate-number="64">64</text>
     </g>
     <g class="gate">
-      <circle cx="211" cy="94" r="9"/>
-      <text x="211" y="94.5" data-gate-number="61">61</text>
+      <circle cx="211" cy="76" r="7.1"/>
+      <text x="211" y="76.25" data-gate-number="61">61</text>
     </g>
     <g class="gate">
-      <circle cx="238" cy="94" r="9"/>
-      <text x="238" y="94.5" data-gate-number="63">63</text>
+      <circle cx="237" cy="76" r="7.1"/>
+      <text x="237" y="76.25" data-gate-number="63">63</text>
     </g>
     <g class="gate">
-      <circle cx="176" cy="174" r="9"/>
-      <text x="176" y="174.5" data-gate-number="47">47</text>
+      <circle cx="185" cy="134" r="7.1"/>
+      <text x="185" y="134.25" data-gate-number="47">47</text>
     </g>
     <g class="gate">
-      <circle cx="211" cy="174" r="9"/>
-      <text x="211" y="174.5" data-gate-number="24">24</text>
+      <circle cx="211" cy="134" r="7.1"/>
+      <text x="211" y="134.25" data-gate-number="24">24</text>
     </g>
     <g class="gate">
-      <circle cx="246" cy="174" r="9"/>
-      <text x="246" y="174.5" data-gate-number="4">4</text>
+      <circle cx="237" cy="134" r="7.1"/>
+      <text x="237" y="134.25" data-gate-number="4">4</text>
     </g>
     <g class="gate">
-      <circle cx="184" cy="207" r="9"/>
-      <text x="184" y="207.5" data-gate-number="17">17</text>
+      <circle cx="185" cy="184" r="7.1"/>
+      <text x="185" y="184.25" data-gate-number="17">17</text>
     </g>
     <g class="gate">
-      <circle cx="211" cy="214" r="9"/>
-      <text x="211" y="214.5" data-gate-number="43">43</text>
+      <circle cx="211" cy="184" r="7.1"/>
+      <text x="211" y="184.25" data-gate-number="43">43</text>
     </g>
     <g class="gate">
-      <circle cx="238" cy="207" r="9"/>
-      <text x="238" y="207.5" data-gate-number="11">11</text>
+      <circle cx="237" cy="184" r="7.1"/>
+      <text x="237" y="184.25" data-gate-number="11">11</text>
     </g>
     <g class="gate">
-      <circle cx="175" cy="281" r="9"/>
-      <text x="175" y="281.5" data-gate-number="62">62</text>
+      <circle cx="185" cy="244" r="7.1"/>
+      <text x="185" y="244.25" data-gate-number="62">62</text>
     </g>
     <g class="gate">
-      <circle cx="211" cy="281" r="9"/>
-      <text x="211" y="281.5" data-gate-number="23">23</text>
+      <circle cx="211" cy="244" r="7.1"/>
+      <text x="211" y="244.25" data-gate-number="23">23</text>
     </g>
     <g class="gate">
-      <circle cx="247" cy="281" r="9"/>
-      <text x="247" y="281.5" data-gate-number="56">56</text>
+      <circle cx="237" cy="244" r="7.1"/>
+      <text x="237" y="244.25" data-gate-number="56">56</text>
     </g>
     <g class="gate">
-      <circle cx="175" cy="312" r="9"/>
-      <text x="175" y="312.5" data-gate-number="16">16</text>
+      <circle cx="181" cy="270" r="7.1"/>
+      <text x="181" y="270.25" data-gate-number="16">16</text>
     </g>
     <g class="gate">
-      <circle cx="211" cy="312" r="9"/>
-      <text x="211" y="312.5" data-gate-number="35">35</text>
+      <circle cx="241" cy="270" r="7.1"/>
+      <text x="241" y="270.25" data-gate-number="35">35</text>
     </g>
     <g class="gate">
-      <circle cx="247" cy="312" r="9"/>
-      <text x="247" y="312.5" data-gate-number="12">12</text>
+      <circle cx="241" cy="292" r="7.1"/>
+      <text x="241" y="292.25" data-gate-number="12">12</text>
     </g>
     <g class="gate">
-      <circle cx="166" cy="344" r="9"/>
-      <text x="166" y="344.5" data-gate-number="45">45</text>
+      <circle cx="179" cy="306" r="7.1"/>
+      <text x="179" y="306.25" data-gate-number="45">45</text>
     </g>
     <g class="gate">
-      <circle cx="188" cy="354" r="9"/>
-      <text x="188" y="354.5" data-gate-number="31">31</text>
+      <circle cx="195" cy="306" r="7.1"/>
+      <text x="195" y="306.25" data-gate-number="31">31</text>
     </g>
     <g class="gate">
-      <circle cx="211" cy="354" r="9"/>
-      <text x="211" y="354.5" data-gate-number="8">8</text>
+      <circle cx="211" cy="306" r="7.1"/>
+      <text x="211" y="306.25" data-gate-number="8">8</text>
     </g>
     <g class="gate">
-      <circle cx="234" cy="354" r="9"/>
-      <text x="234" y="354.5" data-gate-number="33">33</text>
+      <circle cx="227" cy="306" r="7.1"/>
+      <text x="227" y="306.25" data-gate-number="33">33</text>
     </g>
     <g class="gate">
-      <circle cx="256" cy="344" r="9"/>
-      <text x="256" y="344.5" data-gate-number="20">20</text>
+      <circle cx="243" cy="306" r="7.1"/>
+      <text x="243" y="306.25" data-gate-number="20">20</text>
     </g>
     <g class="gate">
-      <circle cx="187" cy="436" r="9"/>
-      <text x="187" y="436.5" data-gate-number="7">7</text>
+      <circle cx="190" cy="382" r="7.1"/>
+      <text x="190" y="382.25" data-gate-number="7">7</text>
     </g>
     <g class="gate">
-      <circle cx="211" cy="423" r="9"/>
-      <text x="211" y="423.5" data-gate-number="1">1</text>
+      <circle cx="211" cy="374" r="7.1"/>
+      <text x="211" y="374.25" data-gate-number="1">1</text>
     </g>
     <g class="gate">
-      <circle cx="235" cy="436" r="9"/>
-      <text x="235" y="436.5" data-gate-number="13">13</text>
+      <circle cx="232" cy="382" r="7.1"/>
+      <text x="232" y="382.25" data-gate-number="13">13</text>
     </g>
     <g class="gate">
-      <circle cx="164" cy="475" r="9"/>
-      <text x="164" y="475.5" data-gate-number="10">10</text>
+      <circle cx="181" cy="403" r="7.1"/>
+      <text x="181" y="403.25" data-gate-number="10">10</text>
     </g>
     <g class="gate">
-      <circle cx="258" cy="475" r="9"/>
-      <text x="258" y="475.5" data-gate-number="15">15</text>
+      <circle cx="190" cy="424" r="7.1"/>
+      <text x="190" y="424.25" data-gate-number="15">15</text>
     </g>
     <g class="gate">
-      <circle cx="187" cy="514" r="9"/>
-      <text x="187" y="514.5" data-gate-number="2">2</text>
+      <circle cx="211" cy="435" r="7.1"/>
+      <text x="211" y="435.25" data-gate-number="2">2</text>
     </g>
     <g class="gate">
-      <circle cx="211" cy="527" r="9"/>
-      <text x="211" y="527.5" data-gate-number="46">46</text>
+      <circle cx="232" cy="424" r="7.1"/>
+      <text x="232" y="424.25" data-gate-number="46">46</text>
     </g>
     <g class="gate">
-      <circle cx="235" cy="514" r="9"/>
-      <text x="235" y="514.5" data-gate-number="25">25</text>
+      <circle cx="241" cy="403" r="7.1"/>
+      <text x="241" y="403.25" data-gate-number="25">25</text>
     </g>
     <g class="gate">
-      <circle cx="307" cy="436" r="9"/>
-      <text x="307" y="436.5" data-gate-number="21">21</text>
+      <circle cx="284" cy="441" r="7.1"/>
+      <text x="284" y="441.25" data-gate-number="21">21</text>
     </g>
     <g class="gate">
-      <circle cx="330" cy="438" r="9"/>
-      <text x="330" y="438.5" data-gate-number="51">51</text>
+      <circle cx="298" cy="448" r="7.1"/>
+      <text x="298" y="448.25" data-gate-number="51">51</text>
     </g>
     <g class="gate">
-      <circle cx="307" cy="454" r="9"/>
-      <text x="307" y="454.5" data-gate-number="26">26</text>
+      <circle cx="292" cy="468" r="7.1"/>
+      <text x="292" y="468.25" data-gate-number="26">26</text>
     </g>
     <g class="gate">
-      <circle cx="330" cy="456" r="9"/>
-      <text x="330" y="456.5" data-gate-number="40">40</text>
+      <circle cx="325" cy="455" r="7.1"/>
+      <text x="325" y="455.25" data-gate-number="40">40</text>
     </g>
     <g class="gate">
-      <circle cx="178" cy="600" r="9"/>
-      <text x="178" y="600.5" data-gate-number="34">34</text>
+      <circle cx="180" cy="548" r="7.1"/>
+      <text x="180" y="548.25" data-gate-number="34">34</text>
     </g>
     <g class="gate">
-      <circle cx="211" cy="600" r="9"/>
-      <text x="211" y="600.5" data-gate-number="5">5</text>
+      <circle cx="187" cy="518" r="7.1"/>
+      <text x="187" y="518.25" data-gate-number="5">5</text>
     </g>
     <g class="gate">
-      <circle cx="244" cy="600" r="9"/>
-      <text x="244" y="600.5" data-gate-number="14">14</text>
+      <circle cx="211" cy="518" r="7.1"/>
+      <text x="211" y="518.25" data-gate-number="14">14</text>
     </g>
     <g class="gate">
-      <circle cx="178" cy="635" r="9"/>
-      <text x="178" y="635.5" data-gate-number="29">29</text>
+      <circle cx="235" cy="518" r="7.1"/>
+      <text x="235" y="518.25" data-gate-number="29">29</text>
     </g>
     <g class="gate">
-      <circle cx="211" cy="635" r="9"/>
-      <text x="211" y="635.5" data-gate-number="59">59</text>
+      <circle cx="242" cy="548" r="7.1"/>
+      <text x="242" y="548.25" data-gate-number="59">59</text>
     </g>
     <g class="gate">
-      <circle cx="244" cy="635" r="9"/>
-      <text x="244" y="635.5" data-gate-number="9">9</text>
+      <circle cx="235" cy="582" r="7.1"/>
+      <text x="235" y="582.25" data-gate-number="9">9</text>
     </g>
     <g class="gate">
-      <circle cx="178" cy="670" r="9"/>
-      <text x="178" y="670.5" data-gate-number="3">3</text>
+      <circle cx="187" cy="582" r="7.1"/>
+      <text x="187" y="582.25" data-gate-number="3">3</text>
     </g>
     <g class="gate">
-      <circle cx="211" cy="670" r="9"/>
-      <text x="211" y="670.5" data-gate-number="42">42</text>
+      <circle cx="211" cy="582" r="7.1"/>
+      <text x="211" y="582.25" data-gate-number="42">42</text>
     </g>
     <g class="gate">
-      <circle cx="244" cy="670" r="9"/>
-      <text x="244" y="670.5" data-gate-number="27">27</text>
+      <circle cx="180" cy="571" r="7.1"/>
+      <text x="180" y="571.25" data-gate-number="27">27</text>
     </g>
     <g class="gate">
-      <circle cx="67" cy="514" r="9"/>
-      <text x="67" y="514.5" data-gate-number="48">48</text>
+      <circle cx="36" cy="507" r="7.1"/>
+      <text x="36" y="507.25" data-gate-number="48">48</text>
     </g>
     <g class="gate">
-      <circle cx="101" cy="494" r="9"/>
-      <text x="101" y="494.5" data-gate-number="57">57</text>
+      <circle cx="82" cy="486" r="7.1"/>
+      <text x="82" y="486.25" data-gate-number="57">57</text>
     </g>
     <g class="gate">
-      <circle cx="120" cy="526" r="9"/>
-      <text x="120" y="526.5" data-gate-number="44">44</text>
+      <circle cx="88" cy="516" r="7.1"/>
+      <text x="88" y="516.25" data-gate-number="44">44</text>
     </g>
     <g class="gate">
-      <circle cx="82" cy="551" r="9"/>
-      <text x="82" y="551.5" data-gate-number="50">50</text>
+      <circle cx="88" cy="540" r="7.1"/>
+      <text x="88" y="540.25" data-gate-number="50">50</text>
     </g>
     <g class="gate">
-      <circle cx="120" cy="570" r="9"/>
-      <text x="120" y="570.5" data-gate-number="32">32</text>
+      <circle cx="88" cy="562" r="7.1"/>
+      <text x="88" y="562.25" data-gate-number="32">32</text>
     </g>
     <g class="gate">
-      <circle cx="82" cy="592" r="9"/>
-      <text x="82" y="592.5" data-gate-number="28">28</text>
+      <circle cx="68" cy="575" r="7.1"/>
+      <text x="68" y="575.25" data-gate-number="28">28</text>
     </g>
     <g class="gate">
-      <circle cx="120" cy="618" r="9"/>
-      <text x="120" y="618.5" data-gate-number="18">18</text>
+      <circle cx="40" cy="558" r="7.1"/>
+      <text x="40" y="558.25" data-gate-number="18">18</text>
     </g>
     <g class="gate">
-      <circle cx="355" cy="514" r="9"/>
-      <text x="355" y="514.5" data-gate-number="36">36</text>
+      <circle cx="386" cy="507" r="7.1"/>
+      <text x="386" y="507.25" data-gate-number="36">36</text>
     </g>
     <g class="gate">
-      <circle cx="321" cy="494" r="9"/>
-      <text x="321" y="494.5" data-gate-number="22">22</text>
+      <circle cx="340" cy="486" r="7.1"/>
+      <text x="340" y="486.25" data-gate-number="22">22</text>
     </g>
     <g class="gate">
-      <circle cx="302" cy="526" r="9"/>
-      <text x="302" y="526.5" data-gate-number="37">37</text>
+      <circle cx="334" cy="516" r="7.1"/>
+      <text x="334" y="516.25" data-gate-number="37">37</text>
     </g>
     <g class="gate">
-      <circle cx="340" cy="551" r="9"/>
-      <text x="340" y="551.5" data-gate-number="6">6</text>
+      <circle cx="334" cy="540" r="7.1"/>
+      <text x="334" y="540.25" data-gate-number="6">6</text>
     </g>
     <g class="gate">
-      <circle cx="302" cy="570" r="9"/>
-      <text x="302" y="570.5" data-gate-number="49">49</text>
+      <circle cx="334" cy="562" r="7.1"/>
+      <text x="334" y="562.25" data-gate-number="49">49</text>
     </g>
     <g class="gate">
-      <circle cx="340" cy="592" r="9"/>
-      <text x="340" y="592.5" data-gate-number="55">55</text>
+      <circle cx="354" cy="575" r="7.1"/>
+      <text x="354" y="575.25" data-gate-number="55">55</text>
     </g>
     <g class="gate">
-      <circle cx="302" cy="618" r="9"/>
-      <text x="302" y="618.5" data-gate-number="30">30</text>
+      <circle cx="382" cy="558" r="7.1"/>
+      <text x="382" y="558.25" data-gate-number="30">30</text>
     </g>
     <g class="gate">
-      <circle cx="172" cy="738" r="9"/>
-      <text x="172" y="738.5" data-gate-number="53">53</text>
+      <circle cx="185" cy="635" r="7.1"/>
+      <text x="185" y="635.25" data-gate-number="53">53</text>
     </g>
     <g class="gate">
-      <circle cx="211" cy="738" r="9"/>
-      <text x="211" y="738.5" data-gate-number="60">60</text>
+      <circle cx="211" cy="635" r="7.1"/>
+      <text x="211" y="635.25" data-gate-number="60">60</text>
     </g>
     <g class="gate">
-      <circle cx="250" cy="738" r="9"/>
-      <text x="250" y="738.5" data-gate-number="52">52</text>
+      <circle cx="237" cy="635" r="7.1"/>
+      <text x="237" y="635.25" data-gate-number="52">52</text>
     </g>
     <g class="gate">
-      <circle cx="172" cy="762" r="9"/>
-      <text x="172" y="762.5" data-gate-number="54">54</text>
+      <circle cx="180" cy="654" r="7.1"/>
+      <text x="180" y="654.25" data-gate-number="54">54</text>
     </g>
     <g class="gate">
-      <circle cx="192" cy="773" r="9"/>
-      <text x="192" y="773.5" data-gate-number="38">38</text>
+      <circle cx="180" cy="675" r="7.1"/>
+      <text x="180" y="675.25" data-gate-number="38">38</text>
     </g>
     <g class="gate">
-      <circle cx="211" cy="773" r="9"/>
-      <text x="211" y="773.5" data-gate-number="58">58</text>
+      <circle cx="190" cy="692" r="7.1"/>
+      <text x="190" y="692.25" data-gate-number="58">58</text>
     </g>
     <g class="gate">
-      <circle cx="230" cy="773" r="9"/>
-      <text x="230" y="773.5" data-gate-number="19">19</text>
+      <circle cx="232" cy="692" r="7.1"/>
+      <text x="232" y="692.25" data-gate-number="19">19</text>
     </g>
     <g class="gate">
-      <circle cx="250" cy="762" r="9"/>
-      <text x="250" y="762.5" data-gate-number="39">39</text>
+      <circle cx="242" cy="675" r="7.1"/>
+      <text x="242" y="675.25" data-gate-number="39">39</text>
     </g>
     <g class="gate">
-      <circle cx="211" cy="751" r="9"/>
-      <text x="211" y="751.5" data-gate-number="41">41</text>
+      <circle cx="242" cy="654" r="7.1"/>
+      <text x="242" y="654.25" data-gate-number="41">41</text>
     </g></g>
 </svg>

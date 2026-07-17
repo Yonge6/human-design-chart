@@ -1,0 +1,181 @@
+openapi: 3.1.0
+info:
+  title: Pluto Human Design API
+  version: 1.0.0
+  description: Versioned HTTPS/JSON access to the open-source Swiss Ephemeris Human Design engine. Requests are not persisted by this API.
+  license:
+    name: AGPL-3.0-or-later
+    identifier: AGPL-3.0-or-later
+servers:
+  - url: https://api-human-design.wonderelian.com
+  - url: http://127.0.0.1:8790
+paths:
+  /v1/health:
+    get:
+      summary: Service health without secrets or internal paths
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthEnvelope"
+  /v1/version:
+    get:
+      summary: Deployed application, source, schema, and engine versions
+      responses:
+        "200":
+          description: Version provenance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VersionEnvelope"
+  /v1/charts:
+    post:
+      summary: Calculate a Human Design profile snapshot
+      description: Uses Swiss Ephemeris, True Node, and an 88-degree pre-birth solar arc. Default limit is 30 requests per minute per client before any production gateway limit.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChartRequest"
+            examples:
+              shanghai:
+                value: { birthDate: "1990-01-01", birthTime: "12:00", timezone: "Asia/Shanghai", locationLabel: "Wuhan, China" }
+      responses:
+        "200":
+          description: Schema-valid chart snapshot
+          headers:
+            X-RateLimit-Limit: { schema: { type: integer } }
+            X-RateLimit-Remaining: { schema: { type: integer } }
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChartEnvelope"
+        "400": { $ref: "#/components/responses/Error" }
+        "409": { $ref: "#/components/responses/Error" }
+        "413": { $ref: "#/components/responses/Error" }
+        "415": { $ref: "#/components/responses/Error" }
+        "422": { $ref: "#/components/responses/Error" }
+        "429": { $ref: "#/components/responses/Error" }
+        "500": { $ref: "#/components/responses/Error" }
+        "503": { $ref: "#/components/responses/Error" }
+components:
+  responses:
+    Error:
+      description: Standard error envelope; server stacks are never returned
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+  schemas:
+    ChartRequest:
+      type: object
+      additionalProperties: false
+      required: [birthDate, birthTime, timezone, locationLabel]
+      properties:
+        birthDate: { type: string, pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}$", examples: ["1990-01-01"] }
+        birthTime: { type: string, pattern: "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$", examples: ["12:00"] }
+        timezone: { type: string, minLength: 1, maxLength: 64, examples: ["Asia/Shanghai"] }
+        locationLabel: { type: string, maxLength: 160, examples: ["Wuhan, China"] }
+        timeDisambiguation: { type: string, enum: [earlier, later] }
+    Activation:
+      type: object
+      required: [gate, line, color, tone, base, longitude]
+      properties:
+        gate: { type: integer, minimum: 1, maximum: 64 }
+        line: { type: integer, minimum: 1, maximum: 6 }
+        color: { type: integer, minimum: 1, maximum: 6 }
+        tone: { type: integer, minimum: 1, maximum: 6 }
+        base: { type: integer, minimum: 1, maximum: 5 }
+        longitude: { type: number, minimum: 0, exclusiveMaximum: 360 }
+    ActivationSet:
+      type: object
+      additionalProperties: { $ref: "#/components/schemas/Activation" }
+      required: [sun, earth, northNode, southNode, moon, mercury, venus, mars, jupiter, saturn, uranus, neptune, pluto]
+    ProfileSnapshot:
+      type: object
+      additionalProperties: false
+      required: [schemaVersion, engineVersion, chartHash, generatedAt, input, core, activations, structure, meta]
+      properties:
+        schemaVersion: { const: "1.0" }
+        engineVersion: { type: string, examples: ["1.0.0"] }
+        chartHash: { type: string, pattern: "^sha256:[a-f0-9]{64}$" }
+        generatedAt: { type: string, format: date-time }
+        input: { $ref: "#/components/schemas/ChartRequest" }
+        core:
+          type: object
+          required: [type, strategy, authority, profile, definition, incarnationCross]
+          properties:
+            type: { type: string }
+            strategy: { type: string }
+            authority: { type: string }
+            profile: { type: string, pattern: "^[1-6]/[1-6]$" }
+            definition: { type: string }
+            incarnationCross: { type: string }
+        activations:
+          type: object
+          required: [personality, design]
+          properties:
+            personality: { $ref: "#/components/schemas/ActivationSet" }
+            design: { $ref: "#/components/schemas/ActivationSet" }
+        structure:
+          type: object
+          required: [definedCenters, channels, variables]
+          properties:
+            definedCenters: { type: array, items: { type: string } }
+            channels:
+              type: array
+              items: { type: array, prefixItems: [{ type: integer }, { type: integer }], minItems: 2, maxItems: 2 }
+            variables: { type: object, additionalProperties: { type: string, enum: ["<", ">"] } }
+        meta:
+          type: object
+          required: [ephemeris, nodeType, designSolarArc, birthUtc, designJulianDay]
+          properties:
+            ephemeris: { const: "Swiss Ephemeris" }
+            nodeType: { const: "True Node" }
+            designSolarArc: { const: 88 }
+            birthUtc: { type: string, format: date-time }
+            designJulianDay: { type: number }
+    ChartEnvelope:
+      type: object
+      required: [data, requestId, error]
+      properties:
+        data: { $ref: "#/components/schemas/ProfileSnapshot" }
+        requestId: { type: string, format: uuid }
+        error: { type: "null" }
+    ErrorEnvelope:
+      type: object
+      required: [data, requestId, error]
+      properties:
+        data: { type: "null" }
+        requestId: { type: string, format: uuid }
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              enum: [INVALID_REQUEST, INVALID_BIRTH_DATE, INVALID_BIRTH_TIME, INVALID_TIMEZONE, NONEXISTENT_LOCAL_TIME, AMBIGUOUS_LOCAL_TIME, ENGINE_UNAVAILABLE, RATE_LIMITED, INTERNAL_ERROR]
+            message: { type: string }
+    HealthEnvelope:
+      type: object
+      properties:
+        data: { type: object, properties: { status: { const: ok } } }
+        requestId: { type: string }
+        error: { type: "null" }
+    VersionEnvelope:
+      type: object
+      properties:
+        data:
+          type: object
+          required: [appVersion, gitCommit, buildDate, schemaVersion, engineVersion]
+          properties:
+            appVersion: { type: string }
+            gitCommit: { type: string }
+            buildDate: { type: string }
+            schemaVersion: { const: "1.0" }
+            engineVersion: { type: string }
+        requestId: { type: string }
+        error: { type: "null" }

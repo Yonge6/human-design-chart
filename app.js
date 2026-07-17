@@ -1,5 +1,11 @@
 import { calculateHumanDesign, localToUtcCandidates } from "./human-design-engine.js?v=20260715-11";
-import { fetchPlaceCandidates, inferTimezoneFromAddress } from "./location-service.js?v=20260715-2";
+import { fetchPlaceCandidates, inferTimezoneFromAddress } from "./src/services/location-service.js";
+import { createHumanDesignProfileSnapshot } from "./src/engine/profile-snapshot.js";
+import { DEFAULT_CONSENT, deleteCloudData, recordProductEvent, saveChartToCloud, updateConsent } from "./src/services/backend-service.js";
+import { canUseSystemShare, isMobileDevice, sharePageLink } from "./src/services/sharing-service.js";
+import { readStoredJson, writeStoredJson } from "./src/services/storage-service.js";
+import { createBodygraphRenderer } from "./src/renderer/bodygraph-renderer.js";
+import { renderPosterElement } from "./src/renderer/poster-renderer.js";
 
 const publicAppUrl = "https://human-design.wonderelian.com/";
 const planets = ["Sun", "Earth", "North Node", "South Node", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
@@ -53,6 +59,9 @@ const cancelHistoryDeleteButton = document.querySelector("#cancelHistoryDelete")
 const confirmHistoryDeleteButton = document.querySelector("#confirmHistoryDelete");
 const defaultPrivacyInput = document.querySelector("#defaultPrivacy");
 const saveHistoryInput = document.querySelector("#saveHistory");
+const cloudSaveInput = document.querySelector("#cloudSave");
+const productAnalyticsInput = document.querySelector("#productAnalytics");
+const deleteCloudDataButton = document.querySelector("#deleteCloudData");
 const clearHistoryButton = document.querySelector("#clearHistory");
 const nativePlugin = globalThis.Capacitor?.registerPlugin?.("PlutoNative") || null;
 
@@ -80,8 +89,8 @@ const copy = {
     futureTime: "出生日期和时间不能晚于现在。", calculating: "正在计算行星位置…", calculated: "已使用 Swiss Ephemeris 在本地完成计算。",
     failed: "计算失败：{message}", preparing: "正在生成图片…", downloaded: "图片已保存。", chooseSaveImage: "请在系统菜单中选择“存储图像”保存到相册。", shared: "分享已完成。", linkCopied: "当前设备不支持分享图片，网站链接已复制。", exportFailed: "图片导出失败：{message}",
     shareTitle: "我的人生使用说明书", shareText: "这是我的人生使用说明书。", shareReading: "分享", shareReadingText: "免费生成你的人生使用说明书与详细解读。", openingShareShort: "正在打开…", linkCopiedShort: "已复制", sharedShort: "已分享", cancelledShort: "已取消", downloadedShort: "已下载", selectAmPm: "请选择上午或下午。", detailReading: "详细解读", close: "关闭",
-    history: "历史记录", settings: "隐私设置", localOnly: "仅保存在此设备", historyEmpty: "还没有保存的人生使用说明书。", openHistory: "打开", deleteHistory: "删除", confirmDeleteTitle: "删除这条记录？", confirmDeleteHint: "删除后无法恢复。", cancel: "取消", confirmDelete: "确认删除",
-    defaultPrivacy: "默认开启隐私模式", defaultPrivacyHint: "生成图片时自动隐藏姓名、日期、时间和地点。", saveHistory: "保存本地历史记录", saveHistoryHint: "可离线重新打开最近生成的说明书。", clearHistory: "清空历史记录", privacyPolicy: "隐私政策", support: "帮助与支持", legalNotice: "法律声明", privacyNote: "姓名、出生时间和图谱保存在设备本地；仅地点搜索文字会发送给地理编码服务。", historyCleared: "历史记录已清空。",
+    history: "历史记录", settings: "隐私设置", localOnly: "仅保存在此设备", historyEmpty: "还没有保存的人生使用说明书。", openHistory: "打开", deleteHistory: "删除", confirmDeleteTitle: "删除这条记录？", confirmDeleteHint: "删除后无法恢复。", cancel: "取消", confirmDelete: "确认删除", openSource: "源代码",
+    defaultPrivacy: "默认开启隐私模式", defaultPrivacyHint: "生成图片时自动隐藏姓名、日期、时间和地点。", saveHistory: "保存本地历史记录", saveHistoryHint: "可离线重新打开最近生成的说明书。", cloudSave: "将新生成的说明书保存到云端", cloudSaveHint: "关闭时不上传姓名、出生资料或图谱；默认关闭。", productAnalytics: "帮助我们改进 Pluto", productAnalyticsHint: "仅发送允许的匿名操作事件，不包含出生资料或完整图谱；默认关闭。", deleteCloudData: "删除全部云端数据", deleteCloudConfirm: "确定删除当前匿名身份的云端图谱和个人云端资料吗？本地历史不会被删除。", cloudDeleted: "云端数据已删除；本地历史保留。", clearHistory: "清空历史记录", privacyPolicy: "隐私政策", support: "帮助与支持", legalNotice: "法律声明", privacyNote: "云端保存和匿名统计均默认关闭；删除云端数据不会删除本设备的历史记录。", historyCleared: "历史记录已清空。",
   },
   en: {
     brand: "Pluto Life Manual",
@@ -99,8 +108,8 @@ const copy = {
     futureTime: "Birth date and time cannot be in the future.", calculating: "Calculating planetary positions…", calculated: "Chart calculated locally with Swiss Ephemeris.",
     failed: "Failed: {message}", preparing: "Preparing image…", downloaded: "Image saved.", chooseSaveImage: "Choose Save Image in the system menu to add it to Photos.", shared: "Shared.", linkCopied: "Image sharing is unavailable on this device. The site link was copied.", exportFailed: "Image export failed: {message}",
     shareTitle: "My Life Manual", shareText: "Here is my personal life manual.", shareReading: "Share", shareReadingText: "Create your free Life Manual and detailed reading.", openingShareShort: "Opening…", linkCopiedShort: "Copied", sharedShort: "Shared", cancelledShort: "Cancelled", downloadedShort: "Downloaded", selectAmPm: "Choose AM or PM.", detailReading: "Detailed Reading", close: "Close",
-    history: "History", settings: "Privacy", localOnly: "Stored only on this device", historyEmpty: "No saved Life Manuals yet.", openHistory: "Open", deleteHistory: "Delete", confirmDeleteTitle: "Delete this record?", confirmDeleteHint: "This action cannot be undone.", cancel: "Cancel", confirmDelete: "Delete",
-    defaultPrivacy: "Privacy mode by default", defaultPrivacyHint: "Hide name, date, time, and location in generated images.", saveHistory: "Save local history", saveHistoryHint: "Reopen recent Life Manuals while offline.", clearHistory: "Clear history", privacyPolicy: "Privacy Policy", support: "Help & Support", legalNotice: "Legal Notice", privacyNote: "Your name, birth time, and chart stay on this device; only place-search text is sent to geocoding providers.", historyCleared: "History cleared.",
+    history: "History", settings: "Privacy", localOnly: "Stored only on this device", historyEmpty: "No saved Life Manuals yet.", openHistory: "Open", deleteHistory: "Delete", confirmDeleteTitle: "Delete this record?", confirmDeleteHint: "This action cannot be undone.", cancel: "Cancel", confirmDelete: "Delete", openSource: "Open Source",
+    defaultPrivacy: "Privacy mode by default", defaultPrivacyHint: "Hide name, date, time, and location in generated images.", saveHistory: "Save local history", saveHistoryHint: "Reopen recent Life Manuals while offline.", cloudSave: "Save new Life Manuals to the cloud", cloudSaveHint: "When off, names, birth details, and charts are not uploaded. Off by default.", productAnalytics: "Help us improve Pluto", productAnalyticsHint: "Send only allowlisted anonymous actions, never birth details or a full chart. Off by default.", deleteCloudData: "Delete all cloud data", deleteCloudConfirm: "Delete cloud charts and personal cloud data for the current anonymous identity? Local history will remain.", cloudDeleted: "Cloud data deleted. Local history remains.", clearHistory: "Clear history", privacyPolicy: "Privacy Policy", support: "Help & Support", legalNotice: "Legal Notice", privacyNote: "Cloud saving and anonymous analytics are off by default. Deleting cloud data does not delete this device's local history.", historyCleared: "History cleared.",
   },
 };
 
@@ -326,16 +335,7 @@ const celebrities = [
 ];
 const historyStorageKey = "pluto-chart-history-v1";
 const settingsStorageKey = "pluto-app-settings-v1";
-const defaultSettings = { privacyByDefault: false, keepHistory: true };
-
-function readStoredJson(key, fallback) {
-  try {
-    const value = JSON.parse(localStorage.getItem(key));
-    return value ?? fallback;
-  } catch {
-    return fallback;
-  }
-}
+const defaultSettings = { privacyByDefault: false, keepHistory: true, ...DEFAULT_CONSENT };
 
 let appSettings = { ...defaultSettings, ...readStoredJson(settingsStorageKey, {}) };
 let historyEntries = readStoredJson(historyStorageKey, []);
@@ -600,7 +600,6 @@ const centerColors = {
   "root-center": "#c29d6b",
 };
 
-let graphTemplate;
 let lastData;
 let posterBlob;
 let posterUrl;
@@ -614,13 +613,32 @@ let placeQueryVersion = 0;
 const placeCache = new Map();
 let selectedPlace = null;
 let pendingHistoryDeleteId = null;
+const paintBodygraph = createBodygraphRenderer({
+  container: graph,
+  templateUrl: "./assets/bodygraph-template.svg?v=20260717-12",
+  centerColors,
+  label: "Life Manual BodyGraph",
+});
 
 function persistSettings() {
-  try { localStorage.setItem(settingsStorageKey, JSON.stringify(appSettings)); } catch { /* Storage can be disabled. */ }
+  writeStoredJson(settingsStorageKey, appSettings);
 }
 
 function persistHistory() {
-  try { localStorage.setItem(historyStorageKey, JSON.stringify(historyEntries)); } catch { /* Storage can be disabled. */ }
+  writeStoredJson(historyStorageKey, historyEntries);
+}
+
+function currentConsent() {
+  return {
+    cloudSave: Boolean(appSettings.cloudSave),
+    productAnalytics: Boolean(appSettings.productAnalytics),
+  };
+}
+
+function trackEvent(eventName, properties = {}) {
+  recordProductEvent(eventName, properties, currentConsent()).catch((error) => {
+    console.warn("Anonymous product event was not sent.", error);
+  });
 }
 
 function saveChartHistory(data, input) {
@@ -718,40 +736,6 @@ function blobToBase64(blob) {
   });
 }
 
-async function copyText(text) {
-  try {
-    if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(text);
-      return true;
-    }
-  } catch (error) {
-    console.warn("Clipboard API unavailable; using the compatibility fallback.", error);
-  }
-
-  const textarea = document.createElement("textarea");
-  textarea.value = text;
-  textarea.readOnly = true;
-  textarea.setAttribute("aria-hidden", "true");
-  Object.assign(textarea.style, {
-    position: "fixed",
-    inset: "0 auto auto -9999px",
-    opacity: "0",
-  });
-  document.body.append(textarea);
-  textarea.focus({ preventScroll: true });
-  textarea.select();
-  textarea.setSelectionRange(0, textarea.value.length);
-  let copied = false;
-  try {
-    copied = document.execCommand("copy");
-  } catch (error) {
-    console.warn("Clipboard compatibility fallback failed.", error);
-  } finally {
-    textarea.remove();
-  }
-  return copied;
-}
-
 function flashShareLabel(label, key, resetKey) {
   label.textContent = t(key);
   window.setTimeout(() => {
@@ -759,40 +743,14 @@ function flashShareLabel(label, key, resetKey) {
   }, 1800);
 }
 
-function isEmbeddedBrowser() {
-  return /MicroMessenger|Weibo|QQ\/|FBAN|FBAV|Instagram|Line\//i.test(navigator.userAgent || "");
-}
-
-function isMobileDevice() {
-  return /Android|iPad|iPhone|iPod/i.test(navigator.userAgent || "")
-    || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-}
-
-function canUseSystemShare() {
-  return Boolean(navigator.share && isMobileDevice() && !isEmbeddedBrowser());
-}
-
 async function shareLink(text) {
-  const url = currentShareUrl();
-  if (isNativeApp()) {
-    try {
-      const result = await nativePlugin.shareLink({ text, url });
-      return result?.completed === false ? "cancelled" : "shared";
-    } catch (error) {
-      if (error?.name === "AbortError") return "cancelled";
-      console.warn("Native link sharing failed; using the web fallback.", error);
-    }
-  }
-  if (canUseSystemShare()) {
-    try {
-      await navigator.share({ title: t("shareTitle"), text, url });
-      return "shared";
-    } catch (error) {
-      if (error?.name === "AbortError") return "cancelled";
-      console.warn("System link sharing failed; copying the link instead.", error);
-    }
-  }
-  return (await copyText(url)) ? "copied" : "unavailable";
+  return sharePageLink({
+    url: currentShareUrl(),
+    title: t("shareTitle"),
+    text,
+    nativePlugin,
+    native: isNativeApp(),
+  });
 }
 
 function appendOptions(select, values, selected, includePlaceholder = true) {
@@ -1083,71 +1041,6 @@ async function loadExportAssets() {
   await Promise.all([decodeImage(background), decodeImage(chartQr)]);
 }
 
-async function loadGraphTemplate() {
-  if (!graphTemplate) {
-    const response = await fetch("./assets/bodygraph-template.svg?v=20260717-12");
-    if (!response.ok) throw new Error("BodyGraph template failed to load");
-    graphTemplate = await response.text();
-  }
-  graph.innerHTML = graphTemplate;
-  const svg = graph.querySelector("svg");
-  svg.removeAttribute("width");
-  svg.removeAttribute("height");
-  svg.setAttribute("role", "img");
-  svg.setAttribute("aria-label", "Life Manual BodyGraph");
-  return svg;
-}
-
-function activeGates(data) {
-  const design = new Set(Object.values(data.Design || {}).map((value) => value.Gate));
-  const personality = new Set(Object.values(data.Personality || {}).map((value) => value.Gate));
-  return { design, personality, all: new Set([...design, ...personality]) };
-}
-
-async function paintBodygraph(data) {
-  const svg = await loadGraphTemplate();
-  const active = activeGates(data);
-
-  svg.querySelectorAll("[data-gate-number]").forEach((label) => {
-    const gate = Number(label.dataset.gateNumber);
-    const marker = label.previousElementSibling;
-    const isActive = active.all.has(gate);
-    if (marker) {
-      marker.style.fill = isActive ? "#2b2430" : "#f7ecdc";
-      marker.style.stroke = isActive ? "#b88a51" : "#cbbca8";
-    }
-    label.style.fill = isActive ? "#fbefdc" : "#503d3d";
-  });
-
-  svg.querySelectorAll("[data-gate-line]").forEach((line) => {
-    const gate = Number(line.dataset.gateLine);
-    const hasDesign = active.design.has(gate);
-    const hasPersonality = active.personality.has(gate);
-    if (hasDesign && hasPersonality) {
-      line.style.fill = line.dataset.gateLineType === "design" ? "#8c3040" : "#302936";
-    } else if (hasDesign) {
-      line.style.fill = "#8c3040";
-    } else if (hasPersonality) {
-      line.style.fill = "#302936";
-    } else {
-      line.style.fill = "transparent";
-    }
-    line.style.stroke = "none";
-  });
-
-  Object.entries(centerColors).forEach(([id]) => {
-    const center = svg.querySelector(`#${id}`);
-    if (!center) return;
-    center.style.fill = "rgba(249, 238, 221, .94)";
-    center.style.stroke = "#a87945";
-  });
-  for (const centerName of data["Defined Centers"] || []) {
-    const id = centerName.replace(/\s+/g, "-");
-    const center = svg.querySelector(`#${id}`);
-    if (center) center.style.fill = centerColors[id];
-  }
-}
-
 function row(name, item) {
   const iconClass = `wb-${name.replaceAll(" ", "-")}`;
   const label = language === "zh" ? planetNames[name] : name;
@@ -1192,22 +1085,7 @@ async function createPosterImage() {
   languageButtons.forEach((button) => { button.disabled = true; });
   try {
     await Promise.all([document.fonts.ready, loadExportAssets()]);
-    const canvas = await window.html2canvas(chartPanel, {
-      backgroundColor: "#0d0b12",
-      logging: false,
-      scale: 2,
-      useCORS: true,
-      windowWidth: 660,
-      scrollX: 0,
-      scrollY: 0,
-      onclone: (documentClone) => {
-        const source = documentClone.querySelector("#capture");
-        source.classList.remove("capture-source");
-        source.style.position = "static";
-      },
-    });
-    const nextBlob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
-    if (!nextBlob) throw new Error("Canvas could not be encoded");
+    const nextBlob = await renderPosterElement(chartPanel);
     if (renderVersion !== posterRenderVersion) return;
     if (posterUrl) URL.revokeObjectURL(posterUrl);
     posterBlob = nextBlob;
@@ -1274,7 +1152,10 @@ function applyLanguage(nextLanguage, rerender = true) {
   }
 }
 
-languageButtons.forEach((button) => button.addEventListener("click", () => applyLanguage(button.dataset.language)));
+languageButtons.forEach((button) => button.addEventListener("click", () => {
+  applyLanguage(button.dataset.language);
+  trackEvent("language_changed", { language: button.dataset.language });
+}));
 openHistoryButton.addEventListener("click", () => {
   renderHistory();
   historyDialog.showModal();
@@ -1327,6 +1208,33 @@ saveHistoryInput.addEventListener("change", () => {
   appSettings.keepHistory = saveHistoryInput.checked;
   persistSettings();
 });
+cloudSaveInput.addEventListener("change", () => {
+  appSettings.cloudSave = cloudSaveInput.checked;
+  persistSettings();
+  updateConsent(currentConsent()).catch((error) => console.warn("Cloud consent was not synchronized.", error));
+});
+productAnalyticsInput.addEventListener("change", () => {
+  appSettings.productAnalytics = productAnalyticsInput.checked;
+  persistSettings();
+  updateConsent(currentConsent()).catch((error) => console.warn("Analytics consent was not synchronized.", error));
+  trackEvent("privacy_mode_changed", { setting: "productAnalytics", enabled: productAnalyticsInput.checked });
+});
+deleteCloudDataButton.addEventListener("click", async () => {
+  if (!window.confirm(t("deleteCloudConfirm"))) return;
+  deleteCloudDataButton.disabled = true;
+  try {
+    await deleteCloudData(currentConsent());
+    appSettings.cloudSave = false;
+    cloudSaveInput.checked = false;
+    persistSettings();
+    setStatus("cloudDeleted");
+  } catch (error) {
+    console.error(error);
+    setStatus("failed", { message: error.message });
+  } finally {
+    deleteCloudDataButton.disabled = false;
+  }
+});
 clearHistoryButton.addEventListener("click", () => {
   if (!window.confirm(`${t("clearHistory")}?`)) return;
   historyEntries = [];
@@ -1347,7 +1255,10 @@ privacyToggle.addEventListener("change", () => {
     .catch((error) => { setStatus("exportFailed", { message: error.message }); });
 });
 detailButton.addEventListener("click", () => {
-  if (lastData) detailDialog.showModal();
+  if (lastData) {
+    detailDialog.showModal();
+    trackEvent("detail_opened");
+  }
 });
 closeDetailButton.addEventListener("click", () => detailDialog.close());
 shareDetailButton.addEventListener("click", async () => {
@@ -1396,6 +1307,7 @@ fields.month.addEventListener("change", updateDays);
 [fields.year, fields.month, fields.day, fields.hour, fields.minute, fields.ampm].forEach((field) => field.addEventListener("change", resetClockOccurrence));
 chartForm.addEventListener("input", invalidateChart);
 chartForm.addEventListener("change", invalidateChart);
+chartForm.addEventListener("input", () => trackEvent("form_started"), { once: true });
 
 chartForm.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -1418,6 +1330,7 @@ chartForm.addEventListener("submit", async (event) => {
   ampmSwitch.removeAttribute("aria-invalid");
   const time = time24(fields.hour.value, fields.minute.value, fields.ampm.value);
   submit.disabled = true;
+  trackEvent("chart_generate_started");
   try {
     const locationQuery = fields.location.value.trim();
     const place = selectedPlace?.label === locationQuery ? selectedPlace : await resolveTypedPlace(locationQuery);
@@ -1448,6 +1361,21 @@ chartForm.addEventListener("submit", async (event) => {
       timezone: place.timezone,
       timeDisambiguation: fields.clockOccurrence.value,
     });
+    const birthDate = `${fields.year.value}-${fields.month.value}-${fields.day.value}`;
+    const birthTime = `${String(time.hour).padStart(2, "0")}:${String(time.minute).padStart(2, "0")}`;
+    const snapshot = await createHumanDesignProfileSnapshot({
+      input: { birthDate, birthTime, timezone: place.timezone, locationLabel: place.label },
+      result: data,
+    });
+    saveChartToCloud(snapshot, {
+      name,
+      birthDate,
+      birthTime,
+      locationLabel: place.label,
+      timezone: place.timezone,
+    }, currentConsent()).catch((error) => {
+      console.warn("Cloud chart save failed; the local chart remains available.", error);
+    });
     await render(data);
     lastData = data;
     saveChartHistory(data, {
@@ -1465,9 +1393,14 @@ chartForm.addEventListener("submit", async (event) => {
     await createPosterImage();
     setStatus("calculated");
     showChartView();
+    trackEvent("chart_generate_succeeded", {
+      schemaVersion: snapshot.schemaVersion,
+      engineVersion: snapshot.engineVersion,
+    });
   } catch (error) {
     console.error(error);
     setStatus("failed", { message: error.message });
+    trackEvent("chart_generate_failed", { category: error instanceof RangeError ? "validation" : "calculation" });
   } finally {
     submit.disabled = false;
   }
@@ -1606,5 +1539,8 @@ paintBodygraph({ Design: {}, Personality: {}, "Defined Centers": [] }).catch((er
 initializeSelectors();
 defaultPrivacyInput.checked = appSettings.privacyByDefault;
 saveHistoryInput.checked = appSettings.keepHistory;
+cloudSaveInput.checked = appSettings.cloudSave;
+productAnalyticsInput.checked = appSettings.productAnalytics;
 privacyToggle.checked = appSettings.privacyByDefault;
 applyLanguage(language, false);
+trackEvent("app_open", { environment: globalThis.PLUTO_CONFIG?.environment || "development" });

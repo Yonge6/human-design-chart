@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://human-design.wonderelian.com/schemas/human-design-profile-v1.schema.json",
+  "title": "HumanDesignProfileSnapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "engineVersion", "chartHash", "generatedAt", "input", "core", "activations", "structure", "meta"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "engineVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$" },
+    "chartHash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "generatedAt": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]{3})?Z$" },
+    "input": { "$ref": "#/$defs/input" },
+    "core": { "$ref": "#/$defs/core" },
+    "activations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["personality", "design"],
+      "properties": {
+        "personality": { "$ref": "#/$defs/activationSet" },
+        "design": { "$ref": "#/$defs/activationSet" }
+      }
+    },
+    "structure": { "$ref": "#/$defs/structure" },
+    "meta": { "$ref": "#/$defs/meta" }
+  },
+  "$defs": {
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["birthDate", "birthTime", "timezone", "locationLabel"],
+      "properties": {
+        "birthDate": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+        "birthTime": { "type": "string", "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$" },
+        "timezone": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "locationLabel": { "type": "string", "maxLength": 160 }
+      }
+    },
+    "core": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "strategy", "authority", "profile", "definition", "incarnationCross"],
+      "properties": {
+        "type": { "type": "string", "minLength": 1 },
+        "strategy": { "type": "string", "minLength": 1 },
+        "authority": { "type": "string", "minLength": 1 },
+        "profile": { "type": "string", "pattern": "^[1-6]/[1-6]$" },
+        "definition": { "type": "string", "minLength": 1 },
+        "incarnationCross": { "type": "string", "minLength": 1 }
+      }
+    },
+    "activationSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sun", "earth", "northNode", "southNode", "moon", "mercury", "venus", "mars", "jupiter", "saturn", "uranus", "neptune", "pluto"],
+      "properties": {
+        "sun": { "$ref": "#/$defs/activation" },
+        "earth": { "$ref": "#/$defs/activation" },
+        "northNode": { "$ref": "#/$defs/activation" },
+        "southNode": { "$ref": "#/$defs/activation" },
+        "moon": { "$ref": "#/$defs/activation" },
+        "mercury": { "$ref": "#/$defs/activation" },
+        "venus": { "$ref": "#/$defs/activation" },
+        "mars": { "$ref": "#/$defs/activation" },
+        "jupiter": { "$ref": "#/$defs/activation" },
+        "saturn": { "$ref": "#/$defs/activation" },
+        "uranus": { "$ref": "#/$defs/activation" },
+        "neptune": { "$ref": "#/$defs/activation" },
+        "pluto": { "$ref": "#/$defs/activation" }
+      }
+    },
+    "activation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gate", "line", "color", "tone", "base", "longitude"],
+      "properties": {
+        "gate": { "type": "integer", "minimum": 1, "maximum": 64 },
+        "line": { "type": "integer", "minimum": 1, "maximum": 6 },
+        "color": { "type": "integer", "minimum": 1, "maximum": 6 },
+        "tone": { "type": "integer", "minimum": 1, "maximum": 6 },
+        "base": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "longitude": { "type": "number", "minimum": 0, "exclusiveMaximum": 360 }
+      }
+    },
+    "structure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["definedCenters", "channels", "variables"],
+      "properties": {
+        "definedCenters": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "enum": ["head", "ajna", "throat", "g", "heart", "sacral", "spleen", "solar plexus", "root"] }
+        },
+        "channels": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "prefixItems": [
+              { "type": "integer", "minimum": 1, "maximum": 64 },
+              { "type": "integer", "minimum": 1, "maximum": 64 }
+            ],
+            "items": false,
+            "minItems": 2,
+            "maxItems": 2
+          }
+        },
+        "variables": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["digestion", "environment", "awareness", "perspective"],
+          "properties": {
+            "digestion": { "enum": ["<", ">"] },
+            "environment": { "enum": ["<", ">"] },
+            "awareness": { "enum": ["<", ">"] },
+            "perspective": { "enum": ["<", ">"] }
+          }
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ephemeris", "nodeType", "designSolarArc", "birthUtc", "designJulianDay"],
+      "properties": {
+        "ephemeris": { "const": "Swiss Ephemeris" },
+        "nodeType": { "const": "True Node" },
+        "designSolarArc": { "const": 88 },
+        "birthUtc": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T" },
+        "designJulianDay": { "type": "number" }
+      }
+    }
+  }
+}

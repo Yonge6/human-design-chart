@@ -37,6 +37,6 @@ Swiss Ephemeris also offers a professional license. Obtain appropriate licensing
 - Package: `html2canvas` 1.4.1
 - License: MIT; full text in `vendor/html2canvas/LICENSE`
 
-## BodyGraph SVG geometry
+## BodyGraph visual reference
 
-The BodyGraph template is independently generated from original project coordinates by `scripts/generate-bodygraph-template.mjs`. It implements the public center, gate, and channel relationships without copying third-party SVG geometry or artwork.
+The restored BodyGraph template follows the project's earlier fidelity-study asset, which was captured from a publicly loaded My Human Design result-page SVG. Confirm permission and the target website's terms before commercial reuse of the exact visual template.

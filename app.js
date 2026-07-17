@@ -1007,7 +1007,7 @@ async function loadExportAssets() {
 
 async function loadGraphTemplate() {
   if (!graphTemplate) {
-    const response = await fetch("./assets/bodygraph-template.svg?v=20260717-11");
+    const response = await fetch("./assets/bodygraph-template.svg?v=20260717-12");
     if (!response.ok) throw new Error("BodyGraph template failed to load");
     graphTemplate = await response.text();
   }

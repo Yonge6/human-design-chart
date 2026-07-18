@@ -10,6 +10,7 @@
     "test:schema": "node --test tests/schema.test.mjs",
     "test:privacy": "node --test tests/privacy.test.mjs",
     "test:security": "node --test tests/build-security.test.mjs",
+    "test:e2e": "playwright test",
     "test:pages": "node scripts/test-pages-deployment.mjs",
     "test:supabase": "node scripts/run-supabase-tests.mjs",
     "build": "node scripts/build-web.mjs",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^8.0.0",
+    "@playwright/test": "^1.55.1",
     "@supabase/supabase-js": "2.57.4",
     "ajv": "^8.18.0"
   }

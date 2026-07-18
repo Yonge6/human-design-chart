@@ -7,6 +7,7 @@ import { readStoredJson, writeStoredJson } from "./src/services/storage-service.
 import { createBodygraphRenderer } from "./src/renderer/bodygraph-renderer.js";
 import { renderPosterElement } from "./src/renderer/poster-renderer.js";
 import { applyAmPmSelection, validateBirthSelection } from "./src/app/form-validation.js";
+import { canUseRemoteServices, effectiveRemoteConsent, isCapacitorNativeRuntime } from "./src/app/runtime-security.js";
 
 const publicAppUrl = "https://human-design.wonderelian.com/";
 const planets = ["Sun", "Earth", "North Node", "South Node", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
@@ -25,6 +26,7 @@ const fields = {
 const locationResults = document.querySelector("#locationResults");
 const clockOccurrenceField = document.querySelector("#clockOccurrenceField");
 const status = document.querySelector("#status");
+const localModeNotice = document.querySelector("#localModeNotice");
 const chartForm = document.querySelector("#chartForm");
 const downloadButton = document.querySelector("#download");
 const shareButton = document.querySelector("#share");
@@ -36,6 +38,17 @@ const chartPanel = document.querySelector("#capture");
 const chartResult = document.querySelector("#chartResult");
 const chartPreview = document.querySelector("#chartPreview");
 const resultSummary = document.querySelector("#resultSummary");
+const resultSummaryFields = {
+  Type: document.querySelector("#summaryType"),
+  Strategy: document.querySelector("#summaryStrategy"),
+  "Inner Authority": document.querySelector("#summaryAuthority"),
+  Profile: document.querySelector("#summaryProfile"),
+  Definition: document.querySelector("#summaryDefinition"),
+  "Incarnation Cross": document.querySelector("#summaryCross"),
+  Signature: document.querySelector("#summarySignature"),
+  "Not Self Theme": document.querySelector("#summaryNotSelf"),
+};
+const resultSummaryReading = document.querySelector("#resultSummaryReading");
 const chartQr = document.querySelector("#chartQr");
 const privacyToggle = document.querySelector("#privacyMode");
 const ampmSwitch = document.querySelector("#ampmSwitch");
@@ -70,7 +83,15 @@ const confirmationTitle = document.querySelector("#confirmationTitle");
 const confirmationMessage = document.querySelector("#confirmationMessage");
 const cancelConfirmationButton = document.querySelector("#cancelConfirmation");
 const acceptConfirmationButton = document.querySelector("#acceptConfirmation");
+const historyOptOutDialog = document.querySelector("#historyOptOutDialog");
+const cancelHistoryOptOutButton = document.querySelector("#cancelHistoryOptOut");
+const keepHistoryRecordsButton = document.querySelector("#keepHistoryRecords");
+const deleteHistoryRecordsButton = document.querySelector("#deleteHistoryRecords");
 const nativePlugin = globalThis.Capacitor?.registerPlugin?.("PlutoNative") || null;
+const remoteServicesAllowed = canUseRemoteServices({
+  isSecureContext: globalThis.isSecureContext === true,
+  isNativeRuntime: isCapacitorNativeRuntime(globalThis.Capacitor),
+});
 
 function currentShareUrl() {
   if (location.protocol === "http:" || location.protocol === "https:") {
@@ -83,7 +104,7 @@ const copy = {
   zh: {
     brand: "Pluto 人生使用说明书",
     brandShort: "人生使用说明书",
-    formEyebrow: "人生使用说明书", formTitle: "认识你自己", name: "姓名", year: "年", month: "月", day: "日",
+    formEyebrow: "人生使用说明书", formTitle: "认识你自己", localModeNotice: "当前为临时 HTTP 连接，仅支持本地计算与生图。云端保存和匿名统计已停用。", disclaimer: "仅用于自我探索与娱乐，不构成科学结论、医疗、心理、法律或财务建议。", viewLegalNotice: "查看法律声明", resultSummaryTitle: "人生使用说明书结果摘要", summaryType: "类型", summaryStrategy: "策略", summaryAuthority: "内在权威", summaryProfile: "人生角色", summaryDefinition: "定义", summaryCross: "轮回交叉", summarySignature: "标志", summaryNotSelf: "非自己主题", name: "姓名", year: "年", month: "月", day: "日",
     hour: "时", minute: "分", ampm: "上午/下午", am: "上午", pm: "下午", birthLocation: "出生地点",
     locationPlaceholder: "城市、区县或地区", locationSuggestions: "出生地点建议", clockOccurrence: "重复时刻",
     bodygraphLabel: "人生使用说明书图谱",
@@ -97,12 +118,12 @@ const copy = {
     failed: "计算失败：{message}", preparing: "正在生成图片…", downloaded: "图片已保存。", chooseSaveImage: "请在系统菜单中选择“存储图像”保存到相册。", shared: "分享已完成。", linkCopied: "当前设备不支持分享图片，网站链接已复制。", exportFailed: "图片导出失败：{message}",
     shareTitle: "我的人生使用说明书", shareText: "这是我的人生使用说明书。", shareReading: "分享", shareReadingText: "免费生成你的人生使用说明书与详细解读。", openingShareShort: "正在打开…", linkCopiedShort: "已复制", sharedShort: "已分享", cancelledShort: "已取消", downloadedShort: "已下载", selectAmPm: "请选择上午或下午。", detailReading: "详细解读", close: "关闭",
     history: "历史记录", settings: "隐私设置", localOnly: "仅保存在此设备", historyEmpty: "还没有保存的人生使用说明书。", openHistory: "打开", deleteHistory: "删除", confirmDeleteTitle: "删除这条记录？", confirmDeleteHint: "删除后无法恢复。", cancel: "取消", confirmDelete: "确认删除", openSource: "源代码",
-    defaultPrivacy: "默认开启隐私模式", defaultPrivacyHint: "生成图片时自动隐藏姓名、日期、时间和地点；默认开启。", saveHistory: "保存本地历史记录", saveHistoryHint: "默认关闭；开启后可离线重新打开最近生成的说明书。关闭时会清除已保存的本地历史。", cloudSave: "将新生成的说明书保存到云端", cloudSaveHint: "关闭时不上传姓名、出生资料或图谱；默认关闭。", productAnalytics: "帮助我们改进 Pluto", productAnalyticsHint: "仅发送允许的匿名操作事件，不包含出生资料或完整图谱；默认关闭。", deleteCloudData: "删除云端图谱与个人资料", deleteCloudConfirm: "这会删除当前匿名身份保存的姓名、出生资料和人类图记录。本地历史不会删除。已经记录的匿名使用事件会移除用户标识，并最多保留180天用于汇总统计。", deleteCloudTitle: "删除云端资料？", cloudDeleted: "云端图谱与个人资料已删除；匿名事件已去标识，本地历史保留。", clearHistory: "清空历史记录", clearHistoryTitle: "清空全部本地历史？", clearHistoryConfirm: "本设备保存的人生使用说明书会被永久删除，且无法恢复。", disableHistoryTitle: "关闭并清除本地历史？", disableHistoryConfirm: "关闭本地历史后，本设备已有记录会立即清除。今后生成的说明书也不会保存在历史中。", confirmDisableHistory: "关闭并清除", pleaseConfirm: "请确认", confirmAction: "确认", privacyPolicy: "隐私政策", support: "帮助与支持", legalNotice: "法律声明", privacyNote: "隐私模式默认开启；本地历史、云端保存和匿名统计均默认关闭。本地历史关闭时会清除本设备已有记录；删除云端资料不会删除本地历史。", historyCleared: "历史记录已清空。", selectDate: "请选择完整的出生日期。", invalidDate: "请输入有效的出生日期。", selectTime: "请选择完整的出生时间。", invalidTime: "请输入有效的出生时间。", enterLocation: "请输入出生地点。",
+    defaultPrivacy: "默认开启隐私模式", defaultPrivacyHint: "生成图片时自动隐藏姓名、日期、时间和地点；默认开启。", saveHistory: "保存本地历史记录", saveHistoryHint: "默认关闭；关闭时可选择保留或删除已有记录。", cloudSave: "将新生成的说明书保存到云端", cloudSaveHint: "关闭时不上传姓名、出生资料或图谱；默认关闭。", productAnalytics: "帮助我们改进 Pluto", productAnalyticsHint: "仅发送允许的匿名操作事件，不包含出生资料或完整图谱；默认关闭。", deleteCloudData: "删除云端图谱与个人资料", deleteCloudConfirm: "这会删除当前匿名身份保存的姓名、出生资料和人类图记录。本地历史不会删除。已经记录的匿名使用事件会移除用户标识，并最多保留180天用于汇总统计。", deleteCloudTitle: "删除云端资料？", cloudDeleted: "云端图谱与个人资料已删除；匿名事件已去标识，本地历史保留。", clearHistory: "清空历史记录", clearHistoryTitle: "清空全部本地历史？", clearHistoryConfirm: "本设备保存的人生使用说明书会被永久删除，且无法恢复。", disableHistoryTitle: "关闭本地历史记录？", disableHistoryConfirm: "关闭后，今后生成的说明书不会加入本地历史。你可以保留已有记录，也可以同时全部删除。", keepHistoryRecords: "关闭但保留记录", deleteHistoryRecords: "关闭并删除全部记录", pleaseConfirm: "请确认", confirmAction: "确认", privacyPolicy: "隐私政策", support: "帮助与支持", legalNotice: "法律声明", privacyNote: "隐私模式默认开启；本地历史、云端保存和匿名统计均默认关闭。关闭本地历史时可选择保留或删除已有记录；删除云端资料不会删除本地历史。", historyCleared: "历史记录已清空。", selectDate: "请选择完整的出生日期。", invalidDate: "请输入有效的出生日期。", selectTime: "请选择完整的出生时间。", invalidTime: "请输入有效的出生时间。", enterLocation: "请输入出生地点。",
   },
   en: {
     brand: "Pluto Life Manual",
     brandShort: "Life Manual",
-    formEyebrow: "Life Manual", formTitle: "Know Yourself", name: "Name", year: "Year", month: "Month", day: "Day",
+    formEyebrow: "Life Manual", formTitle: "Know Yourself", localModeNotice: "This temporary HTTP connection supports local calculation and image generation only. Cloud saving and analytics are disabled.", disclaimer: "For personal reflection and entertainment only. Not scientific, medical, psychological, legal, or financial advice.", viewLegalNotice: "View Legal Notice", resultSummaryTitle: "Life Manual Result Summary", summaryType: "Type", summaryStrategy: "Strategy", summaryAuthority: "Inner Authority", summaryProfile: "Profile", summaryDefinition: "Definition", summaryCross: "Incarnation Cross", summarySignature: "Signature", summaryNotSelf: "Not-Self Theme", name: "Name", year: "Year", month: "Month", day: "Day",
     hour: "Hour", minute: "Minute", ampm: "AM/PM", am: "AM", pm: "PM", birthLocation: "Birth location",
     locationPlaceholder: "City, district or region", locationSuggestions: "Birth location suggestions", clockOccurrence: "Clock occurrence",
     bodygraphLabel: "Life Manual bodygraph",
@@ -116,7 +137,7 @@ const copy = {
     failed: "Failed: {message}", preparing: "Preparing image…", downloaded: "Image saved.", chooseSaveImage: "Choose Save Image in the system menu to add it to Photos.", shared: "Shared.", linkCopied: "Image sharing is unavailable on this device. The site link was copied.", exportFailed: "Image export failed: {message}",
     shareTitle: "My Life Manual", shareText: "Here is my personal life manual.", shareReading: "Share", shareReadingText: "Create your free Life Manual and detailed reading.", openingShareShort: "Opening…", linkCopiedShort: "Copied", sharedShort: "Shared", cancelledShort: "Cancelled", downloadedShort: "Downloaded", selectAmPm: "Choose AM or PM.", detailReading: "Detailed Reading", close: "Close",
     history: "History", settings: "Privacy", localOnly: "Stored only on this device", historyEmpty: "No saved Life Manuals yet.", openHistory: "Open", deleteHistory: "Delete", confirmDeleteTitle: "Delete this record?", confirmDeleteHint: "This action cannot be undone.", cancel: "Cancel", confirmDelete: "Delete", openSource: "Open Source",
-    defaultPrivacy: "Privacy mode by default", defaultPrivacyHint: "Hide name, date, time, and location in generated images. On by default.", saveHistory: "Save local history", saveHistoryHint: "Off by default. Turn it on to reopen recent Life Manuals offline. Turning it off clears saved local history.", cloudSave: "Save new Life Manuals to the cloud", cloudSaveHint: "When off, names, birth details, and charts are not uploaded. Off by default.", productAnalytics: "Help us improve Pluto", productAnalyticsHint: "Send only allowlisted anonymous actions, never birth details or a full chart. Off by default.", deleteCloudData: "Delete Cloud Charts and Personal Data", deleteCloudConfirm: "This deletes the name, birth details, and Human Design records saved for the current anonymous identity. Local history is not deleted. Previously recorded anonymous usage events are deidentified and retained for no more than 180 days for aggregate statistics.", deleteCloudTitle: "Delete cloud data?", cloudDeleted: "Cloud charts and personal data deleted. Events were deidentified; local history remains.", clearHistory: "Clear history", clearHistoryTitle: "Clear all local history?", clearHistoryConfirm: "Every Life Manual saved on this device will be permanently deleted. This cannot be undone.", disableHistoryTitle: "Turn off and clear local history?", disableHistoryConfirm: "Turning off local history immediately clears records already saved on this device. Future Life Manuals will not be added to history.", confirmDisableHistory: "Turn Off & Clear", pleaseConfirm: "Please confirm", confirmAction: "Confirm", privacyPolicy: "Privacy Policy", support: "Help & Support", legalNotice: "Legal Notice", privacyNote: "Privacy mode is on by default. Local history, cloud saving, and anonymous analytics are off by default. Turning local history off clears saved records; deleting cloud data does not delete local history.", historyCleared: "History cleared.", selectDate: "Choose a complete birth date.", invalidDate: "Enter a valid birth date.", selectTime: "Choose a complete birth time.", invalidTime: "Enter a valid birth time.", enterLocation: "Enter a birth location.",
+    defaultPrivacy: "Privacy mode by default", defaultPrivacyHint: "Hide name, date, time, and location in generated images. On by default.", saveHistory: "Save local history", saveHistoryHint: "Off by default. When turning it off, choose whether to keep or delete existing records.", cloudSave: "Save new Life Manuals to the cloud", cloudSaveHint: "When off, names, birth details, and charts are not uploaded. Off by default.", productAnalytics: "Help us improve Pluto", productAnalyticsHint: "Send only allowlisted anonymous actions, never birth details or a full chart. Off by default.", deleteCloudData: "Delete Cloud Charts and Personal Data", deleteCloudConfirm: "This deletes the name, birth details, and Human Design records saved for the current anonymous identity. Local history is not deleted. Previously recorded anonymous usage events are deidentified and retained for no more than 180 days for aggregate statistics.", deleteCloudTitle: "Delete cloud data?", cloudDeleted: "Cloud charts and personal data deleted. Events were deidentified; local history remains.", clearHistory: "Clear history", clearHistoryTitle: "Clear all local history?", clearHistoryConfirm: "Every Life Manual saved on this device will be permanently deleted. This cannot be undone.", disableHistoryTitle: "Turn off local history?", disableHistoryConfirm: "New Life Manuals will no longer be added to local history. You can keep existing records or delete them all.", keepHistoryRecords: "Turn Off & Keep Records", deleteHistoryRecords: "Turn Off & Delete All", pleaseConfirm: "Please confirm", confirmAction: "Confirm", privacyPolicy: "Privacy Policy", support: "Help & Support", legalNotice: "Legal Notice", privacyNote: "Privacy mode is on by default. Local history, cloud saving, and anonymous analytics are off by default. When turning local history off, choose whether to keep or delete existing records; deleting cloud data does not delete local history.", historyCleared: "History cleared.", selectDate: "Choose a complete birth date.", invalidDate: "Enter a valid birth date.", selectTime: "Choose a complete birth time.", invalidTime: "Enter a valid birth time.", enterLocation: "Enter a birth location.",
   },
 };
 
@@ -345,6 +366,7 @@ const settingsStorageKey = "pluto-app-settings-v1";
 const defaultSettings = { privacyByDefault: true, keepHistory: false, ...DEFAULT_CONSENT };
 
 const storedSettings = readStoredJson(settingsStorageKey, {});
+const hasStoredKeepHistory = Object.prototype.hasOwnProperty.call(storedSettings, "keepHistory");
 let appSettings = { ...defaultSettings, ...storedSettings };
 let historyEntries = readStoredJson(historyStorageKey, []);
 if (!Array.isArray(historyEntries)) historyEntries = [];
@@ -353,9 +375,10 @@ historyEntries = historyEntries.filter((entry) => (
   && entry.data?.Properties
   && entry.data?.Meta
 ));
-// Keep legacy entries visible until the user explicitly confirms their deletion.
-if (historyEntries.length && !appSettings.keepHistory) {
+// Migrate only users whose older settings never recorded an explicit history preference.
+if (historyEntries.length && !hasStoredKeepHistory) {
   appSettings.keepHistory = true;
+  writeStoredJson(settingsStorageKey, appSettings);
 }
 let language = localStorage.getItem("pluto-language") || (navigator.language?.toLowerCase().startsWith("zh") ? "zh" : "en");
 let statusState;
@@ -626,6 +649,7 @@ const placeCache = new Map();
 let selectedPlace = null;
 let pendingHistoryDeleteId = null;
 let pendingConfirmation = null;
+let pendingHistoryOptOut = null;
 const paintBodygraph = createBodygraphRenderer({
   container: graph,
   templateUrl: "./assets/bodygraph-template.svg?v=20260717-12",
@@ -658,14 +682,35 @@ function requestConfirmation({ titleKey, messageKey, confirmKey = "confirmAction
   return new Promise((resolve) => { pendingConfirmation = resolve; });
 }
 
+function settleHistoryOptOut(choice) {
+  const resolve = pendingHistoryOptOut;
+  pendingHistoryOptOut = null;
+  if (historyOptOutDialog.open) historyOptOutDialog.close();
+  resolve?.(choice);
+}
+
+function requestHistoryOptOut() {
+  if (pendingHistoryOptOut) settleHistoryOptOut("cancel");
+  historyOptOutDialog.showModal();
+  window.setTimeout(() => cancelHistoryOptOutButton.focus(), 0);
+  return new Promise((resolve) => { pendingHistoryOptOut = resolve; });
+}
+
 function currentConsent() {
-  return {
-    cloudSave: Boolean(appSettings.cloudSave),
-    productAnalytics: Boolean(appSettings.productAnalytics),
-  };
+  return effectiveRemoteConsent(appSettings, remoteServicesAllowed);
+}
+
+function updateRemoteServiceControls() {
+  localModeNotice.hidden = remoteServicesAllowed;
+  cloudSaveInput.checked = remoteServicesAllowed && appSettings.cloudSave === true;
+  productAnalyticsInput.checked = remoteServicesAllowed && appSettings.productAnalytics === true;
+  cloudSaveInput.disabled = !remoteServicesAllowed;
+  productAnalyticsInput.disabled = !remoteServicesAllowed;
+  deleteCloudDataButton.disabled = !remoteServicesAllowed;
 }
 
 function trackEvent(eventName, properties = {}) {
+  if (!remoteServicesAllowed) return;
   recordProductEvent(eventName, properties, currentConsent()).catch((error) => {
     console.warn("Anonymous product event was not sent.", error);
   });
@@ -1069,20 +1114,22 @@ function row(name, item) {
 
 function updateAccessibleResultSummary(data) {
   if (!data?.Properties) {
-    resultSummary.textContent = "";
+    Object.values(resultSummaryFields).forEach((field) => { field.textContent = ""; });
+    resultSummaryReading.textContent = "";
+    chartPreview.alt = t("previewAlt");
     return;
   }
   const properties = data.Properties;
-  const values = [
-    translatedValue("Type", properties.Type),
-    translatedValue("Strategy", properties.Strategy),
-    translatedValue("Inner Authority", properties["Inner Authority"]),
-    translatedValue("Profile", properties.Profile),
-    translatedValue("Definition", properties.Definition),
-  ];
-  resultSummary.textContent = language === "zh"
-    ? `结果摘要：类型${values[0]}；策略${values[1]}；内在权威${values[2]}；人生角色${values[3]}；定义${values[4]}。`
-    : `Result summary: Type ${values[0]}; strategy ${values[1]}; authority ${values[2]}; profile ${values[3]}; definition ${values[4]}.`;
+  Object.entries(resultSummaryFields).forEach(([key, field]) => {
+    field.textContent = translatedValue(key, properties[key] || "");
+  });
+  resultSummaryReading.textContent = interpretation(data).split(/\n\s*\n/, 1)[0];
+  const type = translatedValue("Type", properties.Type);
+  const authority = translatedValue("Inner Authority", properties["Inner Authority"]);
+  const profile = properties.Profile.split(":", 1)[0];
+  chartPreview.alt = language === "zh"
+    ? `Pluto 人生使用说明书：${type}，${authority}，${profile} 人生角色`
+    : `Pluto Life Manual: ${type}, ${authority}, Profile ${profile}`;
 }
 
 async function render(data) {
@@ -1245,6 +1292,16 @@ confirmationDialog.addEventListener("cancel", (event) => {
 confirmationDialog.addEventListener("click", (event) => {
   if (event.target === confirmationDialog) settleConfirmation(false);
 });
+cancelHistoryOptOutButton.addEventListener("click", () => settleHistoryOptOut("cancel"));
+keepHistoryRecordsButton.addEventListener("click", () => settleHistoryOptOut("keep"));
+deleteHistoryRecordsButton.addEventListener("click", () => settleHistoryOptOut("delete"));
+historyOptOutDialog.addEventListener("cancel", (event) => {
+  event.preventDefault();
+  settleHistoryOptOut("cancel");
+});
+historyOptOutDialog.addEventListener("click", (event) => {
+  if (event.target === historyOptOutDialog) settleHistoryOptOut("cancel");
+});
 defaultPrivacyInput.addEventListener("change", () => {
   appSettings.privacyByDefault = defaultPrivacyInput.checked;
   persistSettings();
@@ -1262,34 +1319,38 @@ saveHistoryInput.addEventListener("change", async () => {
     return;
   }
   if (historyEntries.length) {
-    const accepted = await requestConfirmation({
-      titleKey: "disableHistoryTitle",
-      messageKey: "disableHistoryConfirm",
-      confirmKey: "confirmDisableHistory",
-    });
-    if (!accepted) {
+    const choice = await requestHistoryOptOut();
+    if (choice === "cancel") {
       saveHistoryInput.checked = true;
       return;
     }
+    appSettings.keepHistory = false;
+    if (choice === "delete") {
+      historyEntries = [];
+      persistHistory();
+      renderHistory();
+    }
+    persistSettings();
+    return;
   }
   appSettings.keepHistory = false;
-  historyEntries = [];
   persistSettings();
-  persistHistory();
-  renderHistory();
 });
 cloudSaveInput.addEventListener("change", () => {
+  if (!remoteServicesAllowed) return;
   appSettings.cloudSave = cloudSaveInput.checked;
   persistSettings();
   updateConsent(currentConsent()).catch((error) => console.warn("Cloud consent was not synchronized.", error));
 });
 productAnalyticsInput.addEventListener("change", () => {
+  if (!remoteServicesAllowed) return;
   appSettings.productAnalytics = productAnalyticsInput.checked;
   persistSettings();
   updateConsent(currentConsent()).catch((error) => console.warn("Analytics consent was not synchronized.", error));
   trackEvent("privacy_mode_changed", { setting: "productAnalytics", enabled: productAnalyticsInput.checked });
 });
 deleteCloudDataButton.addEventListener("click", async () => {
+  if (!remoteServicesAllowed) return;
   const accepted = await requestConfirmation({ titleKey: "deleteCloudTitle", messageKey: "deleteCloudConfirm", confirmKey: "deleteCloudData" });
   if (!accepted) return;
   deleteCloudDataButton.disabled = true;
@@ -1472,15 +1533,17 @@ chartForm.addEventListener("submit", async (event) => {
       input: { birthDate, birthTime, timezone: place.timezone, locationLabel: place.label },
       result: data,
     });
-    saveChartToCloud(snapshot, {
-      name,
-      birthDate,
-      birthTime,
-      locationLabel: place.label,
-      timezone: place.timezone,
-    }, currentConsent()).catch((error) => {
-      console.warn("Cloud chart save failed; the local chart remains available.", error);
-    });
+    if (remoteServicesAllowed) {
+      saveChartToCloud(snapshot, {
+        name,
+        birthDate,
+        birthTime,
+        locationLabel: place.label,
+        timezone: place.timezone,
+      }, currentConsent()).catch((error) => {
+        console.warn("Cloud chart save failed; the local chart remains available.", error);
+      });
+    }
     await render(data);
     lastData = data;
     saveChartHistory(data, {
@@ -1644,8 +1707,7 @@ paintBodygraph({ Design: {}, Personality: {}, "Defined Centers": [] }).catch((er
 initializeSelectors();
 defaultPrivacyInput.checked = appSettings.privacyByDefault;
 saveHistoryInput.checked = appSettings.keepHistory;
-cloudSaveInput.checked = appSettings.cloudSave;
-productAnalyticsInput.checked = appSettings.productAnalytics;
 privacyToggle.checked = appSettings.privacyByDefault;
+updateRemoteServiceControls();
 applyLanguage(language, false);
 trackEvent("app_open", { environment: globalThis.PLUTO_CONFIG?.environment || "development" });

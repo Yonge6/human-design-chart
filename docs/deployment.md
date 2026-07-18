@@ -2,17 +2,9 @@
 
 ## Web
 
-```bash
-npm ci
-npm test
-PLUTO_APP_VERSION=1.0.0 \
-PLUTO_GIT_COMMIT="$(git rev-parse HEAD)" \
-PLUTO_BUILD_DATE="$(date -u +%FT%TZ)" \
-PLUTO_ENVIRONMENT=production \
-npm run build
-```
+Merging to `main` is not a Web production release. After an administrator changes the Pages source from branch deployment to **GitHub Actions**, publish only through the manually triggered `Deploy Pages` workflow. See [the release process](release-process.md), [Pages deployment guide](pages-deployment.md), and [release checklist](release-checklist.md).
 
-Publish `dist/` to `https://human-design.wonderelian.com`. The build creates `runtime-config.js`; no configured API or Supabase values means local-only operation. Never put a service-role key in any `PLUTO_*` browser variable.
+The workflow publishes only `dist/` to `https://human-design.wonderelian.com` and injects the exact `main` commit into `runtime-config.js`. No configured API or Supabase values means local-only operation. Never put a service-role key in any `PLUTO_*` browser variable.
 
 ## API
 

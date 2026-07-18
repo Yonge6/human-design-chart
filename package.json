@@ -10,6 +10,7 @@
     "test:schema": "node --test tests/schema.test.mjs",
     "test:privacy": "node --test tests/privacy.test.mjs",
     "test:security": "node --test tests/build-security.test.mjs",
+    "test:pages": "node scripts/test-pages-deployment.mjs",
     "test:supabase": "node scripts/run-supabase-tests.mjs",
     "build": "node scripts/build-web.mjs",
     "build:api": "node scripts/build-api-package.mjs",

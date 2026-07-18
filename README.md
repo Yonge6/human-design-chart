@@ -83,6 +83,23 @@ Web and API are separate deployments:
 - Web: `https://human-design.wonderelian.com`
 - Planned API: `https://api-human-design.wonderelian.com`
 
+### Initial Cutover / 首次迁移
+
+> **Do not merge the release-governance PR while Pages still publishes from the `main` branch. Doing so will cause one final unintended automatic production deployment.**
+>
+> **Pages 发布源仍为 `main` 分支时，不要合并发布治理 PR，否则此次合并仍会造成最后一次非预期自动生产发布。**
+
+For the first migration from branch publishing to the manual workflow:
+
+1. Create the Phase 3 pull request and wait for `engine-web`, `api`, and `supabase` to pass.
+2. Keep the pull request open and unmerged.
+3. An administrator changes **Settings -> Pages -> Source** to **GitHub Actions** before merging.
+4. Confirm `human-design.wonderelian.com`, enable **Enforce HTTPS**, and record any reason HTTPS cannot be enabled.
+5. Restrict the `github-pages` Environment to `main`, remove `gh-pages`, and configure available approval and administrator-bypass protections.
+6. Merge the Phase 3 pull request with a Merge Commit.
+7. Confirm that merge produced no Pages deployment.
+8. Only after the governance pull request is merged, manually run **Deploy Pages** when the release is genuinely ready.
+
 Use build-time provenance variables so a deployment identifies its source:
 
 ```bash
@@ -92,7 +109,7 @@ PLUTO_BUILD_DATE="$(date -u +%FT%TZ)" \
 npm run build
 ```
 
-See [deployment instructions](docs/deployment.md) and [source availability](docs/source-availability.md).
+Merging to `main` does not authorize a production release. GitHub Pages is published only through the manually approved `Deploy Pages` workflow after the repository Pages source is changed to **GitHub Actions**. See the [release process](docs/release-process.md), [Pages deployment guide](docs/pages-deployment.md), [release checklist](docs/release-checklist.md), [deployment instructions](docs/deployment.md), and [source availability](docs/source-availability.md).
 
 ## Current limitations
 

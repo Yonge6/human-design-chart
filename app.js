@@ -1,6 +1,6 @@
 import { calculateHumanDesign, localToUtcCandidates } from "./human-design-engine.js?v=20260715-11";
 import { fetchPlaceCandidates, inferTimezoneFromAddress } from "./src/services/location-service.js";
-import { createHumanDesignProfileSnapshot } from "./src/engine/profile-snapshot.js";
+import { createHumanDesignProfileSnapshot } from "./src/engine/profile-snapshot.js?v=20260718-3";
 import { DEFAULT_CONSENT, deleteCloudData, recordProductEvent, saveChartToCloud, updateConsent } from "./src/services/backend-service.js";
 import { canUseSystemShare, isMobileDevice, sharePageLink } from "./src/services/sharing-service.js";
 import { readStoredJson, writeStoredJson } from "./src/services/storage-service.js";

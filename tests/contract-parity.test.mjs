@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import * as runtimeContract from "../shared/human-design-profile-contract.js";
-import * as edgeContract from "../supabase/functions/_shared/human-design-profile-contract.js";
+import * as edgeContract from "../supabase/functions/_shared/human-design-profile-contract.js?v=20260718-3";
 import * as runtimeEvents from "../shared/product-event-contract.js";
 import * as edgeEvents from "../supabase/functions/_shared/product-event-contract.js";
 

@@ -6,7 +6,7 @@ import { canUseSystemShare, isMobileDevice, sharePageLink } from "./src/services
 import { readStoredJson, writeStoredJson } from "./src/services/storage-service.js";
 import { createBodygraphRenderer } from "./src/renderer/bodygraph-renderer.js";
 import { renderPosterElement } from "./src/renderer/poster-renderer.js";
-import { validateBirthSelection } from "./src/app/form-validation.js";
+import { applyAmPmSelection, validateBirthSelection } from "./src/app/form-validation.js";
 
 const publicAppUrl = "https://human-design.wonderelian.com/";
 const planets = ["Sun", "Earth", "North Node", "South Node", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
@@ -733,8 +733,7 @@ function hydrateForm(input) {
   fields.day.value = String(input.day || "").padStart(2, "0");
   fields.hour.value = String(input.hour || "").padStart(2, "0");
   fields.minute.value = String(input.minute || "").padStart(2, "0");
-  fields.ampm.value = input.ampm === "pm" ? "pm" : "am";
-  ampmButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.ampm === fields.ampm.value)));
+  applyAmPmSelection(fields.ampm, ampmButtons, input.ampm);
   fields.location.value = input.location || input.place?.label || "";
   selectedPlace = input.place || null;
 }
@@ -823,8 +822,7 @@ function initializeSelectors() {
   appendOptions(fields.hour, Array.from({ length: 12 }, (_, index) => ({ value: index + 1 })), null);
   appendOptions(fields.minute, Array.from({ length: 60 }, (_, index) => ({ value: index })), null);
   updateDays();
-  fields.ampm.value = "am";
-  ampmButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.ampm === "am")));
+  applyAmPmSelection(fields.ampm, ampmButtons, "");
 }
 
 function placeLabel(properties) {
@@ -1317,8 +1315,7 @@ clearHistoryButton.addEventListener("click", async () => {
   setStatus("historyCleared");
 });
 ampmButtons.forEach((button) => button.addEventListener("click", () => {
-  fields.ampm.value = button.dataset.ampm;
-  ampmButtons.forEach((option) => option.setAttribute("aria-pressed", String(option === button)));
+  applyAmPmSelection(fields.ampm, ampmButtons, button.dataset.ampm);
   ampmSwitch.removeAttribute("aria-invalid");
   fields.ampm.dispatchEvent(new Event("change", { bubbles: true }));
 }));

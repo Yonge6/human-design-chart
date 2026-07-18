@@ -42,3 +42,12 @@ export function validateBirthSelection(input) {
     value: { year, month, day, hour, minute, hour24, ampm },
   };
 }
+
+export function applyAmPmSelection(hiddenInput, buttons, value) {
+  const selection = value === "am" || value === "pm" ? value : "";
+  hiddenInput.value = selection;
+  buttons.forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.dataset.ampm === selection));
+  });
+  return selection;
+}

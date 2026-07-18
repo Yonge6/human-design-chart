@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { validateBirthSelection } from "../src/app/form-validation.js";
+import { applyAmPmSelection, validateBirthSelection } from "../src/app/form-validation.js";
 
 const validInput = {
   year: "2000",
@@ -11,6 +11,19 @@ const validInput = {
   minute: "00",
   ampm: "am",
 };
+
+function createAmPmControls() {
+  const hiddenInput = { value: "" };
+  const buttons = ["am", "pm"].map((ampm) => {
+    const attributes = new Map([["aria-pressed", "false"]]);
+    return {
+      dataset: { ampm },
+      getAttribute(name) { return attributes.get(name) ?? null; },
+      setAttribute(name, value) { attributes.set(name, String(value)); },
+    };
+  });
+  return { hiddenInput, buttons };
+}
 
 test("birth validation accepts leap dates and converts the 12-hour clock", () => {
   const midnight = validateBirthSelection(validInput);
@@ -40,4 +53,44 @@ test("birth validation rejects impossible Gregorian dates", () => {
 test("birth validation rejects out-of-range clock values", () => {
   assert.deepEqual(validateBirthSelection({ ...validInput, hour: "13" }), { valid: false, code: "invalidTime", field: "hour" });
   assert.deepEqual(validateBirthSelection({ ...validInput, minute: "60" }), { valid: false, code: "invalidTime", field: "minute" });
+});
+
+test("real initial AM/PM control state fails submission until explicitly selected", () => {
+  const { hiddenInput, buttons } = createAmPmControls();
+  applyAmPmSelection(hiddenInput, buttons, "");
+
+  assert.equal(hiddenInput.value, "");
+  assert.deepEqual(buttons.map((button) => button.getAttribute("aria-pressed")), ["false", "false"]);
+  assert.deepEqual(
+    validateBirthSelection({ ...validInput, ampm: hiddenInput.value }),
+    { valid: false, code: "selectAmPm", field: "ampm" },
+  );
+});
+
+test("explicit AM and PM selections both validate", () => {
+  const { hiddenInput, buttons } = createAmPmControls();
+
+  applyAmPmSelection(hiddenInput, buttons, "am");
+  assert.equal(validateBirthSelection({ ...validInput, ampm: hiddenInput.value }).valid, true);
+  assert.deepEqual(buttons.map((button) => button.getAttribute("aria-pressed")), ["true", "false"]);
+
+  applyAmPmSelection(hiddenInput, buttons, "pm");
+  assert.equal(validateBirthSelection({ ...validInput, ampm: hiddenInput.value }).valid, true);
+  assert.deepEqual(buttons.map((button) => button.getAttribute("aria-pressed")), ["false", "true"]);
+});
+
+test("history hydration restores its recorded AM or PM without guessing", () => {
+  const { hiddenInput, buttons } = createAmPmControls();
+
+  applyAmPmSelection(hiddenInput, buttons, "pm");
+  assert.equal(hiddenInput.value, "pm");
+  assert.deepEqual(buttons.map((button) => button.getAttribute("aria-pressed")), ["false", "true"]);
+
+  applyAmPmSelection(hiddenInput, buttons, "am");
+  assert.equal(hiddenInput.value, "am");
+  assert.deepEqual(buttons.map((button) => button.getAttribute("aria-pressed")), ["true", "false"]);
+
+  applyAmPmSelection(hiddenInput, buttons, undefined);
+  assert.equal(hiddenInput.value, "");
+  assert.deepEqual(buttons.map((button) => button.getAttribute("aria-pressed")), ["false", "false"]);
 });

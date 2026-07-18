@@ -39,3 +39,27 @@ test("Pages workflow does not deploy backend infrastructure", async () => {
   assert.doesNotMatch(workflow, /api:start|build:api|docker|dns/i);
   assert.doesNotMatch(workflow, /SERVICE_ROLE|DATABASE_PASSWORD|JWT_SECRET/i);
 });
+
+test("release docs require the safe initial Pages cutover order", async () => {
+  const paths = [
+    "README.md",
+    "docs/release-process.md",
+    "docs/pages-deployment.md",
+    "docs/release-checklist.md",
+  ];
+  const documents = await Promise.all(paths.map(read));
+
+  for (const [index, document] of documents.entries()) {
+    assert.match(document, /Initial Cutover \/ 首次迁移/, paths[index]);
+    assert.match(document, /Do not merge the release-governance PR while Pages still publishes from the `main` branch/, paths[index]);
+    assert.match(document, /Pages 发布源仍为 `main` 分支时，不要合并发布治理 PR/, paths[index]);
+    assert.match(document, /(?:before (?:the )?(?:PR|pull request) merge|before merging)/i, paths[index]);
+    assert.match(document, /only after the governance (?:PR|pull request) (?:is|has been) merged/i, paths[index]);
+  }
+
+  const checklist = documents[3];
+  assert.match(checklist, /Phase 3 PR CI is green/);
+  assert.match(checklist, /Environment allows only `main`/);
+  assert.match(checklist, /`gh-pages` was removed/);
+  assert.match(checklist, /Merging Phase 3 produced no automatic Pages deployment/);
+});

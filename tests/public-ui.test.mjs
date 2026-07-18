@@ -84,7 +84,12 @@ test("result has an accessible summary and social discovery metadata", () => {
   const html = read("index.html");
   const app = read("app.js");
 
-  assert.match(html, /id="resultSummary"[^>]*role="status"[^>]*aria-live="polite"/);
+  const resultSection = html.match(/<section id="resultSummary"[^>]*>/)?.[0] || "";
+  assert.match(resultSection, /aria-labelledby="resultSummaryTitle"/);
+  assert.match(resultSection, /tabindex="-1"/);
+  assert.doesNotMatch(resultSection, /role="status"/);
+  assert.doesNotMatch(resultSection, /aria-live=/);
+  assert.doesNotMatch(resultSection, /aria-hidden=/);
   assert.match(html, /id="resultSummary"[\s\S]*<h2[^>]*id="resultSummaryTitle"/);
   assert.match(html, /id="resultSummary"[\s\S]*<dl>[\s\S]*<dt[\s\S]*<dd/);
   assert.match(html, /id="summaryAuthority"/);

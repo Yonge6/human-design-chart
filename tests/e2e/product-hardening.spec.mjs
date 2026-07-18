@@ -224,6 +224,67 @@ test("insecure HTTP mode disables all remote behavior while local generation suc
   expect(consoleErrors).toEqual([]);
 });
 
+test("localhost secure context restores saved remote preferences", async ({ page }) => {
+  const pageErrors = [];
+  page.on("pageerror", (error) => pageErrors.push(error.message));
+  await page.addInitScript((key) => {
+    localStorage.setItem(key, JSON.stringify({
+      privacyByDefault: true,
+      keepHistory: false,
+      cloudSave: true,
+      productAnalytics: true,
+    }));
+  }, settingsKey);
+
+  await page.goto("http://127.0.0.1:8789/");
+  expect(await page.evaluate(() => globalThis.isSecureContext)).toBe(true);
+  await expect(page.locator("#localModeNotice")).toBeHidden();
+  await expect(page.locator("#cloudSave")).toBeEnabled();
+  await expect(page.locator("#productAnalytics")).toBeEnabled();
+  await expect(page.locator("#deleteCloudData")).toBeEnabled();
+  await expect(page.locator("#cloudSave")).toBeChecked();
+  await expect(page.locator("#productAnalytics")).toBeChecked();
+  expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)), settingsKey)).toMatchObject({
+    privacyByDefault: true,
+    keepHistory: false,
+    cloudSave: true,
+    productAnalytics: true,
+  });
+  expect(pageErrors).toEqual([]);
+});
+
+test("Capacitor native runtime enables remote controls on an insecure origin", async ({ page }) => {
+  const pageErrors = [];
+  page.on("pageerror", (error) => pageErrors.push(error.message));
+  await page.addInitScript((key) => {
+    globalThis.Capacitor = {
+      isNativePlatform: () => true,
+      getPlatform: () => "ios",
+      registerPlugin: () => null,
+    };
+    localStorage.setItem(key, JSON.stringify({
+      privacyByDefault: true,
+      keepHistory: false,
+      cloudSave: true,
+      productAnalytics: true,
+    }));
+  }, settingsKey);
+
+  await page.goto("/");
+  expect(await page.evaluate(() => globalThis.isSecureContext)).toBe(false);
+  await expect(page.locator("#localModeNotice")).toBeHidden();
+  await expect(page.locator("#cloudSave")).toBeEnabled();
+  await expect(page.locator("#productAnalytics")).toBeEnabled();
+  await expect(page.locator("#deleteCloudData")).toBeEnabled();
+  await expect(page.locator("#cloudSave")).toBeChecked();
+  await expect(page.locator("#productAnalytics")).toBeChecked();
+  expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)), settingsKey)).toMatchObject({
+    cloudSave: true,
+    productAnalytics: true,
+  });
+  expect(pageErrors).toEqual([]);
+});
+
 test("opening a generated history record restores the semantic result", async ({ page }) => {
   await page.goto("/");
   await page.locator("#openSettings").click();

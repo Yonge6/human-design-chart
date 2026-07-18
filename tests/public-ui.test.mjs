@@ -43,6 +43,16 @@ test("birth selectors start empty and use shared validation", () => {
   assert.match(app, /validation\.field === "ampm"[\s\S]{0,300}ampmButtons\[0\]\.focus\(\)/);
 });
 
+test("the HTTP hash fallback import chain is cache-versioned", () => {
+  const version = "20260718-3";
+
+  assert.match(read("index.html"), new RegExp(`app\\.js\\?v=${version}`));
+  assert.match(read("app.js"), new RegExp(`profile-snapshot\\.js\\?v=${version}`));
+  assert.match(read("src/engine/profile-snapshot.js"), new RegExp(`chart-hash\\.js\\?v=${version}`));
+  assert.match(read("src/engine/chart-hash.js"), new RegExp(`human-design-profile-contract\\.js\\?v=${version}`));
+  assert.match(read("shared/human-design-profile-contract.js"), new RegExp(`human-design-profile-contract\\.js\\?v=${version}`));
+});
+
 test("mobile form remains vertically scrollable", () => {
   const css = read("style.css");
 

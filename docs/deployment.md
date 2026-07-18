@@ -1,5 +1,11 @@
 # Deployment
 
+## Secure-context requirement
+
+The production Web app must be served over HTTPS. On ordinary HTTP outside Capacitor, the UI intentionally runs in local-only mode and skips all backend-service calls, including Supabase anonymous authentication, consent updates, chart uploads, analytics, and cloud deletion. Saved cloud and analytics preferences are masked rather than overwritten, so they can resume when the user returns to a trusted runtime.
+
+Capacitor native builds are treated as trusted native runtimes. Verify the reported platform before shipping. The browser's pure JavaScript SHA-256 fallback preserves the same deterministic chart hash where Web Crypto is unavailable; it is not transport encryption and must never be cited as a replacement for HTTPS.
+
 ## Web
 
 Merging to `main` is not a Web production release. After an administrator changes the Pages source from branch deployment to **GitHub Actions**, publish only through the manually triggered `Deploy Pages` workflow. See [the release process](release-process.md), [Pages deployment guide](pages-deployment.md), and [release checklist](release-checklist.md).

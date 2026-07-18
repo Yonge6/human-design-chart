@@ -25,6 +25,7 @@ Open `http://127.0.0.1:8789/`. Calculation and poster generation remain local an
 npm test              # all unit, regression, schema, API, privacy, and UI tests
 npm run test:schema   # snapshot protocol and deterministic hash tests
 npm run test:api      # starts a real local API and calls Swiss Ephemeris
+npm run test:e2e      # Chromium acceptance tests against the built dist/ bundle
 npm run test:supabase # real local Auth, JWT, RLS, PostgreSQL, and Edge tests
 npm run build         # static web build in dist/
 npm run build:api     # standalone API package in dist-api/
@@ -67,12 +68,13 @@ Every API chart is an `engine_verified` `HumanDesignProfileSnapshot` containing 
 ## Privacy
 
 - Local calculation and image generation are the default; privacy mode starts on.
-- Local history is off by default and is stored only after explicit opt-in. Turning it off clears existing local history after in-app confirmation.
+- Local history is off by default and is stored only after explicit opt-in. When turning it off, the user may cancel, keep existing records while stopping future saves, or delete all existing records.
 - Cloud chart saving is off by default and requires explicit consent.
 - Anonymous product analytics are a separate switch and are off by default.
 - Place-search text is sent only when the user searches for a location.
 - Cloud deletion and local-history deletion are independent.
 - Production keys, production data, logs, and backups are not source code and must never be committed.
+- On ordinary HTTP, Pluto enforces local-only mode: cloud saving, analytics, cloud deletion, and Supabase identity creation are unavailable. These remote features require a secure context or the Capacitor native runtime. The JavaScript SHA-256 fallback only preserves deterministic local hashing; it does not provide transport security and does not replace HTTPS.
 
 The optional backend uses Supabase Auth, PostgreSQL, RLS, and Edge Functions. Its migrations and functions are fully open source under [`supabase/`](supabase/). See [backend architecture](docs/backend-data-architecture.md) and the [privacy data map](docs/privacy-data-map.md).
 

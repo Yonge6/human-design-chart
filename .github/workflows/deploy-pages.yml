@@ -1,0 +1,71 @@
+name: Deploy Pages
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: pages-production
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out current main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Verify source and set build provenance
+        shell: bash
+        run: |
+          git fetch --no-tags origin main
+          DEPLOY_COMMIT="$(git rev-parse HEAD)"
+          REMOTE_MAIN_COMMIT="$(git rev-parse origin/main)"
+          if [ "$DEPLOY_COMMIT" != "$REMOTE_MAIN_COMMIT" ]; then
+            echo "Checked-out commit does not match current origin/main." >&2
+            exit 1
+          fi
+          echo "PLUTO_APP_VERSION=$(node -p "require('./package.json').version")" >> "$GITHUB_ENV"
+          echo "PLUTO_GIT_COMMIT=$DEPLOY_COMMIT" >> "$GITHUB_ENV"
+          echo "PLUTO_BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_ENV"
+          echo "PLUTO_ENVIRONMENT=production" >> "$GITHUB_ENV"
+
+      - run: npm ci
+      - run: npm audit
+      - run: npm test
+      - run: npm run test:security
+      - run: npm run build
+      - run: npm run test:pages
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

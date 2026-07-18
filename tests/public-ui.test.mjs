@@ -20,11 +20,30 @@ test("privacy-first defaults and destructive actions use in-app confirmation", (
   const app = read("app.js");
 
   assert.match(app, /defaultSettings = \{ privacyByDefault: true, keepHistory: false/);
-  assert.match(app, /historyEntries\.length && !appSettings\.keepHistory/);
+  assert.match(app, /hasStoredKeepHistory = Object\.prototype\.hasOwnProperty\.call\(storedSettings, "keepHistory"\)/);
+  assert.match(app, /historyEntries\.length && !hasStoredKeepHistory/);
   assert.match(html, /id="confirmationDialog"/);
+  assert.match(html, /id="historyOptOutDialog"/);
+  assert.match(html, /id="keepHistoryRecords"/);
+  assert.match(html, /id="deleteHistoryRecords"/);
   assert.match(app, /requestConfirmation\(\{/);
-  assert.match(app, /historyEntries = \[\];[\s\S]*persistHistory\(\)/);
+  assert.match(app, /choice === "cancel"[\s\S]*saveHistoryInput\.checked = true/);
+  assert.match(app, /choice === "delete"[\s\S]*historyEntries = \[\];[\s\S]*persistHistory\(\)/);
   assert.doesNotMatch(app, /window\.confirm\(/);
+});
+
+test("insecure runtimes expose local-only mode and bypass every backend operation", () => {
+  const html = read("index.html");
+  const app = read("app.js");
+
+  assert.match(html, /id="localModeNotice"[^>]*role="status"/);
+  assert.match(app, /const remoteServicesAllowed = canUseRemoteServices\(/);
+  assert.match(app, /function currentConsent\(\) \{\s*return effectiveRemoteConsent/);
+  assert.match(app, /function trackEvent[\s\S]{0,150}if \(!remoteServicesAllowed\) return/);
+  assert.match(app, /if \(remoteServicesAllowed\) \{\s*saveChartToCloud/);
+  assert.match(app, /cloudSaveInput\.disabled = !remoteServicesAllowed/);
+  assert.match(app, /productAnalyticsInput\.disabled = !remoteServicesAllowed/);
+  assert.match(app, /deleteCloudDataButton\.disabled = !remoteServicesAllowed/);
 });
 
 test("birth selectors start empty and use shared validation", () => {
@@ -66,8 +85,14 @@ test("result has an accessible summary and social discovery metadata", () => {
   const app = read("app.js");
 
   assert.match(html, /id="resultSummary"[^>]*role="status"[^>]*aria-live="polite"/);
+  assert.match(html, /id="resultSummary"[\s\S]*<h2[^>]*id="resultSummaryTitle"/);
+  assert.match(html, /id="resultSummary"[\s\S]*<dl>[\s\S]*<dt[\s\S]*<dd/);
+  assert.match(html, /id="summaryAuthority"/);
+  assert.match(html, /id="summaryNotSelf"/);
   assert.match(html, /aria-describedby="resultSummary"/);
-  assert.match(app, /updateAccessibleResultSummary/);
+  assert.match(app, /resultSummary\.focus\(\{ preventScroll: true \}\)/);
+  assert.match(app, /chartPreview\.alt = language === "zh"/);
+  assert.match(html, /class="form-disclaimer"[\s\S]*href="legal\.html"/);
   assert.match(html, /rel="canonical" href="https:\/\/human-design\.wonderelian\.com\/"/);
   assert.match(html, /property="og:image"/);
   assert.match(html, /assets\/pluto-og-1200x630\.png/);

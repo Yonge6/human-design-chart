@@ -49,6 +49,7 @@
     <section class="form-panel">
       <p class="eyebrow" data-i18n="formEyebrow">人生使用说明书</p>
       <h1 data-i18n="formTitle">认识你自己</h1>
+      <p id="localModeNotice" class="local-mode-notice" role="status" data-i18n="localModeNotice" hidden>当前为临时 HTTP 连接，仅支持本地计算与生图。云端保存和匿名统计已停用。</p>
       <form id="chartForm" novalidate>
         <label><span data-i18n="name">姓名</span><input id="name" name="name" maxlength="80" autocomplete="off" required></label>
         <div class="grid3">
@@ -82,6 +83,7 @@
         </label>
         <p class="place-attribution" data-i18n="attribution">可直接输入完整地点，无需选择候选。</p>
         <button type="submit" data-i18n="generate">免费获取人生使用说明书</button>
+        <p class="form-disclaimer"><span data-i18n="disclaimer">仅用于自我探索与娱乐，不构成科学结论、医疗、心理、法律或财务建议。</span> <a href="legal.html" target="_blank" rel="noopener" data-i18n="viewLegalNotice">查看法律声明</a></p>
         <p id="status" role="status" aria-live="polite"></p>
       </form>
     </section>
@@ -99,7 +101,20 @@
           <button id="share" type="button" disabled><span class="button-icon" aria-hidden="true">↗</span><span data-share-label data-i18n="share">分享</span></button>
         </div>
       </div>
-      <p id="resultSummary" class="sr-only" role="status" aria-live="polite" tabindex="-1"></p>
+      <section id="resultSummary" class="sr-only" role="status" aria-live="polite" tabindex="-1" aria-labelledby="resultSummaryTitle">
+        <h2 id="resultSummaryTitle" data-i18n="resultSummaryTitle">人生使用说明书结果摘要</h2>
+        <dl>
+          <div><dt data-i18n="summaryType">类型</dt><dd id="summaryType"></dd></div>
+          <div><dt data-i18n="summaryStrategy">策略</dt><dd id="summaryStrategy"></dd></div>
+          <div><dt data-i18n="summaryAuthority">内在权威</dt><dd id="summaryAuthority"></dd></div>
+          <div><dt data-i18n="summaryProfile">人生角色</dt><dd id="summaryProfile"></dd></div>
+          <div><dt data-i18n="summaryDefinition">定义</dt><dd id="summaryDefinition"></dd></div>
+          <div><dt data-i18n="summaryCross">轮回交叉</dt><dd id="summaryCross"></dd></div>
+          <div><dt data-i18n="summarySignature">标志</dt><dd id="summarySignature"></dd></div>
+          <div><dt data-i18n="summaryNotSelf">非自己主题</dt><dd id="summaryNotSelf"></dd></div>
+        </dl>
+        <p id="resultSummaryReading"></p>
+      </section>
       <div class="preview-stage">
         <button id="detailReading" class="detail-fab" type="button"><span class="button-icon" aria-hidden="true">☷</span><span data-i18n="detailReading">详细解读</span></button>
         <img id="chartPreview" class="chart-preview" alt="人生使用说明书" data-i18n-alt="previewAlt" aria-describedby="resultSummary">
@@ -156,6 +171,19 @@
       <div class="confirm-dialog-actions">
         <button id="cancelConfirmation" class="secondary-button" type="button" data-i18n="cancel">取消</button>
         <button id="acceptConfirmation" class="danger-button" type="button">确认</button>
+      </div>
+    </dialog>
+
+    <dialog id="historyOptOutDialog" class="app-dialog confirm-dialog" aria-labelledby="historyOptOutTitle" aria-describedby="historyOptOutMessage">
+      <div class="confirm-dialog-body">
+        <p class="eyebrow" data-i18n="history">历史记录</p>
+        <h2 id="historyOptOutTitle" data-i18n="disableHistoryTitle">关闭本地历史记录？</h2>
+        <p id="historyOptOutMessage" data-i18n="disableHistoryConfirm">关闭后，今后生成的说明书不会加入本地历史。你可以保留已有记录，也可以同时全部删除。</p>
+      </div>
+      <div class="confirm-dialog-actions history-opt-out-actions">
+        <button id="cancelHistoryOptOut" class="secondary-button" type="button" data-i18n="cancel">取消</button>
+        <button id="keepHistoryRecords" class="secondary-button" type="button" data-i18n="keepHistoryRecords">关闭但保留记录</button>
+        <button id="deleteHistoryRecords" class="danger-button" type="button" data-i18n="deleteHistoryRecords">关闭并删除全部记录</button>
       </div>
     </dialog>
 

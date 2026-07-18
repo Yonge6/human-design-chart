@@ -92,7 +92,7 @@ PLUTO_BUILD_DATE="$(date -u +%FT%TZ)" \
 npm run build
 ```
 
-See [deployment instructions](docs/deployment.md) and [source availability](docs/source-availability.md).
+Merging to `main` does not authorize a production release. GitHub Pages is published only through the manually approved `Deploy Pages` workflow after the repository Pages source is changed to **GitHub Actions**. See the [release process](docs/release-process.md), [Pages deployment guide](docs/pages-deployment.md), [release checklist](docs/release-checklist.md), [deployment instructions](docs/deployment.md), and [source availability](docs/source-availability.md).
 
 ## Current limitations
 

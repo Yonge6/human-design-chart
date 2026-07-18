@@ -11,6 +11,8 @@ node_modules/
 dist/
 dist-api/
 build/
+playwright-report/
+test-results/
 ios/App/DerivedData/
 ios/App/App.xcodeproj/xcuserdata/
 ios/App/App.xcodeproj/project.xcworkspace/xcuserdata/

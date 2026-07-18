@@ -15,6 +15,59 @@ test("history deletion requires the confirmation dialog", () => {
   assert.doesNotMatch(app, /remove\.textContent\s*=\s*"×"/);
 });
 
+test("privacy-first defaults and destructive actions use in-app confirmation", () => {
+  const html = read("index.html");
+  const app = read("app.js");
+
+  assert.match(app, /defaultSettings = \{ privacyByDefault: true, keepHistory: false/);
+  assert.match(app, /historyEntries\.length && !appSettings\.keepHistory/);
+  assert.match(html, /id="confirmationDialog"/);
+  assert.match(app, /requestConfirmation\(\{/);
+  assert.match(app, /historyEntries = \[\];[\s\S]*persistHistory\(\)/);
+  assert.doesNotMatch(app, /window\.confirm\(/);
+});
+
+test("birth selectors start empty and use shared validation", () => {
+  const html = read("index.html");
+  const app = read("app.js");
+
+  assert.doesNotMatch(app, /appendOptions\(fields\.year[^\n]*1997/);
+  assert.doesNotMatch(app, /fields\.day\.value = "07"/);
+  assert.match(app, /validateBirthSelection\(\{/);
+  assert.match(html, /id="ampm" name="ampm" type="hidden" value=""/);
+  assert.match(html, /data-ampm="am"[^>]*aria-pressed="false"/);
+  assert.match(html, /data-ampm="pm"[^>]*aria-pressed="false"/);
+  assert.match(app, /function initializeSelectors\(\)[\s\S]{0,1200}applyAmPmSelection\(fields\.ampm, ampmButtons, ""\)/);
+  assert.doesNotMatch(app, /function initializeSelectors\(\)[\s\S]{0,1200}fields\.ampm\.value = "am"/);
+  assert.match(app, /function hydrateForm\(input\)[\s\S]{0,1200}applyAmPmSelection\(fields\.ampm, ampmButtons, input\.ampm\)/);
+  assert.match(app, /validation\.field === "ampm"[\s\S]{0,300}ampmButtons\[0\]\.focus\(\)/);
+});
+
+test("mobile form remains vertically scrollable", () => {
+  const css = read("style.css");
+
+  assert.match(css, /\.shell\.form-view \{\s*height: auto;\s*min-height:[^;]+;\s*overflow: visible;/);
+  assert.doesNotMatch(css, /\.shell\.form-view \{\s*height: calc\(100dvh - 58px\);\s*min-height: 0;\s*overflow: hidden;/);
+  assert.match(css, /\.settings-dialog \{ overflow-y: auto; \}/);
+});
+
+test("result has an accessible summary and social discovery metadata", () => {
+  const html = read("index.html");
+  const app = read("app.js");
+
+  assert.match(html, /id="resultSummary"[^>]*role="status"[^>]*aria-live="polite"/);
+  assert.match(html, /aria-describedby="resultSummary"/);
+  assert.match(app, /updateAccessibleResultSummary/);
+  assert.match(html, /rel="canonical" href="https:\/\/human-design\.wonderelian\.com\/"/);
+  assert.match(html, /property="og:image"/);
+  assert.match(html, /assets\/pluto-og-1200x630\.png/);
+  assert.match(html, /property="og:image:width" content="1200"/);
+  assert.match(html, /property="og:image:height" content="630"/);
+  assert.match(html, /name="twitter:card" content="summary_large_image"/);
+  assert.match(read("robots.txt"), /sitemap\.xml/);
+  assert.match(read("sitemap.xml"), /human-design\.wonderelian\.com/);
+});
+
 test("public pages expose source, license, and build provenance", () => {
   const index = read("index.html");
   const legal = read("legal.html");

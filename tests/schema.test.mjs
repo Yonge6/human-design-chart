@@ -72,6 +72,20 @@ test("chart hash is stable across names, generated times, labels, and key order"
   assert.equal("name" in snapshot.input, false);
 });
 
+test("the HTTP SHA-256 fallback matches Web Crypto for a real chart snapshot", async () => {
+  const snapshot = await exampleSnapshot();
+  const expected = await createChartHash(snapshot);
+  const cryptoDescriptor = Object.getOwnPropertyDescriptor(globalThis, "crypto");
+
+  try {
+    Object.defineProperty(globalThis, "crypto", { configurable: true, value: undefined });
+    assert.equal(await createChartHash(snapshot), expected);
+  } finally {
+    if (cryptoDescriptor) Object.defineProperty(globalThis, "crypto", cryptoDescriptor);
+    else delete globalThis.crypto;
+  }
+});
+
 test("the shared contract rejects invalid ranges, enums, channels, centers, and variables", async () => {
   const snapshot = await exampleSnapshot();
   const mutations = [

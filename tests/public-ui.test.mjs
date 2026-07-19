@@ -63,13 +63,14 @@ test("birth selectors start empty and use shared validation", () => {
 });
 
 test("the HTTP hash fallback import chain is cache-versioned", () => {
-  const version = "20260718-3";
+  const appVersion = "20260718-4";
+  const engineChainVersion = "20260718-3";
 
-  assert.match(read("index.html"), new RegExp(`app\\.js\\?v=${version}`));
-  assert.match(read("app.js"), new RegExp(`profile-snapshot\\.js\\?v=${version}`));
-  assert.match(read("src/engine/profile-snapshot.js"), new RegExp(`chart-hash\\.js\\?v=${version}`));
-  assert.match(read("src/engine/chart-hash.js"), new RegExp(`human-design-profile-contract\\.js\\?v=${version}`));
-  assert.match(read("shared/human-design-profile-contract.js"), new RegExp(`human-design-profile-contract\\.js\\?v=${version}`));
+  assert.match(read("index.html"), new RegExp(`app\\.js\\?v=${appVersion}`));
+  assert.match(read("app.js"), new RegExp(`profile-snapshot\\.js\\?v=${engineChainVersion}`));
+  assert.match(read("src/engine/profile-snapshot.js"), new RegExp(`chart-hash\\.js\\?v=${engineChainVersion}`));
+  assert.match(read("src/engine/chart-hash.js"), new RegExp(`human-design-profile-contract\\.js\\?v=${engineChainVersion}`));
+  assert.match(read("shared/human-design-profile-contract.js"), new RegExp(`human-design-profile-contract\\.js\\?v=${engineChainVersion}`));
 });
 
 test("mobile form remains vertically scrollable", () => {
@@ -93,10 +94,14 @@ test("result has an accessible summary and social discovery metadata", () => {
   assert.match(html, /id="resultSummary"[\s\S]*<h2[^>]*id="resultSummaryTitle"/);
   assert.match(html, /id="resultSummary"[\s\S]*<dl>[\s\S]*<dt[\s\S]*<dd/);
   assert.match(html, /id="summaryAuthority"/);
+  assert.match(html, /id="summarySignature"/);
   assert.match(html, /id="summaryNotSelf"/);
   assert.match(html, /aria-describedby="resultSummary"/);
   assert.match(app, /resultSummary\.focus\(\{ preventScroll: true \}\)/);
   assert.match(app, /chartPreview\.alt = language === "zh"/);
+  assert.match(app, /const resultSummaryFields = \{[\s\S]*\bSign: document\.querySelector\("#summarySignature"\)/);
+  assert.doesNotMatch(app, /\bSignature: document\.querySelector\("#summarySignature"\)/);
+  assert.doesNotMatch(app, /properties\.Signature/);
   assert.match(html, /class="form-disclaimer"[\s\S]*href="legal\.html"/);
   assert.match(html, /rel="canonical" href="https:\/\/human-design\.wonderelian\.com\/"/);
   assert.match(html, /property="og:image"/);

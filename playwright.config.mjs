@@ -11,7 +11,11 @@ export default defineConfig({
     baseURL: "http://pluto.test:8789",
     browserName: "chromium",
     launchOptions: {
-      args: ["--host-resolver-rules=MAP pluto.test 127.0.0.1"],
+      args: [
+        "--host-resolver-rules=MAP pluto.test 127.0.0.1",
+        "--proxy-server=direct://",
+        "--proxy-bypass-list=*",
+      ],
     },
     trace: "retain-on-failure",
   },

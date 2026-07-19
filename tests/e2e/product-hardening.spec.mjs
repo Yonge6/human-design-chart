@@ -35,16 +35,23 @@ const historyEntry = {
 async function stubExternalNetwork(page, requests = []) {
   page.on("request", (request) => requests.push(request.url()));
   await page.route("https://**", (route) => route.abort());
-  await page.route("https://photon.komoot.io/**", (route) => route.fulfill({
-    contentType: "application/json",
-    body: JSON.stringify({
-      features: [{
-        type: "Feature",
-        properties: { name: "Xiangtan", city: "Xiangtan", state: "Hunan", country: "China", countrycode: "CN" },
-        geometry: { type: "Point", coordinates: [112.944, 27.829] },
-      }],
-    }),
-  }));
+  await page.route("https://photon.komoot.io/**", (route) => {
+    const query = new URL(route.request().url()).searchParams.get("q") || "";
+    const isWuhan = /wuhan/i.test(query);
+    const place = isWuhan
+      ? { name: "Wuhan", city: "Wuhan", state: "Hubei", coordinates: [114.305, 30.593] }
+      : { name: "Xiangtan", city: "Xiangtan", state: "Hunan", coordinates: [112.944, 27.829] };
+    return route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({
+        features: [{
+          type: "Feature",
+          properties: { name: place.name, city: place.city, state: place.state, country: "China", countrycode: "CN" },
+          geometry: { type: "Point", coordinates: place.coordinates },
+        }],
+      }),
+    });
+  });
   await page.route("https://geocode.arcgis.com/**", (route) => route.fulfill({
     contentType: "application/json",
     body: JSON.stringify({ candidates: [] }),
@@ -69,6 +76,17 @@ async function fillAndGenerate(page) {
   await page.locator("#name").fill("Browser Fixture");
   await selectBirth(page);
   await page.locator("#location").fill("Xiangtan");
+  await expect(page.locator("#locationResults")).toBeVisible();
+  await page.locator("#locationResults [role=option]").first().click();
+  await page.locator("#chartForm button[type=submit]").click();
+  await expect(page.locator("#chartResult")).toBeVisible({ timeout: 45_000 });
+  await expect(page.locator("#summaryType")).not.toHaveText("");
+}
+
+async function fillProductionFixtureAndGenerate(page) {
+  await page.locator("#name").fill("Production Smoke Test");
+  await selectBirth(page);
+  await page.locator("#location").fill("Wuhan, China");
   await expect(page.locator("#locationResults")).toBeVisible();
   await page.locator("#locationResults [role=option]").first().click();
   await page.locator("#chartForm button[type=submit]").click();
@@ -318,4 +336,53 @@ test("language switch updates local notice, disclaimer, summary, and history dia
   await fillAndGenerate(page);
   await expect(page.locator("#resultSummaryTitle")).toHaveText("Life Manual Result Summary");
   await expect(page.locator("#chartPreview")).toHaveAttribute("alt", /^Pluto Life Manual:/);
+});
+
+test("signature summary uses the real engine Sign value across languages and history", async ({ page }) => {
+  await page.goto("/");
+  await page.locator('[data-language="en"]').click();
+  await page.locator("#openSettings").click();
+  await page.locator("#saveHistory").check();
+  await page.locator("#closeSettings").click();
+
+  await fillProductionFixtureAndGenerate(page);
+
+  for (const selector of [
+    "#summaryType",
+    "#summaryStrategy",
+    "#summaryAuthority",
+    "#summaryProfile",
+    "#summaryDefinition",
+    "#summaryCross",
+    "#summarySignature",
+    "#summaryNotSelf",
+  ]) {
+    await expect(page.locator(selector)).not.toHaveText("");
+  }
+  await expect(page.locator("#summarySignature")).toHaveText("Satisfaction");
+  await expect(page.locator("#summaryNotSelf")).toHaveText("Frustration");
+  await expect(page.locator("#resultSummary")).toBeFocused();
+  await expect(page.locator("#resultSummary h2")).toHaveCount(1);
+  await expect(page.locator("#resultSummary dl")).toHaveCount(1);
+  await expect(page.locator("#resultSummary dt")).toHaveCount(8);
+  await expect(page.locator("#resultSummary dd")).toHaveCount(8);
+  await expect(page.locator("#chartPreview")).toHaveAttribute("aria-describedby", "resultSummary");
+  await expect(page.locator("#resultSummary")).not.toContainText(/Production Smoke Test|1990-01-01|12:00|Wuhan/);
+  await expect(page.locator("#chartPreview")).not.toHaveAttribute("alt", /Production Smoke Test|1990|12:00|Wuhan/);
+
+  await page.locator('[data-language="zh"]').click();
+  await expect(page.locator("#summarySignature")).toHaveText("满足感");
+  await expect(page.locator("#summaryNotSelf")).toHaveText("挫败");
+
+  await page.locator("#editChart").click();
+  await page.locator("#openHistory").click();
+  await page.locator("[data-history-open]").first().click();
+  await expect(page.locator("#chartResult")).toBeVisible({ timeout: 45_000 });
+  await expect(page.locator("#summarySignature")).toHaveText("满足感");
+  await expect(page.locator("#summaryNotSelf")).toHaveText("挫败");
+  await expect(page.locator("#resultSummary")).toBeFocused();
+
+  await page.locator('[data-language="en"]').click();
+  await expect(page.locator("#summarySignature")).toHaveText("Satisfaction");
+  await expect(page.locator("#summaryNotSelf")).toHaveText("Frustration");
 });

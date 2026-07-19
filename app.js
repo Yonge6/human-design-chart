@@ -45,7 +45,7 @@ const resultSummaryFields = {
   Profile: document.querySelector("#summaryProfile"),
   Definition: document.querySelector("#summaryDefinition"),
   "Incarnation Cross": document.querySelector("#summaryCross"),
-  Signature: document.querySelector("#summarySignature"),
+  Sign: document.querySelector("#summarySignature"),
   "Not Self Theme": document.querySelector("#summaryNotSelf"),
 };
 const resultSummaryReading = document.querySelector("#resultSummaryReading");

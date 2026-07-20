@@ -1,6 +1,6 @@
-import { calculateHumanDesign, localToUtcCandidates } from "./human-design-engine.js?v=20260715-11";
+import { calculateHumanDesign, localToUtcCandidates } from "./human-design-engine.js";
 import { fetchPlaceCandidates, inferTimezoneFromAddress } from "./src/services/location-service.js";
-import { createHumanDesignProfileSnapshot } from "./src/engine/profile-snapshot.js?v=20260718-3";
+import { createHumanDesignProfileSnapshot } from "./src/engine/profile-snapshot.js";
 import { DEFAULT_CONSENT, deleteCloudData, recordProductEvent, saveChartToCloud, updateConsent } from "./src/services/backend-service.js";
 import { canUseSystemShare, isMobileDevice, sharePageLink } from "./src/services/sharing-service.js";
 import { readStoredJson, writeStoredJson } from "./src/services/storage-service.js";
@@ -652,7 +652,7 @@ let pendingConfirmation = null;
 let pendingHistoryOptOut = null;
 const paintBodygraph = createBodygraphRenderer({
   container: graph,
-  templateUrl: "./assets/bodygraph-template.svg?v=20260717-12",
+  templateUrl: "./assets/bodygraph-template.svg",
   centerColors,
   label: "Life Manual BodyGraph",
 });

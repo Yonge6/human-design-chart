@@ -63,15 +63,22 @@ test("birth selectors start empty and use shared validation", () => {
   assert.match(app, /validation\.field === "ampm"[\s\S]{0,300}ampmButtons\[0\]\.focus\(\)/);
 });
 
-test("the HTTP hash fallback import chain is cache-versioned", () => {
-  const appVersion = "20260720-1";
-  const engineChainVersion = "20260718-3";
-
-  assert.match(read("index.html"), new RegExp(`app\\.js\\?v=${appVersion}`));
-  assert.match(read("app.js"), new RegExp(`profile-snapshot\\.js\\?v=${engineChainVersion}`));
-  assert.match(read("src/engine/profile-snapshot.js"), new RegExp(`chart-hash\\.js\\?v=${engineChainVersion}`));
-  assert.match(read("src/engine/chart-hash.js"), new RegExp(`human-design-profile-contract\\.js\\?v=${engineChainVersion}`));
-  assert.match(read("shared/human-design-profile-contract.js"), new RegExp(`human-design-profile-contract\\.js\\?v=${engineChainVersion}`));
+test("web source keeps cache versions out of the HTTP hash fallback import chain", () => {
+  assert.match(read("index.html"), /src="app\.js"/);
+  assert.match(read("app.js"), /from "\.\/src\/engine\/profile-snapshot\.js"/);
+  assert.match(read("src/engine/profile-snapshot.js"), /from "\.\/chart-hash\.js"/);
+  assert.match(read("src/engine/chart-hash.js"), /from "\.\.\/\.\.\/shared\/human-design-profile-contract\.js"/);
+  assert.match(read("shared/human-design-profile-contract.js"), /from "\.\.\/supabase\/functions\/_shared\/human-design-profile-contract\.js"/);
+  for (const file of [
+    "index.html",
+    "app.js",
+    "src/engine/human-design-engine.js",
+    "src/engine/profile-snapshot.js",
+    "src/engine/chart-hash.js",
+    "shared/human-design-profile-contract.js",
+  ]) {
+    assert.doesNotMatch(read(file), /(?:\?|&)v=20\d{6}(?:-\d+)?/);
+  }
 });
 
 test("mobile form remains vertically scrollable", () => {

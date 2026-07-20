@@ -98,16 +98,18 @@ test.beforeEach(async ({ page }) => {
   await stubExternalNetwork(page);
 });
 
-test("initial form is privacy-first and requires every birth field", async ({ page }) => {
+test("new-user defaults keep history locally and require every birth field", async ({ page }) => {
   await page.goto("/");
   for (const selector of ["#year", "#month", "#day", "#hour", "#minute", "#ampm"]) {
     await expect(page.locator(selector)).toHaveValue("");
   }
   await expect(page.locator('[data-ampm="am"]')).toHaveAttribute("aria-pressed", "false");
   await expect(page.locator('[data-ampm="pm"]')).toHaveAttribute("aria-pressed", "false");
-  await expect(page.locator("#defaultPrivacy")).toBeChecked();
-  await expect(page.locator("#privacyMode")).toBeChecked();
-  await expect(page.locator("#saveHistory")).not.toBeChecked();
+  await expect(page.locator("#defaultPrivacy")).not.toBeChecked();
+  await expect(page.locator("#privacyMode")).not.toBeChecked();
+  await expect(page.locator("#saveHistory")).toBeChecked();
+  await expect(page.locator("#cloudSave")).not.toBeChecked();
+  await expect(page.locator("#productAnalytics")).not.toBeChecked();
 
   await page.locator("#name").fill("Validation Fixture");
   await page.locator("#chartForm button[type=submit]").click();
@@ -137,6 +139,19 @@ test("initial form is privacy-first and requires every birth field", async ({ pa
   await expect(page.locator("#location")).not.toHaveAttribute("aria-invalid", "true");
 });
 
+test("a new user's generated chart is saved locally without backend requests", async ({ page }) => {
+  const requests = [];
+  page.on("request", (request) => requests.push(request.url()));
+
+  await page.goto("/");
+  await fillAndGenerate(page);
+
+  const history = await page.evaluate((key) => JSON.parse(localStorage.getItem(key) || "[]"), historyKey);
+  expect(history).toHaveLength(1);
+  expect(history[0].data.Properties.Name).toBe("Browser Fixture");
+  expect(requests.some((url) => /supabase\.co|api-human-design\.wonderelian\.com/.test(url))).toBe(false);
+});
+
 test("mobile form and settings dialog scroll naturally", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 667 });
   await page.goto("/");
@@ -155,14 +170,38 @@ test("mobile form and settings dialog scroll naturally", async ({ page }) => {
 
 test("an explicit disabled history setting is not overwritten by retained records", async ({ page }) => {
   await page.addInitScript(({ settingsKey: key, historyKey: history, entry }) => {
-    localStorage.setItem(key, JSON.stringify({ privacyByDefault: true, keepHistory: false, cloudSave: false, productAnalytics: false }));
+    localStorage.setItem(key, JSON.stringify({ privacyByDefault: true, keepHistory: false, cloudSave: true, productAnalytics: true }));
     localStorage.setItem(history, JSON.stringify([entry]));
   }, { settingsKey, historyKey, entry: historyEntry });
   await page.goto("/");
   await page.locator("#openSettings").click();
+  await expect(page.locator("#defaultPrivacy")).toBeChecked();
   await expect(page.locator("#saveHistory")).not.toBeChecked();
-  expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)).keepHistory, settingsKey)).toBe(false);
+  expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)), settingsKey)).toEqual({
+    privacyByDefault: true,
+    keepHistory: false,
+    cloudSave: true,
+    productAnalytics: true,
+  });
   expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)).length, historyKey)).toBe(1);
+});
+
+test("the opposite explicit privacy and history preferences remain unchanged", async ({ page }) => {
+  const savedSettings = {
+    privacyByDefault: false,
+    keepHistory: true,
+    cloudSave: false,
+    productAnalytics: false,
+  };
+  await page.addInitScript(({ key, settings }) => {
+    localStorage.setItem(key, JSON.stringify(settings));
+  }, { key: settingsKey, settings: savedSettings });
+
+  await page.goto("/");
+  await page.locator("#openSettings").click();
+  await expect(page.locator("#defaultPrivacy")).not.toBeChecked();
+  await expect(page.locator("#saveHistory")).toBeChecked();
+  expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)), settingsKey)).toEqual(savedSettings);
 });
 
 test.describe("local history opt-out", () => {
@@ -224,10 +263,12 @@ test("insecure HTTP mode disables all remote behavior while local generation suc
   await expect(page.locator("#productAnalytics")).toBeDisabled();
   await expect(page.locator("#productAnalytics")).not.toBeChecked();
   await expect(page.locator("#deleteCloudData")).toBeDisabled();
-  expect(await page.evaluate((key) => {
-    const settings = JSON.parse(localStorage.getItem(key));
-    return { cloudSave: settings.cloudSave, productAnalytics: settings.productAnalytics };
-  }, settingsKey)).toEqual({ cloudSave: true, productAnalytics: true });
+  expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)), settingsKey)).toEqual({
+    privacyByDefault: true,
+    keepHistory: false,
+    cloudSave: true,
+    productAnalytics: true,
+  });
 
   await fillAndGenerate(page);
   await expect(page.locator("#summaryAuthority")).not.toHaveText("");
@@ -324,10 +365,17 @@ test("language switch updates local notice, disclaimer, summary, and history dia
     localStorage.setItem(history, JSON.stringify([entry]));
   }, { settingsKey, historyKey, entry: historyEntry });
   await page.goto("/");
+  await page.locator('[data-language="zh"]').click();
+  await page.locator("#openSettings").click();
+  await expect(page.locator('[data-i18n="defaultPrivacyHint"]')).toHaveText("生成图片时隐藏姓名、日期、时间和地点；默认关闭。");
+  await expect(page.locator('[data-i18n="saveHistoryHint"]')).toHaveText("默认开启，仅保存在本设备；关闭时可选择保留或删除已有记录。");
+  await page.locator("#closeSettings").click();
   await page.locator('[data-language="en"]').click();
   await expect(page.locator("#localModeNotice")).toContainText("temporary HTTP connection");
   await expect(page.locator(".form-disclaimer")).toContainText("For personal reflection");
   await page.locator("#openSettings").click();
+  await expect(page.locator('[data-i18n="defaultPrivacyHint"]')).toHaveText("Hide name, date, time, and location in generated images. Off by default.");
+  await expect(page.locator('[data-i18n="saveHistoryHint"]')).toHaveText("On by default and stored only on this device. When turning it off, choose whether to keep or delete existing records.");
   await page.locator("#saveHistory").uncheck();
   await expect(page.locator("#historyOptOutTitle")).toHaveText("Turn off local history?");
   await expect(page.locator("#keepHistoryRecords")).toHaveText("Turn Off & Keep Records");
@@ -342,6 +390,7 @@ test("signature summary uses the real engine Sign value across languages and his
   await page.goto("/");
   await page.locator('[data-language="en"]').click();
   await page.locator("#openSettings").click();
+  await page.locator("#defaultPrivacy").check();
   await page.locator("#saveHistory").check();
   await page.locator("#closeSettings").click();
 

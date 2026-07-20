@@ -10,6 +10,7 @@ import {
   createAssetFingerprint,
   DATE_CACHE_VERSION_PATTERN,
   rewriteAssetReferences,
+  rewriteSrcset,
 } from "../scripts/asset-fingerprinting.mjs";
 import { buildWeb } from "../scripts/build-web.mjs";
 
@@ -125,6 +126,42 @@ test("rewriting preserves queries and fragments while excluding non-local URLs",
   assert.match(html, /src="data:image\/png;base64,AA=="/);
 });
 
+test("srcset rewriting preserves descriptors and data URL commas", () => {
+  const fingerprint = "0123456789abcdef";
+  assert.equal(
+    rewriteSrcset("image-1x.png 1x, image-2x.png 2x", fingerprint),
+    "image-1x.png?v=0123456789abcdef 1x, image-2x.png?v=0123456789abcdef 2x",
+  );
+  assert.equal(
+    rewriteSrcset("https://cdn.example.com/a.png 1x", fingerprint),
+    "https://cdn.example.com/a.png 1x",
+  );
+  for (const srcset of [
+    "blob:https://example.com/image-id 1x",
+    "//cdn.example.com/a.png 2x",
+    "#generated-preview 640w",
+  ]) {
+    assert.equal(rewriteSrcset(srcset, fingerprint), srcset);
+  }
+  const dataSrcset = "data:image/svg+xml,%3Csvg%3E,%3C/svg%3E 1x";
+  assert.equal(rewriteSrcset(dataSrcset, fingerprint), dataSrcset);
+
+  const html = rewriteAssetReferences(
+    `<img src="poster.png" srcset="${dataSrcset}">`,
+    "index.html",
+    fingerprint,
+  );
+  assert.match(html, /src="poster\.png\?v=0123456789abcdef"/);
+  assert.ok(html.includes(`srcset="${dataSrcset}"`));
+
+  const css = rewriteAssetReferences(
+    "main { background-image: url(data:image/svg+xml,%3Csvg%3E,%3C/svg%3E); }",
+    "style.css",
+    fingerprint,
+  );
+  assert.equal(css, "main { background-image: url(data:image/svg+xml,%3Csvg%3E,%3C/svg%3E); }");
+});
+
 test("two builds with identical inputs and environment produce the same fingerprint", async (t) => {
   const temporaryRoot = await mkdtemp(join(tmpdir(), "pluto-fingerprint-"));
   t.after(() => rm(temporaryRoot, { recursive: true, force: true }));
@@ -134,10 +171,22 @@ test("two builds with identical inputs and environment produce the same fingerpr
   const first = await buildWeb({ rootDirectory: root, outputDirectory: firstOutput, environment: fixedEnvironment });
   const second = await buildWeb({ rootDirectory: root, outputDirectory: secondOutput, environment: fixedEnvironment });
   assert.equal(first.fingerprint, second.fingerprint);
-  assert.equal(
-    await readFile(join(firstOutput, "index.html"), "utf8"),
-    await readFile(join(secondOutput, "index.html"), "utf8"),
-  );
+
+  const firstPaths = (await filesUnder(firstOutput))
+    .map((path) => relative(firstOutput, path).split("\\").join("/"))
+    .sort();
+  const secondPaths = (await filesUnder(secondOutput))
+    .map((path) => relative(secondOutput, path).split("\\").join("/"))
+    .sort();
+  assert.deepEqual(secondPaths, firstPaths, "build output file lists must be identical");
+
+  for (const relativePath of firstPaths) {
+    const firstContent = await readFile(join(firstOutput, relativePath));
+    const secondContent = await readFile(join(secondOutput, relativePath));
+    if (!firstContent.equals(secondContent)) {
+      assert.fail(`build output differs for ${relativePath}`);
+    }
+  }
 });
 
 test("built resources use one valid fingerprint and resolve without broken local paths", async (t) => {

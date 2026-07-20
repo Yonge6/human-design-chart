@@ -54,14 +54,44 @@ function rewriteHtml(content, fingerprint) {
     .replace(/(<link\b[^>]*?\shref\s*=\s*)(["'])([^"']+)(\2)/gi,
       (match, prefix, quote, url, suffix) => `${prefix}${quote}${appendAssetFingerprint(url, fingerprint)}${suffix}`)
     .replace(/(<(?:img|source)\b[^>]*?\ssrcset\s*=\s*)(["'])([^"']+)(\2)/gi,
-      (match, prefix, quote, value, suffix) => {
-        const rewritten = value.split(",").map((candidate) => {
-          const parts = candidate.trim().split(/\s+/);
-          parts[0] = appendAssetFingerprint(parts[0], fingerprint);
-          return parts.join(" ");
-        }).join(", ");
-        return `${prefix}${quote}${rewritten}${suffix}`;
-      });
+      (match, prefix, quote, value, suffix) => `${prefix}${quote}${rewriteSrcset(value, fingerprint)}${suffix}`);
+}
+
+export function rewriteSrcset(value, fingerprint) {
+  let cursor = 0;
+  let rewritten = "";
+
+  while (cursor < value.length) {
+    const whitespaceStart = cursor;
+    while (/\s/.test(value[cursor] || "")) cursor += 1;
+    rewritten += value.slice(whitespaceStart, cursor);
+    if (cursor >= value.length) break;
+
+    const urlStart = cursor;
+    const isDataUrl = value.slice(cursor, cursor + 5).toLowerCase() === "data:";
+    let sawDataPayloadComma = false;
+    while (cursor < value.length) {
+      const character = value[cursor];
+      if (/\s/.test(character)) break;
+      if (character === ",") {
+        if (!isDataUrl || (sawDataPayloadComma && /\s/.test(value[cursor + 1] || ""))) break;
+        sawDataPayloadComma = true;
+      }
+      cursor += 1;
+    }
+
+    rewritten += appendAssetFingerprint(value.slice(urlStart, cursor), fingerprint);
+
+    const descriptorStart = cursor;
+    while (cursor < value.length && value[cursor] !== ",") cursor += 1;
+    rewritten += value.slice(descriptorStart, cursor);
+    if (value[cursor] === ",") {
+      rewritten += ",";
+      cursor += 1;
+    }
+  }
+
+  return rewritten;
 }
 
 function rewriteCss(content, fingerprint) {

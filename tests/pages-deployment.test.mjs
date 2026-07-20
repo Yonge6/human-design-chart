@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
+const countMatches = (value, pattern) => [...value.matchAll(pattern)].length;
 
 test("test CI never receives Pages deployment permissions or steps", async () => {
   const workflow = await read(".github/workflows/test.yml");
@@ -11,6 +12,9 @@ test("test CI never receives Pages deployment permissions or steps", async () =>
   assert.doesNotMatch(workflow, /deploy-pages/);
   assert.doesNotMatch(workflow, /pages:\s*write/);
   assert.doesNotMatch(workflow, /id-token:\s*write/);
+  assert.equal(countMatches(workflow, /actions\/checkout@v6/g), 3);
+  assert.equal(countMatches(workflow, /actions\/setup-node@v6/g), 3);
+  assert.equal(countMatches(workflow, /node-version:\s*22/g), 3);
 });
 
 test("Pages deployment is manual, main-only, serialized, and uploads dist", async () => {
@@ -24,13 +28,33 @@ test("Pages deployment is manual, main-only, serialized, and uploads dist", asyn
   assert.match(workflow, /git rev-parse origin\/main/);
   assert.match(workflow, /PLUTO_GIT_COMMIT=\$DEPLOY_COMMIT/);
   assert.match(workflow, /npm ci[\s\S]*npm audit[\s\S]*npm test[\s\S]*npm run test:security[\s\S]*npm run build[\s\S]*npm run test:pages/);
-  assert.match(workflow, /actions\/configure-pages@v5/);
-  assert.match(workflow, /actions\/upload-pages-artifact@v4[\s\S]*path: dist/);
+  assert.equal(countMatches(workflow, /actions\/checkout@v6/g), 1);
+  assert.equal(countMatches(workflow, /actions\/setup-node@v6/g), 1);
+  assert.equal(countMatches(workflow, /actions\/configure-pages@v6/g), 1);
+  assert.equal(countMatches(workflow, /actions\/upload-pages-artifact@v5/g), 1);
+  assert.equal(countMatches(workflow, /actions\/deploy-pages@v5/g), 1);
+  assert.equal(countMatches(workflow, /node-version:\s*22/g), 1);
+  assert.match(workflow, /actions\/upload-pages-artifact@v5[\s\S]*path: dist/);
   assert.match(workflow, /deploy:[\s\S]*needs: build/);
   assert.match(workflow, /pages: write/);
   assert.match(workflow, /id-token: write/);
   assert.match(workflow, /name: github-pages/);
-  assert.match(workflow, /actions\/deploy-pages@v4/);
+});
+
+test("workflows use Node 24-compatible official Action majors without compatibility overrides", async () => {
+  const testWorkflow = await read(".github/workflows/test.yml");
+  const pagesWorkflow = await read(".github/workflows/deploy-pages.yml");
+  const workflows = `${testWorkflow}\n${pagesWorkflow}`;
+
+  assert.doesNotMatch(workflows, /actions\/checkout@v[1-5]\b/);
+  assert.doesNotMatch(workflows, /actions\/setup-node@v[1-5]\b/);
+  assert.doesNotMatch(pagesWorkflow, /actions\/configure-pages@v[1-5]\b/);
+  assert.doesNotMatch(pagesWorkflow, /actions\/upload-pages-artifact@v[1-4]\b/);
+  assert.doesNotMatch(pagesWorkflow, /actions\/deploy-pages@v[1-4]\b/);
+  assert.doesNotMatch(
+    workflows,
+    /FORCE_JAVASCRIPT_ACTIONS_TO_NODE24|ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION|NODE_OPTIONS\s*=\s*--no-deprecation/,
+  );
 });
 
 test("Pages workflow does not deploy backend infrastructure", async () => {

@@ -15,11 +15,12 @@ test("history deletion requires the confirmation dialog", () => {
   assert.doesNotMatch(app, /remove\.textContent\s*=\s*"×"/);
 });
 
-test("privacy-first defaults and destructive actions use in-app confirmation", () => {
+test("new defaults preserve explicit settings and destructive actions use in-app confirmation", () => {
   const html = read("index.html");
   const app = read("app.js");
 
-  assert.match(app, /defaultSettings = \{ privacyByDefault: true, keepHistory: false/);
+  assert.match(app, /defaultSettings = \{ privacyByDefault: false, keepHistory: true/);
+  assert.match(app, /defaultSettings = \{[^}]+\.\.\.DEFAULT_CONSENT/);
   assert.match(app, /hasStoredKeepHistory = Object\.prototype\.hasOwnProperty\.call\(storedSettings, "keepHistory"\)/);
   assert.match(app, /historyEntries\.length && !hasStoredKeepHistory/);
   assert.match(html, /id="confirmationDialog"/);
@@ -63,7 +64,7 @@ test("birth selectors start empty and use shared validation", () => {
 });
 
 test("the HTTP hash fallback import chain is cache-versioned", () => {
-  const appVersion = "20260718-4";
+  const appVersion = "20260720-1";
   const engineChainVersion = "20260718-3";
 
   assert.match(read("index.html"), new RegExp(`app\\.js\\?v=${appVersion}`));
@@ -155,6 +156,21 @@ test("cloud saving and anonymous analytics are explicit opt-ins", () => {
   assert.match(html, /删除云端图谱与个人资料/);
   assert.match(app, /Delete Cloud Charts and Personal Data/);
   assert.match(app, /匿名使用事件会移除用户标识，并最多保留180天/);
+});
+
+test("privacy copy matches the device-only defaults in both languages", () => {
+  const app = read("app.js");
+  const privacy = read("privacy.html");
+  const dataMap = read("docs/privacy-data-map.md");
+
+  assert.match(app, /生成图片时隐藏姓名、日期、时间和地点；默认关闭。/);
+  assert.match(app, /默认开启，仅保存在本设备/);
+  assert.match(app, /Hide name, date, time, and location in generated images\. Off by default\./);
+  assert.match(app, /On by default and stored only on this device\./);
+  assert.match(privacy, /Effective date: 2026-07-20/);
+  assert.match(privacy, /本地历史开启不会导致任何云端上传/);
+  assert.match(privacy, /Enabling local history never uploads data to the cloud/);
+  assert.match(dataMap, /Local history[^\n]+Default on, device only[^\n]+Never unless separate cloud consent/);
 });
 
 test("dialog controls use consistent fixed dimensions", () => {

@@ -197,11 +197,11 @@
       </header>
       <div class="settings-list">
         <label class="settings-row">
-          <span><b data-i18n="defaultPrivacy">默认开启隐私模式</b><small data-i18n="defaultPrivacyHint">生成图片时自动隐藏姓名、日期、时间和地点。</small></span>
+          <span><b data-i18n="defaultPrivacy">隐私模式</b><small data-i18n="defaultPrivacyHint">生成图片时隐藏姓名、日期、时间和地点；默认关闭。</small></span>
           <input id="defaultPrivacy" type="checkbox">
         </label>
         <label class="settings-row">
-          <span><b data-i18n="saveHistory">保存本地历史记录</b><small data-i18n="saveHistoryHint">可离线重新打开最近生成的说明书。</small></span>
+          <span><b data-i18n="saveHistory">保存本地历史记录</b><small data-i18n="saveHistoryHint">默认开启，仅保存在本设备；关闭时可选择保留或删除已有记录。</small></span>
           <input id="saveHistory" type="checkbox">
         </label>
         <label class="settings-row">
@@ -228,7 +228,7 @@
         <div><dt>License</dt><dd><a href="LICENSE" target="_blank" rel="noopener">AGPL-3.0-or-later</a></dd></div>
         <div><dt>Notices</dt><dd><a href="THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">Third-party</a></dd></div>
       </dl>
-      <p class="settings-note" data-i18n="privacyNote">云端保存和匿名统计均默认关闭；删除云端图谱与个人资料不会删除本设备的历史记录。</p>
+      <p class="settings-note" data-i18n="privacyNote">隐私模式、云端保存和匿名统计默认关闭；本地历史默认开启并仅保存在本设备。关闭本地历史时可选择保留或删除已有记录；删除云端资料不会删除本地历史。</p>
     </dialog>
 
     <section class="chart-panel export-mobile capture-source" id="capture" aria-hidden="true">
@@ -280,6 +280,6 @@
   <script src="vendor/html2canvas/html2canvas.min.js?v=20260715-11"></script>
   <script src="runtime-config.js"></script>
   <script src="build-provenance.js" defer></script>
-  <script type="module" src="app.js?v=20260718-4"></script>
+  <script type="module" src="app.js?v=20260720-1"></script>
 </body>
 </html>

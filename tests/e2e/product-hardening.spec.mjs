@@ -386,6 +386,46 @@ test("language switch updates local notice, disclaimer, summary, and history dia
   await expect(page.locator("#chartPreview")).toHaveAttribute("alt", /^Pluto Life Manual:/);
 });
 
+test("fingerprinted production bundle loads every calculation asset without module errors or 404s", async ({ page }) => {
+  const failedLocalRequests = [];
+  const badLocalResponses = [];
+  const pageErrors = [];
+  const loaded = new Map();
+  page.on("requestfailed", (request) => {
+    if (new URL(request.url()).hostname === "pluto.test") failedLocalRequests.push(request.url());
+  });
+  page.on("response", (response) => {
+    const url = new URL(response.url());
+    if (url.hostname !== "pluto.test") return;
+    loaded.set(url.pathname, url);
+    if (response.status() >= 400) badLocalResponses.push(`${response.status()} ${response.url()}`);
+  });
+  page.on("pageerror", (error) => pageErrors.push(error.message));
+
+  await page.goto("/");
+  await fillProductionFixtureAndGenerate(page);
+  await expect(page.locator("#chartPreview")).toBeVisible();
+
+  expect(failedLocalRequests).toEqual([]);
+  expect(badLocalResponses).toEqual([]);
+  expect(pageErrors).toEqual([]);
+  for (const path of [
+    "/style.css",
+    "/app.js",
+    "/runtime-config.js",
+    "/build-provenance.js",
+    "/assets/bodygraph-template.svg",
+    "/vendor/swisseph/swisseph.wasm",
+    "/vendor/swisseph/ephe/sepl_18.se1",
+    "/vendor/swisseph/ephe/semo_18.se1",
+    "/vendor/swisseph/ephe/seas_18.se1",
+  ]) {
+    expect(loaded.has(path), `${path} should load`).toBe(true);
+    expect(loaded.get(path).searchParams.get("v"), `${path} should be fingerprinted`).toMatch(/^[a-f0-9]{16}$/);
+  }
+  expect(new Set([...loaded.values()].map((url) => url.searchParams.get("v")).filter(Boolean)).size).toBe(1);
+});
+
 test("signature summary uses the real engine Sign value across languages and history", async ({ page }) => {
   await page.goto("/");
   await page.locator('[data-language="en"]').click();

@@ -1,8 +1,10 @@
-import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { cp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { relative, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
+
+import { createAssetFingerprint, rewriteAssetReferences } from "./asset-fingerprinting.mjs";
 
 const root = resolve(import.meta.dirname, "..");
-const output = resolve(root, "dist");
 const files = [
   "index.html",
   "privacy.html",
@@ -21,35 +23,73 @@ const files = [
 ];
 const directories = ["assets", "vendor", "src", "shared", "schemas"];
 
-await rm(output, { recursive: true, force: true });
-await mkdir(output, { recursive: true });
-
-await Promise.all([
-  ...files.map((file) => cp(resolve(root, file), resolve(output, file))),
-  ...directories.map((directory) => cp(
-    resolve(root, directory),
-    resolve(output, directory),
-    { recursive: true },
-  )),
-]);
-await mkdir(resolve(output, "supabase/functions/_shared"), { recursive: true });
-for (const contract of ["human-design-profile-contract.js", "product-event-contract.js"]) {
-  await cp(resolve(root, "supabase/functions/_shared", contract), resolve(output, "supabase/functions/_shared", contract));
+async function filesUnder(directory) {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const paths = await Promise.all(entries.map((entry) => {
+    const path = resolve(directory, entry.name);
+    return entry.isDirectory() ? filesUnder(path) : [path];
+  }));
+  return paths.flat();
 }
 
-const packageJson = JSON.parse(await readFile(resolve(root, "package.json"), "utf8"));
-const runtimeConfig = {
-  supabaseUrl: process.env.PLUTO_SUPABASE_URL || "",
-  supabasePublishableKey: process.env.PLUTO_SUPABASE_PUBLISHABLE_KEY || "",
-  apiBaseUrl: process.env.PLUTO_API_BASE_URL || "",
-  appVersion: process.env.PLUTO_APP_VERSION || packageJson.version || "development",
-  gitCommit: process.env.PLUTO_GIT_COMMIT || "development",
-  buildDate: process.env.PLUTO_BUILD_DATE || "development",
-  environment: process.env.PLUTO_ENVIRONMENT || "development",
-};
-await writeFile(
-  resolve(output, "runtime-config.js"),
-  `globalThis.PLUTO_CONFIG = Object.freeze(${JSON.stringify(runtimeConfig, null, 2)});\n`,
-);
+export async function buildWeb({
+  rootDirectory = root,
+  outputDirectory = resolve(rootDirectory, "dist"),
+  environment = process.env,
+} = {}) {
+  await rm(outputDirectory, { recursive: true, force: true });
+  await mkdir(outputDirectory, { recursive: true });
 
-console.log(`Built native web bundle in ${output}`);
+  await Promise.all([
+    ...files.map((file) => cp(resolve(rootDirectory, file), resolve(outputDirectory, file))),
+    ...directories.map((directory) => cp(
+      resolve(rootDirectory, directory),
+      resolve(outputDirectory, directory),
+      { recursive: true },
+    )),
+  ]);
+  await mkdir(resolve(outputDirectory, "supabase/functions/_shared"), { recursive: true });
+  for (const contract of ["human-design-profile-contract.js", "product-event-contract.js"]) {
+    await cp(
+      resolve(rootDirectory, "supabase/functions/_shared", contract),
+      resolve(outputDirectory, "supabase/functions/_shared", contract),
+    );
+  }
+
+  const packageJson = JSON.parse(await readFile(resolve(rootDirectory, "package.json"), "utf8"));
+  const runtimeConfig = {
+    supabaseUrl: environment.PLUTO_SUPABASE_URL || "",
+    supabasePublishableKey: environment.PLUTO_SUPABASE_PUBLISHABLE_KEY || "",
+    apiBaseUrl: environment.PLUTO_API_BASE_URL || "",
+    appVersion: environment.PLUTO_APP_VERSION || packageJson.version || "development",
+    gitCommit: environment.PLUTO_GIT_COMMIT || "development",
+    buildDate: environment.PLUTO_BUILD_DATE || "development",
+    environment: environment.PLUTO_ENVIRONMENT || "development",
+  };
+  await writeFile(
+    resolve(outputDirectory, "runtime-config.js"),
+    `globalThis.PLUTO_CONFIG = Object.freeze(${JSON.stringify(runtimeConfig, null, 2)});\n`,
+  );
+
+  const outputFiles = await filesUnder(outputDirectory);
+  const fingerprintEntries = await Promise.all(outputFiles.map(async (path) => ({
+    path: relative(outputDirectory, path).split("\\").join("/"),
+    content: await readFile(path),
+  })));
+  const fingerprint = createAssetFingerprint(fingerprintEntries);
+
+  await Promise.all(outputFiles.map(async (path) => {
+    const relativePath = relative(outputDirectory, path).split("\\").join("/");
+    if (!/\.(?:html?|css|m?js)$/i.test(relativePath)) return;
+    const content = await readFile(path, "utf8");
+    const rewritten = rewriteAssetReferences(content, relativePath, fingerprint);
+    if (rewritten !== content) await writeFile(path, rewritten);
+  }));
+
+  console.log(`Built native web bundle in ${outputDirectory} (asset fingerprint ${fingerprint})`);
+  return { fingerprint, outputDirectory };
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+  await buildWeb();
+}

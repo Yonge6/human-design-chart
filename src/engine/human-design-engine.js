@@ -1,5 +1,5 @@
-import { SwissEphemeris } from "../../vendor/swisseph/swisseph-browser.js?v=20260712-9";
-import { getIncarnationCross } from "../../vendor/natalengine/incarnation-crosses.js?v=20260712-9";
+import { SwissEphemeris } from "../../vendor/swisseph/swisseph-browser.js";
+import { getIncarnationCross } from "../../vendor/natalengine/incarnation-crosses.js";
 
 export const ENGINE_VERSION = "1.0.0";
 

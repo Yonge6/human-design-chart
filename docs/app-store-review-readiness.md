@@ -76,10 +76,13 @@ Names, birth dates, birth times, and generated charts are not included in
 Photon or ArcGIS place-search requests. The providers may process request
 metadata under their own policies.
 
-Cloud Save and anonymous product analytics are present as optional product
-controls but their production backend is not deployed for this release
-candidate. They must not be described to reviewers or in App Privacy answers
-as active data-collection services. Local history never uploads data.
+Cloud Save, anonymous product analytics, and Delete Cloud Data depend on a
+production backend that is not deployed for this release candidate.
+**Unavailable remote features are removed from the release candidate UI.**
+They must not appear as available features in App Store descriptions,
+screenshots, or Review Notes. Local history never uploads data. Implementing
+that release-candidate UI gate is a separate Phase 6B product change and
+remains required before submission.
 
 ## Permissions
 
@@ -96,16 +99,41 @@ HealthKit, Bluetooth, or tracking permission.
 
 - The app target contains `PrivacyInfo.xcprivacy` in Copy Bundle Resources.
 - The manifest declares no tracking and no tracking domains.
-- It declares coarse location for app functionality to reflect user-entered
-  place search sent to Photon or ArcGIS.
+- Manually entered birth-place search text is not the user's or device's
+  current location, so the manifest does not declare Apple's Coarse Location
+  data type for that input.
 - Required-reason API declarations must be rechecked against the final archive
   and every embedded third-party SDK before upload.
-- App Store Privacy answers should conservatively disclose coarse location as
-  not linked to identity, not used for tracking, and used for app
-  functionality, pending final provider-policy and legal review.
+- Photon and ArcGIS retention behavior and the final App Privacy classification
+  remain an unresolved privacy gate. Obtain and retain evidence for how each
+  provider handles the query before completing App Store Connect answers.
+- If a provider uses the query only to service the request in real time and
+  does not retain it, the query is not Apple "collected data." If a provider
+  retains the search text, assess Search History or Other User Content based
+  on Apple's current definitions and the documented provider behavior.
+- Do not select a final App Privacy category without that evidence.
 - Names, birth details, generated charts, and local history remain on device in
   the current release candidate and should not be marked as developer-collected
   data.
+
+## npm Audit Attribution
+
+Audit command: `npm audit --json` on `2026-07-26`. The three findings are all
+transitive development dependencies. The Web build and Capacitor sync copy
+selected source/static files rather than `node_modules`; inspection of `dist`
+and the signed iOS archive confirmed that none of these packages is embedded
+in either release artifact. This lowers binary exposure but does not remove
+the build-tooling risk.
+
+| Advisory ID | Severity | Vulnerable package | Dependency path | Dependency class | In Web `dist` | In iOS Archive | Fix available | Recommended action |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| [GHSA-mh99-v99m-4gvg](https://github.com/advisories/GHSA-mh99-v99m-4gvg) | High | `brace-expansion@5.0.7` | root dev dependency `@capacitor/cli@8.4.2` → `rimraf@6.1.3` → `glob@13.0.6` → `minimatch@10.2.5` → `brace-expansion@5.0.7` | Dev | No | No | Yes | Upgrade the Capacitor CLI/transitive chain in a separate security PR, regenerate the lockfile, and rerun Web/iOS release tests. |
+| [GHSA-v2hh-gcrm-f6hx](https://github.com/advisories/GHSA-v2hh-gcrm-f6hx) | High | `fast-uri@3.1.3` | root dev dependency `ajv@8.18.0` → `fast-uri@3.1.3` | Dev | No | No | Yes | Upgrade AJV or its resolved `fast-uri` in a separate security PR and rerun Schema/API/security tests. |
+| [GHSA-r292-9mhp-454m](https://github.com/advisories/GHSA-r292-9mhp-454m) | Moderate | `tar@7.5.20` | root dev dependency `@capacitor/cli@8.4.2` → `tar@7.5.20` | Dev | No | No | Yes | Upgrade the Capacitor CLI/transitive `tar` in a separate security PR, then repeat Capacitor sync and signed Archive validation. |
+
+Do not run `npm audit fix --force` inside this release-readiness PR. Dependency
+remediation must be reviewed independently so it cannot silently alter the
+Capacitor toolchain or lockfile.
 
 ## Phase 6A Archive Audit
 
@@ -120,6 +148,8 @@ Audit date: `2026-07-26`
 - `codesign --verify --deep --strict` passed for the archived app.
 - The app, Capacitor framework, and Cordova framework each contain a
   `PrivacyInfo.xcprivacy` file.
+- The rebuilt app manifest declares `NSPrivacyTracking = false`, contains an
+  empty collected-data array, and does not declare Coarse Location.
 - Capacitor and Cordova XCFramework signature records are present and identify
   Apple Developer Program signatures.
 - Xcode's archive build scanned the two embedded frameworks for privacy
@@ -156,6 +186,12 @@ Additional release gates:
 - Produce a signed Release archive with the distribution identity and
   provisioning profile intended for App Store distribution.
 - Inspect the final archive's privacy manifests and SDK signatures in Xcode.
+- Remove Cloud Save, anonymous analytics, and Delete Cloud Data from the
+  release-candidate UI while their production services remain unavailable.
+- Resolve the Photon/ArcGIS retention evidence and final App Privacy
+  classification.
+- Remediate or explicitly accept the three npm audit findings through a
+  separate reviewed security change.
 - Complete real-device testing across the supported iOS range.
 - Confirm final App Store Privacy, age-rating, content-rights, and export
   compliance answers in App Store Connect.

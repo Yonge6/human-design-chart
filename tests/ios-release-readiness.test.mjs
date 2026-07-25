@@ -22,15 +22,27 @@ test("iOS release identity and versions remain aligned", () => {
 test("the app privacy manifest is packaged and declares no tracking", () => {
   assert.match(project, /PrivacyInfo\.xcprivacy in Resources/);
   assert.match(privacyManifest, /<key>NSPrivacyTracking<\/key>\s*<false\/>/);
-  assert.match(privacyManifest, /NSPrivacyCollectedDataTypeCoarseLocation/);
+  assert.doesNotMatch(privacyManifest, /NSPrivacyCollectedDataTypeCoarseLocation/);
+  assert.match(
+    reviewReadiness,
+    /Manually entered birth-place search text is not the user's or device's\s+current location/,
+  );
 });
 
 test("App Store drafts preserve legal and deployment blockers", () => {
   for (const document of [reviewReadiness, metadataDraft, releaseChecklist]) {
     assert.match(document, /Swiss Ephemeris/);
     assert.match(document, /BodyGraph/);
+    assert.match(
+      document,
+      /Unavailable remote features are removed\s+from the release candidate UI\./,
+    );
   }
-  assert.match(reviewReadiness, /Cloud Save and anonymous product analytics[\s\S]*not deployed/);
+  assert.match(
+    reviewReadiness,
+    /Photon and ArcGIS retention behavior and the final App Privacy classification\s+remain an unresolved privacy gate/,
+  );
+  assert.doesNotMatch(metadataDraft, /Reviewers should not expect those optional controls/);
   assert.match(metadataDraft, /Do not submit a final content-rights declaration/);
   assert.match(releaseChecklist, /generic\/platform=iOS/);
 });

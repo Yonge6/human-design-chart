@@ -145,10 +145,12 @@ Suggested review flow:
 8. Disconnect the network and reopen an existing local result.
 
 Network use is limited to place search through Photon, with ArcGIS as fallback,
-and user-opened public support, privacy, and source links. Cloud Save and
-anonymous analytics are not deployed as production services for this release
-candidate. Reviewers should not expect those optional controls to complete a
-remote operation.
+and user-opened public support, privacy, and source links. Cloud Save,
+anonymous analytics, and Delete Cloud Data are not deployed as production
+services for this release candidate. **Unavailable remote features are removed
+from the release candidate UI.** They must not appear as available features in
+the final description, screenshots, or Review Notes. The required UI removal
+is tracked separately in Phase 6B.
 
 The content is for reflection and entertainment and is not medical,
 psychological, legal, financial, or professional advice.
@@ -179,16 +181,19 @@ rating; this draft does not override Apple's classification.
 - Tracking: No
 - Data linked to the user: None in the current release candidate
 - Data used for third-party advertising: No
-- Coarse location: conservatively disclose as not linked, not used for
-  tracking, and used for app functionality because user-entered place-search
-  text is sent to Photon or ArcGIS
+- Coarse Location: do not select solely because the user manually enters a
+  birth-place query; that text is not the user's or device's current location
 - Name, birth details, chart, and local history: processed and stored on device,
   not collected by the developer in the current release candidate
 - Diagnostics and analytics: do not declare an active analytics collection
   service while the production analytics backend remains undeployed
 
-Reconfirm these answers against provider retention policies and the exact final
-binary before submission.
+Photon and ArcGIS retention behavior and the final App Privacy classification
+remain an unresolved privacy gate. If a provider processes a query only in real
+time and does not retain it, it is not Apple "collected data." If the search
+text is retained, evaluate Search History or Other User Content against
+Apple's current definitions and the provider evidence. Do not finalize the App
+Privacy answers without that evidence and the exact final binary.
 
 ## Content Rights Draft
 

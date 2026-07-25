@@ -35,9 +35,14 @@ preparation does not authorize TestFlight upload or App Review submission.
   and signatures.
 - [ ] Required-reason APIs match actual app and SDK behavior.
 - [ ] Photon and ArcGIS place-search disclosure matches actual requests.
+- [ ] Photon and ArcGIS retention evidence has been obtained and the final App
+  Privacy classification is supported by that evidence.
+- [ ] Manually entered birth-place text is not classified as Coarse Location
+  merely because it is used for geocoding.
 - [ ] Local history is described as on-device data, never cloud collection.
-- [ ] Cloud Save and analytics are not described as active while their
-  production services remain undeployed.
+- [ ] **Unavailable remote features are removed from the release candidate UI.**
+- [ ] Cloud Save, anonymous analytics, and Delete Cloud Data are absent from
+  App Store descriptions, screenshots, and Review Notes while undeployed.
 - [ ] App Store Privacy answers match the final binary and provider policies.
 
 ## Installation and Upgrade
@@ -104,6 +109,8 @@ preparation does not authorize TestFlight upload or App Review submission.
 - [ ] Support and privacy-policy URLs are live over HTTPS.
 - [ ] Screenshot set matches the final binary and contains no real user data.
 - [ ] App Review Notes include synthetic test data and clear feature steps.
+- [ ] App Review Notes do not advertise unavailable Cloud Save, anonymous
+  analytics, or Delete Cloud Data features.
 - [ ] Age rating, content rights, and export compliance are rechecked in the
   current App Store Connect questionnaire.
 - [ ] App icon and screenshots pass automated and visual asset validation.

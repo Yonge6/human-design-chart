@@ -11,9 +11,11 @@ a third-party visual reference, while the exact source, applicable permission,
 and independent-creation evidence for the current SVG remain incomplete. This
 classification does not itself establish infringement.
 
-Supplemental owner evidence, applicable authorization, or an independently
-designed replacement is required before release. Redesign is one conditional
-path, not a fixed conclusion that this audit authorizes now.
+Supplemental owner evidence or applicable authorization could theoretically
+change the release decision, but no usable evidence or authorization is
+currently available or claimed. The planned App Store release path is a
+style-preserving, clean-room, independently generated replacement. The current
+SVG is not planned for the final App Store Release Candidate.
 
 The following subjects remain distinct:
 
@@ -35,6 +37,23 @@ independently redesign:
 Do not trace or copy third-party SVG paths. Keep dated sketches, source design
 files, geometry rationale, authorship records, and export history. Review
 similarity at component and whole-composition levels.
+
+## Clean-room Task Isolation
+
+The Phase 6D-B audit task read the current SVG, the old Git blob, historical
+diffs, and portions of the existing geometry. The current task must not perform
+the Phase 6E visual implementation.
+
+Phase 6E has not started. It must use a new Codex task and an independent
+worktree, beginning from the latest `main` only after PR #15 is merged. The new
+task must not read the old SVG, old screenshots, old Git blob, or related
+historical diffs. It may read only brand CSS, page layout dimensions, functional
+topology, and a high-level style specification.
+
+High-level brand style may continue, but the specific visual expression must be
+formed independently. This process isolation is provenance evidence, not an
+absolute legal guarantee. The project does not claim that authorization, legal
+advice, separate rights-holder approval, or Apple approval has been obtained.
 
 The template is injected by `src/renderer/bodygraph-renderer.js`; the core
 engine and API do not know its SVG paths. Any authorized visual replacement

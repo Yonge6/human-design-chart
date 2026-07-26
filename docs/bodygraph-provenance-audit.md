@@ -141,16 +141,36 @@ completing the declaration:
 ## Release Decision
 
 `DERIVED_OR_UNCLEAR` remains a release-rights blocker for the current SVG
-because source and authorization evidence are unresolved. The blocker can be
-closed by one of three evidence-backed paths:
+because source and authorization evidence are unresolved. Supplemental
+source-authorship evidence or applicable authorization could theoretically
+change the release decision, but no usable evidence or authorization is
+currently available or claimed.
 
-1. provide reliable source, authorship, and independent-creation evidence that
-   resolves the conflicting repository history;
-2. obtain and retain authorization covering the intended commercial and App
-   Store distribution; or
-3. independently redesign the visual while retaining source files, design
-   rationale, authorship, and export history.
+The planned App Store release path is therefore a style-preserving, clean-room,
+independently generated replacement. It may preserve the product's brand
+character, page layout, and interaction experience, but its SVG geometry must be
+formed independently. The current SVG is not planned for the final App Store
+Release Candidate.
 
-This audit does not require deleting or replacing the current SVG now. Any
-visual replacement requires separate authorization and must preserve identical
-chart-calculation results.
+Phase 6E has not started. This PR does not modify or remove the current SVG.
+Any later replacement must preserve identical chart-calculation results.
+
+## Clean-room Task Isolation
+
+The Phase 6D-B audit task read the current SVG, the old Git blob, historical
+diffs, and portions of the existing geometry while establishing provenance.
+That task and its conversation context must not perform the Phase 6E visual
+implementation.
+
+Phase 6E must:
+
+- use a new Codex task with no old-geometry conversation context;
+- use an independent worktree;
+- begin from the latest `main` only after PR #15 is merged;
+- not read the old SVG, old screenshots, old Git blob, or related historical
+  diffs; and
+- read only brand CSS, page layout dimensions, functional topology, and a
+  high-level style specification when forming the new visual.
+
+This isolation is development-process and provenance evidence. It is not an
+absolute legal guarantee, legal opinion, authorization, or Apple approval.

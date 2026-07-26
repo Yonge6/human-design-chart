@@ -138,7 +138,21 @@ Suggested review flow:
 
 The app is more than a hosted website wrapper: it includes native Photos saving, the native iOS share sheet, device-only history, offline reopening, and privacy controls. The web code and ephemeris files ship inside the app bundle. Network access is used only for user-triggered place geocoding through Photon, with ArcGIS as a fallback.
 
-The app uses Swiss Ephemeris under AGPL-3.0. Corresponding source is public at https://github.com/Yonge6/human-design-chart and licenses are linked inside Privacy Settings. The current BodyGraph evidence classification is `DERIVED_OR_UNCLEAR`; do not submit these draft notes until owner/source evidence, applicable authorization, or an independently designed replacement resolves that release gate.
+The Swiss Ephemeris AGPL licensing path is selected and documented. The project
+does not claim or rely on a Swiss Ephemeris Professional License. Before App
+Store distribution, the release must verify fulfillment of the applicable AGPL
+source-code, license, notice, and distribution obligations, and separately
+assess App Store distribution compatibility under that path. Corresponding
+source is public at https://github.com/Yonge6/human-design-chart and licenses
+are linked inside Privacy Settings.
+
+The current BodyGraph evidence classification is `DERIVED_OR_UNCLEAR`; this is
+not a finding of infringement. Because no usable source-authorship evidence or
+applicable authorization is currently available, the planned App Store release
+path is a style-preserving, clean-room, independently generated replacement.
+Phase 6E has not started, the current PR does not modify the old SVG, and that
+SVG is not planned for the final App Store Release Candidate. Do not submit
+these draft notes until the replacement and final release evidence are complete.
 
 The app does not claim medical or scientific outcomes. It does not use accounts, purchases, ads, analytics, tracking, push notifications, or user-generated content.
 

@@ -5,8 +5,17 @@ preparation does not authorize TestFlight upload or App Review submission.
 
 ## Legal and Rights Gates
 
-- [ ] Swiss Ephemeris AGPL / Professional License distribution choice reviewed
-  by qualified counsel or confirmed with the relevant rights holder.
+The Swiss Ephemeris AGPL licensing path is selected and documented. The project
+does not claim or rely on a Swiss Ephemeris Professional License. Before App
+Store distribution, the release must verify fulfillment of the applicable AGPL
+source-code, license, notice, and distribution obligations, and separately
+assess App Store distribution compatibility under that path.
+
+- [x] Swiss Ephemeris AGPL licensing path selected and documented.
+- [ ] Applicable AGPL source-code, license, notice, and distribution obligations
+  verified against the final release.
+- [ ] App Store distribution compatibility separately assessed under the AGPL
+  path; no Apple confirmation or legal opinion is currently claimed.
 - [x] BodyGraph provenance audit completed.
 - [x] Current SVG SHA-256 recorded.
 - [x] First known Git history recorded.
@@ -14,8 +23,14 @@ preparation does not authorize TestFlight upload or App Review submission.
 - [ ] Owner authorship and source evidence completed.
 - [ ] BodyGraph release classification resolved. Current evidence status:
   `DERIVED_OR_UNCLEAR`.
-- [ ] BodyGraph release path completed through supplemental owner/source
-  evidence, applicable authorization, or an independently designed replacement.
+- [x] BodyGraph planned release path recorded as a style-preserving, clean-room,
+  independently generated replacement because no usable source-authorship
+  evidence or applicable authorization is currently available.
+- [x] Phase 6E has not started.
+- [ ] Phase 6E completed in a new Codex task and independent worktree after PR
+  #15 is merged into the latest `main`.
+- [ ] Current `DERIVED_OR_UNCLEAR` SVG excluded from the final App Store Release
+  Candidate.
 - [ ] Human Design names and terminology reviewed for the intended storefronts.
 - [ ] Content-rights answers match the evidence retained by the developer.
 

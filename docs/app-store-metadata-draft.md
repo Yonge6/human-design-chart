@@ -205,13 +205,26 @@ classified `DERIVED_OR_UNCLEAR` by the repository provenance audit. That
 classification records unresolved evidence and is not a finding of
 infringement.
 
+The Swiss Ephemeris AGPL licensing path is selected and documented. The project
+does not claim or rely on a Swiss Ephemeris Professional License. Before App
+Store distribution, the release must verify fulfillment of the applicable AGPL
+source-code, license, notice, and distribution obligations, and separately
+assess App Store distribution compatibility under that path.
+
+No usable BodyGraph source-authorship evidence or applicable authorization is
+currently available. The planned App Store release path is a style-preserving,
+clean-room, independently generated replacement. Supplemental evidence or
+authorization could change that plan, but none is currently claimed. Phase 6E
+has not started, the current PR does not modify the old SVG, and that SVG is not
+planned for the final App Store Release Candidate.
+
 Do not submit a final content-rights declaration until:
 
-1. The Swiss Ephemeris AGPL / Professional License distribution choice has been
-   reviewed and documented.
-2. The BodyGraph gate is resolved through reliable owner/source and independent
-   creation evidence, applicable authorization, or an independently designed
-   replacement.
+1. The final release has verified applicable AGPL source-code, license, notice,
+   and distribution obligations and separately assessed App Store compatibility
+   under the selected AGPL path.
+2. The clean-room BodyGraph replacement is complete and the current
+   `DERIVED_OR_UNCLEAR` SVG is absent from the final release candidate.
 3. Relevant Human Design terminology and branding have been reviewed for the
    intended storefronts.
 

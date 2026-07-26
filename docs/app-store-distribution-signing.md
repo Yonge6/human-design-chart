@@ -75,6 +75,18 @@ Results use three levels:
 The current expected result is `BLOCKED` until both the Apple Distribution
 identity and exact App Store profile are naturally installed.
 
+## Relationship to Swiss Ephemeris Licensing
+
+The Swiss Ephemeris AGPL licensing path is selected and documented. The project
+does not claim or rely on a Swiss Ephemeris Professional License. Before App
+Store distribution, the release must verify fulfillment of the applicable AGPL
+source-code, license, notice, and distribution obligations, and separately
+assess App Store distribution compatibility under that path.
+
+Signing readiness does not establish AGPL compliance or App Store compatibility.
+No separate Astrodienst authorization, legal opinion, Apple compatibility
+confirmation, or complete closure of distribution risk is represented.
+
 ## Relationship to BodyGraph Provenance
 
 Signing readiness does not establish that visual-rights review is complete.
@@ -82,10 +94,14 @@ The current BodyGraph audit classification is `DERIVED_OR_UNCLEAR`; it records
 an unresolved evidence status, not a finding of infringement or a fixed
 requirement to redesign.
 
-BodyGraph release evidence must be resolved separately through supplemental
-owner/source evidence, applicable authorization, or an independently designed
-replacement. Conversely, resolving BodyGraph provenance would not provide the
-missing Apple Distribution identity or matching App Store profile. See
+No usable source-authorship evidence or applicable authorization is currently
+available. The planned App Store release path is a style-preserving, clean-room,
+independently generated replacement. Supplemental evidence or authorization
+could change that plan, but none is currently claimed. Phase 6E has not started,
+this PR does not modify the current SVG, and the current SVG is not planned for
+the final App Store Release Candidate. Conversely, resolving BodyGraph
+provenance would not provide the missing Apple Distribution identity or matching
+App Store profile. See
 [bodygraph-provenance-audit.md](bodygraph-provenance-audit.md).
 
 ## ExportOptions Example

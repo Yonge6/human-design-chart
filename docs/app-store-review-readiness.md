@@ -194,17 +194,25 @@ Validate App and upload were not run.
 
 The following issues remain blockers before TestFlight or App Review:
 
-1. **Swiss Ephemeris licensing choice.** Confirm with qualified counsel and, if
-   necessary, Astrodienst whether this App Store distribution will use the
-   AGPL option or requires a Professional License. No license purchase or final
-   legal conclusion is represented by this repository.
+1. **Swiss Ephemeris AGPL distribution compliance and compatibility.** The
+   Swiss Ephemeris AGPL licensing path is selected and documented. The project
+   does not claim or rely on a Swiss Ephemeris Professional License. Before App
+   Store distribution, the release must verify fulfillment of the applicable
+   AGPL source-code, license, notice, and distribution obligations, and
+   separately assess App Store distribution compatibility under that path. No
+   separate Astrodienst authorization, legal opinion, Apple compatibility
+   confirmation, or complete closure of distribution risk is represented.
 2. **BodyGraph provenance classification.** The current audit classification
    is `DERIVED_OR_UNCLEAR`. Repository history identifies a third-party visual
    reference, but the exact source, applicable permission, and independent
    creation evidence for the current SVG remain incomplete. This is an
-   evidence gap, not a finding of infringement. Before release, resolve it by
-   supplementing owner/source evidence, retaining applicable authorization, or
-   independently redesigning the visual. See
+   evidence gap, not a finding of infringement. No usable source-authorship
+   evidence or applicable authorization is currently available, so the planned
+   App Store release path is a style-preserving, clean-room, independently
+   generated replacement. Supplemental evidence or authorization could change
+   that plan, but none is currently claimed. Phase 6E has not started, this PR
+   does not modify the current SVG, and the current SVG is not planned for the
+   final App Store Release Candidate. See
    [bodygraph-provenance-audit.md](bodygraph-provenance-audit.md) and the
    conditional
    [bodygraph-provenance and originality plan](bodygraph-original-redesign-plan.md).

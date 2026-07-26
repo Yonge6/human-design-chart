@@ -59,6 +59,46 @@ async function stubExternalNetwork(page, requests = []) {
   await page.route(/https:\/\/(api-human-design\.wonderelian\.com|[^/]+\.supabase\.co)\/.*/, (route) => route.abort());
 }
 
+async function installNativeRuntime(page, settings) {
+  await page.addInitScript(({ key, savedSettings }) => {
+    globalThis.__plutoNativeCalls = [];
+    globalThis.Capacitor = {
+      isNativePlatform: () => true,
+      getPlatform: () => "ios",
+      registerPlugin: () => ({
+        saveImage: async ({ fileName }) => {
+          globalThis.__plutoNativeCalls.push({ method: "saveImage", fileName });
+          return { completed: true };
+        },
+        shareImage: async ({ fileName }) => {
+          globalThis.__plutoNativeCalls.push({ method: "shareImage", fileName });
+          return { completed: true };
+        },
+      }),
+    };
+    localStorage.setItem(key, JSON.stringify(savedSettings));
+    localStorage.setItem("pluto-language", "zh");
+  }, { key: settingsKey, savedSettings: settings });
+}
+
+async function provideSupabaseRuntimeConfig(page) {
+  await page.route("**/runtime-config.js*", (route) => {
+    if (new URL(route.request().url()).pathname !== "/runtime-config.js") return route.continue();
+    return route.fulfill({
+      contentType: "application/javascript",
+      body: `globalThis.PLUTO_CONFIG = Object.freeze({
+        supabaseUrl: "https://configured.supabase.co",
+        supabasePublishableKey: "test-publishable-key",
+        apiBaseUrl: "",
+        appVersion: "1.1.0",
+        gitCommit: "test",
+        buildDate: "test",
+        environment: "test"
+      });`,
+    });
+  });
+}
+
 async function selectBirth(page, { includeDate = true, includeTime = true, ampm = "pm" } = {}) {
   if (includeDate) {
     await page.locator("#year").selectOption("1990");
@@ -298,6 +338,9 @@ test("localhost secure context restores saved remote preferences", async ({ page
   await page.goto("http://127.0.0.1:8789/");
   expect(await page.evaluate(() => globalThis.isSecureContext)).toBe(true);
   await expect(page.locator("#localModeNotice")).toBeHidden();
+  await page.locator("#openSettings").click();
+  await expect(page.locator("#cloudSaveSetting")).toBeVisible();
+  await expect(page.locator("#productAnalyticsSetting")).toBeVisible();
   await expect(page.locator("#cloudSave")).toBeEnabled();
   await expect(page.locator("#productAnalytics")).toBeEnabled();
   await expect(page.locator("#deleteCloudData")).toBeEnabled();
@@ -312,36 +355,118 @@ test("localhost secure context restores saved remote preferences", async ({ page
   expect(pageErrors).toEqual([]);
 });
 
-test("Capacitor native runtime enables remote controls on an insecure origin", async ({ page }) => {
+test("Capacitor native runtime without Supabase hides and blocks remote features", async ({ page }) => {
+  const requests = [];
   const pageErrors = [];
+  const consoleErrors = [];
+  const failedLocalRequests = [];
+  page.on("request", (request) => requests.push(request.url()));
   page.on("pageerror", (error) => pageErrors.push(error.message));
-  await page.addInitScript((key) => {
-    globalThis.Capacitor = {
-      isNativePlatform: () => true,
-      getPlatform: () => "ios",
-      registerPlugin: () => null,
-    };
-    localStorage.setItem(key, JSON.stringify({
-      privacyByDefault: true,
-      keepHistory: false,
-      cloudSave: true,
-      productAnalytics: true,
-    }));
-  }, settingsKey);
+  page.on("console", (message) => { if (message.type() === "error") consoleErrors.push(message.text()); });
+  page.on("requestfailed", (request) => {
+    if (new URL(request.url()).hostname === "pluto.test") failedLocalRequests.push(request.url());
+  });
+  await installNativeRuntime(page, {
+    privacyByDefault: true,
+    keepHistory: true,
+    cloudSave: true,
+    productAnalytics: true,
+  });
 
   await page.goto("/");
   expect(await page.evaluate(() => globalThis.isSecureContext)).toBe(false);
   await expect(page.locator("#localModeNotice")).toBeHidden();
+  await page.locator("#openSettings").click();
+  await expect(page.locator("#cloudSaveSetting")).toBeHidden();
+  await expect(page.locator("#productAnalyticsSetting")).toBeHidden();
+  await expect(page.locator("#deleteCloudData")).toBeHidden();
+  await expect(page.locator("#cloudSave")).toBeDisabled();
+  await expect(page.locator("#productAnalytics")).toBeDisabled();
+  await expect(page.locator("#deleteCloudData")).toBeDisabled();
+  await expect(page.locator("#cloudSave")).not.toBeChecked();
+  await expect(page.locator("#productAnalytics")).not.toBeChecked();
+  await expect(page.locator("#defaultPrivacy")).toBeEnabled();
+  await expect(page.locator("#saveHistory")).toBeEnabled();
+  await expect(page.locator(".settings-note")).toHaveText("隐私模式和本地历史记录仅保存在此设备。当前版本不提供云端保存或匿名统计。");
+
+  const storedSettings = {
+    privacyByDefault: true,
+    keepHistory: true,
+    cloudSave: true,
+    productAnalytics: true,
+  };
+  expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)), settingsKey)).toEqual(storedSettings);
+
+  await page.evaluate(() => {
+    const cloudSave = document.querySelector("#cloudSave");
+    const analytics = document.querySelector("#productAnalytics");
+    cloudSave.checked = true;
+    analytics.checked = true;
+    cloudSave.dispatchEvent(new Event("change", { bubbles: true }));
+    analytics.dispatchEvent(new Event("change", { bubbles: true }));
+    document.querySelector("#deleteCloudData").dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  });
+  expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)), settingsKey)).toEqual(storedSettings);
+
+  await page.locator("#closeSettings").click();
+  await fillProductionFixtureAndGenerate(page);
+  expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key) || "[]").length, historyKey)).toBe(1);
+  expect(await page.evaluate(() => localStorage.getItem("pluto-anonymous-cloud-session-v1"))).toBeNull();
+
+  await page.locator("#download").click();
+  await expect.poll(() => page.evaluate(() => globalThis.__plutoNativeCalls.map((call) => call.method))).toContain("saveImage");
+  await page.locator("#share").click();
+  await expect.poll(() => page.evaluate(() => globalThis.__plutoNativeCalls.map((call) => call.method))).toContain("shareImage");
+
+  await page.locator("#editChart").click();
+  await page.locator('[data-language="en"]').click();
+  await page.locator("#openSettings").click();
+  await expect(page.locator(".settings-note")).toHaveText("Privacy mode and local history stay on this device. Cloud saving and anonymous analytics are not available in this release.");
+  expect(requests.some((url) => /supabase\.co|api-human-design\.wonderelian\.com/.test(url))).toBe(false);
+  expect(failedLocalRequests).toEqual([]);
+  expect(pageErrors).toEqual([]);
+  expect(consoleErrors).toEqual([]);
+});
+
+test("Capacitor native runtime with complete Supabase config can expose remote features", async ({ page }) => {
+  await provideSupabaseRuntimeConfig(page);
+  await installNativeRuntime(page, {
+    privacyByDefault: false,
+    keepHistory: true,
+    cloudSave: false,
+    productAnalytics: false,
+  });
+
+  await page.goto("/");
+  expect(await page.evaluate(() => globalThis.PLUTO_CONFIG)).toMatchObject({
+    supabaseUrl: "https://configured.supabase.co",
+    supabasePublishableKey: "test-publishable-key",
+  });
+  expect(await page.evaluate(async () => {
+    const moduleUrl = performance.getEntriesByType("resource")
+      .map((entry) => entry.name)
+      .find((url) => url.includes("/src/config/runtime-config.js"));
+    const module = await import(moduleUrl);
+    return {
+      configured: module.hasSupabaseConfig(),
+      runtimeConfig: module.runtimeConfig,
+    };
+  })).toMatchObject({
+    configured: true,
+    runtimeConfig: {
+      supabaseUrl: "https://configured.supabase.co",
+      supabasePublishableKey: "test-publishable-key",
+    },
+  });
+  await page.locator("#openSettings").click();
+  await expect(page.locator("#cloudSaveSetting")).toBeVisible();
+  await expect(page.locator("#productAnalyticsSetting")).toBeVisible();
+  await expect(page.locator("#deleteCloudData")).toBeVisible();
   await expect(page.locator("#cloudSave")).toBeEnabled();
   await expect(page.locator("#productAnalytics")).toBeEnabled();
   await expect(page.locator("#deleteCloudData")).toBeEnabled();
-  await expect(page.locator("#cloudSave")).toBeChecked();
-  await expect(page.locator("#productAnalytics")).toBeChecked();
-  expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)), settingsKey)).toMatchObject({
-    cloudSave: true,
-    productAnalytics: true,
-  });
-  expect(pageErrors).toEqual([]);
+  await expect(page.locator("#cloudSave")).not.toBeChecked();
+  await expect(page.locator("#productAnalytics")).not.toBeChecked();
 });
 
 test("opening a generated history record restores the semantic result", async ({ page }) => {

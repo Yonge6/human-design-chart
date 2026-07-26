@@ -145,12 +145,7 @@ Suggested review flow:
 8. Disconnect the network and reopen an existing local result.
 
 Network use is limited to place search through Photon, with ArcGIS as fallback,
-and user-opened public support, privacy, and source links. Cloud Save,
-anonymous analytics, and Delete Cloud Data are not deployed as production
-services for this release candidate. **Unavailable remote features are removed
-from the release candidate UI.** They must not appear as available features in
-the final description, screenshots, or Review Notes. The required UI removal
-is tracked separately in Phase 6B.
+and user-opened public support, privacy, and source links.
 
 The content is for reflection and entertainment and is not medical,
 psychological, legal, financial, or professional advice.
@@ -187,6 +182,13 @@ rating; this draft does not override Apple's classification.
   not collected by the developer in the current release candidate
 - Diagnostics and analytics: do not declare an active analytics collection
   service while the production analytics backend remains undeployed
+
+Phase 6B removes unavailable Cloud Save, anonymous analytics, and cloud-data
+deletion controls from the Capacitor release-candidate UI when complete
+Supabase configuration is absent. Automated unit and browser tests verify that
+the controls are hidden and disabled, saved preferences are retained without
+becoming effective consent, and local calculation does not make backend
+requests. Reconfirm this behavior in the final distribution-signed archive.
 
 Photon and ArcGIS retention behavior and the final App Privacy classification
 remain an unresolved privacy gate. If a provider processes a query only in real

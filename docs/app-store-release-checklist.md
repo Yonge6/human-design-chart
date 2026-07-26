@@ -40,9 +40,12 @@ preparation does not authorize TestFlight upload or App Review submission.
 - [ ] Manually entered birth-place text is not classified as Coarse Location
   merely because it is used for geocoding.
 - [ ] Local history is described as on-device data, never cloud collection.
-- [ ] **Unavailable remote features are removed from the release candidate UI.**
+- [x] **Unavailable remote features are removed from the release candidate UI**
+  by the tested Phase 6B native-runtime capability gate.
 - [ ] Cloud Save, anonymous analytics, and Delete Cloud Data are absent from
   App Store descriptions, screenshots, and Review Notes while undeployed.
+- [ ] The final distribution-signed archive is inspected with production
+  runtime configuration to reconfirm those controls remain absent.
 - [ ] App Store Privacy answers match the final binary and provider policies.
 
 ## Installation and Upgrade

@@ -119,24 +119,29 @@ HealthKit, Bluetooth, or tracking permission.
   the current release candidate and should not be marked as developer-collected
   data.
 
-## npm Audit Attribution
+## npm Audit Remediation
 
-Audit command: `npm audit --json` on `2026-07-26`. The three findings are all
-transitive development dependencies. The Web build and Capacitor sync copy
-selected source/static files rather than `node_modules`; inspection of `dist`
-and the signed iOS archive confirmed that none of these packages is embedded
-in either release artifact. This lowers binary exposure but does not remove
-the build-tooling risk.
+Audit commands: `npm audit --json`, `npm explain`, and `npm ls --all` on
+`2026-07-26`. Before remediation, the three findings were development-only
+dependencies. The Web build and Capacitor sync copy selected source/static
+files rather than `node_modules`; inspection of `dist` and the signed iOS
+archive confirmed that none of the affected packages was embedded in either
+release artifact.
 
-| Advisory ID | Severity | Vulnerable package | Dependency path | Dependency class | In Web `dist` | In iOS Archive | Fix available | Recommended action |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| [GHSA-mh99-v99m-4gvg](https://github.com/advisories/GHSA-mh99-v99m-4gvg) | High | `brace-expansion@5.0.7` | root dev dependency `@capacitor/cli@8.4.2` → `rimraf@6.1.3` → `glob@13.0.6` → `minimatch@10.2.5` → `brace-expansion@5.0.7` | Dev | No | No | Yes | Upgrade the Capacitor CLI/transitive chain in a separate security PR, regenerate the lockfile, and rerun Web/iOS release tests. |
-| [GHSA-v2hh-gcrm-f6hx](https://github.com/advisories/GHSA-v2hh-gcrm-f6hx) | High | `fast-uri@3.1.3` | root dev dependency `ajv@8.18.0` → `fast-uri@3.1.3` | Dev | No | No | Yes | Upgrade AJV or its resolved `fast-uri` in a separate security PR and rerun Schema/API/security tests. |
-| [GHSA-r292-9mhp-454m](https://github.com/advisories/GHSA-r292-9mhp-454m) | Moderate | `tar@7.5.20` | root dev dependency `@capacitor/cli@8.4.2` → `tar@7.5.20` | Dev | No | No | Yes | Upgrade the Capacitor CLI/transitive `tar` in a separate security PR, then repeat Capacitor sync and signed Archive validation. |
+The remediation upgraded the direct development dependency `ajv` from
+`8.18.0` to `8.20.0` and refreshed only the affected transitive packages
+allowed by existing semver ranges. `@capacitor/cli`, `@capacitor/core`, and
+`@capacitor/ios` remain on the compatible `8.4.2` release line. No override,
+forced audit fix, or Capacitor architecture migration was used.
 
-Do not run `npm audit fix --force` inside this release-readiness PR. Dependency
-remediation must be reviewed independently so it cannot silently alter the
-Capacitor toolchain or lockfile.
+| Advisory ID | Severity | Before | After | Final dependency path | In Web `dist` | In iOS Archive | Verification |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| [GHSA-mh99-v99m-4gvg](https://github.com/advisories/GHSA-mh99-v99m-4gvg) | High | `brace-expansion@5.0.7` | `brace-expansion@5.0.8` | root dev dependency `@capacitor/cli@8.4.2` → `rimraf@6.1.3` → `glob@13.0.6` → `minimatch@10.2.5` → `brace-expansion@5.0.8` | No | No | Fixed; full Web and iOS regression suite passed. |
+| [GHSA-v2hh-gcrm-f6hx](https://github.com/advisories/GHSA-v2hh-gcrm-f6hx) | High | `ajv@8.18.0` → `fast-uri@3.1.3` | `ajv@8.20.0` → `fast-uri@3.1.4` | root dev dependency `ajv@8.20.0` → `fast-uri@3.1.4` | No | No | Fixed; Schema, API, and security suites passed without contract changes. |
+| [GHSA-r292-9mhp-454m](https://github.com/advisories/GHSA-r292-9mhp-454m) | Moderate | `tar@7.5.20` | `tar@7.5.22` | root dev dependency `@capacitor/cli@8.4.2` → `tar@7.5.22` | No | No | Fixed; Capacitor sync, simulator build, and signed Release Archive passed. |
+
+After remediation, `npm audit` reports `0 vulnerabilities`; `npm ls --all`
+reports no invalid, extraneous, or unmet required peer dependency.
 
 ## Phase 6A Archive Audit
 
@@ -194,8 +199,6 @@ Additional release gates:
   Supabase configuration is absent.
 - Resolve the Photon/ArcGIS retention evidence and final App Privacy
   classification.
-- Remediate or explicitly accept the three npm audit findings through a
-  separate reviewed security change.
 - Complete real-device testing across the supported iOS range.
 - Confirm final App Store Privacy, age-rating, content-rights, and export
   compliance answers in App Store Connect.

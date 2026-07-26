@@ -4,7 +4,12 @@ Pluto Human Design is a complete, self-hostable Human Design calculation, BodyGr
 
 The project includes Swiss Ephemeris integration, historical IANA time-zone conversion, Personality and Design activations, Gate/Line/Color/Tone/Base, type, strategy, authority, definition, profile, incarnation cross, BodyGraph rendering, bilingual UI, local history, privacy controls, and an optional open-source Supabase backend.
 
-This project is licensed under the GNU Affero General Public License version 3 or later. The Swiss Ephemeris components used by this project are distributed under the AGPL licensing option described by Astrodienst.
+This project is licensed under the GNU Affero General Public License version 3
+or later. The Swiss Ephemeris AGPL licensing path is selected and documented.
+The project does not claim or rely on a Swiss Ephemeris Professional License.
+Before App Store distribution, the release must verify fulfillment of the
+applicable AGPL source-code, license, notice, and distribution obligations, and
+separately assess App Store distribution compatibility under that path.
 
 ## Quick start
 
@@ -118,7 +123,18 @@ Merging to `main` does not authorize a production release. GitHub Pages is publi
 - The Node API is a deployable foundation, but no production API host is provisioned by this repository change.
 - The rate limiter is in-memory and should be replaced or supplemented at the production gateway for multi-instance deployments.
 - Supabase deployment requires a project, anonymous auth, migrations, function secrets, and explicit CORS configuration.
-- The current BodyGraph template is transitional and has an unresolved visual-origin risk. AGPL licensing does not itself resolve that risk. See [the original redesign plan](docs/bodygraph-original-redesign-plan.md).
+- The current BodyGraph visual provenance is classified `DERIVED_OR_UNCLEAR`.
+  Repository history identifies a third-party visual reference, while exact
+  source, authorization, and independent-creation evidence remain incomplete.
+  This does not itself establish infringement. Because no usable
+  source-authorship evidence or applicable authorization is currently
+  available, the planned App Store release path is a style-preserving,
+  clean-room, independently generated replacement. Supplemental evidence or
+  authorization could change that plan, but none is currently claimed. Phase
+  6E has not started, this change does not modify the current SVG, and the
+  current SVG is not planned for the final App Store Release Candidate. See the
+  [provenance audit](docs/bodygraph-provenance-audit.md) and conditional
+  [provenance and originality plan](docs/bodygraph-original-redesign-plan.md).
 - Human Design is used here for personal reflection and entertainment. It is not established scientific, medical, psychological, legal, or financial advice.
 - This project is independent and is not affiliated with Human Design official organizations or My Human Design.
 

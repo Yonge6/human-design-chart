@@ -5,10 +5,32 @@ preparation does not authorize TestFlight upload or App Review submission.
 
 ## Legal and Rights Gates
 
-- [ ] Swiss Ephemeris AGPL / Professional License distribution choice reviewed
-  by qualified counsel or confirmed with the relevant rights holder.
-- [ ] BodyGraph visual template replaced with documented original work or
-  supported by retained authorization evidence.
+The Swiss Ephemeris AGPL licensing path is selected and documented. The project
+does not claim or rely on a Swiss Ephemeris Professional License. Before App
+Store distribution, the release must verify fulfillment of the applicable AGPL
+source-code, license, notice, and distribution obligations, and separately
+assess App Store distribution compatibility under that path.
+
+- [x] Swiss Ephemeris AGPL licensing path selected and documented.
+- [ ] Applicable AGPL source-code, license, notice, and distribution obligations
+  verified against the final release.
+- [ ] App Store distribution compatibility separately assessed under the AGPL
+  path; no Apple confirmation or legal opinion is currently claimed.
+- [x] BodyGraph provenance audit completed.
+- [x] Current SVG SHA-256 recorded.
+- [x] First known Git history recorded.
+- [x] Third-party source and license evidence reviewed.
+- [ ] Owner authorship and source evidence completed.
+- [ ] BodyGraph release classification resolved. Current evidence status:
+  `DERIVED_OR_UNCLEAR`.
+- [x] BodyGraph planned release path recorded as a style-preserving, clean-room,
+  independently generated replacement because no usable source-authorship
+  evidence or applicable authorization is currently available.
+- [x] Phase 6E has not started.
+- [ ] Phase 6E completed in a new Codex task and independent worktree after PR
+  #15 is merged into the latest `main`.
+- [ ] Current `DERIVED_OR_UNCLEAR` SVG excluded from the final App Store Release
+  Candidate.
 - [ ] Human Design names and terminology reviewed for the intended storefronts.
 - [ ] Content-rights answers match the evidence retained by the developer.
 
@@ -17,6 +39,15 @@ preparation does not authorize TestFlight upload or App Review submission.
 - [ ] `npm ci` completes from the committed lockfile.
 - [x] `npm audit` reports zero known vulnerabilities after the reviewed Phase
   6C development-dependency remediation.
+- [x] Phase 6D-A read-only signing audit completed without changing Apple
+  account assets.
+- [x] Sensitive signing artifacts and local export outputs are ignored and
+  covered by tracked-file tests.
+- [x] Xcode 26.6 App Store Connect ExportOptions example contains no secrets.
+- [ ] Apple Distribution identity and its private key are installed for the
+  configured team.
+- [ ] An unexpired App Store profile matches
+  `com.yonge6.plutolifemanual`.
 - [ ] `npm run build` succeeds.
 - [ ] `npx cap sync ios` succeeds.
 - [ ] Xcode and the selected iOS SDK versions are recorded.
@@ -27,6 +58,7 @@ preparation does not authorize TestFlight upload or App Review submission.
 - [ ] Deployment target is iOS `15.0`.
 - [ ] Archive opens in Xcode Organizer without structural errors.
 - [ ] Final distribution validation succeeds before upload.
+- [ ] Organizer Validate App is run only after separate authorization.
 
 ## Privacy and SDK Audit
 

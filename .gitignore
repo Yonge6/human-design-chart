@@ -16,3 +16,17 @@ test-results/
 ios/App/DerivedData/
 ios/App/App.xcodeproj/xcuserdata/
 ios/App/App.xcodeproj/project.xcworkspace/xcuserdata/
+
+# Apple signing and local release artifacts
+*.cer
+*.p12
+*.pem
+*.mobileprovision
+*.provisionprofile
+*.ipa
+*.xcarchive
+AuthKey_*.p8
+ios/archives/
+ios/export/
+ios/ExportOptions-*.plist
+!ios/ExportOptions-AppStoreConnect.plist.example

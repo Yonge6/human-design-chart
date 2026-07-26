@@ -71,7 +71,9 @@ The build compares checked-out `HEAD` with `origin/main`. It injects the full SH
 
 ## Asset and discovery checks
 
-- Open `/assets/pluto-og-1200x630.png` and confirm HTTP 200, correct 1200 x 630 composition, no text clipping, no user data, and no third-party BodyGraph path.
+- Open `/assets/pluto-og-1200x630.png` and confirm HTTP 200, correct 1200 x 630
+  composition, no text clipping, no user data, and no BodyGraph visual whose
+  release classification remains unresolved.
 - Open `/robots.txt` and `/sitemap.xml`.
 - Inspect the page source and confirm Open Graph and Twitter metadata use the dedicated share image.
 - Confirm the GitHub source link and AGPL license remain reachable.

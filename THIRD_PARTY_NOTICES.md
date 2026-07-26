@@ -11,7 +11,13 @@
 - SHA-256: `seas_18.se1` `a2cd8fc33807c78ca9a700c91c2e042258b12fc4796519e00781440b5ad8b2e2`
 - Local compatibility patch: the published browser bundle's unresolved enum defaults were replaced with their documented numeric constants.
 
-The repository uses the Swiss Ephemeris AGPL licensing option. Astrodienst also offers a professional license. Do not embed these components in a proprietary product without independently satisfying the applicable license terms.
+The Swiss Ephemeris AGPL licensing path is selected and documented. The
+project does not claim or rely on a Swiss Ephemeris Professional License.
+Before App Store distribution, the release must verify fulfillment of the
+applicable AGPL source-code, license, notice, and distribution obligations, and
+separately assess App Store distribution compatibility under that path.
+No separate Astrodienst authorization, legal opinion, Apple compatibility
+confirmation, or complete closure of App Store distribution risk is represented.
 
 ## NatalEngine incarnation cross names
 
@@ -37,6 +43,15 @@ The repository uses the Swiss Ephemeris AGPL licensing option. Astrodienst also 
 - Package: `html2canvas` 1.4.1
 - License: MIT; full text in `vendor/html2canvas/LICENSE`
 
-## BodyGraph transitional visual reference
+## BodyGraph provenance
 
-The current BodyGraph template is transitional and has a separate visual-origin risk. AGPL licensing of this repository does not establish permission to reuse third-party visual expression. The project does not claim that the current SVG is cleared for commercial use. See `docs/bodygraph-original-redesign-plan.md`.
+Repository history states that the current visual lineage was captured from a
+publicly loaded My Human Design result-page SVG for fidelity research. No exact
+source URL, BodyGraph visual license, or authorization file was found in the
+repository. The current evidence classification is `DERIVED_OR_UNCLEAR`; this
+is not a finding of infringement. No usable source-authorship evidence or
+applicable authorization is currently available. The planned App Store release
+path is a style-preserving, clean-room, independently generated replacement;
+Phase 6E has not started, and the current SVG remains unchanged in this phase
+and is not planned for the final App Store Release Candidate. See
+`docs/bodygraph-provenance-audit.md`.

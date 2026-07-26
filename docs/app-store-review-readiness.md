@@ -175,25 +175,56 @@ The resulting development-signed `.xcarchive` is suitable for local Organizer
 inspection, but it is not an App Store distribution artifact and has not passed
 Apple's online validation.
 
+## Phase 6D-A Distribution Signing Audit
+
+The read-only audit on `2026-07-26` confirmed one valid Apple Development
+identity for team `L855ZVM679`, but no Apple Distribution identity with its
+private key and no unexpired App Store profile matching
+`com.yonge6.plutolifemanual`. Distribution signing therefore remains
+**BLOCKED**. No Apple certificate, profile, keychain item, or account record was
+created, changed, or revoked.
+
+The repository now includes a read-only diagnostic, a secret-free Xcode 26.6
+ExportOptions example, tracked-file secret checks, and the manual runbook in
+[app-store-distribution-signing.md](app-store-distribution-signing.md).
+The example does not prove that a matching profile exists. Online Organizer
+Validate App and upload were not run.
+
 ## Release Blockers
 
 The following issues remain blockers before TestFlight or App Review:
 
-1. **Swiss Ephemeris licensing choice.** Confirm with qualified counsel and, if
-   necessary, Astrodienst whether this App Store distribution will use the
-   AGPL option or requires a Professional License. No license purchase or final
-   legal conclusion is represented by this repository.
-2. **BodyGraph visual rights.** Replace the transitional visual template with
-   an original design supported by source files and an authorship record, or
-   obtain and retain sufficient authorization evidence. The existing risk is
-   documented in
-   [bodygraph-original-redesign-plan.md](bodygraph-original-redesign-plan.md).
+1. **Swiss Ephemeris AGPL distribution compliance and compatibility.** The
+   Swiss Ephemeris AGPL licensing path is selected and documented. The project
+   does not claim or rely on a Swiss Ephemeris Professional License. Before App
+   Store distribution, the release must verify fulfillment of the applicable
+   AGPL source-code, license, notice, and distribution obligations, and
+   separately assess App Store distribution compatibility under that path. No
+   separate Astrodienst authorization, legal opinion, Apple compatibility
+   confirmation, or complete closure of distribution risk is represented.
+2. **BodyGraph provenance classification.** The current audit classification
+   is `DERIVED_OR_UNCLEAR`. Repository history identifies a third-party visual
+   reference, but the exact source, applicable permission, and independent
+   creation evidence for the current SVG remain incomplete. This is an
+   evidence gap, not a finding of infringement. No usable source-authorship
+   evidence or applicable authorization is currently available, so the planned
+   App Store release path is a style-preserving, clean-room, independently
+   generated replacement. Supplemental evidence or authorization could change
+   that plan, but none is currently claimed. Phase 6E has not started, this PR
+   does not modify the current SVG, and the current SVG is not planned for the
+   final App Store Release Candidate. See
+   [bodygraph-provenance-audit.md](bodygraph-provenance-audit.md) and the
+   conditional
+   [bodygraph-provenance and originality plan](bodygraph-original-redesign-plan.md).
 
 Additional release gates:
 
-- Produce a signed Release archive with the distribution identity and
-  provisioning profile intended for App Store distribution.
+- Install an authorized Apple Distribution identity with its private key and
+  an unexpired App Store profile for the exact Bundle ID, then produce a signed
+  Release archive with those assets.
 - Inspect the final archive's privacy manifests and SDK signatures in Xcode.
+- Generate and review the Organizer Privacy Report from the final
+  distribution-signed archive.
 - Reconfirm in the final distribution-signed archive that Cloud Save, anonymous
   analytics, and Delete Cloud Data remain hidden and disabled while production
   Supabase configuration is absent.

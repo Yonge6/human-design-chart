@@ -9,6 +9,7 @@ const privacyManifest = fs.readFileSync("ios/App/App/PrivacyInfo.xcprivacy", "ut
 const reviewReadiness = fs.readFileSync("docs/app-store-review-readiness.md", "utf8");
 const metadataDraft = fs.readFileSync("docs/app-store-metadata-draft.md", "utf8");
 const releaseChecklist = fs.readFileSync("docs/app-store-release-checklist.md", "utf8");
+const releaseAvailability = fs.readFileSync("src/app/release-feature-availability.js", "utf8");
 
 test("iOS release identity and versions remain aligned", () => {
   assert.equal(packageJson.version, "1.1.0");
@@ -35,7 +36,7 @@ test("App Store drafts preserve legal and deployment blockers", () => {
     assert.match(document, /BodyGraph/);
     assert.match(
       document,
-      /Unavailable remote features are removed\s+from the release candidate UI\./,
+      /Phase 6B[\s\S]{0,320}(?:implements|removes|native-runtime capability gate)/i,
     );
   }
   assert.match(
@@ -45,4 +46,20 @@ test("App Store drafts preserve legal and deployment blockers", () => {
   assert.doesNotMatch(metadataDraft, /Reviewers should not expect those optional controls/);
   assert.match(metadataDraft, /Do not submit a final content-rights declaration/);
   assert.match(releaseChecklist, /generic\/platform=iOS/);
+});
+
+test("Phase 6B removes unavailable native remote features without advertising them to review", () => {
+  for (const document of [reviewReadiness, metadataDraft, releaseChecklist]) {
+    assert.match(document, /Phase 6B/);
+    assert.match(document, /hidden|removed/i);
+    assert.match(document, /test/i);
+  }
+  assert.match(releaseAvailability, /isNativeRuntime && !hasSupabaseConfig/);
+  assert.match(releaseAvailability, /remoteSettingsVisible: false|remoteSettingsVisible/);
+  assert.match(releaseAvailability, /remoteOperationsAllowed: remoteRuntimeAllowed && remoteSettingsVisible/);
+
+  const reviewNotes = metadataDraft.match(/## App Review Notes([\s\S]*?)## Age Rating Draft/)?.[1] || "";
+  assert.doesNotMatch(reviewNotes, /Cloud Save|anonymous analytics|Delete Cloud Data/i);
+  assert.match(reviewNotes, /Photon/);
+  assert.match(reviewNotes, /ArcGIS/);
 });

@@ -3,15 +3,19 @@ import test from "node:test";
 
 import {
   DEFAULT_CONSENT,
+  deleteCloudData,
   recordProductEvent,
   sanitizeProductEvent,
   saveChartToCloud,
+  updateConsent,
 } from "../src/services/backend-service.js";
 
 test("cloud saving and product analytics are off by default", async () => {
   assert.deepEqual(DEFAULT_CONSENT, { cloudSave: false, productAnalytics: false });
   assert.deepEqual(await saveChartToCloud({ chartHash: "sensitive" }, { name: "Private" }), { skipped: true });
   assert.deepEqual(await recordProductEvent("app_open", {}), { skipped: true });
+  assert.deepEqual(await updateConsent({ cloudSave: true, productAnalytics: true }), { skipped: true });
+  assert.deepEqual(await deleteCloudData({ cloudSave: true, productAnalytics: true }), { skipped: true });
 });
 
 test("anonymous events reject personal and chart data", () => {

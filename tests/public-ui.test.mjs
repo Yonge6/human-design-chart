@@ -36,15 +36,26 @@ test("new defaults preserve explicit settings and destructive actions use in-app
 test("insecure runtimes expose local-only mode and bypass every backend operation", () => {
   const html = read("index.html");
   const app = read("app.js");
+  const availability = read("src/app/release-feature-availability.js");
 
   assert.match(html, /id="localModeNotice"[^>]*role="status"/);
-  assert.match(app, /const remoteServicesAllowed = canUseRemoteServices\(/);
+  assert.match(app, /const remoteRuntimeAllowed = canUseRemoteServices\(/);
+  assert.match(app, /const releaseFeatures = getReleaseFeatureAvailability\(/);
+  assert.match(app, /const remoteServicesAllowed = releaseFeatures\.remoteOperationsAllowed/);
   assert.match(app, /function currentConsent\(\) \{\s*return effectiveRemoteConsent/);
   assert.match(app, /function trackEvent[\s\S]{0,150}if \(!remoteServicesAllowed\) return/);
   assert.match(app, /if \(remoteServicesAllowed\) \{\s*saveChartToCloud/);
+  assert.match(app, /cloudSaveSetting\.hidden = !releaseFeatures\.remoteSettingsVisible/);
+  assert.match(app, /productAnalyticsSetting\.hidden = !releaseFeatures\.remoteSettingsVisible/);
+  assert.match(app, /deleteCloudDataButton\.hidden = !releaseFeatures\.remoteSettingsVisible/);
   assert.match(app, /cloudSaveInput\.disabled = !remoteServicesAllowed/);
   assert.match(app, /productAnalyticsInput\.disabled = !remoteServicesAllowed/);
   assert.match(app, /deleteCloudDataButton\.disabled = !remoteServicesAllowed/);
+  assert.match(availability, /isNativeRuntime && !hasSupabaseConfig/);
+  assert.match(availability, /remoteOperationsAllowed: remoteRuntimeAllowed && remoteSettingsVisible/);
+  assert.match(html, /id="cloudSaveSetting"[^>]*data-remote-setting/);
+  assert.match(html, /id="productAnalyticsSetting"[^>]*data-remote-setting/);
+  assert.match(html, /id="deleteCloudData"[^>]*data-remote-setting/);
 });
 
 test("birth selectors start empty and use shared validation", () => {

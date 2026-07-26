@@ -80,9 +80,12 @@ Cloud Save, anonymous product analytics, and Delete Cloud Data depend on a
 production backend that is not deployed for this release candidate.
 **Unavailable remote features are removed from the release candidate UI.**
 They must not appear as available features in App Store descriptions,
-screenshots, or Review Notes. Local history never uploads data. Implementing
-that release-candidate UI gate is a separate Phase 6B product change and
-remains required before submission.
+screenshots, or Review Notes. Local history never uploads data. Phase 6B
+implements this as a runtime capability gate: a Capacitor native build without
+complete Supabase configuration hides and disables all three controls, masks
+effective remote consent, and blocks remote operations without deleting saved
+preferences. Unit and browser tests cover the unavailable and future-configured
+states.
 
 ## Permissions
 
@@ -186,8 +189,9 @@ Additional release gates:
 - Produce a signed Release archive with the distribution identity and
   provisioning profile intended for App Store distribution.
 - Inspect the final archive's privacy manifests and SDK signatures in Xcode.
-- Remove Cloud Save, anonymous analytics, and Delete Cloud Data from the
-  release-candidate UI while their production services remain unavailable.
+- Reconfirm in the final distribution-signed archive that Cloud Save, anonymous
+  analytics, and Delete Cloud Data remain hidden and disabled while production
+  Supabase configuration is absent.
 - Resolve the Photon/ArcGIS retention evidence and final App Privacy
   classification.
 - Remediate or explicitly accept the three npm audit findings through a

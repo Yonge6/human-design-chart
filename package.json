@@ -30,6 +30,6 @@
     "@capacitor/cli": "^8.0.0",
     "@playwright/test": "^1.55.1",
     "@supabase/supabase-js": "2.57.4",
-    "ajv": "^8.18.0"
+    "ajv": "^8.20.0"
   }
 }

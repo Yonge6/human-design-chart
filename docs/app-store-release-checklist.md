@@ -15,7 +15,8 @@ preparation does not authorize TestFlight upload or App Review submission.
 ## Build and Archive
 
 - [ ] `npm ci` completes from the committed lockfile.
-- [ ] `npm audit` reports zero known vulnerabilities.
+- [x] `npm audit` reports zero known vulnerabilities after the reviewed Phase
+  6C development-dependency remediation.
 - [ ] `npm run build` succeeds.
 - [ ] `npx cap sync ios` succeeds.
 - [ ] Xcode and the selected iOS SDK versions are recorded.

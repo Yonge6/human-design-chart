@@ -17,6 +17,15 @@ preparation does not authorize TestFlight upload or App Review submission.
 - [ ] `npm ci` completes from the committed lockfile.
 - [x] `npm audit` reports zero known vulnerabilities after the reviewed Phase
   6C development-dependency remediation.
+- [x] Phase 6D-A read-only signing audit completed without changing Apple
+  account assets.
+- [x] Sensitive signing artifacts and local export outputs are ignored and
+  covered by tracked-file tests.
+- [x] Xcode 26.6 App Store Connect ExportOptions example contains no secrets.
+- [ ] Apple Distribution identity and its private key are installed for the
+  configured team.
+- [ ] An unexpired App Store profile matches
+  `com.yonge6.plutolifemanual`.
 - [ ] `npm run build` succeeds.
 - [ ] `npx cap sync ios` succeeds.
 - [ ] Xcode and the selected iOS SDK versions are recorded.
@@ -27,6 +36,7 @@ preparation does not authorize TestFlight upload or App Review submission.
 - [ ] Deployment target is iOS `15.0`.
 - [ ] Archive opens in Xcode Organizer without structural errors.
 - [ ] Final distribution validation succeeds before upload.
+- [ ] Organizer Validate App is run only after separate authorization.
 
 ## Privacy and SDK Audit
 

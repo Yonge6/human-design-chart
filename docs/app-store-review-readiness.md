@@ -175,6 +175,21 @@ The resulting development-signed `.xcarchive` is suitable for local Organizer
 inspection, but it is not an App Store distribution artifact and has not passed
 Apple's online validation.
 
+## Phase 6D-A Distribution Signing Audit
+
+The read-only audit on `2026-07-26` confirmed one valid Apple Development
+identity for team `L855ZVM679`, but no Apple Distribution identity with its
+private key and no unexpired App Store profile matching
+`com.yonge6.plutolifemanual`. Distribution signing therefore remains
+**BLOCKED**. No Apple certificate, profile, keychain item, or account record was
+created, changed, or revoked.
+
+The repository now includes a read-only diagnostic, a secret-free Xcode 26.6
+ExportOptions example, tracked-file secret checks, and the manual runbook in
+[app-store-distribution-signing.md](app-store-distribution-signing.md).
+The example does not prove that a matching profile exists. Online Organizer
+Validate App and upload were not run.
+
 ## Release Blockers
 
 The following issues remain blockers before TestFlight or App Review:
@@ -191,9 +206,12 @@ The following issues remain blockers before TestFlight or App Review:
 
 Additional release gates:
 
-- Produce a signed Release archive with the distribution identity and
-  provisioning profile intended for App Store distribution.
+- Install an authorized Apple Distribution identity with its private key and
+  an unexpired App Store profile for the exact Bundle ID, then produce a signed
+  Release archive with those assets.
 - Inspect the final archive's privacy manifests and SDK signatures in Xcode.
+- Generate and review the Organizer Privacy Report from the final
+  distribution-signed archive.
 - Reconfirm in the final distribution-signed archive that Cloud Save, anonymous
   analytics, and Delete Cloud Data remain hidden and disabled while production
   Supabase configuration is absent.

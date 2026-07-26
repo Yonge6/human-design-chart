@@ -174,7 +174,7 @@ test("privacy copy matches the device-only defaults in both languages", () => {
   assert.match(app, /默认开启，仅保存在本设备/);
   assert.match(app, /Hide name, date, time, and location in generated images\. Off by default\./);
   assert.match(app, /On by default and stored only on this device\./);
-  assert.match(privacy, /Effective date: 2026-07-20/);
+  assert.match(privacy, /Effective date: 2026-07-26/);
   assert.match(privacy, /本地历史开启不会导致任何云端上传/);
   assert.match(privacy, /Enabling local history never uploads data to the cloud/);
   assert.match(dataMap, /Local history[^\n]+Default on, device only[^\n]+Never unless separate cloud consent/);

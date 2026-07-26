@@ -1,15 +1,42 @@
-# BodyGraph original redesign plan
+# BodyGraph provenance and originality plan
 
-The current BodyGraph template is a transitional implementation and has a separate visual-origin risk. This repository does not claim that AGPL resolves visual copyright, that the current SVG is cleared for commercial use, or that third-party permission has been obtained.
+The current template's rendering code is part of this project, but whether the
+SVG itself is independently original depends on how its visual geometry was
+formed. The repository must use the evidence in
+[bodygraph-provenance-audit.md](bodygraph-provenance-audit.md) before making a
+release-rights claim.
 
-The functional structure may remain: nine centers, 64 gates, channel relationships, dual Personality/Design tracks, and defined/undefined state. The final replacement should independently redesign:
+The current classification is `DERIVED_OR_UNCLEAR`. Repository history records
+a third-party visual reference, while the exact source, applicable permission,
+and independent-creation evidence for the current SVG remain incomplete. This
+classification does not itself establish infringement.
 
-- center geometry, corner language, proportions, and spacing
-- channel routing, widths, junctions, and activation treatment
-- gate nodes, numbers, typography, labels, and information hierarchy
-- body silhouette, composition, palette, and accessibility contrast
-- desktop, mobile, poster, and monochrome variants
+Supplemental owner evidence, applicable authorization, or an independently
+designed replacement is required before release. Redesign is one conditional
+path, not a fixed conclusion that this audit authorizes now.
 
-Do not trace or copy third-party SVG paths. Keep dated sketches, source design files, geometry rationale, authorship records, and export history. Review similarity at component and whole-composition levels. Maintain fixture-based rendering tests so the original geometry replacement cannot change calculation results.
+The following subjects remain distinct:
 
-The template is injected into `src/renderer/bodygraph-renderer.js`; the core engine and API do not know its SVG paths. This isolation allows a future original design to replace the asset without modifying astronomy or Human Design calculations.
+- Human Design data and functional relationships;
+- the SVG's center geometry, coordinates, channel routing, body outline,
+  typography, colors, and composition;
+- the renderer that injects and colors the SVG; and
+- the astronomy and chart-calculation algorithms.
+
+If the audit result remains `DERIVED_OR_UNCLEAR`, a replacement should
+independently redesign:
+
+- center geometry, corner language, proportions, and spacing;
+- channel routing, widths, junctions, and activation treatment;
+- gate nodes, numbers, typography, labels, and information hierarchy;
+- body silhouette, composition, palette, and accessibility contrast; and
+- desktop, mobile, poster, and monochrome variants.
+
+Do not trace or copy third-party SVG paths. Keep dated sketches, source design
+files, geometry rationale, authorship records, and export history. Review
+similarity at component and whole-composition levels.
+
+The template is injected by `src/renderer/bodygraph-renderer.js`; the core
+engine and API do not know its SVG paths. Any authorized visual replacement
+must retain fixture-based rendering tests and must not change astronomy, Human
+Design calculations, or chart results.

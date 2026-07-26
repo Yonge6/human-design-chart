@@ -37,6 +37,11 @@ The repository uses the Swiss Ephemeris AGPL licensing option. Astrodienst also 
 - Package: `html2canvas` 1.4.1
 - License: MIT; full text in `vendor/html2canvas/LICENSE`
 
-## BodyGraph transitional visual reference
+## BodyGraph provenance
 
-The current BodyGraph template is transitional and has a separate visual-origin risk. AGPL licensing of this repository does not establish permission to reuse third-party visual expression. The project does not claim that the current SVG is cleared for commercial use. See `docs/bodygraph-original-redesign-plan.md`.
+Repository history states that the current visual lineage was captured from a
+publicly loaded My Human Design result-page SVG for fidelity research. No exact
+source URL, BodyGraph visual license, or authorization file was found in the
+repository. The current evidence classification is `DERIVED_OR_UNCLEAR`; this
+is not a finding of infringement. See
+`docs/bodygraph-provenance-audit.md`.

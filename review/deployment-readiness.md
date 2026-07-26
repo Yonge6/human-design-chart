@@ -18,6 +18,9 @@
 5. Define retention/deletion operations for product events and deletion receipts.
 6. Preserve build provenance and artifact digests for every deployment/tag.
 7. Complete qualified legal review of Swiss Ephemeris/AGPL obligations and the open/proprietary service boundary.
-8. Replace or independently clear the transitional BodyGraph visual before claiming commercial visual rights.
+8. Resolve the BodyGraph `DERIVED_OR_UNCLEAR` provenance classification through
+   supplemental owner/source evidence, applicable authorization, or an
+   independently designed replacement before making a commercial visual-rights
+   claim.
 
 No production secret, database content, log or backup is included in this review bundle. The generated format patch covers source changes through `967c3b2`; the later review-artifact commit is intentionally not self-embedded in that patch.

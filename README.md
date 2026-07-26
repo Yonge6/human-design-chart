@@ -118,7 +118,12 @@ Merging to `main` does not authorize a production release. GitHub Pages is publi
 - The Node API is a deployable foundation, but no production API host is provisioned by this repository change.
 - The rate limiter is in-memory and should be replaced or supplemented at the production gateway for multi-instance deployments.
 - Supabase deployment requires a project, anonymous auth, migrations, function secrets, and explicit CORS configuration.
-- The current BodyGraph template is transitional and has an unresolved visual-origin risk. AGPL licensing does not itself resolve that risk. See [the original redesign plan](docs/bodygraph-original-redesign-plan.md).
+- The current BodyGraph visual provenance is classified `DERIVED_OR_UNCLEAR`.
+  Repository history identifies a third-party visual reference, while exact
+  source, authorization, and independent-creation evidence remain incomplete.
+  This does not itself establish infringement. See the
+  [provenance audit](docs/bodygraph-provenance-audit.md) and conditional
+  [provenance and originality plan](docs/bodygraph-original-redesign-plan.md).
 - Human Design is used here for personal reflection and entertainment. It is not established scientific, medical, psychological, legal, or financial advice.
 - This project is independent and is not affiliated with Human Design official organizations or My Human Design.
 

@@ -75,6 +75,19 @@ Results use three levels:
 The current expected result is `BLOCKED` until both the Apple Distribution
 identity and exact App Store profile are naturally installed.
 
+## Relationship to BodyGraph Provenance
+
+Signing readiness does not establish that visual-rights review is complete.
+The current BodyGraph audit classification is `DERIVED_OR_UNCLEAR`; it records
+an unresolved evidence status, not a finding of infringement or a fixed
+requirement to redesign.
+
+BodyGraph release evidence must be resolved separately through supplemental
+owner/source evidence, applicable authorization, or an independently designed
+replacement. Conversely, resolving BodyGraph provenance would not provide the
+missing Apple Distribution identity or matching App Store profile. See
+[bodygraph-provenance-audit.md](bodygraph-provenance-audit.md).
+
 ## ExportOptions Example
 
 [`ios/ExportOptions-AppStoreConnect.plist.example`](../ios/ExportOptions-AppStoreConnect.plist.example)

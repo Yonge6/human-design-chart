@@ -198,11 +198,16 @@ The following issues remain blockers before TestFlight or App Review:
    necessary, Astrodienst whether this App Store distribution will use the
    AGPL option or requires a Professional License. No license purchase or final
    legal conclusion is represented by this repository.
-2. **BodyGraph visual rights.** Replace the transitional visual template with
-   an original design supported by source files and an authorship record, or
-   obtain and retain sufficient authorization evidence. The existing risk is
-   documented in
-   [bodygraph-original-redesign-plan.md](bodygraph-original-redesign-plan.md).
+2. **BodyGraph provenance classification.** The current audit classification
+   is `DERIVED_OR_UNCLEAR`. Repository history identifies a third-party visual
+   reference, but the exact source, applicable permission, and independent
+   creation evidence for the current SVG remain incomplete. This is an
+   evidence gap, not a finding of infringement. Before release, resolve it by
+   supplementing owner/source evidence, retaining applicable authorization, or
+   independently redesigning the visual. See
+   [bodygraph-provenance-audit.md](bodygraph-provenance-audit.md) and the
+   conditional
+   [bodygraph-provenance and originality plan](bodygraph-original-redesign-plan.md).
 
 Additional release gates:
 

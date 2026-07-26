@@ -19,7 +19,11 @@ Optional open-source backend
 
 The calculation and snapshot modules contain no DOM access. The API and browser import the same engine and snapshot builder. `api/node-file-fetch.mjs` only adapts local WASM/ephemeris asset loading to Node; it does not implement a second algorithm or a fallback.
 
-Rendering is independent from astronomy: `src/renderer/bodygraph-renderer.js` paints an injected SVG template from engine results, while `src/renderer/poster-renderer.js` captures the page-owned export element. Replacing the transitional SVG does not change the engine or API.
+Rendering is independent from astronomy: `src/renderer/bodygraph-renderer.js`
+paints an injected SVG template from engine results, while
+`src/renderer/poster-renderer.js` captures the page-owned export element.
+Changing the visual asset after its provenance gate is resolved does not change
+the engine or API.
 
 Sharing, local storage, runtime configuration, and cloud calls are independent services. Cloud settings are optional. If backend or API configuration is absent or unavailable, browser calculation and exports continue locally.
 

@@ -200,15 +200,18 @@ Privacy answers without that evidence and the exact final binary.
 ## Content Rights Draft
 
 The app contains developer-authored code and content, open-source components,
-Swiss Ephemeris, Human Design terminology, and a transitional BodyGraph visual
-template.
+Swiss Ephemeris, Human Design terminology, and a BodyGraph visual currently
+classified `DERIVED_OR_UNCLEAR` by the repository provenance audit. That
+classification records unresolved evidence and is not a finding of
+infringement.
 
 Do not submit a final content-rights declaration until:
 
 1. The Swiss Ephemeris AGPL / Professional License distribution choice has been
    reviewed and documented.
-2. The BodyGraph visual has documented original source and authorship or
-   sufficient authorization evidence.
+2. The BodyGraph gate is resolved through reliable owner/source and independent
+   creation evidence, applicable authorization, or an independently designed
+   replacement.
 3. Relevant Human Design terminology and branding have been reviewed for the
    intended storefronts.
 

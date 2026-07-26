@@ -7,8 +7,15 @@ preparation does not authorize TestFlight upload or App Review submission.
 
 - [ ] Swiss Ephemeris AGPL / Professional License distribution choice reviewed
   by qualified counsel or confirmed with the relevant rights holder.
-- [ ] BodyGraph visual template replaced with documented original work or
-  supported by retained authorization evidence.
+- [x] BodyGraph provenance audit completed.
+- [x] Current SVG SHA-256 recorded.
+- [x] First known Git history recorded.
+- [x] Third-party source and license evidence reviewed.
+- [ ] Owner authorship and source evidence completed.
+- [ ] BodyGraph release classification resolved. Current evidence status:
+  `DERIVED_OR_UNCLEAR`.
+- [ ] BodyGraph release path completed through supplemental owner/source
+  evidence, applicable authorization, or an independently designed replacement.
 - [ ] Human Design names and terminology reviewed for the intended storefronts.
 - [ ] Content-rights answers match the evidence retained by the developer.
 

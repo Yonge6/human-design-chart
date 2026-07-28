@@ -5,7 +5,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test tests/*.test.mjs",
+    "test": "node --test tests/*.test.mjs && npm run test:bodygraph-assets",
     "test:api": "node --test tests/api.test.mjs",
     "test:schema": "node --test tests/schema.test.mjs",
     "test:privacy": "node --test tests/privacy.test.mjs",
@@ -13,6 +13,7 @@
     "test:e2e": "playwright test",
     "test:pages": "node scripts/test-pages-deployment.mjs",
     "test:supabase": "node scripts/run-supabase-tests.mjs",
+    "test:bodygraph-assets": "npm run build && npx cap sync ios && node scripts/test-bodygraph-release-assets.mjs",
     "generate:bodygraph": "node scripts/generate-original-bodygraph.mjs",
     "build": "node scripts/build-web.mjs",
     "build:api": "node scripts/build-api-package.mjs",

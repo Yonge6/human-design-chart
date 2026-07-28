@@ -2,7 +2,7 @@
 
 ## Scope
 
-The current release visual is produced by a new deterministic functional topology, original geometry module, and SVG generator. The generated SVG is a rendering asset for calculated chart state; it is not a calculation source.
+The visual proposed by Draft PR #16 is produced by a new deterministic functional topology, original geometry module, and SVG generator. The generated SVG is a rendering asset for calculated chart state; it is not a calculation source.
 
 ## Development lineage
 
@@ -32,6 +32,16 @@ Repeated generation is byte-for-byte identical. The generator and its geometry i
 The A1 and A2 implementation tasks did not read a prior SVG, prior screenshots, historical blobs, historical visual diffs, or a third-party BodyGraph. This isolated A3 verification task also did not read those materials and removed two legacy visual test paths before running tests, without opening their contents.
 
 The implementation and verification use the current brand CSS and page footprint, functional topology, rendering state semantics, the A1 high-level specification, and the newly generated visual itself. This record is development-process and source evidence. It is not an absolute legal guarantee, is not legal advice, and does not claim Apple approval.
+
+The A1, A2, and A3 clean-room development record is unchanged by B2. B2 is a pre-merge governance, documentation, authoritative-topology, and release-asset verification task. It does not modify the proposed visual's SVG, geometry, paths, coordinates, colors, layout, functional topology, generator, renderer, or product integration.
+
+## Release status
+
+The proposed release-candidate visual exists only in Draft PR #16. It has not been merged or deployed, and production does not use it. Production remains version `1.1.0` at commit `63b0beff7202885f6a1a42c64fc3e8aa7de6a8a1`.
+
+Independent engineering review classified the PR `PASS_WITH_REQUIRED_CHANGES`. It found no exact reused paths, center anchors, same-number Gate coordinates, prior human silhouette, or mechanically reused routing, and it found no reason to redo the new geometry. The required changes concern release-state wording, governance tests, authoritative topology comparison, and release-asset automation.
+
+The historical asset's `DERIVED_OR_UNCLEAR` evidence classification remains in the repository provenance audit and does not automatically transfer to the proposed visual. The visual may enter a release only after PR #16 is merged at the exact reviewed head and a separate release is authorized. The final post-merge distribution archive must again confirm exclusion of the historical asset, and final content-rights answers must be reviewed. Independent engineering review is not legal advice and does not claim Apple approval.
 
 ## Functional separation
 

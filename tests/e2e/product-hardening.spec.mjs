@@ -539,7 +539,7 @@ test("fingerprinted production bundle loads every calculation asset without modu
     "/app.js",
     "/runtime-config.js",
     "/build-provenance.js",
-    "/assets/bodygraph-template.svg",
+    "/assets/bodygraph-original-template.svg",
     "/vendor/swisseph/swisseph.wasm",
     "/vendor/swisseph/ephe/sepl_18.se1",
     "/vendor/swisseph/ephe/semo_18.se1",

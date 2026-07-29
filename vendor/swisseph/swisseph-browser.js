@@ -780,14 +780,16 @@ var _SwissEphemeris = class _SwissEphemeris {
       m.FS.mkdir("/ephemeris");
     } catch (e) {
     }
-    for (const file of files) {
+    const downloads = await Promise.all(files.map(async (file) => {
       const response = await fetch(file.url);
       if (!response.ok) {
         throw new Error(`Failed to download ${file.name}: ${response.statusText}`);
       }
       const arrayBuffer = await response.arrayBuffer();
-      const data = new Uint8Array(arrayBuffer);
-      m.FS.writeFile(`/ephemeris/${file.name}`, data);
+      return { name: file.name, data: new Uint8Array(arrayBuffer) };
+    }));
+    for (const { name, data } of downloads) {
+      m.FS.writeFile(`/ephemeris/${name}`, data);
     }
     this.setEphemerisPath("/ephemeris");
   }

@@ -121,6 +121,14 @@ test("poster media uses nonblocking dark loading placeholders", () => {
   assert.match(css, /prefers-reduced-motion: reduce/);
 });
 
+test("Swiss Ephemeris files download in parallel before entering the WASM filesystem", () => {
+  const swisseph = read("vendor/swisseph/swisseph-browser.js");
+
+  assert.match(swisseph, /const downloads = await Promise\.all\(files\.map\(async \(file\) =>/);
+  assert.match(swisseph, /for \(const \{ name, data \} of downloads\)/);
+  assert.doesNotMatch(swisseph, /for \(const file of files\) \{\s*const response = await fetch\(file\.url\)/);
+});
+
 test("result has an accessible summary and social discovery metadata", () => {
   const html = read("index.html");
   const app = read("app.js");

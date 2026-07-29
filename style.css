@@ -225,7 +225,7 @@ body {
   background: #0d0b12;
   box-shadow: 0 24px 72px rgba(0, 0, 0, .42);
 }
-.preview-stage { position: relative; }
+.preview-stage { position: relative; overflow: visible; }
 .detail-fab {
   position: absolute;
   z-index: 5;

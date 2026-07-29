@@ -208,6 +208,44 @@ test("mobile form and settings dialog scroll naturally", async ({ page }) => {
   expect(await dialog.evaluate((element) => element.scrollTop > 0)).toBe(true);
 });
 
+test("detailed reading stays visible, scrollable, and closable on release widths", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 667 });
+  await page.goto("/");
+  await page.locator('[data-language="zh"]').click();
+  await fillAndGenerate(page);
+
+  const detailButton = page.locator("#detailReading");
+  await expect(detailButton).toBeVisible();
+  await expect(detailButton).toContainText("详细解读");
+
+  for (const width of [390, 422]) {
+    await page.setViewportSize({ width, height: 667 });
+    const bounds = await detailButton.boundingBox();
+    expect(bounds).not.toBeNull();
+    expect(bounds.x).toBeGreaterThanOrEqual(0);
+    expect(bounds.x + bounds.width).toBeLessThanOrEqual(width);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  }
+
+  await detailButton.click();
+  const detailDialog = page.locator("#detailDialog");
+  const detailContent = page.locator("#detailContent");
+  await expect(detailDialog).toBeVisible();
+  expect(await detailContent.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(true);
+  await detailContent.evaluate((element) => { element.scrollTop = element.scrollHeight; });
+  expect(await detailContent.evaluate((element) => element.scrollTop > 0)).toBe(true);
+  await page.locator("#closeDetail").click();
+  await expect(detailDialog).not.toBeVisible();
+
+  await page.locator('[data-language="en"]').click();
+  await expect(detailButton).toContainText("Detailed Reading");
+  await detailButton.click();
+  await expect(detailDialog).toBeVisible();
+  expect(await detailContent.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(true);
+  await page.locator("#closeDetail").click();
+  await expect(detailDialog).not.toBeVisible();
+});
+
 test("an explicit disabled history setting is not overwritten by retained records", async ({ page }) => {
   await page.addInitScript(({ settingsKey: key, historyKey: history, entry }) => {
     localStorage.setItem(key, JSON.stringify({ privacyByDefault: true, keepHistory: false, cloudSave: true, productAnalytics: true }));
@@ -323,7 +361,7 @@ test("insecure HTTP mode disables all remote behavior while local generation suc
   expect(consoleErrors).toEqual([]);
 });
 
-test("localhost secure context restores saved remote preferences", async ({ page }) => {
+test("localhost secure context restores saved remote preferences", async ({ page }, testInfo) => {
   const pageErrors = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
   await page.addInitScript((key) => {
@@ -335,7 +373,9 @@ test("localhost secure context restores saved remote preferences", async ({ page
     }));
   }, settingsKey);
 
-  await page.goto("http://127.0.0.1:8789/");
+  const localhostUrl = new URL(testInfo.project.use.baseURL);
+  localhostUrl.hostname = "127.0.0.1";
+  await page.goto(localhostUrl.href);
   expect(await page.evaluate(() => globalThis.isSecureContext)).toBe(true);
   await expect(page.locator("#localModeNotice")).toBeHidden();
   await page.locator("#openSettings").click();

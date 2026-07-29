@@ -1,5 +1,7 @@
 import { defineConfig } from "@playwright/test";
 
+const e2ePort = Number(process.env.PLUTO_E2E_PORT || 8790);
+
 export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 60_000,
@@ -8,7 +10,7 @@ export default defineConfig({
   workers: 1,
   reporter: process.env.CI ? "github" : "line",
   use: {
-    baseURL: "http://pluto.test:8789",
+    baseURL: `http://pluto.test:${e2ePort}`,
     browserName: "chromium",
     launchOptions: {
       args: [
@@ -20,8 +22,8 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   webServer: {
-    command: "node scripts/serve-dist.mjs",
-    url: "http://127.0.0.1:8789",
+    command: `PORT=${e2ePort} node scripts/serve-dist.mjs`,
+    url: `http://127.0.0.1:${e2ePort}`,
     reuseExistingServer: false,
     timeout: 20_000,
   },

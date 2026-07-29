@@ -100,6 +100,27 @@ test("mobile form remains vertically scrollable", () => {
   assert.match(css, /\.settings-dialog \{ overflow-y: auto; \}/);
 });
 
+test("poster media uses nonblocking dark loading placeholders", () => {
+  const html = read("index.html");
+  const app = read("app.js");
+  const css = read("style.css");
+
+  const homepagePoster = html.match(/<figure class="homepage-poster"[\s\S]*?<\/figure>/)?.[0] || "";
+  assert.match(homepagePoster, /data-media-state="loading"/);
+  assert.match(homepagePoster, /class="media-loading-placeholder"/);
+  assert.match(homepagePoster, /fetchpriority="low"/);
+  assert.doesNotMatch(homepagePoster, /\ssrc=/);
+  assert.match(app, /engineWarmupPromise\.finally\(observePoster\)/);
+  assert.match(app, /window\.addEventListener\("load", observeAfterEngineWarmup, \{ once: true \}\)/);
+  assert.match(app, /new IntersectionObserver/);
+  assert.match(app, /requestIdleCallback/);
+  assert.match(app, /function clearPoster\(\)[\s\S]{0,500}setMediaState\(previewStage, "loading"\)/);
+  assert.match(app, /setMediaState\(previewStage, "ready"\)/);
+  assert.match(css, /\.media-loading-placeholder/);
+  assert.match(css, /@keyframes pluto-placeholder-shimmer/);
+  assert.match(css, /prefers-reduced-motion: reduce/);
+});
+
 test("result has an accessible summary and social discovery metadata", () => {
   const html = read("index.html");
   const app = read("app.js");

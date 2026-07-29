@@ -35,12 +35,12 @@ The overall expression should be warm, soft, refined, and alive: closer to a qui
 
 Use a new SVG coordinate system:
 
-- `viewBox="0 0 360 696"`.
-- Safe margin: 20 units on the left and right, 22 units on the top, 26 units on the bottom.
-- Primary axis: `x = 180`, from `y = 46` to `y = 636`.
+- `viewBox="0 0 360 620"`.
+- Safe margin: 14 units on the left and right, 12 units on the top, 18 units on the bottom.
+- Primary axis: `x = 180`, from `y = 42` to `y = 563`.
 - Minimum on-screen mobile display width: 240 CSS px for the graph itself. Below that, gate labels may switch from full circular badges to compact number chips, but the numbers must remain readable.
 - Desktop display width: cap the graph at 408 CSS px inside the existing BodyGraph container footprint.
-- Poster output: preserve a narrow vertical graph area inside a 600 px wide mobile export panel; the graph should occupy 230-260 px of visual width so the side activation columns and property rows remain balanced.
+- Poster output: preserve a narrow vertical graph area inside a 600 px wide mobile export panel; the graph should occupy 280-300 px of visual width so the center network remains legible beside the activation columns.
 - Chinese and English label safe zones: reserve 10 units outside the left and right graph envelope for optional short labels; long labels belong outside the SVG or in aria text, not inside center shapes.
 - Black-and-white print: preserve center state through stroke weight, fill pattern, and notch treatment; preserve activation source through lane position and dash pattern, not color alone.
 
@@ -48,19 +48,19 @@ The current page may keep its external BodyGraph container ratio and max width. 
 
 ## 5. Center layout algorithm
 
-The layout is deterministic. Let `W = 360`, `H = 696`, `cx = W / 2`, `top = 54`, `bottom = 626`, and `span = bottom - top`. Define nine center anchors from normalized positions rather than copied coordinates:
+The layout is deterministic. Let `W = 360`, `H = 620`, `cx = W / 2`, `top = 42`, `bottom = 563`, and `span = bottom - top`. Define nine center anchors from normalized positions rather than copied coordinates:
 
-| Center | Logical layer | Anchor formula | Anchor in 360 x 696 |
+| Center | Logical layer | Anchor formula | Anchor in 360 x 620 |
 | --- | --- | --- | --- |
-| head | crown | `(cx, top)` | `(180, 54)` |
-| ajna | upper mind | `(cx, top + span * 0.12)` | `(180, 123)` |
-| throat | expression | `(cx, top + span * 0.265)` | `(180, 206)` |
-| g | identity axis | `(cx, top + span * 0.405)` | `(180, 286)` |
-| heart | will side node | `(cx + 62, top + span * 0.43)` | `(242, 300)` |
-| spleen | instinct side node | `(cx - 68, top + span * 0.555)` | `(112, 371)` |
-| solar plexus | emotion side node | `(cx + 70, top + span * 0.575)` | `(250, 383)` |
-| sacral | life-force base | `(cx, top + span * 0.68)` | `(180, 443)` |
-| root | pressure base | `(cx, bottom)` | `(180, 626)` |
+| head | crown | `(cx, top)` | `(180, 42)` |
+| ajna | upper mind | `(cx, top + span * 0.155)` | `(180, 123)` |
+| throat | expression | `(cx, top + span * 0.33)` | `(180, 214)` |
+| g | identity axis | `(cx, top + span * 0.541)` | `(180, 324)` |
+| heart | will side node | `(cx + 87, top + span * 0.524)` | `(267, 315)` |
+| spleen | instinct side node | `(cx - 96, top + span * 0.701)` | `(84, 407)` |
+| solar plexus | emotion side node | `(cx + 96, top + span * 0.701)` | `(276, 407)` |
+| sacral | life-force base | `(cx, top + span * 0.781)` | `(180, 449)` |
+| root | pressure base | `(cx, bottom)` | `(180, 563)` |
 
 The center system uses three columns:
 
@@ -85,15 +85,15 @@ Recommended base dimensions:
 
 | Center | Width | Height | Vertex count | Shape note |
 | --- | ---: | ---: | ---: | --- |
-| head | 66 | 44 | 8 | upward medallion with a shallow crown notch |
-| ajna | 76 | 48 | 8 | calm horizontal medallion |
-| throat | 88 | 58 | 10 | broad expression medallion |
-| g | 76 | 76 | 12 | rounded compass medallion |
-| heart | 56 | 44 | 8 | compact angled will medallion |
-| spleen | 62 | 96 | 10 | slim protective medallion |
-| solar plexus | 66 | 104 | 10 | soft vertical emotional medallion |
-| sacral | 86 | 68 | 10 | grounded life-force medallion |
-| root | 90 | 58 | 10 | stable base medallion |
+| head | 86 | 50 | 10 | upward medallion with a shallow crown notch |
+| ajna | 98 | 58 | 10 | calm horizontal medallion |
+| throat | 116 | 68 | 12 | broad expression medallion |
+| g | 100 | 94 | 14 | rounded compass medallion |
+| heart | 72 | 54 | 10 | compact angled will medallion |
+| spleen | 82 | 112 | 12 | protective vertical medallion |
+| solar plexus | 84 | 116 | 12 | soft vertical emotional medallion |
+| sacral | 108 | 80 | 12 | grounded life-force medallion |
+| root | 112 | 66 | 12 | stable base medallion |
 
 Defined state:
 
@@ -140,10 +140,10 @@ For each center:
 2. Compute the direction vector from the owning center anchor to the paired center anchor.
 3. Assign the gate to one of eight edge sectors: top, top-right, right, bottom-right, bottom, bottom-left, left, top-left.
 4. Within each sector, sort gates by paired center layer from top to bottom, then by ascending gate number.
-5. Allocate deterministic slots along the sector edge. The first slot is centered on the edge midpoint; additional slots fan outward with at least 13 units between gate badge centers.
-6. If two gates would be closer than 13 units, push the lower-priority gate outward along the local tangent by 4-unit increments until spacing is clear.
-7. Gate badge diameter is 12 units at the SVG level, with a minimum rendered diameter of 8 CSS px. Gate number text is 6.2-7.2 SVG units and must not render below 7 CSS px in mobile export.
-8. Gate badges sit just outside the center outline by 5 units. Connection endpoints use the badge center; visual strokes stop at the badge's outer tangent.
+5. Allocate deterministic slots along the sector edge. The first slot is centered on the edge midpoint; additional slots fan outward with at least 11.5 units between gate badge centers.
+6. If two gates would be closer than 11.5 units, move the lower-priority gate to the next free perimeter slot until spacing is clear.
+7. Gate badge diameter is 11.2 units at the SVG level, with a minimum rendered diameter of 8 CSS px. Gate number text is 6.2-7.2 SVG units and must not render below 7 CSS px in mobile export.
+8. Gate badges overlap the visual edge by sitting only 3.5 units beyond the generated center perimeter. This binds the number to its center while leaving its channel tangent clear.
 
 The same algorithm can regenerate all gate positions from topology and center anchors without reading any prior coordinate source.
 
@@ -154,18 +154,18 @@ Channels are generated from the new gate coordinates:
 1. Compute `p1` and `p2` from the two gate badge centers.
 2. Let `v = normalize(p2 - p1)` and `n = perpendicular(v)`.
 3. Choose a route type:
-   - Near-vertical central links use cubic Bezier curves with control points at 35% and 65% of the segment.
-   - Side-to-center links use cubic Bezier curves that bow 10-18 units away from the central axis before returning to the target.
-   - Lower root and sacral links use shallow S-curves to keep labels clear.
-4. Control point distance is `min(72, max(28, segmentLength * 0.32))`.
-5. If a route crosses a center bounding box, insert a dogleg waypoint around the nearest box edge with 10 units of clearance.
-6. If two route envelopes overlap closer than 5 units for more than 36 units of length, assign deterministic lane offsets by sorting channel pairs lexicographically and offsetting by `[-6, 0, 6]` as needed.
+   - Near-vertical central links use a direct cubic corridor.
+   - Side-to-center links use the same direct corridor with a restrained sibling offset.
+   - Root and sacral links follow the direct corridor instead of decorative S-curves.
+4. Control point distance is `min(52, max(16, segmentLength * 0.34))`.
+5. If a route crosses another center bounding box, offset both control points toward the nearest clear side with 8 units of clearance.
+6. Channels sharing a center pair are sorted by channel ID and offset in 4.5-unit increments around the pair's centerline.
 
 Activation lanes:
 
-- The base structural channel is a quiet 1.2-unit line at 24-32% opacity.
-- Personality activation is a parallel lane offset `-3.2` units from the route centerline.
-- Design activation is a parallel lane offset `+3.2` units from the route centerline.
+- The base structural channel is a quiet 1-unit line at 18% opacity.
+- Personality activation is a parallel lane offset `-2.8` units from the route centerline.
+- Design activation is a parallel lane offset `+2.8` units from the route centerline.
 - A channel active on both sides shows both lanes, plus a short brass clasp at each gate badge.
 - If only one gate is active, show a half-channel from the active gate to 48% of the route length, fading before the midpoint.
 - If neither gate is active, keep only the low-opacity structure line.

@@ -22,7 +22,7 @@ const runFile = promisify(execFile);
 const projectRoot = new URL("../", import.meta.url);
 const svgUrl = new URL("../assets/bodygraph-original-template.svg", import.meta.url);
 const generatorUrl = new URL("../scripts/generate-original-bodygraph.mjs", import.meta.url);
-const expectedSvgSha = "c89584a9e64032c87efa0086bf2bc014cc34921301c938c4bb056476dd494983";
+const expectedSvgSha = "1f937e8271853ec10af01c6d5d7ad959c637f32da1da4e8de475129c32a74c68";
 
 const sha256 = (value) => createHash("sha256").update(value).digest("hex");
 
@@ -171,10 +171,10 @@ test("functional topology and original geometry are complete and renderer-compat
   const geometry = createOriginalBodygraphGeometry();
   assert.deepEqual(BODYGRAPH_VIEWBOX, {
     width: 360,
-    height: 696,
-    safeMarginX: 20,
-    safeMarginTop: 22,
-    safeMarginBottom: 26,
+    height: 620,
+    safeMarginX: 14,
+    safeMarginTop: 12,
+    safeMarginBottom: 18,
   });
   assert.equal(geometry.centers.length, 9);
   assert.equal(geometry.gates.length, 64);
@@ -215,7 +215,7 @@ test("generator is deterministic, self-contained, and matches the committed SVG"
 
 test("generated SVG has the complete accessible local-only structure", async () => {
   const svg = await readFile(svgUrl, "utf8");
-  assert.match(svg, /viewBox="0 0 360 696"/);
+  assert.match(svg, /viewBox="0 0 360 620"/);
   assert.match(svg, /role="img"/);
   assert.match(svg, /aria-labelledby="bodygraph-title bodygraph-description"/);
   assert.match(svg, /<title id="bodygraph-title">/);

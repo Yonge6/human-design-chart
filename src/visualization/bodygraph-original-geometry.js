@@ -8,33 +8,33 @@ import {
 
 export const BODYGRAPH_VIEWBOX = Object.freeze({
   width: 360,
-  height: 696,
-  safeMarginX: 20,
-  safeMarginTop: 22,
-  safeMarginBottom: 26,
+  height: 620,
+  safeMarginX: 14,
+  safeMarginTop: 12,
+  safeMarginBottom: 18,
 });
 
 const centerShapeDefinitions = {
-  head: { width: 66, height: 44, vertices: 8, radius: 8, rotation: 0 },
-  ajna: { width: 76, height: 48, vertices: 8, radius: 9, rotation: 0 },
-  throat: { width: 88, height: 58, vertices: 10, radius: 10, rotation: 0 },
-  g: { width: 76, height: 76, vertices: 12, radius: 11, rotation: 0 },
-  heart: { width: 56, height: 44, vertices: 8, radius: 8, rotation: -8 },
-  spleen: { width: 62, height: 96, vertices: 10, radius: 10, rotation: 7 },
-  "solar-plexus": { width: 66, height: 104, vertices: 10, radius: 11, rotation: -6 },
-  sacral: { width: 86, height: 68, vertices: 10, radius: 11, rotation: 0 },
-  root: { width: 90, height: 58, vertices: 10, radius: 10, rotation: 0 },
+  head: { width: 86, height: 50, vertices: 10, radius: 11, rotation: 0 },
+  ajna: { width: 98, height: 58, vertices: 10, radius: 12, rotation: 0 },
+  throat: { width: 116, height: 68, vertices: 12, radius: 14, rotation: 0 },
+  g: { width: 100, height: 94, vertices: 14, radius: 16, rotation: 0 },
+  heart: { width: 72, height: 54, vertices: 10, radius: 12, rotation: -5 },
+  spleen: { width: 82, height: 112, vertices: 12, radius: 15, rotation: 4 },
+  "solar-plexus": { width: 84, height: 116, vertices: 12, radius: 16, rotation: -4 },
+  sacral: { width: 108, height: 80, vertices: 12, radius: 15, rotation: 0 },
+  root: { width: 112, height: 66, vertices: 12, radius: 14, rotation: 0 },
 };
 
 const centerAnchorFormulas = {
   head: ({ cx, top }) => ({ x: cx, y: top }),
-  ajna: ({ cx, top, span }) => ({ x: cx, y: top + span * 0.12 }),
-  throat: ({ cx, top, span }) => ({ x: cx, y: top + span * 0.265 }),
-  g: ({ cx, top, span }) => ({ x: cx, y: top + span * 0.405 }),
-  heart: ({ cx, top, span }) => ({ x: cx + 62, y: top + span * 0.43 }),
-  spleen: ({ cx, top, span }) => ({ x: cx - 68, y: top + span * 0.555 }),
-  "solar-plexus": ({ cx, top, span }) => ({ x: cx + 70, y: top + span * 0.575 }),
-  sacral: ({ cx, top, span }) => ({ x: cx, y: top + span * 0.68 }),
+  ajna: ({ cx, top, span }) => ({ x: cx, y: top + span * 0.155 }),
+  throat: ({ cx, top, span }) => ({ x: cx, y: top + span * 0.33 }),
+  g: ({ cx, top, span }) => ({ x: cx, y: top + span * 0.541 }),
+  heart: ({ cx, top, span }) => ({ x: cx + 87, y: top + span * 0.524 }),
+  spleen: ({ cx, top, span }) => ({ x: cx - 96, y: top + span * 0.701 }),
+  "solar-plexus": ({ cx, top, span }) => ({ x: cx + 96, y: top + span * 0.701 }),
+  sacral: ({ cx, top, span }) => ({ x: cx, y: top + span * 0.781 }),
   root: ({ cx, bottom }) => ({ x: cx, y: bottom }),
 };
 
@@ -61,8 +61,8 @@ function rotatePoint(value, angle) {
 }
 
 export function createCenterAnchors(width = BODYGRAPH_VIEWBOX.width, height = BODYGRAPH_VIEWBOX.height) {
-  const top = height * (54 / 696);
-  const bottom = height * (626 / 696);
+  const top = height * (42 / 620);
+  const bottom = height * (563 / 620);
   const values = {
     cx: width / 2,
     top,
@@ -191,9 +191,9 @@ function chooseAvailableSlot(preferredSlot, slotCount, usedSlots, center, assign
     for (const candidate of candidates) {
       if (usedSlots.has(candidate)) continue;
       const angle = candidate / slotCount * Math.PI * 2;
-      const position = facetedPoint(center, angle, 0, 11);
+      const position = facetedPoint(center, angle, 0, 3.5);
       const hasClearance = assignedPositions.every((assigned) => (
-        length(subtract(position, assigned)) >= 13
+        length(subtract(position, assigned)) >= 11.5
       ));
       if (hasClearance) return { slot: candidate, position };
     }
@@ -206,10 +206,10 @@ function createGateGeometry(centers, anchors) {
   const gates = [];
 
   for (const center of centers) {
-    const radiusX = center.width / 2 + 11;
-    const radiusY = center.height / 2 + 11;
+    const radiusX = center.width / 2 + 3.5;
+    const radiusY = center.height / 2 + 3.5;
     const perimeter = approximateEllipsePerimeter(radiusX, radiusY);
-    const slotCount = Math.max(48, Math.ceil(perimeter / 4));
+    const slotCount = Math.max(56, Math.ceil(perimeter / 3.5));
     const usedSlots = new Set();
     const assignedPositions = [];
     const orderedGates = center.gates
@@ -264,7 +264,7 @@ function cubicPoint(route, amount) {
   );
 }
 
-function routeIntersectsCenter(route, center, clearance = 10) {
+function routeIntersectsCenter(route, center, clearance = 6) {
   for (let step = 2; step <= 8; step += 1) {
     const sample = cubicPoint(route, step / 10);
     if (
@@ -291,33 +291,16 @@ function createRoute(channel, gateByNumber, centerByKey, laneOffset) {
   const rawP2 = gateByNumber.get(channel.gates[1]);
   const direction = normalize(subtract(rawP2, rawP1));
   const normal = perpendicular(direction);
-  const p1 = add(rawP1, scale(direction, 7.5));
-  const p2 = add(rawP2, scale(direction, -7.5));
+  const p1 = add(rawP1, scale(direction, 5.8));
+  const p2 = add(rawP2, scale(direction, -5.8));
   const segmentLength = length(subtract(p2, p1));
-  const controlDistance = clamp(segmentLength * 0.32, 28, 72);
+  const controlDistance = clamp(segmentLength * 0.34, 16, 52);
   const firstCenter = centerByKey.get(BODYGRAPH_GATE_TO_CENTER[channel.gates[0]]);
   const secondCenter = centerByKey.get(BODYGRAPH_GATE_TO_CENTER[channel.gates[1]]);
-  const nearVertical = Math.abs(p2.x - p1.x) < 28;
-  const lowerLink = [firstCenter.key, secondCenter.key].includes("root");
-  let routeType = "side";
-  let c1 = add(p1, scale(direction, controlDistance));
-  let c2 = add(p2, scale(direction, -controlDistance));
-
-  if (lowerLink) {
-    routeType = "lower-s";
-    c1 = add(c1, scale(normal, 12 + laneOffset));
-    c2 = add(c2, scale(normal, -12 + laneOffset));
-  } else if (nearVertical) {
-    routeType = "vertical";
-    c1 = add(c1, scale(normal, laneOffset));
-    c2 = add(c2, scale(normal, laneOffset));
-  } else {
-    const midpointX = (p1.x + p2.x) / 2;
-    const awayFromAxis = midpointX >= BODYGRAPH_VIEWBOX.width / 2 ? 1 : -1;
-    const bow = point(awayFromAxis * 14, 0);
-    c1 = add(add(c1, bow), scale(normal, laneOffset));
-    c2 = add(add(c2, bow), scale(normal, laneOffset));
-  }
+  const nearVertical = Math.abs(p2.x - p1.x) < 34;
+  const routeType = nearVertical ? "vertical-corridor" : "direct-corridor";
+  let c1 = add(add(p1, scale(direction, controlDistance)), scale(normal, laneOffset));
+  let c2 = add(add(p2, scale(direction, -controlDistance)), scale(normal, laneOffset));
 
   let route = { p1, c1, c2, p2 };
   const obstacle = [...centerByKey.values()].find((center) => (
@@ -328,19 +311,20 @@ function createRoute(channel, gateByNumber, centerByKey, laneOffset) {
   if (obstacle) {
     const midpointX = (p1.x + p2.x) / 2;
     const detourDirection = midpointX <= obstacle.x ? -1 : 1;
-    const detour = point(detourDirection * (obstacle.width / 2 + 14), 0);
+    const routeMidpoint = cubicPoint(route, 0.5);
+    const obstacleEdge = obstacle.x + detourDirection * (obstacle.width / 2 + 8);
+    const detour = point(obstacleEdge - routeMidpoint.x, 0);
     route = {
       ...route,
       c1: add(route.c1, detour),
       c2: add(route.c2, detour),
     };
-    routeType = `${routeType}-detour`;
   }
 
   return Object.freeze({
     id: channel.id,
     gates: channel.gates,
-    routeType,
+    routeType: obstacle ? `${routeType}-detour` : routeType,
     p1: Object.freeze(route.p1),
     c1: Object.freeze(route.c1),
     c2: Object.freeze(route.c2),
@@ -363,7 +347,7 @@ function createChannelGeometry(channels, gates, centers) {
   return channels.map((channel) => {
     const siblings = groups.get(channelCenterPair(channel));
     const siblingIndex = siblings.findIndex((candidate) => candidate.id === channel.id);
-    const laneOffset = (siblingIndex - (siblings.length - 1) / 2) * 6;
+    const laneOffset = (siblingIndex - (siblings.length - 1) / 2) * 4.5;
     return createRoute(channel, gateByNumber, centerByKey, laneOffset);
   });
 }

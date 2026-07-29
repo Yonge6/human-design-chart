@@ -72,17 +72,14 @@ test("historical BodyGraph evidence and classification remain intact", async () 
   assert.match(notices, /^## Proposed project-generated BodyGraph visual$/m);
 });
 
-test("proposed visual status does not overstate merge, deployment, or release", async () => {
+test("visual status distinguishes the merged baseline from the v2 follow-up", async () => {
   const provenance = normalize(await read("docs/bodygraph-original-visual-provenance.md"));
 
-  assert.match(provenance, /visual proposed by Draft PR #16/i);
+  assert.match(provenance, /v1 baseline was merged through PR #16/i);
+  assert.match(provenance, /v2 compact-geometry refinement is a separate follow-up change/i);
   assert.doesNotMatch(provenance, /current release visual/i);
-  assert.match(provenance, /has not been merged or deployed/i);
-  assert.match(provenance, /production does not use it/i);
-  assert.match(provenance, /merged at the exact reviewed head/i);
-  assert.match(provenance, /final post-merge distribution archive/i);
-  assert.match(provenance, /PASS_WITH_REQUIRED_CHANGES/);
-  assert.match(provenance, /no reason to redo the new geometry/i);
+  assert.match(provenance, /does not itself claim that a commit has been merged, deployed, uploaded, or approved/i);
+  assert.match(provenance, /final distribution archive must continue to confirm exclusion/i);
   assert.match(provenance, /not legal advice/i);
   assert.match(provenance, /does not claim Apple approval/i);
 });

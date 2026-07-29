@@ -6,7 +6,7 @@ import { extname, resolve } from "node:path";
 const root = resolve(import.meta.dirname, "..");
 const newAssetName = "bodygraph-original-template.svg";
 const historicalAssetName = "bodygraph-template.svg";
-const expectedSha = "c89584a9e64032c87efa0086bf2bc014cc34921301c938c4bb056476dd494983";
+const expectedSha = "1f937e8271853ec10af01c6d5d7ad959c637f32da1da4e8de475129c32a74c68";
 const runtimeTextExtensions = new Set([".css", ".html", ".htm", ".js", ".json", ".mjs", ".xml"]);
 
 async function exists(path) {

@@ -26,8 +26,8 @@ test("original BodyGraph provenance records the deterministic clean-room lineage
   assert.match(normalized, /40ae09daeb8ffb33161602d747978be789516baa/);
   assert.match(normalized, /the commit containing this provenance record/);
   assert.match(normalized, /npm run generate:bodygraph/);
-  assert.match(normalized, /c89584a9e64032c87efa0086bf2bc014cc34921301c938c4bb056476dd494983/);
-  assert.match(normalized, /360\s*(?:x|×)\s*696/i);
+  assert.match(normalized, /1f937e8271853ec10af01c6d5d7ad959c637f32da1da4e8de475129c32a74c68/);
+  assert.match(normalized, /360\s*(?:x|×)\s*620/i);
   assert.match(normalized, /9 centers/i);
   assert.match(normalized, /64 gates/i);
   assert.match(normalized, /36 channels/i);
@@ -53,7 +53,7 @@ test("provenance lists only the new visual implementation lineage", async () => 
   assert.doesNotMatch(provenance, /assets\/bodygraph-template\.svg/);
   assert.deepEqual(
     [...provenance.matchAll(/\b[a-f0-9]{64}\b/g)].map((match) => match[0]),
-    ["c89584a9e64032c87efa0086bf2bc014cc34921301c938c4bb056476dd494983"],
+    ["1f937e8271853ec10af01c6d5d7ad959c637f32da1da4e8de475129c32a74c68"],
   );
 });
 
@@ -72,5 +72,5 @@ test("runtime integration consumes the new SVG after calculation without enterin
   assert.match(renderer, /data-channel-lane/);
   assert.match(renderer, /Defined Centers/);
   assert.doesNotMatch(`${renderer}\n${topology}\n${geometry}`, /calculateHumanDesign|createChartHash|profile-snapshot|schemas\//);
-  assert.match(specification, /viewBox="0 0 360 696"/);
+  assert.match(specification, /viewBox="0 0 360 620"/);
 });

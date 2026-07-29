@@ -228,7 +228,7 @@ body {
 }
 .preview-stage {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   border: 1px solid rgba(199, 164, 110, .55);
   background: #0d0b12;
   box-shadow: 0 24px 72px rgba(0, 0, 0, .42);
@@ -758,7 +758,7 @@ button:disabled { cursor: not-allowed; opacity: .52; }
   filter: blur(.2px);
   opacity: .8;
 }
-#bodygraph { width: 100%; max-width: 408px; aspect-ratio: 360 / 620; }
+#bodygraph { width: 100%; max-width: 408px; aspect-ratio: 422 / 813; }
 #bodygraph svg { display: block; width: 100%; height: auto; overflow: visible; }
 .watermark {
   margin: -2px 0 0;
@@ -996,7 +996,7 @@ button:disabled { cursor: not-allowed; opacity: .52; }
   background: radial-gradient(circle, rgba(248, 231, 203, .28), rgba(164, 132, 172, .10) 52%, transparent 72%) !important;
 }
 .chart-panel.export-mobile #bodygraph {
-  width: 292px !important;
+  width: 240px !important;
   transform: none !important;
 }
 .chart-panel.export-mobile .watermark {

@@ -315,6 +315,10 @@ test("insecure HTTP mode disables all remote behavior while local generation suc
   await expect(page.locator("#summaryProfile")).not.toHaveText("");
   await expect(page.locator("#chartPreview")).toHaveAttribute("alt", /Pluto/);
   await expect(page.locator("#resultSummary")).toBeFocused();
+  await expect(page.locator("#detailReading")).toBeVisible();
+  await page.locator("#detailReading").click();
+  await expect(page.locator("#detailDialog")).toBeVisible();
+  await page.locator("#closeDetail").click();
   await expect(page.locator("#resultSummary")).not.toContainText("Browser Fixture");
   await expect(page.locator("#resultSummary")).not.toContainText("Xiangtan");
   await expect(page.locator("#chartPreview")).not.toHaveAttribute("alt", /Browser Fixture|Xiangtan|1990/);
@@ -492,6 +496,7 @@ test("opening a generated history record restores the semantic result", async ({
   await expect(page.locator(".preview-stage .media-loading-placeholder")).toBeVisible();
   await expect(page.locator(".preview-stage .media-loading-placeholder > span")).toHaveCSS("animation-name", "pluto-placeholder-shimmer");
   await expect(page.locator(".preview-stage")).toHaveAttribute("data-media-state", "ready", { timeout: 45_000 });
+  await expect(page.locator("#detailReading")).toBeVisible();
   await expect(page.locator("#summaryType")).not.toHaveText("");
   await expect(page.locator("#summaryAuthority")).not.toHaveText("");
   await expect(page.locator("#resultSummary")).toBeFocused();
@@ -552,7 +557,7 @@ test("fingerprinted production bundle loads every calculation asset without modu
     "/app.js",
     "/runtime-config.js",
     "/build-provenance.js",
-    "/assets/bodygraph-original-template.svg",
+    "/assets/bodygraph-template.svg",
     "/vendor/swisseph/swisseph.wasm",
     "/vendor/swisseph/ephe/sepl_18.se1",
     "/vendor/swisseph/ephe/semo_18.se1",

@@ -202,21 +202,19 @@ The following issues remain blockers before TestFlight or App Review:
    separately assess App Store distribution compatibility under that path. No
    separate Astrodienst authorization, legal opinion, Apple compatibility
    confirmation, or complete closure of distribution risk is represented.
-2. **BodyGraph release evidence.** The historical asset remains classified
-   `DERIVED_OR_UNCLEAR`. Repository history identifies a third-party visual
+2. **BodyGraph provenance classification.** The current audit classification
+   is `DERIVED_OR_UNCLEAR`. Repository history identifies a third-party visual
    reference, but the exact source, applicable permission, and independent
-   creation evidence for that asset remain incomplete. This is an evidence gap,
-   not a finding of infringement. Draft PR #16 proposes a style-preserving,
-   clean-room, project-generated release-candidate visual and excludes the
-   historical asset from its proposed source and verified A3 build outputs.
-   Independent engineering review found no reason to redo the new geometry.
-   The PR remains Draft, unmerged, and undeployed. Production remains version
-   `1.1.0` at commit `63b0beff7202885f6a1a42c64fc3e8aa7de6a8a1`.
-   Merge of the exact reviewed head, final post-merge distribution-archive
-   confirmation that the historical asset remains excluded, final
-   content-rights review, and separate release authorization remain required.
-   This record is not legal advice and does not claim Apple approval. See
+   creation evidence for the current SVG remain incomplete. This is an
+   evidence gap, not a finding of infringement. No usable source-authorship
+   evidence or applicable authorization is currently available, so the planned
+   App Store release path is a style-preserving, clean-room, independently
+   generated replacement. Supplemental evidence or authorization could change
+   that plan, but none is currently claimed. Phase 6E has not started, this PR
+   does not modify the current SVG, and the current SVG is not planned for the
+   final App Store Release Candidate. See
    [bodygraph-provenance-audit.md](bodygraph-provenance-audit.md) and the
+   conditional
    [bodygraph-provenance and originality plan](bodygraph-original-redesign-plan.md).
 
 Additional release gates:

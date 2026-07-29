@@ -10,8 +10,6 @@ does not claim or rely on a Swiss Ephemeris Professional License. Before App
 Store distribution, the release must verify fulfillment of the applicable AGPL
 source-code, license, notice, and distribution obligations, and separately
 assess App Store distribution compatibility under that path.
-No separate Astrodienst authorization or Apple confirmation of AGPL
-compatibility is claimed.
 
 - [x] Swiss Ephemeris AGPL licensing path selected and documented.
 - [ ] Applicable AGPL source-code, license, notice, and distribution obligations
@@ -19,30 +17,22 @@ compatibility is claimed.
 - [ ] App Store distribution compatibility separately assessed under the AGPL
   path; no Apple confirmation or legal opinion is currently claimed.
 - [x] BodyGraph provenance audit completed.
-- [x] Historical SVG SHA-256 recorded.
+- [x] Current SVG SHA-256 recorded.
 - [x] First known Git history recorded.
 - [x] Third-party source and license evidence reviewed.
 - [ ] Owner authorship and source evidence completed.
-- [x] Historical BodyGraph evidence status remains `DERIVED_OR_UNCLEAR`; this
-  is not a finding of infringement.
-- [x] Clean-room visual design specification committed before implementation.
-- [x] Deterministic generator implemented.
-- [x] New SVG provenance recorded.
-- [x] Independent geometry review completed with no geometry redo required.
-- [x] Historical asset excluded from Draft PR #16 source, `dist`, iOS public,
-  and the A3 development archive.
-- [ ] PR #16 merged at the exact reviewed Head.
-- [ ] Final post-merge distribution archive confirms historical asset
-  exclusion.
-- [ ] Final content-rights answers reviewed for App Store Connect.
+- [ ] BodyGraph release classification resolved. Current evidence status:
+  `DERIVED_OR_UNCLEAR`.
+- [x] BodyGraph planned release path recorded as a style-preserving, clean-room,
+  independently generated replacement because no usable source-authorship
+  evidence or applicable authorization is currently available.
+- [x] Phase 6E has not started.
+- [ ] Phase 6E completed in a new Codex task and independent worktree after PR
+  #15 is merged into the latest `main`.
+- [ ] Current `DERIVED_OR_UNCLEAR` SVG excluded from the final App Store Release
+  Candidate.
 - [ ] Human Design names and terminology reviewed for the intended storefronts.
 - [ ] Content-rights answers match the evidence retained by the developer.
-
-Draft PR #16 remains unmerged and undeployed. Production remains version
-`1.1.0` at commit `63b0beff7202885f6a1a42c64fc3e8aa7de6a8a1`. The proposed
-visual is not authorized for Pages, TestFlight, App Store Connect, or backend
-deployment by this checklist. Merge does not itself authorize release. This
-checklist is not legal advice and does not claim Apple approval.
 
 ## Build and Archive
 

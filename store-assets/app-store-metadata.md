@@ -145,21 +145,14 @@ source-code, license, notice, and distribution obligations, and separately
 assess App Store distribution compatibility under that path. Corresponding
 source is public at https://github.com/Yonge6/human-design-chart and licenses
 are linked inside Privacy Settings.
-No separate Astrodienst authorization or Apple confirmation of AGPL
-compatibility is claimed.
 
-The historical BodyGraph evidence classification remains
-`DERIVED_OR_UNCLEAR`; this is not a finding of infringement. Draft PR #16
-proposes a style-preserving, clean-room, project-generated release-candidate
-visual and excludes the historical asset from its proposed source and verified
-A3 build outputs. Independent engineering review found no reason to redo the
-new geometry. The PR remains Draft, unmerged, and undeployed. Production
-remains version `1.1.0` at commit
-`63b0beff7202885f6a1a42c64fc3e8aa7de6a8a1`. Do not submit these draft notes
-until PR #16 is merged at the exact reviewed head, the final post-merge
-distribution archive confirms historical asset exclusion, content-rights
-answers are reviewed, and a separate release is authorized. This is not legal
-advice and does not claim Apple approval.
+The current BodyGraph evidence classification is `DERIVED_OR_UNCLEAR`; this is
+not a finding of infringement. Because no usable source-authorship evidence or
+applicable authorization is currently available, the planned App Store release
+path is a style-preserving, clean-room, independently generated replacement.
+Phase 6E has not started, the current PR does not modify the old SVG, and that
+SVG is not planned for the final App Store Release Candidate. Do not submit
+these draft notes until the replacement and final release evidence are complete.
 
 The app does not claim medical or scientific outcomes. It does not use accounts, purchases, ads, analytics, tracking, push notifications, or user-generated content.
 

@@ -10,8 +10,6 @@ The project does not claim or rely on a Swiss Ephemeris Professional License.
 Before App Store distribution, the release must verify fulfillment of the
 applicable AGPL source-code, license, notice, and distribution obligations, and
 separately assess App Store distribution compatibility under that path.
-No separate Astrodienst authorization or Apple confirmation of AGPL
-compatibility is claimed.
 
 ## Quick start
 
@@ -125,21 +123,17 @@ Merging to `main` does not authorize a production release. GitHub Pages is publi
 - The Node API is a deployable foundation, but no production API host is provisioned by this repository change.
 - The rate limiter is in-memory and should be replaced or supplemented at the production gateway for multi-instance deployments.
 - Supabase deployment requires a project, anonymous auth, migrations, function secrets, and explicit CORS configuration.
-- The historical BodyGraph asset remains classified `DERIVED_OR_UNCLEAR`.
+- The current BodyGraph visual provenance is classified `DERIVED_OR_UNCLEAR`.
   Repository history identifies a third-party visual reference, while exact
-  source, authorization, and independent-creation evidence for that asset
-  remain incomplete. This evidence status is not a finding of infringement.
-  Draft PR #16 implements a proposed style-preserving, clean-room,
-  project-generated release-candidate visual and excludes the historical asset
-  from its proposed source and build outputs. Independent engineering review
-  returned `PASS_WITH_REQUIRED_CHANGES` and found no reason to redo the new
-  geometry. The PR is not merged or deployed; production remains version
-  `1.1.0` at commit `63b0beff7202885f6a1a42c64fc3e8aa7de6a8a1`.
-  Merge of the exact reviewed head, a final post-merge distribution-archive
-  asset audit, final content-rights review, and separate release authorization
-  remain required. Neither the review nor this repository claims legal
-  clearance or Apple approval. See the
-  [provenance audit](docs/bodygraph-provenance-audit.md) and
+  source, authorization, and independent-creation evidence remain incomplete.
+  This does not itself establish infringement. Because no usable
+  source-authorship evidence or applicable authorization is currently
+  available, the planned App Store release path is a style-preserving,
+  clean-room, independently generated replacement. Supplemental evidence or
+  authorization could change that plan, but none is currently claimed. Phase
+  6E has not started, this change does not modify the current SVG, and the
+  current SVG is not planned for the final App Store Release Candidate. See the
+  [provenance audit](docs/bodygraph-provenance-audit.md) and conditional
   [provenance and originality plan](docs/bodygraph-original-redesign-plan.md).
 - Human Design is used here for personal reflection and entertainment. It is not established scientific, medical, psychological, legal, or financial advice.
 - This project is independent and is not affiliated with Human Design official organizations or My Human Design.

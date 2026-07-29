@@ -27,15 +27,10 @@ assess App Store distribution compatibility under that path.
    obligations against the final release and separately assess App Store
    compatibility. No separate Astrodienst authorization, legal opinion, Apple
    compatibility confirmation, or complete closure of risk is represented.
-8. Merge Draft PR #16 only at the exact reviewed head, then confirm in the
-   final post-merge distribution archive that the historical
-   `DERIVED_OR_UNCLEAR` BodyGraph asset remains excluded. PR #16 proposes a
-   style-preserving, clean-room, project-generated visual; independent
-   engineering review found no reason to redo its geometry. The PR is not
-   merged or deployed, and production remains version `1.1.0` at commit
-   `63b0beff7202885f6a1a42c64fc3e8aa7de6a8a1`. Final content-rights review
-   and separate release authorization remain required. This does not claim
-   legal clearance or Apple approval, and merge does not authorize Pages,
-   TestFlight, App Store Connect, or backend deployment.
+8. Complete the planned style-preserving, clean-room, independently generated
+   BodyGraph replacement because no usable source-authorship evidence or
+   applicable authorization is currently available. Phase 6E has not started,
+   and the current `DERIVED_OR_UNCLEAR` SVG must not enter the final App Store
+   Release Candidate.
 
 No production secret, database content, log or backup is included in this review bundle. The generated format patch covers source changes through `967c3b2`; the later review-artifact commit is intentionally not self-embedded in that patch.

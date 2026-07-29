@@ -323,7 +323,7 @@ test("insecure HTTP mode disables all remote behavior while local generation suc
   expect(consoleErrors).toEqual([]);
 });
 
-test("localhost secure context restores saved remote preferences", async ({ page }) => {
+test("localhost secure context restores saved remote preferences", async ({ page }, testInfo) => {
   const pageErrors = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
   await page.addInitScript((key) => {
@@ -335,7 +335,9 @@ test("localhost secure context restores saved remote preferences", async ({ page
     }));
   }, settingsKey);
 
-  await page.goto("http://127.0.0.1:8789/");
+  const localhostUrl = new URL(testInfo.project.use.baseURL);
+  localhostUrl.hostname = "127.0.0.1";
+  await page.goto(localhostUrl.href);
   expect(await page.evaluate(() => globalThis.isSecureContext)).toBe(true);
   await expect(page.locator("#localModeNotice")).toBeHidden();
   await page.locator("#openSettings").click();
@@ -476,9 +478,20 @@ test("opening a generated history record restores the semantic result", async ({
   await page.locator("#closeSettings").click();
   await fillAndGenerate(page);
   await page.locator("#editChart").click();
+  await page.evaluate(() => {
+    const originalHtml2Canvas = globalThis.html2canvas;
+    globalThis.html2canvas = async (...args) => {
+      await new Promise((resolve) => window.setTimeout(resolve, 600));
+      return originalHtml2Canvas(...args);
+    };
+  });
   await page.locator("#openHistory").click();
   await page.locator("[data-history-open]").first().click();
   await expect(page.locator("#chartResult")).toBeVisible({ timeout: 45_000 });
+  await expect(page.locator(".preview-stage")).toHaveAttribute("data-media-state", "loading");
+  await expect(page.locator(".preview-stage .media-loading-placeholder")).toBeVisible();
+  await expect(page.locator(".preview-stage .media-loading-placeholder > span")).toHaveCSS("animation-name", "pluto-placeholder-shimmer");
+  await expect(page.locator(".preview-stage")).toHaveAttribute("data-media-state", "ready", { timeout: 45_000 });
   await expect(page.locator("#summaryType")).not.toHaveText("");
   await expect(page.locator("#summaryAuthority")).not.toHaveText("");
   await expect(page.locator("#resultSummary")).toBeFocused();

@@ -2,7 +2,7 @@
 
 ## Scope
 
-The visual proposed by Draft PR #16 is produced by a new deterministic functional topology, original geometry module, and SVG generator. The generated SVG is a rendering asset for calculated chart state; it is not a calculation source.
+The BodyGraph lineage introduced through PR #16 is produced by a deterministic functional topology, original geometry module, and SVG generator. This Phase 6E v2 refinement keeps the same functional topology while replacing the internal scale, center anchors, gate slots, and channel corridors with a more compact deterministic geometry. The generated SVG is a rendering asset for calculated chart state; it is not a calculation source.
 
 ## Development lineage
 
@@ -23,7 +23,7 @@ The visual proposed by Draft PR #16 is produced by a new deterministic functiona
 
 ## Deterministic generation
 
-Run `npm run generate:bodygraph` from the repository root. The generated asset has SHA-256 `c89584a9e64032c87efa0086bf2bc014cc34921301c938c4bb056476dd494983`, a `360 x 696` viewBox, 9 centers, 64 gates, and 36 channels.
+Run `npm run generate:bodygraph` from the repository root. The generated asset has SHA-256 `1f937e8271853ec10af01c6d5d7ad959c637f32da1da4e8de475129c32a74c68`, a `360 x 620` viewBox, 9 centers, 64 gates, and 36 channels.
 
 Repeated generation is byte-for-byte identical. The generator and its geometry inputs do not depend on network access, random values, the current time, machine-specific paths, or external visual templates.
 
@@ -37,11 +37,11 @@ The A1, A2, and A3 clean-room development record is unchanged by B2. B2 is a pre
 
 ## Release status
 
-The proposed release-candidate visual exists only in Draft PR #16. It has not been merged or deployed, and production does not use it. Production remains version `1.1.0` at commit `63b0beff7202885f6a1a42c64fc3e8aa7de6a8a1`.
+At the time of the isolated A3 record, the visual existed only in Draft PR #16 and had not been merged or deployed. The A3 record stated that production remains version `1.1.0` at commit `63b0beff7202885f6a1a42c64fc3e8aa7de6a8a1`; this sentence preserves that historical boundary rather than describing the current deployment state.
 
-Independent engineering review classified the PR `PASS_WITH_REQUIRED_CHANGES`. It found no exact reused paths, center anchors, same-number Gate coordinates, prior human silhouette, or mechanically reused routing, and it found no reason to redo the new geometry. The required changes concern release-state wording, governance tests, authoritative topology comparison, and release-asset automation.
+The Phase 6E v1 baseline was merged through PR #16 after its independent review and required-change cycle. This v2 compact-geometry refinement is a separate follow-up change. This provenance record does not itself claim that a commit has been merged, deployed, uploaded, or approved; those states must be verified from the corresponding Git commit and deployment workflow.
 
-The historical asset's `DERIVED_OR_UNCLEAR` evidence classification remains in the repository provenance audit and does not automatically transfer to the proposed visual. The visual may enter a release only after PR #16 is merged at the exact reviewed head and a separate release is authorized. The final post-merge distribution archive must again confirm exclusion of the historical asset, and final content-rights answers must be reviewed. Independent engineering review is not legal advice and does not claim Apple approval.
+The historical asset's `DERIVED_OR_UNCLEAR` evidence classification remains in the repository provenance audit and does not automatically transfer to this project-generated visual. A final distribution archive must continue to confirm exclusion of the historical asset, and final content-rights answers must be reviewed. Independent engineering review is not legal advice and does not claim Apple approval.
 
 ## Functional separation
 

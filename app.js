@@ -1,4 +1,8 @@
-import { calculateHumanDesign, localToUtcCandidates } from "./human-design-engine.js";
+import {
+  calculateHumanDesign,
+  localToUtcCandidates,
+  preloadHumanDesignEngine,
+} from "./human-design-engine.js";
 import { fetchPlaceCandidates, inferTimezoneFromAddress } from "./src/services/location-service.js";
 import { createHumanDesignProfileSnapshot } from "./src/engine/profile-snapshot.js";
 import { DEFAULT_CONSENT, deleteCloudData, recordProductEvent, saveChartToCloud, updateConsent } from "./src/services/backend-service.js";
@@ -12,6 +16,9 @@ import { getReleaseFeatureAvailability } from "./src/app/release-feature-availab
 import { hasSupabaseConfig } from "./src/config/runtime-config.js";
 
 const publicAppUrl = "https://human-design.wonderelian.com/";
+const engineWarmupPromise = preloadHumanDesignEngine().catch((error) => {
+  console.warn("Human Design engine warmup deferred:", error);
+});
 const planets = ["Sun", "Earth", "North Node", "South Node", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 const graph = document.querySelector("#bodygraph");
 const fields = {
@@ -64,10 +71,12 @@ const detailContent = document.querySelector("#detailContent");
 const celebrityMatches = document.querySelector("#celebrityMatches");
 const languageButtons = [...document.querySelectorAll("[data-language]")];
 const lifePhilosophyPoster = document.querySelector("#lifePhilosophyPoster");
+const lifePhilosophyPosterFrame = lifePhilosophyPoster.closest(".homepage-poster");
 const lifePhilosophyPosterSources = {
   zh: new URL("./assets/life-philosophy-poster-zh.webp", import.meta.url).href,
   en: new URL("./assets/life-philosophy-poster-en.webp", import.meta.url).href,
 };
+const previewStage = document.querySelector(".preview-stage");
 const openHistoryButton = document.querySelector("#openHistory");
 const openSettingsButton = document.querySelector("#openSettings");
 const historyDialog = document.querySelector("#historyDialog");
@@ -656,6 +665,7 @@ let lastData;
 let posterBlob;
 let posterUrl;
 let posterRenderVersion = 0;
+let lifePhilosophyPosterLoadStarted = false;
 let placeMatches = [];
 let placeLabels = [];
 let activePlaceIndex = -1;
@@ -790,6 +800,53 @@ function renderHistory() {
     card.append(details, actions);
     historyList.append(card);
   });
+}
+
+function setMediaState(element, state) {
+  element.dataset.mediaState = state;
+  element.setAttribute("aria-busy", String(state === "loading"));
+}
+
+function updateLifePhilosophyPoster() {
+  if (!lifePhilosophyPosterLoadStarted) return;
+  const nextSource = lifePhilosophyPosterSources[language];
+  if (lifePhilosophyPoster.src === nextSource && lifePhilosophyPoster.complete) {
+    setMediaState(lifePhilosophyPosterFrame, "ready");
+    return;
+  }
+  setMediaState(lifePhilosophyPosterFrame, "loading");
+  lifePhilosophyPoster.src = nextSource;
+}
+
+function beginLifePhilosophyPosterLoad() {
+  if (lifePhilosophyPosterLoadStarted) return;
+  lifePhilosophyPosterLoadStarted = true;
+  updateLifePhilosophyPoster();
+}
+
+function scheduleLifePhilosophyPosterLoad() {
+  const scheduleWhenIdle = () => {
+    if ("requestIdleCallback" in window) {
+      window.requestIdleCallback(beginLifePhilosophyPosterLoad, { timeout: 2000 });
+    } else {
+      window.setTimeout(beginLifePhilosophyPosterLoad, 250);
+    }
+  };
+  const observePoster = () => {
+    if (!("IntersectionObserver" in window)) {
+      scheduleWhenIdle();
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      observer.disconnect();
+      scheduleWhenIdle();
+    }, { rootMargin: "240px 0px" });
+    observer.observe(lifePhilosophyPosterFrame);
+  };
+  const observeAfterEngineWarmup = () => engineWarmupPromise.finally(observePoster);
+  if (document.readyState === "complete") observeAfterEngineWarmup();
+  else window.addEventListener("load", observeAfterEngineWarmup, { once: true });
 }
 
 function hydrateForm(input) {
@@ -1178,6 +1235,7 @@ function clearPoster() {
   if (posterUrl) URL.revokeObjectURL(posterUrl);
   posterUrl = undefined;
   chartPreview.removeAttribute("src");
+  setMediaState(previewStage, "loading");
   chartResult.removeAttribute("aria-busy");
   downloadButton.disabled = true;
   shareButton.disabled = true;
@@ -1187,6 +1245,7 @@ function clearPoster() {
 
 async function createPosterImage() {
   const renderVersion = ++posterRenderVersion;
+  setMediaState(previewStage, "loading");
   chartResult.setAttribute("aria-busy", "true");
   downloadButton.disabled = true;
   shareButton.disabled = true;
@@ -1201,8 +1260,13 @@ async function createPosterImage() {
     posterUrl = URL.createObjectURL(nextBlob);
     chartPreview.src = posterUrl;
     if (chartPreview.decode) await chartPreview.decode();
+    if (renderVersion !== posterRenderVersion) return;
+    setMediaState(previewStage, "ready");
     downloadButton.disabled = false;
     shareButton.disabled = false;
+  } catch (error) {
+    if (renderVersion === posterRenderVersion) setMediaState(previewStage, "error");
+    throw error;
   } finally {
     if (renderVersion === posterRenderVersion) {
       chartResult.removeAttribute("aria-busy");
@@ -1254,7 +1318,7 @@ function applyLanguage(nextLanguage, rerender = true) {
   locationResults.setAttribute("aria-label", t("locationSuggestions"));
   graph.setAttribute("aria-label", t("bodygraphLabel"));
   graph.querySelector("svg")?.setAttribute("aria-label", t("bodygraphLabel"));
-  lifePhilosophyPoster.src = lifePhilosophyPosterSources[language];
+  updateLifePhilosophyPoster();
   languageButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.language === language)));
   if (statusState) status.textContent = t(statusState.key, statusState.values);
   renderHistory();
@@ -1734,4 +1798,13 @@ saveHistoryInput.checked = appSettings.keepHistory;
 privacyToggle.checked = appSettings.privacyByDefault;
 updateRemoteServiceControls();
 applyLanguage(language, false);
+lifePhilosophyPoster.addEventListener("load", () => {
+  if (lifePhilosophyPoster.src === lifePhilosophyPosterSources[language]) {
+    setMediaState(lifePhilosophyPosterFrame, "ready");
+  }
+});
+lifePhilosophyPoster.addEventListener("error", () => {
+  setMediaState(lifePhilosophyPosterFrame, "error");
+});
+scheduleLifePhilosophyPosterLoad();
 trackEvent("app_open", { environment: globalThis.PLUTO_CONFIG?.environment || "development" });

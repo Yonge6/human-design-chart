@@ -118,6 +118,10 @@ async function getSwissEphemeris() {
   }
 }
 
+export async function preloadHumanDesignEngine() {
+  await getSwissEphemeris();
+}
+
 function normalize(longitude) {
   return ((longitude % 360) + 360) % 360;
 }

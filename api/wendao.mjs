@@ -16,6 +16,7 @@ installNodeFileFetch();
 
 const ALLOWED_ORIGINS = new Set([
   "https://yonge6.github.io",
+  "https://wendao.wonderelian.com",
   "http://127.0.0.1:4173",
   "http://localhost:4173",
 ]);

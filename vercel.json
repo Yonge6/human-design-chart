@@ -12,6 +12,34 @@
     {
       "source": "/v1/charts",
       "destination": "/api/wendao?route=charts"
+    },
+    {
+      "source": "/v1/profiles",
+      "destination": "/api/wendao?route=profiles"
+    },
+    {
+      "source": "/v1/feedback",
+      "destination": "/api/wendao?route=feedback"
+    },
+    {
+      "source": "/v1/conversations",
+      "destination": "/api/wendao?route=conversations"
+    },
+    {
+      "source": "/v1/events",
+      "destination": "/api/wendao?route=events"
+    },
+    {
+      "source": "/v1/admin/login",
+      "destination": "/api/wendao?route=admin-login"
+    },
+    {
+      "source": "/v1/admin/overview",
+      "destination": "/api/wendao?route=admin-overview"
+    },
+    {
+      "source": "/v1/admin/feedback-status",
+      "destination": "/api/wendao?route=admin-feedback-status"
     }
   ],
   "functions": {

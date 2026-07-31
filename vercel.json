@@ -16,13 +16,7 @@
   ],
   "functions": {
     "api/wendao.mjs": {
-      "includeFiles": [
-        "src/engine/**",
-        "shared/**",
-        "supabase/functions/_shared/**",
-        "vendor/natalengine/**",
-        "vendor/swisseph/**"
-      ],
+      "includeFiles": "{src/engine/**,shared/**,supabase/functions/_shared/**,vendor/natalengine/**,vendor/swisseph/**}",
       "maxDuration": 30
     }
   }

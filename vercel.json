@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/v1/health",
+      "destination": "/api/wendao?route=health"
+    },
+    {
+      "source": "/v1/version",
+      "destination": "/api/wendao?route=version"
+    },
+    {
+      "source": "/v1/charts",
+      "destination": "/api/wendao?route=charts"
+    }
+  ],
+  "functions": {
+    "api/wendao.mjs": {
+      "includeFiles": [
+        "src/engine/**",
+        "shared/**",
+        "supabase/functions/_shared/**",
+        "vendor/natalengine/**",
+        "vendor/swisseph/**"
+      ],
+      "maxDuration": 30
+    }
+  }
+}

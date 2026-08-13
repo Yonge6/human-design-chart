@@ -13,14 +13,15 @@ test("header tools are consolidated into an accessible side drawer", () => {
   assert.match(html, /id="appDrawer"[^>]*class="drawer-layer"[^>]*hidden/);
   assert.match(html, /class="side-drawer"[^>]*role="dialog"[^>]*aria-modal="true"/);
   assert.match(html, /id="openHistory"[\s\S]*id="openSettings"[\s\S]*data-language="zh"[\s\S]*data-language="en"/);
-  assert.match(html, /id="historyDialog"[\s\S]*id="backFromHistory"/);
-  assert.match(html, /id="settingsDialog"[\s\S]*id="backFromSettings"/);
+  assert.match(html, /id="historyDialog"[^>]*class="drawer-subview drawer-history"[^>]*hidden/);
+  assert.match(html, /id="settingsDialog"[^>]*class="drawer-subview drawer-settings"[^>]*hidden/);
   assert.match(css, /\.side-drawer \{[\s\S]*width: min\(88vw, 410px\);[\s\S]*height: 100dvh;/);
   assert.match(css, /@keyframes drawer-enter/);
   assert.match(app, /function openDrawer\(\)/);
   assert.match(app, /event\.key === "Escape"/);
   assert.match(app, /function drawerFocusableElements\(\)/);
-  assert.match(app, /function returnDialogToDrawer\(dialog\)/);
+  assert.match(app, /new Set\(\["home", "about", "contact", "history", "settings"\]\)/);
+  assert.doesNotMatch(app, /historyDialog\.showModal|settingsDialog\.showModal/);
 });
 
 test("drawer includes WonderElian information while support remains web-only", () => {
@@ -30,6 +31,7 @@ test("drawer includes WonderElian information while support remains web-only", (
   assert.match(html, /id="openAbout"[\s\S]*id="openContact"/);
   assert.match(html, /id="drawerWorksTitle"[\s\S]*xiazishuo\.com[\s\S]*wendao\.wonderelian\.com[\s\S]*style-atlas\.wonderelian\.com/);
   assert.match(html, /id="drawerSupport"[^>]*hidden/);
+  assert.match(html, /class="drawer-support-mark"[^>]*>喜<\/span>/);
   assert.match(html, /id="supportQr"[^>]*data-src=/);
   assert.doesNotMatch(html, /id="supportQr"[^>]*\ssrc=/);
   assert.match(app, /if \(nativeRuntime\) \{\s*drawerSupport\.remove\(\);\s*supportDialog\.remove\(\);/);
@@ -129,7 +131,8 @@ test("mobile form remains vertically scrollable", () => {
 
   assert.match(css, /\.shell\.form-view \{\s*height: auto;\s*min-height:[^;]+;\s*overflow: visible;/);
   assert.doesNotMatch(css, /\.shell\.form-view \{\s*height: calc\(100dvh - 58px\);\s*min-height: 0;\s*overflow: hidden;/);
-  assert.match(css, /\.settings-dialog \{ overflow-y: auto; \}/);
+  assert.match(css, /\.drawer-scroll \{[\s\S]*overflow-y: auto;/);
+  assert.match(css, /\.drawer-settings \.settings-list \{ padding: 7px 0 0; \}/);
 });
 
 test("poster media uses nonblocking dark loading placeholders", () => {

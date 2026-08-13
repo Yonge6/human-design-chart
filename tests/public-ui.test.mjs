@@ -4,6 +4,22 @@ import test from "node:test";
 
 const read = (file) => readFileSync(new URL(`../${file}`, import.meta.url), "utf8");
 
+test("header tools are consolidated into an accessible side drawer", () => {
+  const html = read("index.html");
+  const css = read("style.css");
+  const app = read("app.js");
+
+  assert.match(html, /id="openMenu"[^>]*aria-controls="appDrawer"[^>]*aria-expanded="false"/);
+  assert.match(html, /id="appDrawer"[^>]*class="drawer-layer"[^>]*hidden/);
+  assert.match(html, /class="side-drawer"[^>]*role="dialog"[^>]*aria-modal="true"/);
+  assert.match(html, /id="openHistory"[\s\S]*id="openSettings"[\s\S]*data-language="zh"[\s\S]*data-language="en"/);
+  assert.match(css, /\.side-drawer \{[\s\S]*width: min\(88vw, 410px\);[\s\S]*height: 100dvh;/);
+  assert.match(css, /@keyframes drawer-enter/);
+  assert.match(app, /function openDrawer\(\)/);
+  assert.match(app, /event\.key === "Escape"/);
+  assert.match(app, /function drawerFocusableElements\(\)/);
+});
+
 test("history deletion requires the confirmation dialog", () => {
   const html = read("index.html");
   const app = read("app.js");

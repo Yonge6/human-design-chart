@@ -13,11 +13,14 @@ test("header tools are consolidated into an accessible side drawer", () => {
   assert.match(html, /id="appDrawer"[^>]*class="drawer-layer"[^>]*hidden/);
   assert.match(html, /class="side-drawer"[^>]*role="dialog"[^>]*aria-modal="true"/);
   assert.match(html, /id="openHistory"[\s\S]*id="openSettings"[\s\S]*data-language="zh"[\s\S]*data-language="en"/);
+  assert.match(html, /id="historyDialog"[\s\S]*id="backFromHistory"/);
+  assert.match(html, /id="settingsDialog"[\s\S]*id="backFromSettings"/);
   assert.match(css, /\.side-drawer \{[\s\S]*width: min\(88vw, 410px\);[\s\S]*height: 100dvh;/);
   assert.match(css, /@keyframes drawer-enter/);
   assert.match(app, /function openDrawer\(\)/);
   assert.match(app, /event\.key === "Escape"/);
   assert.match(app, /function drawerFocusableElements\(\)/);
+  assert.match(app, /function returnDialogToDrawer\(dialog\)/);
 });
 
 test("drawer includes WonderElian information while support remains web-only", () => {

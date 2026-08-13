@@ -77,6 +77,24 @@ const lifePhilosophyPosterSources = {
   en: new URL("./assets/life-philosophy-poster-en.webp", import.meta.url).href,
 };
 const previewStage = document.querySelector(".preview-stage");
+const openMenuButton = document.querySelector("#openMenu");
+const appDrawer = document.querySelector("#appDrawer");
+const sideDrawer = appDrawer.querySelector(".side-drawer");
+const drawerBackdrop = appDrawer.querySelector(".drawer-backdrop");
+const closeMenuButton = document.querySelector("#closeMenu");
+const drawerBackButton = document.querySelector("#drawerBack");
+const drawerTitle = document.querySelector("#drawerTitle");
+const drawerOrbit = document.querySelector(".drawer-orbit");
+const drawerHome = document.querySelector("#drawerHome");
+const drawerAbout = document.querySelector("#drawerAbout");
+const drawerContact = document.querySelector("#drawerContact");
+const openAboutButton = document.querySelector("#openAbout");
+const openContactButton = document.querySelector("#openContact");
+const drawerSupport = document.querySelector("#drawerSupport");
+const openSupportButton = document.querySelector("#openSupport");
+const supportDialog = document.querySelector("#supportDialog");
+const closeSupportButton = document.querySelector("#closeSupport");
+const supportQr = document.querySelector("#supportQr");
 const openHistoryButton = document.querySelector("#openHistory");
 const openSettingsButton = document.querySelector("#openSettings");
 const historyDialog = document.querySelector("#historyDialog");
@@ -84,6 +102,8 @@ const deleteHistoryDialog = document.querySelector("#deleteHistoryDialog");
 const settingsDialog = document.querySelector("#settingsDialog");
 const closeHistoryButton = document.querySelector("#closeHistory");
 const closeSettingsButton = document.querySelector("#closeSettings");
+const backFromHistoryButton = document.querySelector("#backFromHistory");
+const backFromSettingsButton = document.querySelector("#backFromSettings");
 const historyList = document.querySelector("#historyList");
 const historyEmpty = document.querySelector("#historyEmpty");
 const cancelHistoryDeleteButton = document.querySelector("#cancelHistoryDelete");
@@ -143,6 +163,10 @@ const copy = {
     futureTime: "出生日期和时间不能晚于现在。", calculating: "正在计算行星位置…", calculated: "已使用 Swiss Ephemeris 在本地完成计算。",
     failed: "计算失败：{message}", preparing: "正在生成图片…", downloaded: "图片已保存。", chooseSaveImage: "请在系统菜单中选择“存储图像”保存到相册。", shared: "分享已完成。", linkCopied: "当前设备不支持分享图片，网站链接已复制。", exportFailed: "图片导出失败：{message}",
     shareTitle: "我的人生使用说明书", shareText: "这是我的人生使用说明书。", shareReading: "分享", shareReadingText: "免费生成你的人生使用说明书与详细解读。", openingShareShort: "正在打开…", linkCopiedShort: "已复制", sharedShort: "已分享", cancelledShort: "已取消", downloadedShort: "已下载", selectAmPm: "请选择上午或下午。", detailReading: "详细解读", close: "关闭",
+    openMenu: "打开更多功能", closeMenu: "关闭菜单", drawerBack: "返回", drawerTitle: "你的空间", drawerIntroKicker: "真实自己，流动人生", drawerIntroTitle: "把人生说明书留在自己手中", drawerIntroText: "你的出生资料、图谱与历史记录默认保存在这台设备上。", drawerActions: "你的空间", drawerHistoryHint: "重新打开保存在本机的人生说明书", drawerSettingsHint: "管理隐私模式、本地历史与数据", language: "语言", drawerLanguageHint: "切换界面与解读语言", aboutUs: "关于我们", drawerAboutHint: "认识 Pluto 与我们相信的生命观", contactUs: "联系我们", drawerContactHint: "网站、邮箱与社交媒体", drawerLinksTitle: "帮助与说明", drawerFooter: "认识自己，不是为了证明自己。",
+    supportKicker: "有余相助", supportJourney: "随喜相助", supportIntro: "若这份人生说明书于你有用，可以让一份心意继续流动；若此刻不便，也请先照顾好自己的生活。", offerSupport: "随喜相助", supportHint: "有余则助，无余亦安", closeSupport: "关闭随喜相助", supportDialogKicker: "生而不有 · 为而不恃", supportDialogDescription: "若 Pluto 对你有一点用，你可以随心支持，让这份作品继续生长；若此刻不便，也请把这份心意留给自己。", supportQrAlt: "微信赞赏码", openSupportCode: "单独打开二维码", supportClosing: "有余则助，无余亦安。", supportThanks: "谢谢你珍惜这份作品，也珍惜自己的生活。",
+    worksTitle: "沿途所作", worksIntro: "观世界，识自己，也学习看见美。", workXiazi: "虾子曰", workXiaziTagline: "昨日世界", workXiaziDescription: "每天用全球热点与双语海报，把复杂世界讲清楚。", workWendao: "三慢问道", workWendaoTagline: "慢读原典", workWendaoDescription: "在古老文字与当下生活之间，留一处慢慢阅读的空间。", workStyleAtlas: "艺术风格图鉴", workStyleAtlasTagline: "学习看懂一种美", workStyleAtlasDescription: "沿着艺术与设计的脉络，找到自己的观看方式。",
+    aboutKicker: "真实自己，流动人生", aboutHeading: "生命不是用来证明自己的。", aboutParagraphOne: "Pluto 人生使用说明书是一件面向自我探索的独立作品。我们把复杂的出生图谱整理成清晰、可保存的双语阅读体验，帮助你从另一个角度观察自己的节奏、选择与关系。", aboutParagraphTwo: "我们相信，认识自己、接纳自己、成为自己、活出自己，是一条持续展开的路。真实面对自己与世界，善待自己、他人与生命，并在创造和欣赏中活出生命之美。", aboutDisclaimer: "人类图仅作为自我观察与对话的视角，不是科学结论，也不替你作决定。", contactKicker: "保持联系", contactHeading: "一起把作品做得更好。", contactIntro: "欢迎分享你的使用感受、问题与建议。", emailLabel: "邮箱", redLabel: "小红书", douyinLabel: "抖音", openProfile: "打开主页",
     history: "历史记录", settings: "隐私设置", localOnly: "仅保存在此设备", historyEmpty: "还没有保存的人生使用说明书。", openHistory: "打开", deleteHistory: "删除", confirmDeleteTitle: "删除这条记录？", confirmDeleteHint: "删除后无法恢复。", cancel: "取消", confirmDelete: "确认删除", openSource: "源代码",
     defaultPrivacy: "隐私模式", defaultPrivacyHint: "生成图片时隐藏姓名、日期、时间和地点；默认关闭。", saveHistory: "保存本地历史记录", saveHistoryHint: "默认开启，仅保存在本设备；关闭时可选择保留或删除已有记录。", cloudSave: "将新生成的说明书保存到云端", cloudSaveHint: "关闭时不上传姓名、出生资料或图谱；默认关闭。", productAnalytics: "帮助我们改进 Pluto", productAnalyticsHint: "仅发送允许的匿名操作事件，不包含出生资料或完整图谱；默认关闭。", deleteCloudData: "删除云端图谱与个人资料", deleteCloudConfirm: "这会删除当前匿名身份保存的姓名、出生资料和人类图记录。本地历史不会删除。已经记录的匿名使用事件会移除用户标识，并最多保留180天用于汇总统计。", deleteCloudTitle: "删除云端资料？", cloudDeleted: "云端图谱与个人资料已删除；匿名事件已去标识，本地历史保留。", clearHistory: "清空历史记录", clearHistoryTitle: "清空全部本地历史？", clearHistoryConfirm: "本设备保存的人生使用说明书会被永久删除，且无法恢复。", disableHistoryTitle: "关闭本地历史记录？", disableHistoryConfirm: "关闭后，今后生成的说明书不会加入本地历史。你可以保留已有记录，也可以同时全部删除。", keepHistoryRecords: "关闭但保留记录", deleteHistoryRecords: "关闭并删除全部记录", pleaseConfirm: "请确认", confirmAction: "确认", privacyPolicy: "隐私政策", support: "帮助与支持", legalNotice: "法律声明", privacyNote: "隐私模式、云端保存和匿名统计默认关闭；本地历史默认开启并仅保存在本设备。关闭本地历史时可选择保留或删除已有记录；删除云端资料不会删除本地历史。", nativeLocalOnlyPrivacyNote: "隐私模式和本地历史记录仅保存在此设备。当前版本不提供云端保存或匿名统计。", historyCleared: "历史记录已清空。", selectDate: "请选择完整的出生日期。", invalidDate: "请输入有效的出生日期。", selectTime: "请选择完整的出生时间。", invalidTime: "请输入有效的出生时间。", enterLocation: "请输入出生地点。",
   },
@@ -162,6 +186,10 @@ const copy = {
     futureTime: "Birth date and time cannot be in the future.", calculating: "Calculating planetary positions…", calculated: "Chart calculated locally with Swiss Ephemeris.",
     failed: "Failed: {message}", preparing: "Preparing image…", downloaded: "Image saved.", chooseSaveImage: "Choose Save Image in the system menu to add it to Photos.", shared: "Shared.", linkCopied: "Image sharing is unavailable on this device. The site link was copied.", exportFailed: "Image export failed: {message}",
     shareTitle: "My Life Manual", shareText: "Here is my personal life manual.", shareReading: "Share", shareReadingText: "Create your free Life Manual and detailed reading.", openingShareShort: "Opening…", linkCopiedShort: "Copied", sharedShort: "Shared", cancelledShort: "Cancelled", downloadedShort: "Downloaded", selectAmPm: "Choose AM or PM.", detailReading: "Detailed Reading", close: "Close",
+    openMenu: "Open more", closeMenu: "Close menu", drawerBack: "Back", drawerTitle: "Your space", drawerIntroKicker: "True to yourself. Flow with life.", drawerIntroTitle: "Keep your Life Manual in your hands", drawerIntroText: "Your birth details, chart, and history stay on this device by default.", drawerActions: "Your space", drawerHistoryHint: "Reopen Life Manuals saved on this device", drawerSettingsHint: "Manage privacy mode, local history, and data", language: "Language", drawerLanguageHint: "Switch the interface and reading language", aboutUs: "About us", drawerAboutHint: "Meet Pluto and the philosophy behind it", contactUs: "Contact", drawerContactHint: "Website, email, and social channels", drawerLinksTitle: "Help and information", drawerFooter: "Knowing yourself is not about proving yourself.",
+    supportKicker: "If you have something to spare", supportJourney: "Support the journey", supportIntro: "If this Life Manual has helped, you may let a little support keep it flowing—or care for what your own life needs now.", offerSupport: "Offer support", supportHint: "Give freely, or simply explore in peace", closeSupport: "Close support", supportDialogKicker: "Create without possessing · Give without claiming", supportDialogDescription: "If Pluto has been useful, you may support its continued growth. If now is not the moment, keep that care for yourself.", supportQrAlt: "WeChat appreciation code", openSupportCode: "Open the QR code on its own", supportClosing: "Give when you can; be at ease when you cannot.", supportThanks: "Thank you for valuing this work—and your own life.",
+    worksTitle: "Works along the way", worksIntro: "See the world, know yourself, and learn to see beauty.", workXiazi: "Xiazi Says", workXiaziTagline: "Yesterday's World", workXiaziDescription: "Global stories and bilingual posters make a complex world easier to see.", workWendao: "Wendao", workWendaoTagline: "Read the classics slowly", workWendaoDescription: "A quiet space between ancient words and life as it is lived today.", workStyleAtlas: "Style Atlas", workStyleAtlasTagline: "Learn to see a style", workStyleAtlasDescription: "Follow the lineages of art and design and discover your own way of looking.",
+    aboutKicker: "True to yourself. Flow with life.", aboutHeading: "Life is not for proving yourself.", aboutParagraphOne: "Pluto Life Manual is an independent work for self-exploration. It turns a complex birth chart into a clear, bilingual reading you can keep, offering another lens on your rhythms, choices, and relationships.", aboutParagraphTwo: "We believe knowing, accepting, becoming, and living as yourself is an unfolding path: face yourself and the world truthfully, treat self, others, and life with kindness, and live the beauty of life through creation and appreciation.", aboutDisclaimer: "Human Design is offered as a lens for reflection and conversation, not a scientific conclusion or a substitute for your decisions.", contactKicker: "Stay in touch", contactHeading: "Help us make the work better.", contactIntro: "Share your experience, questions, and suggestions with us.", emailLabel: "Email", redLabel: "RED", douyinLabel: "Douyin", openProfile: "Open profile",
     history: "History", settings: "Privacy", localOnly: "Stored only on this device", historyEmpty: "No saved Life Manuals yet.", openHistory: "Open", deleteHistory: "Delete", confirmDeleteTitle: "Delete this record?", confirmDeleteHint: "This action cannot be undone.", cancel: "Cancel", confirmDelete: "Delete", openSource: "Open Source",
     defaultPrivacy: "Privacy mode", defaultPrivacyHint: "Hide name, date, time, and location in generated images. Off by default.", saveHistory: "Save local history", saveHistoryHint: "On by default and stored only on this device. When turning it off, choose whether to keep or delete existing records.", cloudSave: "Save new Life Manuals to the cloud", cloudSaveHint: "When off, names, birth details, and charts are not uploaded. Off by default.", productAnalytics: "Help us improve Pluto", productAnalyticsHint: "Send only allowlisted anonymous actions, never birth details or a full chart. Off by default.", deleteCloudData: "Delete Cloud Charts and Personal Data", deleteCloudConfirm: "This deletes the name, birth details, and Human Design records saved for the current anonymous identity. Local history is not deleted. Previously recorded anonymous usage events are deidentified and retained for no more than 180 days for aggregate statistics.", deleteCloudTitle: "Delete cloud data?", cloudDeleted: "Cloud charts and personal data deleted. Events were deidentified; local history remains.", clearHistory: "Clear history", clearHistoryTitle: "Clear all local history?", clearHistoryConfirm: "Every Life Manual saved on this device will be permanently deleted. This cannot be undone.", disableHistoryTitle: "Turn off local history?", disableHistoryConfirm: "New Life Manuals will no longer be added to local history. You can keep existing records or delete them all.", keepHistoryRecords: "Turn Off & Keep Records", deleteHistoryRecords: "Turn Off & Delete All", pleaseConfirm: "Please confirm", confirmAction: "Confirm", privacyPolicy: "Privacy Policy", support: "Help & Support", legalNotice: "Legal Notice", privacyNote: "Privacy mode, cloud saving, and anonymous analytics are off by default. Local history is on by default and stored only on this device. When turning local history off, choose whether to keep or delete existing records; deleting cloud data does not delete local history.", nativeLocalOnlyPrivacyNote: "Privacy mode and local history stay on this device. Cloud saving and anonymous analytics are not available in this release.", historyCleared: "History cleared.", selectDate: "Choose a complete birth date.", invalidDate: "Enter a valid birth date.", selectTime: "Choose a complete birth time.", invalidTime: "Enter a valid birth time.", enterLocation: "Enter a birth location.",
   },
@@ -1329,17 +1357,111 @@ function applyLanguage(nextLanguage, rerender = true) {
   }
 }
 
+let drawerRestoreFocus = null;
+let drawerView = "home";
+
+function setDrawerView(nextView, { focus = true } = {}) {
+  drawerView = nextView === "about" || nextView === "contact" ? nextView : "home";
+  drawerHome.hidden = drawerView !== "home";
+  drawerAbout.hidden = drawerView !== "about";
+  drawerContact.hidden = drawerView !== "contact";
+  drawerOrbit.hidden = drawerView !== "home";
+  drawerBackButton.hidden = drawerView === "home";
+  const titleKey = drawerView === "about" ? "aboutUs" : drawerView === "contact" ? "contactUs" : "drawerTitle";
+  drawerTitle.dataset.i18n = titleKey;
+  drawerTitle.textContent = t(titleKey);
+  sideDrawer.querySelector(".drawer-scroll").scrollTop = 0;
+  if (focus && drawerView !== "home") drawerBackButton.focus({ preventScroll: true });
+}
+
+function openDrawer() {
+  drawerRestoreFocus = document.activeElement;
+  setDrawerView("home", { focus: false });
+  appDrawer.hidden = false;
+  document.body.classList.add("drawer-open");
+  openMenuButton.setAttribute("aria-expanded", "true");
+  sideDrawer.focus({ preventScroll: true });
+}
+
+function closeDrawer({ restoreFocus = true } = {}) {
+  if (appDrawer.hidden) return;
+  appDrawer.hidden = true;
+  document.body.classList.remove("drawer-open");
+  openMenuButton.setAttribute("aria-expanded", "false");
+  if (restoreFocus && drawerRestoreFocus instanceof HTMLElement) drawerRestoreFocus.focus({ preventScroll: true });
+  drawerRestoreFocus = null;
+}
+
+function drawerFocusableElements() {
+  return [...sideDrawer.querySelectorAll("button, a[href], input, select, textarea, [tabindex]:not([tabindex='-1'])")]
+    .filter((element) => !element.disabled && !element.hidden && element.offsetParent !== null);
+}
+
+openMenuButton.addEventListener("click", openDrawer);
+closeMenuButton.addEventListener("click", () => closeDrawer());
+drawerBackdrop.addEventListener("click", () => closeDrawer());
+drawerBackButton.addEventListener("click", () => setDrawerView("home"));
+openAboutButton.addEventListener("click", () => setDrawerView("about"));
+openContactButton.addEventListener("click", () => setDrawerView("contact"));
+appDrawer.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    event.preventDefault();
+    closeDrawer();
+    return;
+  }
+  if (event.key !== "Tab") return;
+  const focusable = drawerFocusableElements();
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+});
+
 languageButtons.forEach((button) => button.addEventListener("click", () => {
   applyLanguage(button.dataset.language);
   trackEvent("language_changed", { language: button.dataset.language });
+  closeDrawer();
 }));
 openHistoryButton.addEventListener("click", () => {
+  closeDrawer({ restoreFocus: false });
   renderHistory();
   historyDialog.showModal();
 });
-openSettingsButton.addEventListener("click", () => settingsDialog.showModal());
+openSettingsButton.addEventListener("click", () => {
+  closeDrawer({ restoreFocus: false });
+  settingsDialog.showModal();
+});
+if (nativeRuntime) {
+  drawerSupport.remove();
+  supportDialog.remove();
+} else {
+  drawerSupport.hidden = false;
+  openSupportButton.addEventListener("click", () => {
+    closeDrawer({ restoreFocus: false });
+    if (!supportQr.src) supportQr.src = supportQr.dataset.src;
+    supportDialog.showModal();
+    window.setTimeout(() => closeSupportButton.focus(), 0);
+  });
+  closeSupportButton.addEventListener("click", () => supportDialog.close());
+  supportDialog.addEventListener("click", (event) => {
+    if (event.target === supportDialog) supportDialog.close();
+  });
+}
 closeHistoryButton.addEventListener("click", () => historyDialog.close());
 closeSettingsButton.addEventListener("click", () => settingsDialog.close());
+function returnDialogToDrawer(dialog) {
+  dialog.close();
+  openDrawer();
+  drawerRestoreFocus = openMenuButton;
+}
+backFromHistoryButton.addEventListener("click", () => returnDialogToDrawer(historyDialog));
+backFromSettingsButton.addEventListener("click", () => returnDialogToDrawer(settingsDialog));
 [historyDialog, settingsDialog].forEach((dialog) => dialog.addEventListener("click", (event) => {
   if (event.target === dialog) dialog.close();
 }));

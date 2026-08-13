@@ -32,6 +32,16 @@ const historyEntry = {
   },
 };
 
+async function openDrawerItem(page, selector) {
+  await page.locator("#openMenu").click();
+  await expect(page.locator("#appDrawer")).toBeVisible();
+  await page.locator(selector).click();
+}
+
+async function switchLanguage(page, language) {
+  await openDrawerItem(page, `[data-language="${language}"]`);
+}
+
 async function stubExternalNetwork(page, requests = []) {
   page.on("request", (request) => requests.push(request.url()));
   await page.route("https://**", (route) => route.abort());
@@ -200,7 +210,7 @@ test("mobile form and settings dialog scroll naturally", async ({ page }) => {
   await expect(submit).toBeInViewport();
   expect(await page.evaluate(() => document.documentElement.scrollHeight > window.innerHeight)).toBe(true);
 
-  await page.locator("#openSettings").click();
+  await openDrawerItem(page, "#openSettings");
   const dialog = page.locator("#settingsDialog");
   await expect(dialog).toBeVisible();
   expect(await dialog.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(true);
@@ -208,13 +218,94 @@ test("mobile form and settings dialog scroll naturally", async ({ page }) => {
   expect(await dialog.evaluate((element) => element.scrollTop > 0)).toBe(true);
 });
 
+test("mobile header drawer contains the former tools and closes predictably", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 667 });
+  await page.goto("/");
+
+  await expect(page.locator("#openMenu")).toBeVisible();
+  await expect(page.locator("#appDrawer")).toBeHidden();
+  await page.locator("#openMenu").click();
+  await expect(page.locator("#appDrawer")).toBeVisible();
+  await expect(page.locator("#openMenu")).toHaveAttribute("aria-expanded", "true");
+  await expect(page.locator("#openHistory")).toBeVisible();
+  await expect(page.locator("#openSettings")).toBeVisible();
+  await expect(page.locator('[data-language="zh"]')).toBeVisible();
+  await expect(page.locator('[data-language="en"]')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+
+  await page.locator("#openHistory").click();
+  await expect(page.locator("#historyDialog")).toBeVisible();
+  await page.locator("#backFromHistory").click();
+  await expect(page.locator("#appDrawer")).toBeVisible();
+  await page.locator("#openSettings").click();
+  await expect(page.locator("#settingsDialog")).toBeVisible();
+  await page.locator("#backFromSettings").click();
+  await expect(page.locator("#appDrawer")).toBeVisible();
+
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#appDrawer")).toBeHidden();
+  await expect(page.locator("#openMenu")).toBeFocused();
+  await expect(page.locator("#openMenu")).toHaveAttribute("aria-expanded", "false");
+
+  await switchLanguage(page, "en");
+  await expect(page.locator("#appDrawer")).toBeHidden();
+  await page.locator("#openMenu").click();
+  await expect(page.locator("#drawerTitle")).toHaveText("Your space");
+  await page.locator(".drawer-backdrop").click({ position: { x: 4, y: 4 } });
+  await expect(page.locator("#appDrawer")).toBeHidden();
+});
+test("web drawer exposes about, contact, works, and opt-in support", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await switchLanguage(page, "zh");
+  await page.locator("#openMenu").click();
+
+  await expect(page.locator("#openAbout")).toBeVisible();
+  await expect(page.locator("#openContact")).toBeVisible();
+  await expect(page.locator(".drawer-work-card")).toHaveCount(3);
+  await expect(page.locator("#drawerSupport")).toBeVisible();
+  await expect(page.locator("#supportQr")).not.toHaveAttribute("src", /.+/);
+
+  await page.locator("#openAbout").click();
+  await expect(page.locator("#drawerTitle")).toHaveText("关于我们");
+  await expect(page.locator("#drawerAbout")).toBeVisible();
+  await page.locator("#drawerBack").click();
+  await page.locator("#openContact").click();
+  await expect(page.locator("#drawerTitle")).toHaveText("联系我们");
+  await expect(page.locator("#drawerContact")).toBeVisible();
+  await page.locator("#drawerBack").click();
+
+  await page.locator("#openSupport").click();
+  await expect(page.locator("#supportDialog")).toBeVisible();
+  await expect(page.locator("#supportQr")).toHaveAttribute("src", /support-wechat-appreciation-code\.png/);
+  await page.locator("#closeSupport").click();
+  await expect(page.locator("#supportDialog")).toBeHidden();
+});
+
+test("native drawer excludes support while keeping the other information", async ({ page }) => {
+  await page.addInitScript(() => {
+    globalThis.Capacitor = {
+      isNativePlatform: () => true,
+      getPlatform: () => "ios",
+      registerPlugin: () => ({}),
+    };
+  });
+  await page.goto("/");
+  await page.locator("#openMenu").click();
+
+  await expect(page.locator("#openAbout")).toBeVisible();
+  await expect(page.locator("#openContact")).toBeVisible();
+  await expect(page.locator(".drawer-work-card")).toHaveCount(3);
+  await expect(page.locator("#drawerSupport")).toHaveCount(0);
+  await expect(page.locator("#supportDialog")).toHaveCount(0);
+});
 test("an explicit disabled history setting is not overwritten by retained records", async ({ page }) => {
   await page.addInitScript(({ settingsKey: key, historyKey: history, entry }) => {
     localStorage.setItem(key, JSON.stringify({ privacyByDefault: true, keepHistory: false, cloudSave: true, productAnalytics: true }));
     localStorage.setItem(history, JSON.stringify([entry]));
   }, { settingsKey, historyKey, entry: historyEntry });
   await page.goto("/");
-  await page.locator("#openSettings").click();
+  await openDrawerItem(page, "#openSettings");
   await expect(page.locator("#defaultPrivacy")).toBeChecked();
   await expect(page.locator("#saveHistory")).not.toBeChecked();
   expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)), settingsKey)).toEqual({
@@ -238,7 +329,7 @@ test("the opposite explicit privacy and history preferences remain unchanged", a
   }, { key: settingsKey, settings: savedSettings });
 
   await page.goto("/");
-  await page.locator("#openSettings").click();
+  await openDrawerItem(page, "#openSettings");
   await expect(page.locator("#defaultPrivacy")).not.toBeChecked();
   await expect(page.locator("#saveHistory")).toBeChecked();
   expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)), settingsKey)).toEqual(savedSettings);
@@ -254,7 +345,7 @@ test.describe("local history opt-out", () => {
 
   test("cancel keeps history enabled", async ({ page }) => {
     await page.goto("/");
-    await page.locator("#openSettings").click();
+    await openDrawerItem(page, "#openSettings");
     await page.locator("#saveHistory").uncheck();
     await expect(page.locator("#historyOptOutDialog")).toBeVisible();
     await page.locator("#cancelHistoryOptOut").click();
@@ -265,7 +356,7 @@ test.describe("local history opt-out", () => {
 
   test("turn off and keep preserves records and prevents new saves", async ({ page }) => {
     await page.goto("/");
-    await page.locator("#openSettings").click();
+    await openDrawerItem(page, "#openSettings");
     await page.locator("#saveHistory").uncheck();
     await page.locator("#keepHistoryRecords").click();
     await expect(page.locator("#saveHistory")).not.toBeChecked();
@@ -277,7 +368,7 @@ test.describe("local history opt-out", () => {
 
   test("turn off and delete clears records", async ({ page }) => {
     await page.goto("/");
-    await page.locator("#openSettings").click();
+    await openDrawerItem(page, "#openSettings");
     await page.locator("#saveHistory").uncheck();
     await page.locator("#deleteHistoryRecords").click();
     await expect(page.locator("#saveHistory")).not.toBeChecked();
@@ -344,7 +435,7 @@ test("localhost secure context restores saved remote preferences", async ({ page
   await page.goto(localhostUrl.href);
   expect(await page.evaluate(() => globalThis.isSecureContext)).toBe(true);
   await expect(page.locator("#localModeNotice")).toBeHidden();
-  await page.locator("#openSettings").click();
+  await openDrawerItem(page, "#openSettings");
   await expect(page.locator("#cloudSaveSetting")).toBeVisible();
   await expect(page.locator("#productAnalyticsSetting")).toBeVisible();
   await expect(page.locator("#cloudSave")).toBeEnabled();
@@ -382,7 +473,7 @@ test("Capacitor native runtime without Supabase hides and blocks remote features
   await page.goto("/");
   expect(await page.evaluate(() => globalThis.isSecureContext)).toBe(false);
   await expect(page.locator("#localModeNotice")).toBeHidden();
-  await page.locator("#openSettings").click();
+  await openDrawerItem(page, "#openSettings");
   await expect(page.locator("#cloudSaveSetting")).toBeHidden();
   await expect(page.locator("#productAnalyticsSetting")).toBeHidden();
   await expect(page.locator("#deleteCloudData")).toBeHidden();
@@ -425,8 +516,8 @@ test("Capacitor native runtime without Supabase hides and blocks remote features
   await expect.poll(() => page.evaluate(() => globalThis.__plutoNativeCalls.map((call) => call.method))).toContain("shareImage");
 
   await page.locator("#editChart").click();
-  await page.locator('[data-language="en"]').click();
-  await page.locator("#openSettings").click();
+  await switchLanguage(page, "en");
+  await openDrawerItem(page, "#openSettings");
   await expect(page.locator(".settings-note")).toHaveText("Privacy mode and local history stay on this device. Cloud saving and anonymous analytics are not available in this release.");
   expect(requests.some((url) => /supabase\.co|api-human-design\.wonderelian\.com/.test(url))).toBe(false);
   expect(failedLocalRequests).toEqual([]);
@@ -464,7 +555,7 @@ test("Capacitor native runtime with complete Supabase config can expose remote f
       supabasePublishableKey: "test-publishable-key",
     },
   });
-  await page.locator("#openSettings").click();
+  await openDrawerItem(page, "#openSettings");
   await expect(page.locator("#cloudSaveSetting")).toBeVisible();
   await expect(page.locator("#productAnalyticsSetting")).toBeVisible();
   await expect(page.locator("#deleteCloudData")).toBeVisible();
@@ -477,7 +568,7 @@ test("Capacitor native runtime with complete Supabase config can expose remote f
 
 test("opening a generated history record restores the semantic result", async ({ page }) => {
   await page.goto("/");
-  await page.locator("#openSettings").click();
+  await openDrawerItem(page, "#openSettings");
   await page.locator("#saveHistory").check();
   await page.locator("#closeSettings").click();
   await fillAndGenerate(page);
@@ -489,7 +580,7 @@ test("opening a generated history record restores the semantic result", async ({
       return originalHtml2Canvas(...args);
     };
   });
-  await page.locator("#openHistory").click();
+  await openDrawerItem(page, "#openHistory");
   await page.locator("[data-history-open]").first().click();
   await expect(page.locator("#chartResult")).toBeVisible({ timeout: 45_000 });
   await expect(page.locator(".preview-stage")).toHaveAttribute("data-media-state", "loading");
@@ -508,15 +599,15 @@ test("language switch updates local notice, disclaimer, summary, and history dia
     localStorage.setItem(history, JSON.stringify([entry]));
   }, { settingsKey, historyKey, entry: historyEntry });
   await page.goto("/");
-  await page.locator('[data-language="zh"]').click();
-  await page.locator("#openSettings").click();
+  await switchLanguage(page, "zh");
+  await openDrawerItem(page, "#openSettings");
   await expect(page.locator('[data-i18n="defaultPrivacyHint"]')).toHaveText("生成图片时隐藏姓名、日期、时间和地点；默认关闭。");
   await expect(page.locator('[data-i18n="saveHistoryHint"]')).toHaveText("默认开启，仅保存在本设备；关闭时可选择保留或删除已有记录。");
   await page.locator("#closeSettings").click();
-  await page.locator('[data-language="en"]').click();
+  await switchLanguage(page, "en");
   await expect(page.locator("#localModeNotice")).toContainText("temporary HTTP connection");
   await expect(page.locator(".form-disclaimer")).toContainText("For personal reflection");
-  await page.locator("#openSettings").click();
+  await openDrawerItem(page, "#openSettings");
   await expect(page.locator('[data-i18n="defaultPrivacyHint"]')).toHaveText("Hide name, date, time, and location in generated images. Off by default.");
   await expect(page.locator('[data-i18n="saveHistoryHint"]')).toHaveText("On by default and stored only on this device. When turning it off, choose whether to keep or delete existing records.");
   await page.locator("#saveHistory").uncheck();
@@ -571,8 +662,8 @@ test("fingerprinted production bundle loads every calculation asset without modu
 
 test("signature summary uses the real engine Sign value across languages and history", async ({ page }) => {
   await page.goto("/");
-  await page.locator('[data-language="en"]').click();
-  await page.locator("#openSettings").click();
+  await switchLanguage(page, "en");
+  await openDrawerItem(page, "#openSettings");
   await page.locator("#defaultPrivacy").check();
   await page.locator("#saveHistory").check();
   await page.locator("#closeSettings").click();
@@ -602,19 +693,19 @@ test("signature summary uses the real engine Sign value across languages and his
   await expect(page.locator("#resultSummary")).not.toContainText(/Production Smoke Test|1990-01-01|12:00|Wuhan/);
   await expect(page.locator("#chartPreview")).not.toHaveAttribute("alt", /Production Smoke Test|1990|12:00|Wuhan/);
 
-  await page.locator('[data-language="zh"]').click();
+  await switchLanguage(page, "zh");
   await expect(page.locator("#summarySignature")).toHaveText("满足感");
   await expect(page.locator("#summaryNotSelf")).toHaveText("挫败");
 
   await page.locator("#editChart").click();
-  await page.locator("#openHistory").click();
+  await openDrawerItem(page, "#openHistory");
   await page.locator("[data-history-open]").first().click();
   await expect(page.locator("#chartResult")).toBeVisible({ timeout: 45_000 });
   await expect(page.locator("#summarySignature")).toHaveText("满足感");
   await expect(page.locator("#summaryNotSelf")).toHaveText("挫败");
   await expect(page.locator("#resultSummary")).toBeFocused();
 
-  await page.locator('[data-language="en"]').click();
+  await switchLanguage(page, "en");
   await expect(page.locator("#summarySignature")).toHaveText("Satisfaction");
   await expect(page.locator("#summaryNotSelf")).toHaveText("Frustration");
 });

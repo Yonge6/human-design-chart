@@ -34,17 +34,69 @@
 <body>
   <header class="topbar">
     <div class="brand">Pluto <span class="brand-detail" data-i18n="brandShort">人生使用说明书</span></div>
-    <div class="topbar-actions">
-      <div class="app-tools">
-        <button id="openHistory" type="button" data-i18n-aria-label="history" aria-label="历史记录" title="历史记录"><span aria-hidden="true">◷</span></button>
-        <button id="openSettings" type="button" data-i18n-aria-label="settings" aria-label="隐私设置" title="隐私设置"><span class="text-symbol" aria-hidden="true">⚙︎</span></button>
-      </div>
-      <div class="language-switch" role="group" aria-label="Language / 语言">
-        <button type="button" data-language="zh" aria-pressed="true">中文</button>
-        <button type="button" data-language="en" aria-pressed="false">EN</button>
-      </div>
-    </div>
+    <button id="openMenu" class="menu-button" type="button" data-i18n-aria-label="openMenu" aria-label="打开更多功能" aria-controls="appDrawer" aria-expanded="false">
+      <span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+    </button>
   </header>
+
+  <div id="appDrawer" class="drawer-layer" hidden>
+    <button class="drawer-backdrop" type="button" data-i18n-aria-label="closeMenu" aria-label="关闭菜单"></button>
+    <aside class="side-drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" tabindex="-1">
+      <header class="drawer-header">
+        <span class="drawer-orbit" aria-hidden="true"><span></span></span>
+        <div>
+          <span class="drawer-brand">PLUTO · LIFE MANUAL</span>
+          <h2 id="drawerTitle" data-i18n="drawerTitle">你的空间</h2>
+        </div>
+        <button id="closeMenu" class="drawer-close" type="button" data-i18n-aria-label="closeMenu" aria-label="关闭菜单"><span aria-hidden="true">×</span></button>
+      </header>
+
+      <div class="drawer-scroll">
+        <section class="drawer-intro" aria-labelledby="drawerIntroTitle">
+          <span class="drawer-kicker" data-i18n="drawerIntroKicker">真实自己，流动人生</span>
+          <h3 id="drawerIntroTitle" data-i18n="drawerIntroTitle">把人生说明书留在自己手中</h3>
+          <p data-i18n="drawerIntroText">你的出生资料、图谱与历史记录默认保存在这台设备上。</p>
+        </section>
+
+        <nav class="drawer-nav" data-i18n-aria-label="drawerActions" aria-label="你的空间">
+          <button id="openHistory" type="button">
+            <span class="drawer-nav-icon" aria-hidden="true">◷</span>
+            <span><strong data-i18n="history">历史记录</strong><small data-i18n="drawerHistoryHint">重新打开保存在本机的人生说明书</small></span>
+            <span class="drawer-chevron" aria-hidden="true">›</span>
+          </button>
+          <button id="openSettings" type="button">
+            <span class="drawer-nav-icon text-symbol" aria-hidden="true">⚙︎</span>
+            <span><strong data-i18n="settings">隐私设置</strong><small data-i18n="drawerSettingsHint">管理隐私模式、本地历史与数据</small></span>
+            <span class="drawer-chevron" aria-hidden="true">›</span>
+          </button>
+          <div class="drawer-nav-row">
+            <span class="drawer-nav-icon language-mark" aria-hidden="true">文</span>
+            <span><strong data-i18n="language">语言</strong><small data-i18n="drawerLanguageHint">切换界面与解读语言</small></span>
+            <div class="language-switch" role="group" aria-label="Language / 语言">
+              <button type="button" data-language="zh" aria-pressed="true">中文</button>
+              <button type="button" data-language="en" aria-pressed="false">EN</button>
+            </div>
+          </div>
+        </nav>
+
+        <section class="drawer-links" aria-labelledby="drawerLinksTitle">
+          <span id="drawerLinksTitle" class="drawer-kicker" data-i18n="drawerLinksTitle">帮助与说明</span>
+          <nav data-i18n-aria-label="drawerLinksTitle" aria-label="帮助与说明">
+            <a href="support.html" target="_blank" rel="noopener"><span data-i18n="support">帮助与支持</span><span aria-hidden="true">↗</span></a>
+            <a href="privacy.html" target="_blank" rel="noopener"><span data-i18n="privacyPolicy">隐私政策</span><span aria-hidden="true">↗</span></a>
+            <a href="legal.html" target="_blank" rel="noopener"><span data-i18n="legalNotice">法律声明</span><span aria-hidden="true">↗</span></a>
+            <a href="https://github.com/Yonge6/human-design-chart" target="_blank" rel="noopener"><span data-i18n="openSource">源代码</span><span aria-hidden="true">↗</span></a>
+          </nav>
+        </section>
+      </div>
+
+      <footer class="drawer-footer">
+        <span aria-hidden="true"></span>
+        <p data-i18n="drawerFooter">认识自己，不是为了证明自己。</p>
+        <span aria-hidden="true"></span>
+      </footer>
+    </aside>
+  </div>
   <main class="shell form-view">
     <section class="form-panel">
       <p class="eyebrow" data-i18n="formEyebrow">人生使用说明书</p>

@@ -63,6 +63,11 @@ const shareDetailLabel = document.querySelector("[data-detail-share-label]");
 const detailContent = document.querySelector("#detailContent");
 const celebrityMatches = document.querySelector("#celebrityMatches");
 const languageButtons = [...document.querySelectorAll("[data-language]")];
+const openMenuButton = document.querySelector("#openMenu");
+const appDrawer = document.querySelector("#appDrawer");
+const sideDrawer = appDrawer.querySelector(".side-drawer");
+const drawerBackdrop = appDrawer.querySelector(".drawer-backdrop");
+const closeMenuButton = document.querySelector("#closeMenu");
 const openHistoryButton = document.querySelector("#openHistory");
 const openSettingsButton = document.querySelector("#openSettings");
 const historyDialog = document.querySelector("#historyDialog");
@@ -129,6 +134,7 @@ const copy = {
     futureTime: "出生日期和时间不能晚于现在。", calculating: "正在计算行星位置…", calculated: "已使用 Swiss Ephemeris 在本地完成计算。",
     failed: "计算失败：{message}", preparing: "正在生成图片…", downloaded: "图片已保存。", chooseSaveImage: "请在系统菜单中选择“存储图像”保存到相册。", shared: "分享已完成。", linkCopied: "当前设备不支持分享图片，网站链接已复制。", exportFailed: "图片导出失败：{message}",
     shareTitle: "我的人生使用说明书", shareText: "这是我的人生使用说明书。", shareReading: "分享", shareReadingText: "免费生成你的人生使用说明书与详细解读。", openingShareShort: "正在打开…", linkCopiedShort: "已复制", sharedShort: "已分享", cancelledShort: "已取消", downloadedShort: "已下载", selectAmPm: "请选择上午或下午。", detailReading: "详细解读", close: "关闭",
+    openMenu: "打开更多功能", closeMenu: "关闭菜单", drawerTitle: "你的空间", drawerIntroKicker: "真实自己，流动人生", drawerIntroTitle: "把人生说明书留在自己手中", drawerIntroText: "你的出生资料、图谱与历史记录默认保存在这台设备上。", drawerActions: "你的空间", drawerHistoryHint: "重新打开保存在本机的人生说明书", drawerSettingsHint: "管理隐私模式、本地历史与数据", language: "语言", drawerLanguageHint: "切换界面与解读语言", drawerLinksTitle: "帮助与说明", drawerFooter: "认识自己，不是为了证明自己。",
     history: "历史记录", settings: "隐私设置", localOnly: "仅保存在此设备", historyEmpty: "还没有保存的人生使用说明书。", openHistory: "打开", deleteHistory: "删除", confirmDeleteTitle: "删除这条记录？", confirmDeleteHint: "删除后无法恢复。", cancel: "取消", confirmDelete: "确认删除", openSource: "源代码",
     defaultPrivacy: "隐私模式", defaultPrivacyHint: "生成图片时隐藏姓名、日期、时间和地点；默认关闭。", saveHistory: "保存本地历史记录", saveHistoryHint: "默认开启，仅保存在本设备；关闭时可选择保留或删除已有记录。", cloudSave: "将新生成的说明书保存到云端", cloudSaveHint: "关闭时不上传姓名、出生资料或图谱；默认关闭。", productAnalytics: "帮助我们改进 Pluto", productAnalyticsHint: "仅发送允许的匿名操作事件，不包含出生资料或完整图谱；默认关闭。", deleteCloudData: "删除云端图谱与个人资料", deleteCloudConfirm: "这会删除当前匿名身份保存的姓名、出生资料和人类图记录。本地历史不会删除。已经记录的匿名使用事件会移除用户标识，并最多保留180天用于汇总统计。", deleteCloudTitle: "删除云端资料？", cloudDeleted: "云端图谱与个人资料已删除；匿名事件已去标识，本地历史保留。", clearHistory: "清空历史记录", clearHistoryTitle: "清空全部本地历史？", clearHistoryConfirm: "本设备保存的人生使用说明书会被永久删除，且无法恢复。", disableHistoryTitle: "关闭本地历史记录？", disableHistoryConfirm: "关闭后，今后生成的说明书不会加入本地历史。你可以保留已有记录，也可以同时全部删除。", keepHistoryRecords: "关闭但保留记录", deleteHistoryRecords: "关闭并删除全部记录", pleaseConfirm: "请确认", confirmAction: "确认", privacyPolicy: "隐私政策", support: "帮助与支持", legalNotice: "法律声明", privacyNote: "隐私模式、云端保存和匿名统计默认关闭；本地历史默认开启并仅保存在本设备。关闭本地历史时可选择保留或删除已有记录；删除云端资料不会删除本地历史。", nativeLocalOnlyPrivacyNote: "隐私模式和本地历史记录仅保存在此设备。当前版本不提供云端保存或匿名统计。", historyCleared: "历史记录已清空。", selectDate: "请选择完整的出生日期。", invalidDate: "请输入有效的出生日期。", selectTime: "请选择完整的出生时间。", invalidTime: "请输入有效的出生时间。", enterLocation: "请输入出生地点。",
   },
@@ -148,6 +154,7 @@ const copy = {
     futureTime: "Birth date and time cannot be in the future.", calculating: "Calculating planetary positions…", calculated: "Chart calculated locally with Swiss Ephemeris.",
     failed: "Failed: {message}", preparing: "Preparing image…", downloaded: "Image saved.", chooseSaveImage: "Choose Save Image in the system menu to add it to Photos.", shared: "Shared.", linkCopied: "Image sharing is unavailable on this device. The site link was copied.", exportFailed: "Image export failed: {message}",
     shareTitle: "My Life Manual", shareText: "Here is my personal life manual.", shareReading: "Share", shareReadingText: "Create your free Life Manual and detailed reading.", openingShareShort: "Opening…", linkCopiedShort: "Copied", sharedShort: "Shared", cancelledShort: "Cancelled", downloadedShort: "Downloaded", selectAmPm: "Choose AM or PM.", detailReading: "Detailed Reading", close: "Close",
+    openMenu: "Open more", closeMenu: "Close menu", drawerTitle: "Your space", drawerIntroKicker: "True to yourself. Flow with life.", drawerIntroTitle: "Keep your Life Manual in your hands", drawerIntroText: "Your birth details, chart, and history stay on this device by default.", drawerActions: "Your space", drawerHistoryHint: "Reopen Life Manuals saved on this device", drawerSettingsHint: "Manage privacy mode, local history, and data", language: "Language", drawerLanguageHint: "Switch the interface and reading language", drawerLinksTitle: "Help and information", drawerFooter: "Knowing yourself is not about proving yourself.",
     history: "History", settings: "Privacy", localOnly: "Stored only on this device", historyEmpty: "No saved Life Manuals yet.", openHistory: "Open", deleteHistory: "Delete", confirmDeleteTitle: "Delete this record?", confirmDeleteHint: "This action cannot be undone.", cancel: "Cancel", confirmDelete: "Delete", openSource: "Open Source",
     defaultPrivacy: "Privacy mode", defaultPrivacyHint: "Hide name, date, time, and location in generated images. Off by default.", saveHistory: "Save local history", saveHistoryHint: "On by default and stored only on this device. When turning it off, choose whether to keep or delete existing records.", cloudSave: "Save new Life Manuals to the cloud", cloudSaveHint: "When off, names, birth details, and charts are not uploaded. Off by default.", productAnalytics: "Help us improve Pluto", productAnalyticsHint: "Send only allowlisted anonymous actions, never birth details or a full chart. Off by default.", deleteCloudData: "Delete Cloud Charts and Personal Data", deleteCloudConfirm: "This deletes the name, birth details, and Human Design records saved for the current anonymous identity. Local history is not deleted. Previously recorded anonymous usage events are deidentified and retained for no more than 180 days for aggregate statistics.", deleteCloudTitle: "Delete cloud data?", cloudDeleted: "Cloud charts and personal data deleted. Events were deidentified; local history remains.", clearHistory: "Clear history", clearHistoryTitle: "Clear all local history?", clearHistoryConfirm: "Every Life Manual saved on this device will be permanently deleted. This cannot be undone.", disableHistoryTitle: "Turn off local history?", disableHistoryConfirm: "New Life Manuals will no longer be added to local history. You can keep existing records or delete them all.", keepHistoryRecords: "Turn Off & Keep Records", deleteHistoryRecords: "Turn Off & Delete All", pleaseConfirm: "Please confirm", confirmAction: "Confirm", privacyPolicy: "Privacy Policy", support: "Help & Support", legalNotice: "Legal Notice", privacyNote: "Privacy mode, cloud saving, and anonymous analytics are off by default. Local history is on by default and stored only on this device. When turning local history off, choose whether to keep or delete existing records; deleting cloud data does not delete local history.", nativeLocalOnlyPrivacyNote: "Privacy mode and local history stay on this device. Cloud saving and anonymous analytics are not available in this release.", historyCleared: "History cleared.", selectDate: "Choose a complete birth date.", invalidDate: "Enter a valid birth date.", selectTime: "Choose a complete birth time.", invalidTime: "Enter a valid birth time.", enterLocation: "Enter a birth location.",
   },
@@ -1259,15 +1266,67 @@ function applyLanguage(nextLanguage, rerender = true) {
   }
 }
 
+let drawerRestoreFocus = null;
+
+function openDrawer() {
+  drawerRestoreFocus = document.activeElement;
+  appDrawer.hidden = false;
+  document.body.classList.add("drawer-open");
+  openMenuButton.setAttribute("aria-expanded", "true");
+  sideDrawer.focus({ preventScroll: true });
+}
+
+function closeDrawer({ restoreFocus = true } = {}) {
+  if (appDrawer.hidden) return;
+  appDrawer.hidden = true;
+  document.body.classList.remove("drawer-open");
+  openMenuButton.setAttribute("aria-expanded", "false");
+  if (restoreFocus && drawerRestoreFocus instanceof HTMLElement) drawerRestoreFocus.focus({ preventScroll: true });
+  drawerRestoreFocus = null;
+}
+
+function drawerFocusableElements() {
+  return [...sideDrawer.querySelectorAll("button, a[href], input, select, textarea, [tabindex]:not([tabindex='-1'])")]
+    .filter((element) => !element.disabled && !element.hidden);
+}
+
+openMenuButton.addEventListener("click", openDrawer);
+closeMenuButton.addEventListener("click", () => closeDrawer());
+drawerBackdrop.addEventListener("click", () => closeDrawer());
+appDrawer.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    event.preventDefault();
+    closeDrawer();
+    return;
+  }
+  if (event.key !== "Tab") return;
+  const focusable = drawerFocusableElements();
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+});
+
 languageButtons.forEach((button) => button.addEventListener("click", () => {
   applyLanguage(button.dataset.language);
   trackEvent("language_changed", { language: button.dataset.language });
+  closeDrawer();
 }));
 openHistoryButton.addEventListener("click", () => {
+  closeDrawer({ restoreFocus: false });
   renderHistory();
   historyDialog.showModal();
 });
-openSettingsButton.addEventListener("click", () => settingsDialog.showModal());
+openSettingsButton.addEventListener("click", () => {
+  closeDrawer({ restoreFocus: false });
+  settingsDialog.showModal();
+});
 closeHistoryButton.addEventListener("click", () => historyDialog.close());
 closeSettingsButton.addEventListener("click", () => settingsDialog.close());
 [historyDialog, settingsDialog].forEach((dialog) => dialog.addEventListener("click", (event) => {

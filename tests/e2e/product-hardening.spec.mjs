@@ -267,7 +267,8 @@ test("web drawer exposes about, contact, works, and opt-in support", async ({ pa
 
   await expect(page.locator("#openAbout")).toBeVisible();
   await expect(page.locator("#openContact")).toBeVisible();
-  await expect(page.locator(".drawer-work-card")).toHaveCount(3);
+  await expect(page.locator(".drawer-work-card")).toHaveCount(4);
+  await expect(page.locator(".drawer-work-card").first()).toHaveAttribute("href", "https://yixiu.wonderelian.com/");
   await expect(page.locator("#drawerSupport")).toBeVisible();
   await expect(page.locator("#supportQr")).not.toHaveAttribute("src", /.+/);
 
@@ -300,7 +301,8 @@ test("native drawer excludes support while keeping the other information", async
 
   await expect(page.locator("#openAbout")).toBeVisible();
   await expect(page.locator("#openContact")).toBeVisible();
-  await expect(page.locator(".drawer-work-card")).toHaveCount(3);
+  await expect(page.locator(".drawer-work-card")).toHaveCount(4);
+  await expect(page.locator(".drawer-work-card").first()).toHaveAttribute("href", "https://yixiu.wonderelian.com/");
   await expect(page.locator("#drawerSupport")).toHaveCount(0);
   await expect(page.locator("#supportDialog")).toHaveCount(0);
 });

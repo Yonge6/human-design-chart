@@ -30,6 +30,7 @@ test("drawer includes WonderElian information while support remains web-only", (
   assert.match(html, /id="openAbout"[\s\S]*id="openContact"/);
   assert.match(html, /id="drawerWorksTitle"[\s\S]*xiazishuo\.com[\s\S]*wendao\.wonderelian\.com[\s\S]*style-atlas\.wonderelian\.com/);
   assert.match(html, /id="drawerSupport"[^>]*hidden/);
+  assert.match(html, /class="drawer-support-mark"[^>]*>喜<\/span>/);
   assert.match(html, /id="supportQr"[^>]*data-src=/);
   assert.doesNotMatch(html, /id="supportQr"[^>]*\ssrc=/);
   assert.match(app, /if \(nativeRuntime\) \{\s*drawerSupport\.remove\(\);\s*supportDialog\.remove\(\);/);

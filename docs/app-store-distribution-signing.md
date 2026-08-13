@@ -12,7 +12,7 @@ Audit date: `2026-07-26`
 | --- | --- |
 | Team | `L855ZVM679` |
 | Bundle ID | `com.yonge6.plutolifemanual` |
-| Version / build | `1.1.0 (1)` |
+| Version / build | `1.1.0 (2)` |
 | Signing style | Automatic |
 | Apple Development identity | Available; valid through July 2027 |
 | Apple Distribution identity with private key | **Missing** |
@@ -36,7 +36,7 @@ Debug and Release currently use:
 - `CODE_SIGN_STYLE = Automatic`
 - `PRODUCT_BUNDLE_IDENTIFIER = com.yonge6.plutolifemanual`
 - `MARKETING_VERSION = 1.1.0`
-- `CURRENT_PROJECT_VERSION = 1`
+- `CURRENT_PROJECT_VERSION = 2`
 - `IPHONEOS_DEPLOYMENT_TARGET = 15.0`
 
 The target does not currently enable App Groups, Associated Domains, Push

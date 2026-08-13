@@ -13,7 +13,7 @@ import { pathToFileURL } from "node:url";
 
 const EXPECTED = Object.freeze({
   bundleId: "com.yonge6.plutolifemanual",
-  build: "1",
+  build: "2",
   deploymentTarget: "15.0",
   marketingVersion: "1.1.0",
   teamId: "L855ZVM679",

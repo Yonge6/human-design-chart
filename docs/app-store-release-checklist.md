@@ -1,6 +1,6 @@
 # iOS App Store Release Checklist
 
-Use this checklist for the `1.1.0 (1)` iOS release candidate. Archive
+Use this checklist for the `1.1.0 (2)` iOS release candidate. Archive
 preparation does not authorize TestFlight upload or App Review submission.
 
 ## Legal and Rights Gates

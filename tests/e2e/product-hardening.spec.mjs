@@ -245,6 +245,51 @@ test("mobile header drawer contains the former tools and closes predictably", as
   await page.locator(".drawer-backdrop").click({ position: { x: 4, y: 4 } });
   await expect(page.locator("#appDrawer")).toBeHidden();
 });
+test("web drawer exposes about, contact, works, and opt-in support", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await switchLanguage(page, "zh");
+  await page.locator("#openMenu").click();
+
+  await expect(page.locator("#openAbout")).toBeVisible();
+  await expect(page.locator("#openContact")).toBeVisible();
+  await expect(page.locator(".drawer-work-card")).toHaveCount(3);
+  await expect(page.locator("#drawerSupport")).toBeVisible();
+  await expect(page.locator("#supportQr")).not.toHaveAttribute("src", /.+/);
+
+  await page.locator("#openAbout").click();
+  await expect(page.locator("#drawerTitle")).toHaveText("关于我们");
+  await expect(page.locator("#drawerAbout")).toBeVisible();
+  await page.locator("#drawerBack").click();
+  await page.locator("#openContact").click();
+  await expect(page.locator("#drawerTitle")).toHaveText("联系我们");
+  await expect(page.locator("#drawerContact")).toBeVisible();
+  await page.locator("#drawerBack").click();
+
+  await page.locator("#openSupport").click();
+  await expect(page.locator("#supportDialog")).toBeVisible();
+  await expect(page.locator("#supportQr")).toHaveAttribute("src", /support-wechat-appreciation-code\.png/);
+  await page.locator("#closeSupport").click();
+  await expect(page.locator("#supportDialog")).toBeHidden();
+});
+
+test("native drawer excludes support while keeping the other information", async ({ page }) => {
+  await page.addInitScript(() => {
+    globalThis.Capacitor = {
+      isNativePlatform: () => true,
+      getPlatform: () => "ios",
+      registerPlugin: () => ({}),
+    };
+  });
+  await page.goto("/");
+  await page.locator("#openMenu").click();
+
+  await expect(page.locator("#openAbout")).toBeVisible();
+  await expect(page.locator("#openContact")).toBeVisible();
+  await expect(page.locator(".drawer-work-card")).toHaveCount(3);
+  await expect(page.locator("#drawerSupport")).toHaveCount(0);
+  await expect(page.locator("#supportDialog")).toHaveCount(0);
+});
 test("an explicit disabled history setting is not overwritten by retained records", async ({ page }) => {
   await page.addInitScript(({ settingsKey: key, historyKey: history, entry }) => {
     localStorage.setItem(key, JSON.stringify({ privacyByDefault: true, keepHistory: false, cloudSave: true, productAnalytics: true }));

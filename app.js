@@ -86,10 +86,6 @@ const openSettingsButton = document.querySelector("#openSettings");
 const historyDialog = document.querySelector("#historyDialog");
 const deleteHistoryDialog = document.querySelector("#deleteHistoryDialog");
 const settingsDialog = document.querySelector("#settingsDialog");
-const closeHistoryButton = document.querySelector("#closeHistory");
-const closeSettingsButton = document.querySelector("#closeSettings");
-const backFromHistoryButton = document.querySelector("#backFromHistory");
-const backFromSettingsButton = document.querySelector("#backFromSettings");
 const historyList = document.querySelector("#historyList");
 const historyEmpty = document.querySelector("#historyEmpty");
 const cancelHistoryDeleteButton = document.querySelector("#cancelHistoryDelete");
@@ -831,7 +827,7 @@ function hydrateForm(input) {
 
 async function openHistoryEntry(entry) {
   if (!entry?.data) return;
-  historyDialog.close();
+  closeDrawer({ restoreFocus: false });
   clearPoster();
   hydrateForm(entry.input);
   privacyToggle.checked = appSettings.privacyByDefault;
@@ -1291,17 +1287,37 @@ let drawerRestoreFocus = null;
 let drawerView = "home";
 
 function setDrawerView(nextView, { focus = true } = {}) {
-  drawerView = nextView === "about" || nextView === "contact" ? nextView : "home";
+  const views = new Set(["home", "about", "contact", "history", "settings"]);
+  const previousView = drawerView;
+  drawerView = views.has(nextView) ? nextView : "home";
   drawerHome.hidden = drawerView !== "home";
   drawerAbout.hidden = drawerView !== "about";
   drawerContact.hidden = drawerView !== "contact";
+  historyDialog.hidden = drawerView !== "history";
+  settingsDialog.hidden = drawerView !== "settings";
   drawerOrbit.hidden = drawerView !== "home";
   drawerBackButton.hidden = drawerView === "home";
-  const titleKey = drawerView === "about" ? "aboutUs" : drawerView === "contact" ? "contactUs" : "drawerTitle";
+  const titleKey = {
+    about: "aboutUs",
+    contact: "contactUs",
+    history: "history",
+    settings: "settings",
+  }[drawerView] || "drawerTitle";
   drawerTitle.dataset.i18n = titleKey;
   drawerTitle.textContent = t(titleKey);
   sideDrawer.querySelector(".drawer-scroll").scrollTop = 0;
-  if (focus && drawerView !== "home") drawerBackButton.focus({ preventScroll: true });
+  if (!focus) return;
+  if (drawerView !== "home") {
+    drawerBackButton.focus({ preventScroll: true });
+    return;
+  }
+  const returnTarget = {
+    about: openAboutButton,
+    contact: openContactButton,
+    history: openHistoryButton,
+    settings: openSettingsButton,
+  }[previousView];
+  if (returnTarget) window.setTimeout(() => returnTarget.focus({ preventScroll: true }), 0);
 }
 
 function openDrawer() {
@@ -1359,14 +1375,10 @@ languageButtons.forEach((button) => button.addEventListener("click", () => {
   closeDrawer();
 }));
 openHistoryButton.addEventListener("click", () => {
-  closeDrawer({ restoreFocus: false });
   renderHistory();
-  historyDialog.showModal();
+  setDrawerView("history");
 });
-openSettingsButton.addEventListener("click", () => {
-  closeDrawer({ restoreFocus: false });
-  settingsDialog.showModal();
-});
+openSettingsButton.addEventListener("click", () => setDrawerView("settings"));
 if (nativeRuntime) {
   drawerSupport.remove();
   supportDialog.remove();
@@ -1383,18 +1395,6 @@ if (nativeRuntime) {
     if (event.target === supportDialog) supportDialog.close();
   });
 }
-closeHistoryButton.addEventListener("click", () => historyDialog.close());
-closeSettingsButton.addEventListener("click", () => settingsDialog.close());
-function returnDialogToDrawer(dialog) {
-  dialog.close();
-  openDrawer();
-  drawerRestoreFocus = openMenuButton;
-}
-backFromHistoryButton.addEventListener("click", () => returnDialogToDrawer(historyDialog));
-backFromSettingsButton.addEventListener("click", () => returnDialogToDrawer(settingsDialog));
-[historyDialog, settingsDialog].forEach((dialog) => dialog.addEventListener("click", (event) => {
-  if (event.target === dialog) dialog.close();
-}));
 historyList.addEventListener("click", (event) => {
   const openButton = event.target.closest("[data-history-open]");
   const deleteButton = event.target.closest("[data-history-delete]");

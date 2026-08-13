@@ -202,7 +202,7 @@ test("a new user's generated chart is saved locally without backend requests", a
   expect(requests.some((url) => /supabase\.co|api-human-design\.wonderelian\.com/.test(url))).toBe(false);
 });
 
-test("mobile form and settings dialog scroll naturally", async ({ page }) => {
+test("mobile form and settings drawer page scroll naturally", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 667 });
   await page.goto("/");
   const submit = page.locator("#chartForm button[type=submit]");
@@ -211,11 +211,11 @@ test("mobile form and settings dialog scroll naturally", async ({ page }) => {
   expect(await page.evaluate(() => document.documentElement.scrollHeight > window.innerHeight)).toBe(true);
 
   await openDrawerItem(page, "#openSettings");
-  const dialog = page.locator("#settingsDialog");
-  await expect(dialog).toBeVisible();
-  expect(await dialog.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(true);
-  await dialog.evaluate((element) => { element.scrollTop = element.scrollHeight; });
-  expect(await dialog.evaluate((element) => element.scrollTop > 0)).toBe(true);
+  await expect(page.locator("#settingsDialog")).toBeVisible();
+  const drawerScroll = page.locator(".drawer-scroll");
+  expect(await drawerScroll.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(true);
+  await drawerScroll.evaluate((element) => { element.scrollTop = element.scrollHeight; });
+  expect(await drawerScroll.evaluate((element) => element.scrollTop > 0)).toBe(true);
 });
 
 test("mobile header drawer contains the former tools and closes predictably", async ({ page }) => {
@@ -235,12 +235,16 @@ test("mobile header drawer contains the former tools and closes predictably", as
 
   await page.locator("#openHistory").click();
   await expect(page.locator("#historyDialog")).toBeVisible();
-  await page.locator("#backFromHistory").click();
+  await expect(page.locator("#appDrawer")).toBeVisible();
+  await expect(page.locator("#drawerBack")).toBeVisible();
+  await page.locator("#drawerBack").click();
   await expect(page.locator("#appDrawer")).toBeVisible();
   await page.locator("#openSettings").click();
   await expect(page.locator("#settingsDialog")).toBeVisible();
-  await page.locator("#backFromSettings").click();
   await expect(page.locator("#appDrawer")).toBeVisible();
+  await page.locator("#drawerBack").click();
+  await expect(page.locator("#appDrawer")).toBeVisible();
+  await expect(page.locator("#openSettings")).toBeFocused();
 
   await page.keyboard.press("Escape");
   await expect(page.locator("#appDrawer")).toBeHidden();
@@ -361,7 +365,7 @@ test.describe("local history opt-out", () => {
     await page.locator("#keepHistoryRecords").click();
     await expect(page.locator("#saveHistory")).not.toBeChecked();
     expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)).length, historyKey)).toBe(1);
-    await page.locator("#closeSettings").click();
+    await page.locator("#closeMenu").click();
     await fillAndGenerate(page);
     expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)).length, historyKey)).toBe(1);
   });
@@ -505,7 +509,7 @@ test("Capacitor native runtime without Supabase hides and blocks remote features
   });
   expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)), settingsKey)).toEqual(storedSettings);
 
-  await page.locator("#closeSettings").click();
+  await page.locator("#closeMenu").click();
   await fillProductionFixtureAndGenerate(page);
   expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key) || "[]").length, historyKey)).toBe(1);
   expect(await page.evaluate(() => localStorage.getItem("pluto-anonymous-cloud-session-v1"))).toBeNull();
@@ -570,7 +574,7 @@ test("opening a generated history record restores the semantic result", async ({
   await page.goto("/");
   await openDrawerItem(page, "#openSettings");
   await page.locator("#saveHistory").check();
-  await page.locator("#closeSettings").click();
+  await page.locator("#closeMenu").click();
   await fillAndGenerate(page);
   await page.locator("#editChart").click();
   await page.evaluate(() => {
@@ -603,7 +607,7 @@ test("language switch updates local notice, disclaimer, summary, and history dia
   await openDrawerItem(page, "#openSettings");
   await expect(page.locator('[data-i18n="defaultPrivacyHint"]')).toHaveText("生成图片时隐藏姓名、日期、时间和地点；默认关闭。");
   await expect(page.locator('[data-i18n="saveHistoryHint"]')).toHaveText("默认开启，仅保存在本设备；关闭时可选择保留或删除已有记录。");
-  await page.locator("#closeSettings").click();
+  await page.locator("#closeMenu").click();
   await switchLanguage(page, "en");
   await expect(page.locator("#localModeNotice")).toContainText("temporary HTTP connection");
   await expect(page.locator(".form-disclaimer")).toContainText("For personal reflection");
@@ -614,7 +618,7 @@ test("language switch updates local notice, disclaimer, summary, and history dia
   await expect(page.locator("#historyOptOutTitle")).toHaveText("Turn off local history?");
   await expect(page.locator("#keepHistoryRecords")).toHaveText("Turn Off & Keep Records");
   await page.locator("#cancelHistoryOptOut").click();
-  await page.locator("#closeSettings").click();
+  await page.locator("#closeMenu").click();
   await fillAndGenerate(page);
   await expect(page.locator("#resultSummaryTitle")).toHaveText("Life Manual Result Summary");
   await expect(page.locator("#chartPreview")).toHaveAttribute("alt", /^Pluto Life Manual:/);
@@ -666,7 +670,7 @@ test("signature summary uses the real engine Sign value across languages and his
   await openDrawerItem(page, "#openSettings");
   await page.locator("#defaultPrivacy").check();
   await page.locator("#saveHistory").check();
-  await page.locator("#closeSettings").click();
+  await page.locator("#closeMenu").click();
 
   await fillProductionFixtureAndGenerate(page);
 

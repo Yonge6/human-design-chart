@@ -20,6 +20,19 @@ test("header tools are consolidated into an accessible side drawer", () => {
   assert.match(app, /function drawerFocusableElements\(\)/);
 });
 
+test("drawer includes WonderElian information while support remains web-only", () => {
+  const html = read("index.html");
+  const app = read("app.js");
+
+  assert.match(html, /id="openAbout"[\s\S]*id="openContact"/);
+  assert.match(html, /id="drawerWorksTitle"[\s\S]*xiazishuo\.com[\s\S]*wendao\.wonderelian\.com[\s\S]*style-atlas\.wonderelian\.com/);
+  assert.match(html, /id="drawerSupport"[^>]*hidden/);
+  assert.match(html, /id="supportQr"[^>]*data-src=/);
+  assert.doesNotMatch(html, /id="supportQr"[^>]*\ssrc=/);
+  assert.match(app, /if \(nativeRuntime\) \{\s*drawerSupport\.remove\(\);\s*supportDialog\.remove\(\);/);
+  assert.match(app, /drawerSupport\.hidden = false/);
+});
+
 test("history deletion requires the confirmation dialog", () => {
   const html = read("index.html");
   const app = read("app.js");

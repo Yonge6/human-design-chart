@@ -88,6 +88,8 @@ const deleteHistoryDialog = document.querySelector("#deleteHistoryDialog");
 const settingsDialog = document.querySelector("#settingsDialog");
 const closeHistoryButton = document.querySelector("#closeHistory");
 const closeSettingsButton = document.querySelector("#closeSettings");
+const backFromHistoryButton = document.querySelector("#backFromHistory");
+const backFromSettingsButton = document.querySelector("#backFromSettings");
 const historyList = document.querySelector("#historyList");
 const historyEmpty = document.querySelector("#historyEmpty");
 const cancelHistoryDeleteButton = document.querySelector("#cancelHistoryDelete");
@@ -1383,6 +1385,13 @@ if (nativeRuntime) {
 }
 closeHistoryButton.addEventListener("click", () => historyDialog.close());
 closeSettingsButton.addEventListener("click", () => settingsDialog.close());
+function returnDialogToDrawer(dialog) {
+  dialog.close();
+  openDrawer();
+  drawerRestoreFocus = openMenuButton;
+}
+backFromHistoryButton.addEventListener("click", () => returnDialogToDrawer(historyDialog));
+backFromSettingsButton.addEventListener("click", () => returnDialogToDrawer(settingsDialog));
 [historyDialog, settingsDialog].forEach((dialog) => dialog.addEventListener("click", (event) => {
   if (event.target === dialog) dialog.close();
 }));

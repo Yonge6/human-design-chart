@@ -233,6 +233,15 @@ test("mobile header drawer contains the former tools and closes predictably", as
   await expect(page.locator('[data-language="en"]')).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 
+  await page.locator("#openHistory").click();
+  await expect(page.locator("#historyDialog")).toBeVisible();
+  await page.locator("#backFromHistory").click();
+  await expect(page.locator("#appDrawer")).toBeVisible();
+  await page.locator("#openSettings").click();
+  await expect(page.locator("#settingsDialog")).toBeVisible();
+  await page.locator("#backFromSettings").click();
+  await expect(page.locator("#appDrawer")).toBeVisible();
+
   await page.keyboard.press("Escape");
   await expect(page.locator("#appDrawer")).toBeHidden();
   await expect(page.locator("#openMenu")).toBeFocused();

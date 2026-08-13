@@ -29,7 +29,8 @@ test("drawer includes WonderElian information while support remains web-only", (
   const app = read("app.js");
 
   assert.match(html, /id="openAbout"[\s\S]*id="openContact"/);
-  assert.match(html, /id="drawerWorksTitle"[\s\S]*xiazishuo\.com[\s\S]*wendao\.wonderelian\.com[\s\S]*style-atlas\.wonderelian\.com/);
+  assert.match(html, /id="drawerWorksTitle"[\s\S]*yixiu\.wonderelian\.com[\s\S]*xiazishuo\.com[\s\S]*wendao\.wonderelian\.com[\s\S]*style-atlas\.wonderelian\.com/);
+  assert.match(app, /workYixiu: "一休冥想"[\s\S]*workYixiu: "Yixiu Meditation"/);
   assert.match(html, /id="drawerSupport"[^>]*hidden/);
   assert.match(html, /class="drawer-support-mark"[^>]*>喜<\/span>/);
   assert.match(html, /id="supportQr"[^>]*data-src=/);

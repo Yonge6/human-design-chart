@@ -1,6 +1,8 @@
 (function () {
   "use strict";
 
+  if (window.location.hostname !== "human-design.wonderelian.com") return;
+
   const measurementId = "G-HDHST6WKKB";
   window.dataLayer = window.dataLayer || [];
   window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };

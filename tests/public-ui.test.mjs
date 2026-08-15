@@ -214,6 +214,12 @@ test("readings connect Human Design concepts to plain-language work and daily li
   assert.match(app, /In a meeting/);
   assert.match(app, /不把它当成科学定论或身份判决/);
   assert.match(app, /not a scientific conclusion or a verdict/);
+  assert.match(app, /你的优势｜先看重点/);
+  assert.match(app, /先看重点：你的三项核心优势/);
+  assert.match(app, /YOUR STRENGTHS — THE MAIN POINT/);
+  assert.match(app, /Your three core strengths/);
+  assert.match(app, /核心能量优势：\$\{typeStrength\}/);
+  assert.match(app, /Decision strength: \$\{authorityStrength\}/);
 });
 
 test("public pages expose source, license, and build provenance", () => {

@@ -13,6 +13,7 @@ const files = [
   "legal.css",
   "style.css",
   "app.js",
+  "analytics.js",
   "build-provenance.js",
   "human-design-engine.js",
   "location-service.js",

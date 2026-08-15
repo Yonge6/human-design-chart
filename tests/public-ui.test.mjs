@@ -197,6 +197,25 @@ test("result has an accessible summary and social discovery metadata", () => {
   assert.match(read("sitemap.xml"), /human-design\.wonderelian\.com/);
 });
 
+test("readings connect Human Design concepts to plain-language work and daily life", () => {
+  const app = read("app.js");
+
+  assert.match(app, /const typePracticalGuidanceZh =/);
+  assert.match(app, /const typePracticalGuidanceEn =/);
+  assert.match(app, /const authorityPracticalGuidanceZh =/);
+  assert.match(app, /const authorityPracticalGuidanceEn =/);
+  assert.match(app, /工作场景：\$\{practical\.work\}/);
+  assert.match(app, /生活场景：\$\{practical\.life\}/);
+  assert.match(app, /可以这样试：\$\{practical\.action\}/);
+  assert.match(app, /Work example: \$\{practical\.work\}/);
+  assert.match(app, /Daily-life example: \$\{practical\.life\}/);
+  assert.match(app, /Try this: \$\{practical\.action\}/);
+  assert.match(app, /收到新任务时/);
+  assert.match(app, /In a meeting/);
+  assert.match(app, /不把它当成科学定论或身份判决/);
+  assert.match(app, /not a scientific conclusion or a verdict/);
+});
+
 test("public pages expose source, license, and build provenance", () => {
   const index = read("index.html");
   const legal = read("legal.html");

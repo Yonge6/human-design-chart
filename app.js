@@ -333,6 +333,80 @@ const typeWorkZh = {
   Projector: "你适合诊断、顾问、策略、管理、设计与人才发展等需要看见系统规律的工作。你的价值常体现在一个关键判断，能够替团队节省大量试错和无效消耗。",
   Reflector: "你适合观察群体、文化、趋势与环境质量。研究、评估、策展、社群与组织观察等工作，能让你的敏感度成为集体的镜子，而不是个人的负担。",
 };
+const typePracticalGuidanceZh = {
+  Generator: {
+    work: "收到新任务时，先别只看职位、薪酬或别人是否期待你答应。把任务想成一个具体动作，观察身体是更想靠近，还是已经开始发沉。真正有回应的工作，忙过以后往往仍有踏实的满足感。",
+    life: "安排运动、学习或周末活动时，尽量从眼前真实可选的事情里挑，不必凭头脑设计一个‘应该喜欢的人生’。连续几天都只剩挫败和硬撑，可以把它当成重新选择的提醒。",
+    action: "今天遇到一个请求时，先问自己一个能用‘愿意／不愿意’回答的问题，再决定是否承诺。",
+  },
+  "Manifesting Generator": {
+    work: "适合把大项目拆成短实验：先做一版、看反馈、再调整。临时发现更短路径并不是问题，但换方向前要告诉受影响的同事，避免速度变成返工或沟通成本。",
+    life: "兴趣多、节奏快并不等于三分钟热度。可以同时探索，但别一次答应所有邀约；留下可以退出和修正的空间，比强迫自己把每条路都走到底更可持续。",
+    action: "为正在推进的事设一个小检查点：继续、调整或停止，只选当前身体最有回应的一项。",
+  },
+  Manifestor: {
+    work: "当你想启动项目、调整流程或改变分工时，先用一句话告诉会被影响的人：你准备做什么、为什么、接下来需要什么。告知不是请示，而是减少阻力，让你的发起真正落地。",
+    life: "你需要自主和不被打断的空间。与其忍到生气后突然抽离，不如提前说清楚自己的安排、边界和可联系时间，让亲近的人知道这不是拒绝关系。",
+    action: "下一次准备直接行动前，先给相关的人发一条简短告知，再观察事情是否更顺。",
+  },
+  Projector: {
+    work: "开会时不必抢着证明自己看得最清楚。先确认对方是否真的想听，再把洞察说成一个关键问题或一项高杠杆建议。被认可的判断，往往比替团队包办所有执行更有价值。",
+    life: "朋友来倾诉时，可以先问‘你想让我听你说，还是一起想办法？’这会帮你分清陪伴与指导，也避免好意变成不被需要的建议或长期救火。",
+    action: "今天先少给一个未经邀请的答案，多问一次‘你希望我怎么支持你？’",
+  },
+  Reflector: {
+    work: "评估新团队、合作或工作机会时，不要只看岗位说明。分几次进入那个环境，观察自己在不同人群中是放松、清醒，还是持续紧绷；环境感受本身就是重要信息。",
+    life: "重大决定可以多放一段时间，并在不同日期、地点和人面前谈一谈。感受变化并不代表反复无常，而是在分辨哪些是环境带来的、哪些会稳定留下。",
+    action: "为一个重要选择做环境记录：在哪里、和谁在一起、身体是什么感受，先收集而不急着定论。",
+  },
+};
+const typePracticalGuidanceEn = {
+  Generator: {
+    work: "When a new task arrives, look beyond title, pay, or other people's expectations. Picture the actual work and notice whether your body leans in or already feels heavy. Work you genuinely respond to can be demanding and still leave a grounded sense of satisfaction.",
+    life: "Choose exercise, learning, and weekend plans from real options in front of you instead of designing a life you think you should enjoy. Several days of frustration and forcing are useful reasons to reassess.",
+    action: "For one request today, turn it into a concrete yes-or-no question and notice your body's response before committing.",
+  },
+  "Manifesting Generator": {
+    work: "Break a large project into short experiments: make a first version, gather feedback, and adjust. Finding a faster route is useful, but tell affected teammates before changing direction so speed does not create avoidable rework.",
+    life: "Many interests and a fast pace do not automatically mean you are inconsistent. Explore more than one path, but leave room to revise or exit instead of promising to finish everything you begin.",
+    action: "Set one checkpoint for current work and choose only one next move: continue, adjust, or stop.",
+  },
+  Manifestor: {
+    work: "Before starting a project, changing a process, or shifting responsibilities, tell the people affected what you are doing, why, and what you need next. Informing is not asking permission; it reduces resistance around your initiative.",
+    life: "You may need autonomy and uninterrupted space. Rather than withdrawing after anger builds, name your plans, boundaries, and available time early so people close to you do not mistake space for rejection.",
+    action: "Before your next independent move, send one concise update to the people it affects and see whether the path becomes smoother.",
+  },
+  Projector: {
+    work: "In a meeting, you do not need to prove that you see the issue first. Check whether your view is wanted, then offer one key question or one high-leverage adjustment. Recognized judgment is often more valuable than taking over all the execution.",
+    life: "When a friend brings a problem, ask whether they want listening or help finding a solution. This separates companionship from guidance and keeps care from turning into unwanted advice or permanent rescue work.",
+    action: "Offer one fewer uninvited answer today and ask once, ‘How would you like me to support you?’",
+  },
+  Reflector: {
+    work: "When considering a team, partnership, or job offer, evaluate more than the role description. Visit the environment more than once and notice whether different people leave you settled and clear or consistently tense.",
+    life: "Give major decisions time and discuss them on different days, in different places, and with different people. Changing feelings are data that help separate the environment's influence from what remains true for you.",
+    action: "For one important choice, record where you were, who was present, and how your body felt. Collect the pattern before reaching a conclusion.",
+  },
+};
+const authorityPracticalGuidanceZh = {
+  "Emotional - Solar Plexus": "遇到跳槽、合作、买大件或关系承诺，先回复‘我需要想一晚’，不要在兴奋最高点或情绪最低点拍板；隔天仍愿意，再确认。",
+  Sacral: "把模糊问题改成具体选项，例如‘我愿不愿意接这个项目？’‘周三还是周五更想见面？’先听身体的愿意或不愿意，再补充理由。",
+  Splenic: "进入新场所、见一个人或听到一个方案时，先记下最初那一秒的安全感或不适感；不要用之后反复出现的担心冒充最初的直觉。",
+  "Ego Manifested": "把承诺大声说一遍：‘我真的想要这件事，也愿意付出这些代价吗？’如果只剩证明给别人看，就先缩小承诺。",
+  "Ego Projected": "面对邀请或请求，先确认对方是否真正认可你的投入，也确认这件事是不是你真心想承担，而不是因为被需要就答应。",
+  "Self-Projected": "给自己录一段两分钟语音，分别说出接受与拒绝这个选择后的生活；重听时留意哪一种声音更自然、更像你。",
+  Lunar: "对搬家、长期关系或职业转向等大决定，跨不同日期反复观察，至少经历多个情绪和环境变化，不要因外界催促压缩自己的判断过程。",
+  "Mental - Environment": "到一个让你舒服的地方，把选择讲给不会替你下结论的人听；重点不是采纳建议，而是从自己的表达里听见清晰。",
+};
+const authorityPracticalGuidanceEn = {
+  "Emotional - Solar Plexus": "For a job change, partnership, major purchase, or relationship commitment, say ‘I need a night to think.’ Avoid deciding at the emotional high or low; confirm when the choice still feels sound later.",
+  Sacral: "Turn a vague decision into concrete options: ‘Do I want this project?’ or ‘Would Wednesday or Friday feel better?’ Notice the body's yes or no before adding reasons.",
+  Splenic: "When entering a place, meeting someone, or hearing a proposal, note the first quiet second of safety or unease. Do not confuse later repetitive worry with that initial signal.",
+  "Ego Manifested": "Say the promise aloud: ‘Do I truly want this, and am I willing to pay its real cost?’ If the energy is mainly about proving something, reduce the commitment.",
+  "Ego Projected": "Before accepting a request, check whether your contribution is genuinely recognized and whether you truly want the responsibility, rather than agreeing simply because you are needed.",
+  "Self-Projected": "Record a two-minute voice note describing life after saying yes and after saying no. Listen back for which version of your voice sounds more natural and more like you.",
+  Lunar: "For moves, long-term relationships, or career changes, revisit the decision across different days and settings. Do not compress your process because someone else wants an immediate answer.",
+  "Mental - Environment": "Go somewhere your body can settle and talk the choice through with someone who will not decide for you. The point is to hear clarity in your own words, not to collect instructions.",
+};
 const authorityCareZh = {
   "Emotional - Solar Plexus": "晚一点回答不是拖延，而是尊重自己的完整感受。高点时不必急着承诺，低点时也不必急着否定；真正适合你的答案，通常经得起情绪变化。",
   Sacral: "你未必总能立刻解释为什么愿意或不愿意，这并不代表答案不可靠。身体往往比语言更早知道方向，先尊重那份真实，再慢慢补上理由。",
@@ -466,21 +540,17 @@ function interpretation(data) {
     const profile = profileCode(properties.Profile);
     const profileText = profileGuidanceEn[profile] || `Your ${profile} profile combines two different ways of learning, contributing, and being perceived by others`;
     const typeStrength = typeStrengthsEn[properties.Type];
-    const authorityStrength = authorityStrengthsEn[properties["Inner Authority"]];
-    const definitionStrength = definitionStrengthsEn[properties.Definition];
-    return `Core advantage: ${typeStrength}. ${authorityStrength}. Your strategy of ${properties.Strategy.toLowerCase()} helps direct these strengths toward people, work, and opportunities that can truly use them.\n\nTalent combination: ${profileText}. Your visible gift is ${gateThemesEn[consciousSun]}, grounded through ${gateThemesEn[consciousEarth]}. Together, these qualities help you turn natural ability into value that other people can recognize and use.\n\nLife theme: ${gateThemesEn[consciousSun]}, ${gateThemesEn[consciousEarth]}, ${gateThemesEn[designSun]}, and ${gateThemesEn[designEarth]} may repeatedly meet in your work, relationships, and creations. This does not prescribe a career; it describes the kind of contribution that becomes stronger as you trust your own design. Your ability to notice what can be improved is especially valuable when timing and receptivity are present.\n\nBest expression: ${definitionStrength}. Aligned engagement tends to bring ${properties.Sign.toLowerCase()}. If ${properties["Not Self Theme"].toLowerCase()} persists, treat it as a useful recalibration signal rather than a flaw: reduce pressure, return to your authority, and redirect your strengths toward what produces a genuine inner yes.`;
+    const practical = typePracticalGuidanceEn[properties.Type];
+    const decision = authorityPracticalGuidanceEn[properties["Inner Authority"]];
+    return `In plain language: ${typeStrength}. ${profileText}. A visible part of this is ${gateThemesEn[consciousSun]}, grounded through ${gateThemesEn[consciousEarth]}.\n\nWork example: ${practical.work}\n\nDaily-life example: ${practical.life}\n\nTry this when deciding: ${decision} This is a reflection experiment, not a rule or scientific conclusion. Keep what makes daily life clearer and more sustainable.`;
   }
   const type = translatedValue("Type", properties.Type);
   const profile = profileCode(properties.Profile);
-  const theme = translatedValue("Not Self Theme", properties["Not Self Theme"]);
-  const sign = translatedValue("Sign", properties.Sign);
-  const strategy = strategyGuidance[properties.Strategy] || translatedValue("Strategy", properties.Strategy);
-  const authority = authorityGuidance[properties["Inner Authority"]] || `依照${translatedValue("Inner Authority", properties["Inner Authority"])}做选择`;
   const profileText = profileGuidanceZh[profile] || `你的${profile}人生角色结合了两种不同的学习、贡献和被他人看见的方式`;
   const typeStrength = typeStrengthsZh[properties.Type];
-  const authorityStrength = authorityStrengthsZh[properties["Inner Authority"]];
-  const definitionStrength = definitionStrengthsZh[properties.Definition];
-  return `核心优势：${typeStrength}。${authorityStrength}。你的策略是${strategy}，它能帮助你把宝贵能量放到真正值得的人、事情与机会中。\n\n天赋组合：${profileText}。你最容易被看见的天赋是${gateThemesZh[consciousSun]}，并能通过${gateThemesZh[consciousEarth]}把它落到现实。这组组合让你的优势不只停留在想法，也更容易转化成别人能感受到的价值。\n\n生命主题：${gateThemesZh[consciousSun]}、${gateThemesZh[consciousEarth]}、${gateThemesZh[designSun]}与${gateThemesZh[designEarth]}，可能反复出现在工作、关系和创作中。它不指定职业，而是在提醒你：越信任自己的节奏与判断，这些能力越容易形成独特贡献。你看见改善空间的能力很珍贵，在对方准备好时表达，会更有影响力。\n\n最佳发挥方式：${definitionStrength}。重要选择时可以${authority}。当你把优势用在正确方向，通常更容易体验${sign}；若${theme}持续出现，把它当成校准信号，而不是缺点，先降低压力，再回到真正让身体有回应的方向。`;
+  const practical = typePracticalGuidanceZh[properties.Type];
+  const decision = authorityPracticalGuidanceZh[properties["Inner Authority"]];
+  return `一句话看懂：${typeStrength}。${profileText}。你最容易被看见的是${gateThemesZh[consciousSun]}，并通过${gateThemesZh[consciousEarth]}把它落到现实。\n\n工作场景：${practical.work}\n\n生活场景：${practical.life}\n\n做决定时可以这样试：${decision} 这是一种自我观察练习，不是必须遵守的规则或科学定论；只保留那些确实让日常生活更清楚、更可持续的部分。`;
 }
 
 function detailedReadingSections(data) {
@@ -493,19 +563,21 @@ function detailedReadingSections(data) {
   const profileCodeValue = profileCode(properties.Profile);
   const environmentGuidance = language === "zh" ? environmentGuidanceZh[properties.Environment] : environmentGuidanceEn[properties.Environment];
   if (language === "en") {
+    const practical = typePracticalGuidanceEn[properties.Type];
+    const decisionPractice = authorityPracticalGuidanceEn[properties["Inner Authority"]];
     return [
       { title: "First, what you do not need to prove", text: `You do not need to become a louder, faster, or more conventional version of yourself in order to be valuable. ${typeStrengthsEn[properties.Type]}.\n\nWhen your natural rhythm differs from the people around you, it can be tempting to interpret that difference as a flaw. This reading invites another possibility: the difference may be the exact condition that allows your strengths to emerge. The goal is not to perform your design perfectly, but to notice where life feels more honest, sustainable, and alive.` },
-      { title: "Your core energy and strategy", text: `Your type is ${properties.Type}, and your strategy is ${properties.Strategy.toLowerCase()}. Strategy is not a rule that makes life smaller. It is a way to protect your energy from commitments that look correct externally but create ongoing resistance internally.\n\nWatch what happens after the first excitement or pressure fades. The right direction usually gives your energy somewhere meaningful to go. It may still require effort, but the effort tends to build capacity rather than quietly draining your sense of self.` },
+      { title: "How this energy shows up in an ordinary workday", text: `Your type is ${properties.Type}, and your strategy is ${properties.Strategy.toLowerCase()}. In plain language, strategy is a way to notice which commitments use your energy well and which ones keep creating resistance.\n\nWork example: ${practical.work}\n\nTry this: ${practical.action}` },
       { title: "The gifts people can see", text: `Your conscious Sun is Gate ${consciousSun}, highlighting a visible gift for ${gateThemesEn[consciousSun]}. Gate ${consciousEarth} grounds that gift through ${gateThemesEn[consciousEarth]}, helping it become useful in real situations rather than remaining only potential.\n\nProfile line ${firstLine} shapes how you consciously develop this talent. The deepest value is not a single trait, but the combination: what you notice, how you stabilize it, and how you translate it into something another person can actually receive.` },
       { title: "The strengths working underneath", text: `Your design Sun and Earth bring ${gateThemesEn[designSun]} and ${gateThemesEn[designEarth]} into the background of your life. These qualities may be easier for other people to notice than for you to name. They often appear in spontaneous choices, body language, recurring instincts, and the role you naturally take when something real is happening.\n\nYou do not need to force these traits into performance. They become more trustworthy when you create enough space for the body to respond before the mind begins managing the outcome.` },
       { title: "Your life theme and contribution", text: `Your incarnation cross is ${properties["Incarnation Cross"]}. In practical terms, ${gateThemesEn[consciousSun]}, ${gateThemesEn[consciousEarth]}, ${gateThemesEn[designSun]}, and ${gateThemesEn[designEarth]} may repeatedly meet in your work, relationships, and creations.\n\nThis is not a fixed occupation or a destiny you must chase. It is a pattern of contribution that becomes clearer as you live more honestly. If you notice what can be improved quickly, that discernment is a gift. Timing, tone, and receptivity help the same insight land as support instead of criticism.` },
-      { title: "How your best decisions feel", text: `Your authority is ${properties["Inner Authority"]}. ${authorityStrengthsEn[properties["Inner Authority"]]}. Give this signal more weight than urgency, social pressure, or the need to produce an immediate explanation.\n\nThe goal is not perfect certainty. It is a decision your whole system can support without constant inner negotiation afterward. A choice can be challenging and still be correct; the useful distinction is whether the challenge feels alive and meaningful, or whether you are repeatedly abandoning yourself to maintain it.` },
+      { title: "A practical way to make one real decision", text: `Your authority is ${properties["Inner Authority"]}. ${authorityStrengthsEn[properties["Inner Authority"]]}. Give this signal more weight than urgency, social pressure, or the need to produce an immediate explanation.\n\nReal-life example: ${decisionPractice}\n\nThe goal is not perfect certainty. It is a choice you can support without repeatedly talking yourself back into it afterward.` },
       { title: "Profile, expectations, and being understood", text: `${profileGuidanceEn[profileCodeValue] || `Your ${properties.Profile} profile combines two distinct ways of learning and being seen`}.\n\nOther people may recognize a role in you before you have consciously chosen it. That recognition can open doors, but it can also create expectations. Clear boundaries are not a rejection of connection. They allow your generosity, skill, and influence to remain genuine rather than becoming an obligation built from someone else's projection.` },
-      { title: "Relationships and emotional honesty", text: `In close relationships, your design does not ask you to be endlessly available. It asks for enough honesty to distinguish care from self-abandonment. Notice which relationships make your body soften, your voice become clearer, and your natural pace feel welcome.\n\nThe right people do not require you to erase your timing in order to remain connected. They may not understand every internal signal, but they can respect the space you need to reach a real answer. That respect creates more intimacy than a quick yes offered out of fear.` },
-      { title: "Work, creativity, and sustainable impact", text: `${definitionStrengthsEn[properties.Definition]}. Your ${properties.Definition.toLowerCase()} describes how internal clarity tends to connect and move.\n\nAt work, your strongest contribution often appears when the task uses both your natural energy pattern and your visible gate themes. Build systems around the way clarity actually arrives for you. A workflow that respects your design can improve not only productivity, but also the quality, originality, and emotional sustainability of what you create.` },
+      { title: "How to use this in relationships and home life", text: `Daily-life example: ${practical.life}\n\nIn close relationships, care does not require endless availability. Notice who lets your body soften, your voice become clearer, and your natural pace remain intact. A thoughtful ‘not yet’ or an honest ‘no’ often protects connection better than a quick yes offered from fear.` },
+      { title: "Your contribution at work", text: `${definitionStrengthsEn[properties.Definition]}. Your ${properties.Definition.toLowerCase()} describes how internal clarity tends to connect and move.\n\nYour visible themes of ${gateThemesEn[consciousSun]} and ${gateThemesEn[consciousEarth]} may be especially useful in meetings, projects, or collaborations. Instead of asking only which job sounds impressive, notice which problems you willingly return to and which finished work leaves you clearer rather than depleted.` },
       { title: "Body, cognition, and the places that support you", text: `${properties.Digestion}, Cognition: ${properties.Sense}, and ${properties.Environment} offer practical ways to support your nervous system. ${environmentGuidance || "Experiment gently with which surroundings help your body settle"}.\n\nCognition points to a sensory channel that may register useful information before the mind can explain it. Treat these variables as invitations to experiment, not strict lifestyle rules. Keep the conditions that bring steadier attention, easier breathing, clearer perception, and a quieter need to force yourself.` },
       { title: "When you drift away from yourself", text: `${properties.Sign} is the signature that often appears when your strengths are being used in the right context. ${properties["Not Self Theme"]} is not a weakness, punishment, or verdict. It is an early signal that your energy may be serving pressure instead of truth.\n\nWhen it repeats, respond with curiosity rather than self-criticism. Ask what you agreed to before your inner authority was ready, where you are trying to prove value, and what your body has been quietly saying. Recalibration is not going backward; it is a mature use of self-trust.` },
-      { title: "A gentle practice for the next few weeks", text: `Before one meaningful decision each day, pause long enough to notice your authority before explaining the choice. Keep a short record of what created energy, what reduced it, and what brought a sense of ${properties.Sign.toLowerCase()}.\n\nYou do not need to redesign your entire life at once. One honest response, one clearer boundary, and one environment that lets your nervous system settle can begin to change the quality of many decisions that follow.` },
+      { title: "A small experiment for the next seven days", text: `Try this: before one meaningful decision each day, pause long enough to notice your authority before explaining the choice. Keep three short notes: what gave you energy, what reduced it, and what brought a sense of ${properties.Sign.toLowerCase()}.\n\nTreat the reading as a reflection tool, not a scientific conclusion or a verdict about who you are. Test one idea in ordinary life, keep what genuinely helps, and leave the rest.` },
     ];
   }
   const type = translatedValue("Type", properties.Type);
@@ -520,22 +592,24 @@ function detailedReadingSections(data) {
   const sign = translatedValue("Sign", properties.Sign);
   const typeReassurance = typeReassuranceZh[properties.Type] || "";
   const typeWork = typeWorkZh[properties.Type] || "";
+  const practical = typePracticalGuidanceZh[properties.Type];
+  const decisionPractice = authorityPracticalGuidanceZh[properties["Inner Authority"]];
   const authorityCare = authorityCareZh[properties["Inner Authority"]] || "";
   const profileCare = profileCareZh[profileCodeValue] || "";
   return [
     { title: "先说最重要的：你不需要变成别人", text: `${typeReassurance}\n\n这份图不是要你把自己修理成一个更标准的人，而是帮助你看见：很多曾经被误解成缺点的地方，可能只是你的运作方式与周围人的期待不同。你不需要完美执行任何规则。只要开始分辨哪些选择让自己更真实、稳定、有生命力，就已经在慢慢回到自己的位置。` },
-    { title: "你的核心能量优势", text: `你是${type}。${typeStrengthsZh[properties.Type]}。你的策略是${strategy}，它不是让你退缩，而是帮你筛掉那些表面正确、实际却不断消耗你的方向。\n\n真正适合你的事情未必轻松，但通常会让你在投入之后更有力量、更愿意继续，也更容易从过程中获得${sign}。相反，如果一件事长期只剩责任、证明和自我催促，就值得停下来听听身体是不是早已给过不同答案。` },
+    { title: "放进日常工作里，你可以这样理解", text: `你是${type}。你的策略是${strategy}。用大白话说，它是在帮你分辨：哪些任务值得投入，哪些承诺只是因为不好意思拒绝。\n\n工作场景：${practical.work}\n\n可以这样试：${practical.action}` },
     { title: "别人最容易看见的天赋", text: `你的人格太阳落在${consciousSun}号闸门，最容易被别人看见的天赋是${gateThemesZh[consciousSun]}；${consciousEarth}号闸门的${gateThemesZh[consciousEarth]}，则帮助这份天赋在现实中站稳。\n\n${firstLine}号线影响你主动发展能力的方式。你的价值并不只是“拥有某种天赋”，而是能把看到的、理解的和坚持的东西，逐渐变成别人真正感受得到的帮助。很多时候，你可能已经在自然使用这份能力，只是因为它对你太熟悉，反而低估了它的分量。` },
     { title: "你未必意识到的潜在力量", text: `设计太阳与地球带来${gateThemesZh[designSun]}和${gateThemesZh[designEarth]}。这部分更像身体自带的推动力，不一定是你刻意经营的形象，却常在真实场景、临场选择、压力反应和他人对你的评价里出现。\n\n${secondLine}号线也影响别人自然感受到的你。你不需要把这些特质包装成表演；越允许身体先反应、越少急着管理别人怎么看，它们越容易以稳定而可信的方式出现。` },
     { title: "你的生命主题与独特贡献", text: `你的轮回交叉是${cross}。用大白话说，${gateThemesZh[consciousSun]}、${gateThemesZh[consciousEarth]}、${gateThemesZh[designSun]}和${gateThemesZh[designEarth]}，可能反复出现在工作、关系与创作中。\n\n它不指定职业，也不是一项必须完成的命运任务。它更像一个逐渐浮现的主题：当你不再勉强成为别人期待的样子，这些能力会自然组合成你的贡献方式。你可能很快看见哪里可以优化，这种辨识力本身非常珍贵；配合合适的时机、语气和对方的接受度，会更容易从“看见问题”走向真正的帮助与影响。` },
-    { title: "做决定时，怎样才算对自己诚实", text: `你的内在权威是${authorityName}。${authorityStrengthsZh[properties["Inner Authority"]]}。实际使用时，可以${authority}。\n\n${authorityCare}面对关系、工作、金钱或长期承诺，不必追求头脑里百分之百确定的答案。更重要的是找到一个身体愿意支持、之后不需要持续说服自己的选择。正确并不等于没有困难，而是困难之中仍然有一部分你愿意在场。` },
+    { title: "遇到真实选择时，具体怎么做", text: `你的内在权威是${authorityName}。${authorityStrengthsZh[properties["Inner Authority"]]}。实际使用时，可以${authority}。\n\n现实例子：${decisionPractice}\n\n${authorityCare}不必追求百分之百确定，更实用的标准是：做完决定后，你是否还需要每天反复说服自己留下。` },
     { title: "人生角色：你如何成长，也如何被看见", text: `你的人生角色是${profile}。${profileGuidanceZh[profileCodeValue] || profileGuidance}。\n\n${profileCare}两条线一条更像你主动学习、建立能力的方式，另一条常是别人自然感受到的你。你的影响力不需要来自迎合所有人，而是来自对能力、边界与承诺的诚实。越清楚自己能提供什么、暂时不能承担什么，你的善意和专业越不容易被消耗。` },
-    { title: "关系中的你：亲近不等于失去自己", text: `在关系里，你的优势不是永远配合，而是有能力以真实状态进入连接。可以观察：哪些人让你的身体更放松、声音更自然、节奏被尊重；又有哪些关系让你总在提前答应、解释自己、担心拒绝后会失去爱。\n\n真正适合你的关系未必完全理解你的所有内在信号，但会愿意尊重你的时间与边界。一个出于害怕而给出的“可以”，通常不会带来真正亲密；一个经过内在确认的“愿意”，反而更有温度、更能长久。` },
-    { title: "工作、创造力与真正适合你的成就感", text: `${typeWork}\n\n你的人格太阳与地球提示，你在工作中尤其可以发挥${gateThemesZh[consciousSun]}与${gateThemesZh[consciousEarth]}。与其只问“什么工作最体面”，不如也问：什么问题会让你愿意持续研究？什么成果完成后，身体会出现真实的满足或轻松？成就感不只来自被认可，也来自知道自己没有在成功的路上弄丢自己。` },
+    { title: "放进生活和关系里，你可以这样观察", text: `生活场景：${practical.life}\n\n亲近不等于随时配合。可以观察：哪些人让你的身体更放松、说话更自然；又有哪些关系让你总在提前答应、过度解释或害怕拒绝。一个经过内在确认的“愿意”，通常比出于害怕给出的“可以”更有温度，也更长久。` },
+    { title: "你的优势在工作里怎么落地", text: `${typeWork}\n\n你在工作中尤其可以发挥${gateThemesZh[consciousSun]}与${gateThemesZh[consciousEarth]}。把它放进具体场景，可以问：开会时我最容易看见什么？同事通常因为什么来找我？哪类问题会让我愿意反复琢磨？这些反复出现的线索，往往比“什么职业最适合我”更接近你的真实优势。` },
     { title: "你的整合方式与自然节奏", text: `${definitionStrengthsZh[properties.Definition]}。${definition}。\n\n观察自己是在独处时更容易理清，还是在对话、协作、移动或换环境后出现关键连接。你不必强迫自己套用别人的效率模板。真正稳定的节奏，应该让你可以反复使用，而不是每次完成任务都需要很久才能恢复。尊重自己的整合方式，会同时提升判断质量与创造力。` },
     { title: "身体、认知与环境在默默支持你", text: `你的消化是${translatedValue("Digestion", properties.Digestion)}，认知感官是${translatedValue("Sense", properties.Sense)}，适合的环境是${translatedValue("Environment", properties.Environment)}。${environmentGuidance || "这些线索指向什么空间更容易让神经系统放松"}。\n\n这些并不是必须严格执行的生活规定，而是邀请你重新相信身体。可以小范围测试光线、声音、空间、人群密度和信息输入方式，观察什么条件会让呼吸更深、注意力更稳、内心不再那么急。身体放松时，你的优势通常更容易被调用。` },
     { title: "当你偏离自己时，请先不要责怪自己", text: `你的正向信号是${sign}，它常提示优势正在正确场景中运作。${theme}则不是缺点、惩罚或失败，而是一盏很有价值的预警灯：可能你正在用头脑强推，承接不属于自己的期待，或把能力放在一个无法回应你的环境里。\n\n当${theme}反复出现，不需要立刻否定整段人生。先问自己：我是不是在内在权威准备好之前就答应了？是不是为了证明价值而持续消耗？身体最初的声音是什么？愿意重新选择，不代表退步，而是你开始认真站在自己这一边。` },
-    { title: "接下来可以怎样温柔地实践", text: `未来几周，不需要一次改变所有生活。每天只挑一个有分量的选择，在回答前多停一会儿，先留意内在权威，再听头脑解释。简单记录三件事：什么让你更有能量，什么让你明显收缩，什么时刻带来了${sign}。\n\n也可以练习一个更清楚的边界，例如“我需要晚一点回复”“这件事我暂时不能承诺”或“我愿意，但希望用自己的节奏完成”。你不必靠剧烈改变证明成长。一个真实的回应、一个不再勉强的决定、一个让身体安定的环境，都可能慢慢改变之后许多选择的质量。` },
+    { title: "未来七天，只做一个小实验", text: `可以这样试：每天只挑一个有分量的选择，在回答前多停一会儿，先留意内在权威，再听头脑解释。简单记录三件事：什么让你更有能量，什么让你明显收缩，什么时刻带来了${sign}。\n\n也可以练习一句清楚的边界，例如“我需要晚一点回复”“这件事我暂时不能承诺”或“我愿意，但希望用自己的节奏完成”。把这份解读当成自我观察工具，不把它当成科学定论或身份判决；在真实生活里小范围测试，有帮助的留下，不适合的放下。` },
   ];
 }
 

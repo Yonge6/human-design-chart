@@ -23,7 +23,7 @@
       <h2>我们如何处理你的资料</h2>
       <p>Pluto 默认在设备上计算和生图。隐私模式、云端图谱保存和匿名产品统计默认关闭；本地历史默认开启并仅保存在本设备。隐私模式关闭时，生成的图片默认显示姓名、日期、时间和地点。本地历史开启不会导致任何云端上传。</p>
       <p>在普通 HTTP 页面且不是 Capacitor 原生应用时，Pluto 会强制进入临时本地模式：云端保存、匿名统计、云端删除和 Supabase 匿名身份均停用。远程资料功能只在安全上下文或原生运行环境中可用。纯 JavaScript SHA-256 fallback 只用于保持本地 Hash 计算兼容，不提供传输加密，也不能替代 HTTPS。</p>
-      <p>只有在你单独、明确开启“将新生成的说明书保存到云端”后，新生成的姓名、出生资料、时区、图谱快照及版本信息才会上传。匿名统计也需要单独、明确开启“帮助我们改进 Pluto”，且只发送经白名单限制的操作事件，禁止姓名、出生资料、地点、完整图谱、自由文本和错误堆栈。</p>
+      <p>只有在你单独、明确开启“将新生成的说明书保存到云端”后，新生成的姓名、出生资料、时区、图谱快照及版本信息才会上传。匿名统计也需要单独、明确开启“帮助我们改进 Pluto”。开启后，网站会向我们的产品统计服务与 Google Analytics 发送经白名单限制的操作事件；这些事件不包含姓名、出生资料、地点、完整图谱、自由文本或错误堆栈。Google 会依据其隐私条款处理相关请求。</p>
       <p>为了把你输入的出生地点转换为计算所需的坐标和时区，应用会把你主动输入的地点搜索文字发送给 Photon；服务不可用时可能使用 ArcGIS Geocoding 作为备用。我们不会随地点文字一同发送姓名、出生日期或生成结果。该文字是你手动输入的出生地点，并非你或设备的当前定位。第三方服务可能按照各自政策处理或保留网络请求；提交 App Store 前，我们仍需确认其保留政策并据此完成最终隐私分类。</p>
       <h3>设备权限</h3>
       <ul><li>相册：仅在你点击“保存图片”时请求，用于把生成图片写入系统相册。</li><li>系统分享：仅在你主动分享时调用，由 Apple 的分享面板决定接收方。</li></ul>
@@ -37,7 +37,7 @@
       <h2>How we handle your information</h2>
       <p>Pluto calculates and renders locally by default. Privacy mode, cloud chart saving, and anonymous product analytics are off by default. Local history is on by default and stored only on this device. With privacy mode off, generated images show the entered name, date, time, and location. Enabling local history never uploads data to the cloud.</p>
       <p>On an ordinary HTTP page outside the Capacitor native app, Pluto enforces temporary local-only mode: cloud saving, analytics, cloud deletion, and Supabase anonymous identity are disabled. Remote data features require a secure context or the native runtime. The pure JavaScript SHA-256 fallback only preserves compatible local hashing; it does not encrypt transport and is not a substitute for HTTPS.</p>
-      <p>Only after you separately and explicitly enable Cloud Save may new names, birth details, time zones, snapshots, and versions be uploaded. Anonymous analytics also require separately enabling Help Us Improve Pluto, which sends only allowlisted action events and rejects names, birth details, locations, complete charts, free text, and raw stacks.</p>
+      <p>Only after you separately and explicitly enable Cloud Save may new names, birth details, time zones, snapshots, and versions be uploaded. Anonymous analytics also require separately enabling Help Us Improve Pluto. When enabled, the website sends allowlisted interaction events to our product analytics service and Google Analytics; these events exclude names, birth details, locations, complete charts, free text, and raw stacks. Google processes those requests under its own privacy terms.</p>
       <p>To convert a place you enter into coordinates and a time zone, the app sends only your place-search text to Photon and may use ArcGIS Geocoding as a fallback. We do not send your name, birth date, or generated result with that query. The text is a manually entered birth place, not the current location of you or your device. These providers may process or retain requests under their own policies; their retention behavior must still be confirmed before the final App Store privacy classification.</p>
       <h3>Device permissions</h3>
       <ul><li>Photos: requested only when you choose Save Image, solely to add the generated image to your library.</li><li>System sharing: opened only when you choose Share; recipients are controlled by Apple's share sheet.</li></ul>

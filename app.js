@@ -773,6 +773,23 @@ function trackEvent(eventName, properties = {}) {
   });
 }
 
+function syncGoogleAnalyticsConsent() {
+  if (typeof window.gtag !== "function") return;
+  const analyticsStorage = remoteServicesAllowed && appSettings.productAnalytics === true
+    ? "granted"
+    : "denied";
+  window.gtag("consent", "update", { analytics_storage: analyticsStorage });
+}
+
+function trackChartCompletionInGoogleAnalytics(snapshot) {
+  if (!remoteServicesAllowed || appSettings.productAnalytics !== true || typeof window.gtag !== "function") return;
+  window.gtag("event", "chart_completion", {
+    site_id: "site-human-design",
+    schema_version: snapshot.schemaVersion,
+    engine_version: snapshot.engineVersion,
+  });
+}
+
 function saveChartHistory(data, input) {
   if (!appSettings.keepHistory) return;
   const id = `${data.Meta?.BirthIso || ""}|${data.Properties.Name}|${data.Properties.Location}`;
@@ -1556,6 +1573,7 @@ productAnalyticsInput.addEventListener("change", () => {
   if (!remoteServicesAllowed) return;
   appSettings.productAnalytics = productAnalyticsInput.checked;
   persistSettings();
+  syncGoogleAnalyticsConsent();
   updateConsent(currentConsent()).catch((error) => console.warn("Analytics consent was not synchronized.", error));
   trackEvent("privacy_mode_changed", { setting: "productAnalytics", enabled: productAnalyticsInput.checked });
 });
@@ -1775,6 +1793,7 @@ chartForm.addEventListener("submit", async (event) => {
       schemaVersion: snapshot.schemaVersion,
       engineVersion: snapshot.engineVersion,
     });
+    trackChartCompletionInGoogleAnalytics(snapshot);
   } catch (error) {
     console.error(error);
     setStatus("failed", { message: error.message });
@@ -1919,6 +1938,7 @@ defaultPrivacyInput.checked = appSettings.privacyByDefault;
 saveHistoryInput.checked = appSettings.keepHistory;
 privacyToggle.checked = appSettings.privacyByDefault;
 updateRemoteServiceControls();
+syncGoogleAnalyticsConsent();
 applyLanguage(language, false);
 lifePhilosophyPoster.addEventListener("load", () => {
   if (lifePhilosophyPoster.src === lifePhilosophyPosterSources[language]) {

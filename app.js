@@ -520,23 +520,18 @@ function interpretation(data) {
   const properties = data.Properties;
   const consciousSun = data.Personality.Sun.Gate;
   const consciousEarth = data.Personality.Earth.Gate;
-  const designSun = data.Design.Sun.Gate;
-  const designEarth = data.Design.Earth.Gate;
   if (language === "en") {
-    const profile = profileCode(properties.Profile);
-    const profileText = profileGuidanceEn[profile] || `Your ${profile} profile combines two different ways of learning, contributing, and being perceived by others`;
     const typeStrength = typeStrengthsEn[properties.Type];
+    const authorityStrength = authorityStrengthsEn[properties["Inner Authority"]];
     const practical = typePracticalGuidanceEn[properties.Type];
     const decision = authorityPracticalGuidanceEn[properties["Inner Authority"]];
-    return `In plain language: ${typeStrength}. ${profileText}. A visible part of this is ${gateThemesEn[consciousSun]}, grounded through ${gateThemesEn[consciousEarth]}.\n\nWork example: ${practical.work}\n\nDaily-life example: ${practical.life}\n\nTry this when deciding: ${decision} This is a reflection experiment, not a rule or scientific conclusion. Keep what makes daily life clearer and more sustainable.`;
+    return `YOUR STRENGTHS — THE MAIN POINT\n1. Core energy: ${typeStrength}.\n2. Visible talent: people are likely to notice your ${gateThemesEn[consciousSun]}, grounded by ${gateThemesEn[consciousEarth]}.\n3. Decision strength: ${authorityStrength}.\n\nWork example: ${practical.work}\n\nDaily-life example: ${practical.life}\n\nTry this when deciding: ${decision} This is a reflection experiment, not a rule or scientific conclusion. Keep what makes daily life clearer and more sustainable.`;
   }
-  const type = translatedValue("Type", properties.Type);
-  const profile = profileCode(properties.Profile);
-  const profileText = profileGuidanceZh[profile] || `你的${profile}人生角色结合了两种不同的学习、贡献和被他人看见的方式`;
   const typeStrength = typeStrengthsZh[properties.Type];
+  const authorityStrength = authorityStrengthsZh[properties["Inner Authority"]];
   const practical = typePracticalGuidanceZh[properties.Type];
   const decision = authorityPracticalGuidanceZh[properties["Inner Authority"]];
-  return `一句话看懂：${typeStrength}。${profileText}。你最容易被看见的是${gateThemesZh[consciousSun]}，并通过${gateThemesZh[consciousEarth]}把它落到现实。\n\n工作场景：${practical.work}\n\n生活场景：${practical.life}\n\n做决定时可以这样试：${decision} 这是一种自我观察练习，不是必须遵守的规则或科学定论；只保留那些确实让日常生活更清楚、更可持续的部分。`;
+  return `你的优势｜先看重点\n1. 核心能量优势：${typeStrength}。\n2. 别人容易看见的优势：${gateThemesZh[consciousSun]}，并能通过${gateThemesZh[consciousEarth]}把它落到现实。\n3. 做决定时的优势：${authorityStrength}。\n\n工作场景：${practical.work}\n\n生活场景：${practical.life}\n\n做决定时可以这样试：${decision} 这是一种自我观察练习，不是必须遵守的规则或科学定论；只保留那些确实让日常生活更清楚、更可持续的部分。`;
 }
 
 function detailedReadingSections(data) {
@@ -552,6 +547,7 @@ function detailedReadingSections(data) {
     const practical = typePracticalGuidanceEn[properties.Type];
     const decisionPractice = authorityPracticalGuidanceEn[properties["Inner Authority"]];
     return [
+      { title: "Your three core strengths", text: `1. Core energy\n${typeStrengthsEn[properties.Type]}.\n\n2. Visible talent\nPeople are likely to notice your ${gateThemesEn[consciousSun]}. Your ${gateThemesEn[consciousEarth]} helps turn that talent into something steady and useful.\n\n3. Decision strength\n${authorityStrengthsEn[properties["Inner Authority"]]}.\n\nThese are the qualities to notice first. They are not promises of success or fixed labels; they are strengths you can recognize, test, and develop in ordinary life.` },
       { title: "First, what you do not need to prove", text: `You do not need to become a louder, faster, or more conventional version of yourself in order to be valuable. ${typeStrengthsEn[properties.Type]}.\n\nWhen your natural rhythm differs from the people around you, it can be tempting to interpret that difference as a flaw. This reading invites another possibility: the difference may be the exact condition that allows your strengths to emerge. The goal is not to perform your design perfectly, but to notice where life feels more honest, sustainable, and alive.` },
       { title: "How this energy shows up in an ordinary workday", text: `Your type is ${properties.Type}, and your strategy is ${properties.Strategy.toLowerCase()}. In plain language, strategy is a way to notice which commitments use your energy well and which ones keep creating resistance.\n\nWork example: ${practical.work}\n\nTry this: ${practical.action}` },
       { title: "The gifts people can see", text: `Your conscious Sun is Gate ${consciousSun}, highlighting a visible gift for ${gateThemesEn[consciousSun]}. Gate ${consciousEarth} grounds that gift through ${gateThemesEn[consciousEarth]}, helping it become useful in real situations rather than remaining only potential.\n\nProfile line ${firstLine} shapes how you consciously develop this talent. The deepest value is not a single trait, but the combination: what you notice, how you stabilize it, and how you translate it into something another person can actually receive.` },
@@ -583,6 +579,7 @@ function detailedReadingSections(data) {
   const authorityCare = authorityCareZh[properties["Inner Authority"]] || "";
   const profileCare = profileCareZh[profileCodeValue] || "";
   return [
+    { title: "先看重点：你的三项核心优势", text: `1. 核心能量优势\n${typeStrengthsZh[properties.Type]}。\n\n2. 别人最容易看见的优势\n你天然容易展现${gateThemesZh[consciousSun]}，并通过${gateThemesZh[consciousEarth]}让这份能力变得稳定、实际、能被别人感受到。\n\n3. 做决定时的优势\n${authorityStrengthsZh[properties["Inner Authority"]]}。\n\n这三项是整份解读最值得先记住的部分。它们不是成功保证或固定标签，而是可以在日常工作与生活里持续辨认、练习和放大的优势。` },
     { title: "先说最重要的：你不需要变成别人", text: `${typeReassurance}\n\n这份图不是要你把自己修理成一个更标准的人，而是帮助你看见：很多曾经被误解成缺点的地方，可能只是你的运作方式与周围人的期待不同。你不需要完美执行任何规则。只要开始分辨哪些选择让自己更真实、稳定、有生命力，就已经在慢慢回到自己的位置。` },
     { title: "放进日常工作里，你可以这样理解", text: `你是${type}。你的策略是${strategy}。用大白话说，它是在帮你分辨：哪些任务值得投入，哪些承诺只是因为不好意思拒绝。\n\n工作场景：${practical.work}\n\n可以这样试：${practical.action}` },
     { title: "别人最容易看见的天赋", text: `你的人格太阳落在${consciousSun}号闸门，最容易被别人看见的天赋是${gateThemesZh[consciousSun]}；${consciousEarth}号闸门的${gateThemesZh[consciousEarth]}，则帮助这份天赋在现实中站稳。\n\n${firstLine}号线影响你主动发展能力的方式。你的价值并不只是“拥有某种天赋”，而是能把看到的、理解的和坚持的东西，逐渐变成别人真正感受得到的帮助。很多时候，你可能已经在自然使用这份能力，只是因为它对你太熟悉，反而低估了它的分量。` },

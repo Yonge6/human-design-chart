@@ -25,19 +25,25 @@ test("header keeps language beside the accessible side drawer", () => {
   assert.doesNotMatch(app, /historyDialog\.showModal|settingsDialog\.showModal/);
 });
 
-test("drawer includes WonderElian information while support remains web-only", () => {
+test("drawer lists WonderElian first and does not include the retired support flow", () => {
   const html = read("index.html");
   const app = read("app.js");
 
   assert.match(html, /id="openAbout"[\s\S]*id="openContact"/);
-  assert.match(html, /id="drawerWorksTitle"[\s\S]*yixiu\.wonderelian\.com[\s\S]*xiazishuo\.com[\s\S]*wendao\.wonderelian\.com[\s\S]*style-atlas\.wonderelian\.com/);
-  assert.match(app, /workYixiu: "一休冥想"[\s\S]*workYixiu: "Yixiu Meditation"/);
-  assert.match(html, /id="drawerSupport"[^>]*hidden/);
-  assert.match(html, /class="drawer-support-mark"[^>]*>喜<\/span>/);
-  assert.match(html, /id="supportQr"[^>]*data-src=/);
-  assert.doesNotMatch(html, /id="supportQr"[^>]*\ssrc=/);
-  assert.match(app, /if \(nativeRuntime\) \{\s*drawerSupport\.remove\(\);\s*supportDialog\.remove\(\);/);
-  assert.match(app, /drawerSupport\.hidden = false/);
+  assert.match(html, /id="drawerWorksTitle"[\s\S]*wonderelian\.com[\s\S]*yixiu\.wonderelian\.com[\s\S]*xiazishuo\.com[\s\S]*wendao\.wonderelian\.com[\s\S]*style-atlas\.wonderelian\.com/);
+  assert.match(app, /workWonderElian: "WonderElian"[\s\S]*workWonderElian: "WonderElian"/);
+  assert.match(app, /WonderElian 是永歌 Elian 的个人创作空间/);
+  assert.doesNotMatch(html, /drawerSupport|supportDialog|openSupport/);
+  assert.doesNotMatch(app, /drawerSupport|supportDialog|openSupportButton|supportQr/);
+});
+
+test("about drawer carries the bilingual life philosophy module", () => {
+  const html = read("index.html");
+  const app = read("app.js");
+
+  assert.match(html, /class="drawer-life-philosophy"[\s\S]*data-i18n="lifePathKnow"[\s\S]*data-i18n="lifePrincipleWater"[\s\S]*data-i18n="lifePhilosophyVision"/);
+  assert.match(app, /lifePhilosophyKicker: "我们的生命观"[\s\S]*lifePhilosophyQuote: "向内认识自己，向外如水而行。"/);
+  assert.match(app, /lifePhilosophyKicker: "Our philosophy of life"[\s\S]*lifePhilosophyQuote: "Know yourself within; move through the world like water\."/);
 });
 
 test("history deletion requires the confirmation dialog", () => {

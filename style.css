@@ -289,11 +289,6 @@ body {
 .topbar-language-switch {
   flex: 0 0 auto;
 }
-.drawer-support {
-  padding: 24px 0;
-  border-bottom: 1px solid rgba(216, 177, 125, .16);
-}
-.drawer-support h3,
 .drawer-subview h3 {
   margin: 8px 0 7px;
   color: #fff2df;
@@ -302,50 +297,11 @@ body {
   line-height: 1.35;
   letter-spacing: 0;
 }
-.drawer-support > p,
 .drawer-works header p,
 .drawer-subview > p {
   margin: 0;
   color: #bcaea5;
   font: 12px/1.65 ui-sans-serif, system-ui, sans-serif;
-}
-.drawer-support-button {
-  display: grid;
-  grid-template-columns: 38px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  min-height: 66px;
-  margin-top: 14px;
-  padding: 10px 12px;
-  border: 1px solid rgba(216, 177, 125, .28);
-  border-radius: 4px;
-  background: rgba(216, 177, 125, .06);
-  color: inherit;
-  text-align: left;
-}
-.drawer-support-button:hover,
-.drawer-support-button:focus-visible { background: rgba(216, 177, 125, .11); }
-.drawer-support-mark {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border: 1px solid rgba(216, 177, 125, .34);
-  border-radius: 50%;
-  color: #d8b17d;
-  font: 16px/1 Georgia, serif;
-}
-.drawer-support-button strong,
-.drawer-support-button small { display: block; }
-.drawer-support-button strong {
-  color: #f4e6d3;
-  font: 700 13px/1.3 ui-sans-serif, system-ui, sans-serif;
-}
-.drawer-support-button small {
-  margin-top: 4px;
-  color: #aa9a91;
-  font: 11px/1.4 ui-sans-serif, system-ui, sans-serif;
 }
 .drawer-works {
   padding: 24px 0;
@@ -416,6 +372,83 @@ body {
   border-top: 1px solid rgba(216, 177, 125, .16);
   color: #927f75;
 }
+.drawer-life-philosophy {
+  margin-top: 30px;
+  padding: 22px 0 24px;
+  border-top: 1px solid rgba(216, 177, 125, .24);
+  border-bottom: 1px solid rgba(216, 177, 125, .24);
+}
+.drawer-life-philosophy h4 {
+  margin: 10px 0 0;
+  color: #fff2df;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.75;
+  letter-spacing: 0;
+}
+.drawer-life-philosophy > p {
+  margin: 12px 0 0;
+  color: #bcaea5;
+  font: 12px/1.9 ui-sans-serif, system-ui, sans-serif;
+}
+.drawer-life-path {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 22px 0;
+  border-top: 1px solid rgba(216, 177, 125, .18);
+  border-bottom: 1px solid rgba(216, 177, 125, .18);
+}
+.drawer-life-path div {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  min-width: 0;
+  padding: 12px 6px;
+  border-right: 1px solid rgba(216, 177, 125, .14);
+}
+.drawer-life-path div:last-child { border-right: 0; }
+.drawer-life-path span {
+  color: #c7a875;
+  font: 9px/1.3 ui-sans-serif, system-ui, sans-serif;
+}
+.drawer-life-path strong {
+  color: #f1dfc8;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+.drawer-life-principles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+.drawer-life-principles article {
+  padding: 13px;
+  border: 1px solid rgba(216, 177, 125, .15);
+  background: rgba(216, 177, 125, .05);
+}
+.drawer-life-principles strong {
+  color: #c7a875;
+  font-size: 13px;
+  font-weight: 500;
+}
+.drawer-life-principles p {
+  margin: 6px 0 0;
+  color: #aa9a91;
+  font: 10px/1.7 ui-sans-serif, system-ui, sans-serif;
+}
+.drawer-life-philosophy blockquote {
+  margin: 22px 0 0;
+  color: #f1dfc8;
+  font: 17px/1.7 Georgia, "Times New Roman", serif;
+  text-align: center;
+}
+.drawer-life-philosophy .drawer-life-vision {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(216, 177, 125, .14);
+  font-size: 11px;
+}
 .drawer-contact-list {
   display: grid;
   margin-top: 22px;
@@ -439,77 +472,6 @@ body {
   text-align: right;
 }
 .drawer-contact-list a > span:last-child { color: #9e7950; }
-.support-dialog {
-  width: min(calc(100vw - 32px), 430px);
-  max-height: min(780px, calc(100dvh - 32px));
-  padding: 0;
-  border: 1px solid rgba(216, 177, 125, .36);
-  border-radius: 6px;
-  background: #150f18;
-  color: var(--ink);
-  box-shadow: 0 30px 90px rgba(0, 0, 0, .58);
-}
-.support-dialog::backdrop {
-  background: rgba(7, 5, 10, .72);
-  backdrop-filter: blur(5px);
-}
-.support-dialog-card {
-  position: relative;
-  display: grid;
-  justify-items: center;
-  max-height: min(780px, calc(100dvh - 34px));
-  overflow-y: auto;
-  padding: 30px 28px 28px;
-  text-align: center;
-}
-.support-dialog-close {
-  position: absolute;
-  top: 13px;
-  right: 13px;
-  display: grid;
-  place-items: center;
-  width: 34px;
-  min-height: 34px;
-  padding: 0;
-  border: 1px solid rgba(216, 177, 125, .24);
-  border-radius: 50%;
-  background: rgba(246, 234, 219, .04);
-  color: #e6cfad;
-  font: 25px/1 Georgia, serif;
-}
-.support-dialog h2 {
-  margin: 9px 0 10px;
-  color: #fff2df;
-  font-size: 25px;
-  font-weight: 500;
-  letter-spacing: 0;
-}
-.support-dialog p {
-  margin: 0;
-  color: #bcaea5;
-  font: 13px/1.65 ui-sans-serif, system-ui, sans-serif;
-}
-.support-dialog img {
-  width: min(260px, 78vw);
-  height: auto;
-  margin-top: 22px;
-  border: 8px solid #f7eee2;
-  background: #f7eee2;
-}
-.support-open-code {
-  margin: 12px 0 20px;
-  color: #d8b17d;
-  font: 12px/1.4 ui-sans-serif, system-ui, sans-serif;
-}
-.support-dialog-card > strong {
-  color: #f1dfc8;
-  font: 600 13px/1.4 ui-sans-serif, system-ui, sans-serif;
-}
-.support-dialog-card > small {
-  margin-top: 5px;
-  color: #9f9089;
-  font: 11px/1.5 ui-sans-serif, system-ui, sans-serif;
-}
 .drawer-footer {
   display: grid;
   grid-template-columns: minmax(12px, 1fr) auto minmax(12px, 1fr);

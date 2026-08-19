@@ -142,6 +142,13 @@ test("homepage uses a bilingual three-step form without visible progress or the 
   assert.doesNotMatch(html, /nameHint|field-hint|仅用于在你的人生说明书中显示/);
   assert.doesNotMatch(app, /nameHint|Used only to display your name in your Life Manual/);
   assert.doesNotMatch(css, /\.field-hint/);
+  assert.doesNotMatch(html, /formIntro|formPrivacyNote|输入出生信息，生成你的专属人类图|出生资料默认仅在本设备处理/);
+  assert.doesNotMatch(app, /formIntro|formPrivacyNote|Enter your birth details to create your personal Human Design chart|Birth details are processed on this device by default/);
+  assert.doesNotMatch(css, /\.form-intro|\.form-privacy-note/);
+  assert.match(html, /class="native-birth-heading"[\s\S]{0,180}data-i18n="tapToChoose"/);
+  assert.match(app, /tapToChoose: "点击选择"/);
+  assert.match(app, /tapToChoose: "Tap to choose"/);
+  assert.match(css, /@media \(max-width: 560px\)[\s\S]*\.native-birth-grid \{ grid-template-columns: 1fr;/);
   assert.match(html, /data-form-step="1"[\s\S]*data-form-step="2"[\s\S]*data-form-step="3"/);
   assert.match(html, /data-form-step="1"[^>]*data-i18n-aria-label="stepBasic"/);
   assert.match(html, /id="nextToBirth"[\s\S]*id="nextToLocation"[\s\S]*type="submit"/);

@@ -1565,7 +1565,6 @@ appDrawer.addEventListener("keydown", (event) => {
 languageButtons.forEach((button) => button.addEventListener("click", () => {
   applyLanguage(button.dataset.language);
   trackEvent("language_changed", { language: button.dataset.language });
-  closeDrawer();
 }));
 openHistoryButton.addEventListener("click", () => {
   renderHistory();

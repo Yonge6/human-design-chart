@@ -39,7 +39,7 @@ async function openDrawerItem(page, selector) {
 }
 
 async function switchLanguage(page, language) {
-  await openDrawerItem(page, `[data-language="${language}"]`);
+  await page.locator(`.topbar [data-language="${language}"]`).click();
 }
 
 async function stubExternalNetwork(page, requests = []) {
@@ -250,19 +250,21 @@ test("mobile form and settings drawer page scroll naturally", async ({ page }) =
   expect(await drawerScroll.evaluate((element) => element.scrollTop > 0)).toBe(true);
 });
 
-test("mobile header drawer contains the former tools and closes predictably", async ({ page }) => {
+test("mobile header keeps language beside the drawer and closes predictably", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 667 });
   await page.goto("/");
 
   await expect(page.locator("#openMenu")).toBeVisible();
+  await expect(page.locator(".topbar-language-switch")).toBeVisible();
+  await expect(page.locator('.topbar [data-language="zh"]')).toBeVisible();
+  await expect(page.locator('.topbar [data-language="en"]')).toBeVisible();
   await expect(page.locator("#appDrawer")).toBeHidden();
   await page.locator("#openMenu").click();
   await expect(page.locator("#appDrawer")).toBeVisible();
   await expect(page.locator("#openMenu")).toHaveAttribute("aria-expanded", "true");
   await expect(page.locator("#openHistory")).toBeVisible();
   await expect(page.locator("#openSettings")).toBeVisible();
-  await expect(page.locator('[data-language="zh"]')).toBeVisible();
-  await expect(page.locator('[data-language="en"]')).toBeVisible();
+  await expect(page.locator('.drawer-nav [data-language]')).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 
   await page.locator("#openHistory").click();

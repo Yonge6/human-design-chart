@@ -52,6 +52,11 @@ body {
   letter-spacing: .01em;
 }
 .brand-detail { margin-left: .15em; }
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 .menu-button {
   display: inline-grid;
   place-items: center;
@@ -219,8 +224,7 @@ body {
   margin-top: 8px;
   border-bottom: 1px solid rgba(216, 177, 125, .16);
 }
-.drawer-nav > button,
-.drawer-nav-row {
+.drawer-nav > button {
   display: grid;
   grid-template-columns: 34px minmax(0, 1fr) auto;
   align-items: center;
@@ -248,7 +252,6 @@ body {
   color: #d8b17d;
   font: 18px/1 Georgia, serif;
 }
-.drawer-nav-icon.language-mark { font-size: 14px; }
 .drawer-nav strong,
 .drawer-nav small { display: block; }
 .drawer-nav strong {
@@ -283,7 +286,9 @@ body {
   background: #cfad79;
   color: #1b121a;
 }
-.drawer-nav-row .language-switch { width: 98px; }
+.topbar-language-switch {
+  flex: 0 0 auto;
+}
 .drawer-support {
   padding: 24px 0;
   border-bottom: 1px solid rgba(216, 177, 125, .16);
@@ -1769,12 +1774,16 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
   .topbar { min-height: 72px; padding: 0 22px; border-bottom-color: rgba(216, 177, 125, .72); }
   .brand { flex: 0 0 auto; font-size: 27px; white-space: nowrap; }
   .brand-detail { display: none; }
+  .topbar-actions { gap: 6px; }
+  .topbar-language-switch {
+    width: 86px;
+    grid-template-columns: repeat(2, 40px);
+  }
   .menu-button { width: 44px; min-height: 44px; border-color: transparent; background: transparent; }
   .menu-icon { width: 21px; gap: 5px; }
   .side-drawer { width: min(92vw, 410px); }
   .drawer-header { padding: calc(env(safe-area-inset-top, 0px) + 18px) 18px 15px; }
   .drawer-scroll { padding: 18px; }
-  .drawer-nav-row .language-switch { width: 90px; grid-template-columns: repeat(2, 43px); }
   .shell { padding: 0; }
   .shell.form-view, .shell.result-view { width: 100%; }
   .shell.form-view {

@@ -769,7 +769,7 @@ let pendingConfirmation = null;
 let pendingHistoryOptOut = null;
 const paintBodygraph = createBodygraphRenderer({
   container: graph,
-  templateUrl: "./assets/bodygraph-template.svg",
+  templateUrl: "./assets/bodygraph-original-template.svg",
   centerColors,
   label: "Life Manual BodyGraph",
 });

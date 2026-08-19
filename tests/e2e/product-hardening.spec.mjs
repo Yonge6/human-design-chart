@@ -109,17 +109,13 @@ async function provideSupabaseRuntimeConfig(page) {
   });
 }
 
-async function selectBirth(page, { includeDate = true, includeTime = true, ampm = "pm" } = {}) {
+async function selectBirth(page, { includeDate = true, includeTime = true } = {}) {
   if (includeDate) {
-    await page.locator("#year").selectOption("1990");
-    await page.locator("#month").selectOption("01");
-    await page.locator("#day").selectOption("01");
+    await page.locator("#birthDate").fill("1990-01-01");
   }
   if (includeTime) {
-    await page.locator("#hour").selectOption("12");
-    await page.locator("#minute").selectOption("00");
+    await page.locator("#birthTime").fill("12:00");
   }
-  if (ampm) await page.locator(`[data-ampm="${ampm}"]`).click();
 }
 
 async function fillAndGenerate(page) {
@@ -154,11 +150,9 @@ test.beforeEach(async ({ page }) => {
 
 test("new-user defaults keep history locally and require every birth field", async ({ page }) => {
   await page.goto("/");
-  for (const selector of ["#year", "#month", "#day", "#hour", "#minute", "#ampm"]) {
+  for (const selector of ["#birthDate", "#birthTime"]) {
     await expect(page.locator(selector)).toHaveValue("");
   }
-  await expect(page.locator('[data-ampm="am"]')).toHaveAttribute("aria-pressed", "false");
-  await expect(page.locator('[data-ampm="pm"]')).toHaveAttribute("aria-pressed", "false");
   await expect(page.locator("#defaultPrivacy")).not.toBeChecked();
   await expect(page.locator("#privacyMode")).not.toBeChecked();
   await expect(page.locator("#saveHistory")).toBeChecked();
@@ -175,24 +169,15 @@ test("new-user defaults keep history locally and require every birth field", asy
   await expect(page.locator("#name")).toHaveValue("Validation Fixture");
   await page.locator("#nextToBirth").click();
   await page.locator("#nextToLocation").click();
-  await expect(page.locator("#year")).toBeFocused();
-  await expect(page.locator("#year")).toHaveAttribute("aria-invalid", "true");
-  await page.locator("#year").selectOption("1990");
-  await expect(page.locator("#year")).not.toHaveAttribute("aria-invalid", "true");
-
-  await page.locator("#month").selectOption("01");
-  await page.locator("#day").selectOption("01");
+  await expect(page.locator("#birthDate")).toBeFocused();
+  await expect(page.locator("#birthDate")).toHaveAttribute("aria-invalid", "true");
+  await page.locator("#birthDate").fill("1990-01-01");
+  await expect(page.locator("#birthDate")).not.toHaveAttribute("aria-invalid", "true");
   await page.locator("#nextToLocation").click();
-  await expect(page.locator("#hour")).toBeFocused();
-  await expect(page.locator("#hour")).toHaveAttribute("aria-invalid", "true");
-
-  await page.locator("#hour").selectOption("12");
-  await page.locator("#minute").selectOption("00");
-  await page.locator("#nextToLocation").click();
-  await expect(page.locator('[data-ampm="am"]')).toBeFocused();
-  await expect(page.locator("#ampmSwitch")).toHaveAttribute("aria-invalid", "true");
-  await page.locator('[data-ampm="am"]').click();
-  await expect(page.locator("#ampmSwitch")).not.toHaveAttribute("aria-invalid", "true");
+  await expect(page.locator("#birthTime")).toBeFocused();
+  await expect(page.locator("#birthTime")).toHaveAttribute("aria-invalid", "true");
+  await page.locator("#birthTime").fill("12:00");
+  await expect(page.locator("#birthTime")).not.toHaveAttribute("aria-invalid", "true");
 
   await page.locator("#nextToLocation").click();
   await expect(page.locator('[data-form-step="3"]')).toBeVisible();
@@ -208,7 +193,7 @@ test("language switching translates the current step without resetting the form"
   await switchLanguage(page, "zh");
   await page.locator("#name").fill("Language Fixture");
   await page.locator("#nextToBirth").click();
-  await selectBirth(page, { ampm: "am" });
+  await selectBirth(page);
   await page.locator("#nextToLocation").click();
   await expect(page.locator("#formStepStatus")).toHaveText("第 3 步，共 3 步：出生地点");
 
@@ -232,7 +217,7 @@ test("a new user's generated chart is saved locally without backend requests", a
   expect(requests.some((url) => /supabase\.co|api-human-design\.wonderelian\.com/.test(url))).toBe(false);
 });
 
-test("mobile form and settings drawer page scroll naturally", async ({ page }) => {
+test("mobile birth controls fit cleanly while the settings drawer scrolls", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 667 });
   await page.goto("/");
   await page.locator("#name").fill("Mobile Flow");
@@ -240,7 +225,7 @@ test("mobile form and settings drawer page scroll naturally", async ({ page }) =
   const next = page.locator("#nextToLocation");
   await next.scrollIntoViewIfNeeded();
   await expect(next).toBeInViewport();
-  expect(await page.evaluate(() => document.documentElement.scrollHeight > window.innerHeight)).toBe(true);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 
   await openDrawerItem(page, "#openSettings");
   await expect(page.locator("#settingsDialog")).toBeVisible();

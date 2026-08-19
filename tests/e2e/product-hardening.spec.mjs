@@ -188,6 +188,27 @@ test("new-user defaults keep history locally and require every birth field", asy
   await expect(page.locator("#location")).not.toHaveAttribute("aria-invalid", "true");
 });
 
+test("native birth controls stay inside the mobile form", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await page.locator("#name").fill("Mobile Layout Check");
+  await page.locator("#nextToBirth").click();
+
+  const formBox = await page.locator(".form-panel").boundingBox();
+  const fieldBoxes = await Promise.all([
+    page.locator("#birthDate").boundingBox(),
+    page.locator("#birthTime").boundingBox(),
+  ]);
+
+  expect(formBox).not.toBeNull();
+  for (const box of fieldBoxes) {
+    expect(box).not.toBeNull();
+    expect(box.x).toBeGreaterThanOrEqual(formBox.x);
+    expect(box.x + box.width).toBeLessThanOrEqual(formBox.x + formBox.width);
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});
+
 test("language switching translates the current step without resetting the form", async ({ page }) => {
   await page.goto("/");
   await switchLanguage(page, "zh");
@@ -285,6 +306,8 @@ test("web drawer exposes about, contact, and WonderElian-first works", async ({ 
 
   await expect(page.locator("#openAbout")).toBeVisible();
   await expect(page.locator("#openContact")).toBeVisible();
+  await expect(page.locator(".drawer-nav-icon img")).toHaveCount(4);
+  await expect(page.locator("#openContact .drawer-nav-icon img")).toHaveAttribute("src", "assets/icons/mail.svg");
   await expect(page.locator(".drawer-work-card")).toHaveCount(5);
   await expect(page.locator(".drawer-work-card").first()).toHaveAttribute("href", "https://wonderelian.com/");
   await expect(page.locator(".drawer-work-card").first()).toContainText("WonderElian 是永歌 Elian 的个人创作空间");

@@ -124,7 +124,9 @@ async function selectBirth(page, { includeDate = true, includeTime = true, ampm 
 
 async function fillAndGenerate(page) {
   await page.locator("#name").fill("Browser Fixture");
+  await page.locator("#nextToBirth").click();
   await selectBirth(page);
+  await page.locator("#nextToLocation").click();
   await page.locator("#location").fill("Xiangtan");
   await expect(page.locator("#locationResults")).toBeVisible();
   await page.locator("#locationResults [role=option]").first().click();
@@ -135,7 +137,9 @@ async function fillAndGenerate(page) {
 
 async function fillProductionFixtureAndGenerate(page) {
   await page.locator("#name").fill("Production Smoke Test");
+  await page.locator("#nextToBirth").click();
   await selectBirth(page);
+  await page.locator("#nextToLocation").click();
   await page.locator("#location").fill("Wuhan, China");
   await expect(page.locator("#locationResults")).toBeVisible();
   await page.locator("#locationResults [role=option]").first().click();
@@ -161,8 +165,16 @@ test("new-user defaults keep history locally and require every birth field", asy
   await expect(page.locator("#cloudSave")).not.toBeChecked();
   await expect(page.locator("#productAnalytics")).not.toBeChecked();
 
+  await page.locator("#nextToBirth").click();
+  await expect(page.locator("#name")).toBeFocused();
+  await expect(page.locator("#name")).toHaveAttribute("aria-invalid", "true");
   await page.locator("#name").fill("Validation Fixture");
-  await page.locator("#chartForm button[type=submit]").click();
+  await page.locator("#nextToBirth").click();
+  await expect(page.locator('[data-form-step="2"]')).toBeVisible();
+  await page.locator("#backToName").click();
+  await expect(page.locator("#name")).toHaveValue("Validation Fixture");
+  await page.locator("#nextToBirth").click();
+  await page.locator("#nextToLocation").click();
   await expect(page.locator("#year")).toBeFocused();
   await expect(page.locator("#year")).toHaveAttribute("aria-invalid", "true");
   await page.locator("#year").selectOption("1990");
@@ -170,18 +182,20 @@ test("new-user defaults keep history locally and require every birth field", asy
 
   await page.locator("#month").selectOption("01");
   await page.locator("#day").selectOption("01");
-  await page.locator("#chartForm button[type=submit]").click();
+  await page.locator("#nextToLocation").click();
   await expect(page.locator("#hour")).toBeFocused();
   await expect(page.locator("#hour")).toHaveAttribute("aria-invalid", "true");
 
   await page.locator("#hour").selectOption("12");
   await page.locator("#minute").selectOption("00");
-  await page.locator("#chartForm button[type=submit]").click();
+  await page.locator("#nextToLocation").click();
   await expect(page.locator('[data-ampm="am"]')).toBeFocused();
   await expect(page.locator("#ampmSwitch")).toHaveAttribute("aria-invalid", "true");
   await page.locator('[data-ampm="am"]').click();
   await expect(page.locator("#ampmSwitch")).not.toHaveAttribute("aria-invalid", "true");
 
+  await page.locator("#nextToLocation").click();
+  await expect(page.locator('[data-form-step="3"]')).toBeVisible();
   await page.locator("#chartForm button[type=submit]").click();
   await expect(page.locator("#location")).toBeFocused();
   await expect(page.locator("#location")).toHaveAttribute("aria-invalid", "true");
@@ -205,9 +219,11 @@ test("a new user's generated chart is saved locally without backend requests", a
 test("mobile form and settings drawer page scroll naturally", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 667 });
   await page.goto("/");
-  const submit = page.locator("#chartForm button[type=submit]");
-  await submit.scrollIntoViewIfNeeded();
-  await expect(submit).toBeInViewport();
+  await page.locator("#name").fill("Mobile Flow");
+  await page.locator("#nextToBirth").click();
+  const next = page.locator("#nextToLocation");
+  await next.scrollIntoViewIfNeeded();
+  await expect(next).toBeInViewport();
   expect(await page.evaluate(() => document.documentElement.scrollHeight > window.innerHeight)).toBe(true);
 
   await openDrawerItem(page, "#openSettings");

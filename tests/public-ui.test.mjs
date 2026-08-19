@@ -136,20 +136,28 @@ test("mobile form remains vertically scrollable", () => {
   assert.match(css, /\.drawer-settings \.settings-list \{ padding: 7px 0 0; \}/);
 });
 
-test("poster media uses nonblocking dark loading placeholders", () => {
+test("homepage uses a bilingual three-step form without the Life Philosophy poster", () => {
   const html = read("index.html");
   const app = read("app.js");
   const css = read("style.css");
 
-  const homepagePoster = html.match(/<figure class="homepage-poster"[\s\S]*?<\/figure>/)?.[0] || "";
-  assert.match(homepagePoster, /data-media-state="loading"/);
-  assert.match(homepagePoster, /class="media-loading-placeholder"/);
-  assert.match(homepagePoster, /fetchpriority="low"/);
-  assert.doesNotMatch(homepagePoster, /\ssrc=/);
-  assert.match(app, /engineWarmupPromise\.finally\(observePoster\)/);
-  assert.match(app, /window\.addEventListener\("load", observeAfterEngineWarmup, \{ once: true \}\)/);
-  assert.match(app, /new IntersectionObserver/);
-  assert.match(app, /requestIdleCallback/);
+  assert.match(html, /id="formProgressTrack"[^>]*role="progressbar"[^>]*aria-valuemax="3"/);
+  assert.match(html, /data-form-step="1"[\s\S]*data-form-step="2"[\s\S]*data-form-step="3"/);
+  assert.match(html, /id="nextToBirth"[\s\S]*id="nextToLocation"[\s\S]*type="submit"/);
+  assert.match(app, /function setFormStep\(/);
+  assert.match(app, /function currentBirthValidation\(/);
+  assert.match(app, /stepBasic: "基本信息"[\s\S]*stepBasic: "Basics"/);
+  assert.match(css, /\.form-progress-track/);
+  assert.match(css, /\.form-action-dock/);
+  assert.doesNotMatch(html, /homepage-poster|lifePhilosophyPoster|生命观海报/);
+  assert.doesNotMatch(app, /lifePhilosophyPoster|life-philosophy-poster/);
+  assert.doesNotMatch(css, /\.homepage-poster/);
+});
+
+test("result media keeps its nonblocking dark loading placeholder", () => {
+  const app = read("app.js");
+  const css = read("style.css");
+
   assert.match(app, /function clearPoster\(\)[\s\S]{0,500}setMediaState\(previewStage, "loading"\)/);
   assert.match(app, /setMediaState\(previewStage, "ready"\)/);
   assert.match(css, /\.media-loading-placeholder/);

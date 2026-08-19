@@ -2,37 +2,36 @@ final result: passed
 
 **Source visual truth**
 
-- User reference: `/tmp/codex-remote-attachments/019f2807-752a-73a1-81e6-c9cc64623217/AF0F1C8F-F4D3-4C0C-879C-9D36724CCBDD/1-照片-1.jpg`.
-- Image2 mobile export background: `/Users/yongyuan/Documents/人类图/assets/pluto-chart-mobile-v1.png`.
-- Reference/output comparison: `/Users/yongyuan/Documents/人类图/qa-mobile-export-comparison-v6.png`.
-- Final reopened export: `/Users/yongyuan/Downloads/袁勇-human-design-chart (1).png` (`1200 x 2246`).
+- Selected concept: `/Users/yongyuan/.codex/generated_images/019f9d4a-507e-7293-859d-15714854b005/exec-695e3bb1-a8c3-4c54-ab77-fa6404116ed8.png` (`853 x 1844`).
+- Implemented page: `http://127.0.0.1:8794/?v=guided-dark-controls`.
+- Step 1 capture: `qa/home-step1-390x844.png`.
+- Step 2 capture: `qa/home-step2-390x844.png`.
+- Step 3 capture: `qa/home-step3-390x844.png`.
+- Combined comparison: `qa/design-comparison.png`.
 
-**Design comparison**
+**Comparison setup**
 
-- The reference's phone-readable hierarchy is preserved: identity first, activation rails around the central BodyGraph, then properties.
-- The production result is visually distinct and more premium: black obsidian, antique champagne gold, smoky ivory, engraved orbital geometry, and a restrained Pluto planetary limb.
-- The BodyGraph sits on the exact `600px` poster centerline, with the previous left translation removed after visual comparison of the rendered PNG.
-- Design and Personality rails have identical `98px` widths, `418px` heights, spacing, borders, and mirrored row direction.
-- Every activation row uses fixed icon, name, and number columns. Chinese and English audits across all 26 rows found zero overlaps, with at least `3px` between icon and name and `2px` between name and number.
-- The lower property section is a balanced two-column grid with fine gold rules and no nested cards.
+- The selected concept and Step 1 implementation were normalized into adjacent `390 x 844` panels for a single visual comparison input.
+- The in-app browser currently enforces a `780 x 844` minimum viewport, so the refreshed implementation panel was downsampled to the comparison panel. The mobile branch is separately covered at `390 x 844` by the responsive E2E suite.
+- State: Chinese locale, homepage, Step 1, empty form.
+- No separate focused crop was needed because the only first-pass mismatch was the full-width name control, already visible at inspection scale.
 
-**Mobile export requirements**
+**Comparison history**
 
-- Output width is `1200px`, appropriate for high-density phone screens and social sharing.
-- Portrait ratio is approximately `9:16.8`; it may scroll vertically but reads comfortably at phone width.
-- All real content is included: name, birth line, 13 Design activations, 13 Personality activations, BodyGraph, and 10 properties.
-- The export contains no webpage controls, status bar, browser chrome, download button, or fake Image2 text.
-- No vertical seam, stale mobile-width frame, clipping, horizontal overflow, or off-center graph appears in the reopened PNG.
+- First pass finding (P1): the name input used the earlier cream form-control treatment, while the selected concept uses a dark field with a restrained warm-gold outline.
+- Fix: all homepage inputs and selects now use the dark surface, gold border, warm text, and visible gold focus treatment.
+- Second pass: hierarchy, progress rhythm, field treatment, bottom action area, dark Pluto palette, and warm typography align with the selected concept. No P0, P1, or P2 issue remains.
+- Intentional product differences: the existing required-name rule is preserved, and the privacy note truthfully states local-device processing instead of claiming unverified encryption.
 
-**Functional verification**
+**Responsive and interaction QA**
 
-- Real fixture: 袁勇, 1986-06-24 13:50, 湖南省湘潭市雨湖区.
-- Chinese Photon location selection and Swiss Ephemeris generation completed successfully.
-- Export downloaded from a `390 x 844` viewport and reopened successfully.
-- The result page previews the exact `1200 x 2246` poster blob used by the download action, so preview and saved image are pixel-identical.
-- Eleven engine and location regression tests pass.
-- `node --check` and `git diff --check` pass.
+- The Life Philosophy poster and its loading code are absent from the homepage.
+- Step 1 contains name only; Step 2 contains date, time, AM/PM, and repeated-clock handling; Step 3 contains birthplace, legal copy, and final generation.
+- Back navigation preserves entered values. Existing-record access opens the history drawer.
+- Chinese and English strings fit the three-step layout without control overlap.
+- The primary journey, validation transitions, back navigation, saved values, chart generation, drawer history, and privacy paths pass in browser automation.
+- Browser console inspection found no page errors during the primary three-step interaction.
 
-**Remaining polish**
+**Residual polish**
 
-- P3 only: the intentional breathing room below the BodyGraph creates an editorial pause before the technical properties and keeps the dense poster from feeling crowded.
+- P3 only: the live product retains its longer `Pluto 人生使用说明书` desktop wordmark and truthful privacy wording instead of copying the concept's abbreviated header and lock claim.

@@ -277,7 +277,7 @@ test("mobile header keeps language beside the drawer and closes predictably", as
   await page.locator(".drawer-backdrop").click({ position: { x: 4, y: 4 } });
   await expect(page.locator("#appDrawer")).toBeHidden();
 });
-test("web drawer exposes about, contact, works, and opt-in support", async ({ page }) => {
+test("web drawer exposes about, contact, and WonderElian-first works", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await switchLanguage(page, "zh");
@@ -285,25 +285,28 @@ test("web drawer exposes about, contact, works, and opt-in support", async ({ pa
 
   await expect(page.locator("#openAbout")).toBeVisible();
   await expect(page.locator("#openContact")).toBeVisible();
-  await expect(page.locator(".drawer-work-card")).toHaveCount(4);
-  await expect(page.locator(".drawer-work-card").first()).toHaveAttribute("href", "https://yixiu.wonderelian.com/");
-  await expect(page.locator("#drawerSupport")).toBeVisible();
-  await expect(page.locator("#supportQr")).not.toHaveAttribute("src", /.+/);
+  await expect(page.locator(".drawer-work-card")).toHaveCount(5);
+  await expect(page.locator(".drawer-work-card").first()).toHaveAttribute("href", "https://wonderelian.com/");
+  await expect(page.locator(".drawer-work-card").first()).toContainText("WonderElian 是永歌 Elian 的个人创作空间");
+  await expect(page.locator("#drawerSupport")).toHaveCount(0);
+  await expect(page.locator("#supportDialog")).toHaveCount(0);
 
   await page.locator("#openAbout").click();
   await expect(page.locator("#drawerTitle")).toHaveText("关于我们");
   await expect(page.locator("#drawerAbout")).toBeVisible();
+  await expect(page.locator(".drawer-life-philosophy")).toContainText("向内认识自己，向外如水而行。");
+  await expect(page.locator(".drawer-life-path strong")).toHaveCount(4);
+  await expect(page.locator(".drawer-life-principles article")).toHaveCount(4);
   await page.locator("#drawerBack").click();
   await page.locator("#openContact").click();
   await expect(page.locator("#drawerTitle")).toHaveText("联系我们");
   await expect(page.locator("#drawerContact")).toBeVisible();
   await page.locator("#drawerBack").click();
 
-  await page.locator("#openSupport").click();
-  await expect(page.locator("#supportDialog")).toBeVisible();
-  await expect(page.locator("#supportQr")).toHaveAttribute("src", /support-wechat-appreciation-code\.png/);
-  await page.locator("#closeSupport").click();
-  await expect(page.locator("#supportDialog")).toBeHidden();
+  await page.locator("#closeMenu").click();
+  await switchLanguage(page, "en");
+  await page.locator("#openMenu").click();
+  await expect(page.locator(".drawer-work-card").first()).toContainText("Make complex ideas clear, beautiful, and human");
 });
 
 test("native drawer excludes support while keeping the other information", async ({ page }) => {
@@ -319,8 +322,8 @@ test("native drawer excludes support while keeping the other information", async
 
   await expect(page.locator("#openAbout")).toBeVisible();
   await expect(page.locator("#openContact")).toBeVisible();
-  await expect(page.locator(".drawer-work-card")).toHaveCount(4);
-  await expect(page.locator(".drawer-work-card").first()).toHaveAttribute("href", "https://yixiu.wonderelian.com/");
+  await expect(page.locator(".drawer-work-card")).toHaveCount(5);
+  await expect(page.locator(".drawer-work-card").first()).toHaveAttribute("href", "https://wonderelian.com/");
   await expect(page.locator("#drawerSupport")).toHaveCount(0);
   await expect(page.locator("#supportDialog")).toHaveCount(0);
 });

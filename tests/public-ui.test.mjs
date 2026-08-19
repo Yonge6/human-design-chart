@@ -37,6 +37,17 @@ test("drawer lists WonderElian first and does not include the retired support fl
   assert.doesNotMatch(app, /drawerSupport|supportDialog|openSupportButton|supportQr/);
 });
 
+test("drawer actions use one Lucide icon system", () => {
+  const html = read("index.html");
+  const css = read("style.css");
+
+  assert.match(html, /id="openHistory"[\s\S]{0,180}assets\/icons\/history\.svg/);
+  assert.match(html, /id="openSettings"[\s\S]{0,180}assets\/icons\/settings-2\.svg/);
+  assert.match(html, /id="openAbout"[\s\S]{0,180}assets\/icons\/circle-user-round\.svg/);
+  assert.match(html, /id="openContact"[\s\S]{0,180}assets\/icons\/mail\.svg/);
+  assert.match(css, /\.drawer-nav-icon img[\s\S]{0,140}width: 16px;[\s\S]{0,80}height: 16px;/);
+});
+
 test("about drawer carries the bilingual life philosophy module", () => {
   const html = read("index.html");
   const app = read("app.js");
@@ -155,6 +166,7 @@ test("homepage uses a bilingual three-step form without visible progress or the 
   assert.match(app, /tapToChoose: "点击选择"/);
   assert.match(app, /tapToChoose: "Tap to choose"/);
   assert.match(css, /@media \(max-width: 560px\)[\s\S]*\.native-birth-grid \{ grid-template-columns: 1fr;/);
+  assert.match(css, /\.native-birth-grid input[\s\S]{0,160}min-width: 0;[\s\S]{0,80}max-width: 100%;/);
   assert.match(html, /data-form-step="1"[\s\S]*data-form-step="2"[\s\S]*data-form-step="3"/);
   assert.match(html, /data-form-step="1"[^>]*data-i18n-aria-label="stepBasic"/);
   assert.match(html, /id="nextToBirth"[\s\S]*id="nextToLocation"[\s\S]*type="submit"/);

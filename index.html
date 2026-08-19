@@ -35,9 +35,15 @@
 <body>
   <header class="topbar">
     <div class="brand">Pluto <span class="brand-detail" data-i18n="brandShort">人生使用说明书</span></div>
-    <button id="openMenu" class="menu-button" type="button" data-i18n-aria-label="openMenu" aria-label="打开更多功能" aria-controls="appDrawer" aria-expanded="false">
-      <span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
-    </button>
+    <div class="topbar-actions">
+      <div class="language-switch topbar-language-switch" role="group" aria-label="Language / 语言">
+        <button type="button" data-language="zh" aria-pressed="true">中文</button>
+        <button type="button" data-language="en" aria-pressed="false">EN</button>
+      </div>
+      <button id="openMenu" class="menu-button" type="button" data-i18n-aria-label="openMenu" aria-label="打开更多功能" aria-controls="appDrawer" aria-expanded="false">
+        <span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </div>
   </header>
 
   <div id="appDrawer" class="drawer-layer" hidden>
@@ -74,14 +80,6 @@
             <span><strong data-i18n="settings">隐私设置</strong><small data-i18n="drawerSettingsHint">管理隐私模式、本地历史与数据</small></span>
             <span class="drawer-chevron" aria-hidden="true">›</span>
           </button>
-          <div class="drawer-nav-row">
-            <span class="drawer-nav-icon language-mark" aria-hidden="true">文</span>
-            <span><strong data-i18n="language">语言</strong><small data-i18n="drawerLanguageHint">切换界面与解读语言</small></span>
-            <div class="language-switch" role="group" aria-label="Language / 语言">
-              <button type="button" data-language="zh" aria-pressed="true">中文</button>
-              <button type="button" data-language="en" aria-pressed="false">EN</button>
-            </div>
-          </div>
           <button id="openAbout" type="button">
             <span class="drawer-nav-icon" aria-hidden="true">◎</span>
             <span><strong data-i18n="aboutUs">关于我们</strong><small data-i18n="drawerAboutHint">认识 Pluto 与我们相信的生命观</small></span>

@@ -4,7 +4,7 @@ import test from "node:test";
 
 const read = (file) => readFileSync(new URL(`../${file}`, import.meta.url), "utf8");
 
-test("header tools are consolidated into an accessible side drawer", () => {
+test("header keeps language beside the accessible side drawer", () => {
   const html = read("index.html");
   const css = read("style.css");
   const app = read("app.js");
@@ -12,7 +12,8 @@ test("header tools are consolidated into an accessible side drawer", () => {
   assert.match(html, /id="openMenu"[^>]*aria-controls="appDrawer"[^>]*aria-expanded="false"/);
   assert.match(html, /id="appDrawer"[^>]*class="drawer-layer"[^>]*hidden/);
   assert.match(html, /class="side-drawer"[^>]*role="dialog"[^>]*aria-modal="true"/);
-  assert.match(html, /id="openHistory"[\s\S]*id="openSettings"[\s\S]*data-language="zh"[\s\S]*data-language="en"/);
+  assert.match(html, /class="language-switch topbar-language-switch"[\s\S]*data-language="zh"[\s\S]*data-language="en"[\s\S]*id="openMenu"/);
+  assert.doesNotMatch(html, /class="drawer-nav-row"[\s\S]*data-language=/);
   assert.match(html, /id="historyDialog"[^>]*class="drawer-subview drawer-history"[^>]*hidden/);
   assert.match(html, /id="settingsDialog"[^>]*class="drawer-subview drawer-settings"[^>]*hidden/);
   assert.match(css, /\.side-drawer \{[\s\S]*width: min\(88vw, 410px\);[\s\S]*height: 100dvh;/);

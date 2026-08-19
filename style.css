@@ -939,11 +939,6 @@ h2 { font-size: 28px; }
   font-size: 48px;
   line-height: 1.08;
 }
-.form-intro {
-  margin: 0;
-  color: #b9aaa3;
-  font: 16px/1.65 ui-sans-serif, system-ui, sans-serif;
-}
 #chartForm {
   display: flex;
   flex: 1;
@@ -960,6 +955,19 @@ h2 { font-size: 28px; }
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
+}
+.native-birth-field {
+  cursor: pointer;
+}
+.native-birth-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.native-birth-heading small {
+  color: #c7965d;
+  font: 500 12px/1.2 ui-sans-serif, system-ui, sans-serif;
 }
 .native-birth-grid input {
   color-scheme: dark;
@@ -979,11 +987,6 @@ h2 { font-size: 28px; }
   outline: 2px solid #d8b17d;
   outline-offset: 2px;
 }
-.field-hint {
-  margin: -3px 0 0;
-  color: #8f827d;
-  font: 13px/1.55 ui-sans-serif, system-ui, sans-serif;
-}
 .form-action-dock {
   position: sticky;
   z-index: 4;
@@ -992,12 +995,6 @@ h2 { font-size: 28px; }
   padding: 16px 32px calc(22px + env(safe-area-inset-bottom));
   border-top: 1px solid rgba(216, 177, 125, .34);
   background: #100e14;
-}
-.form-privacy-note {
-  margin: 0 0 13px;
-  color: #9b8d86;
-  font: 12px/1.5 ui-sans-serif, system-ui, sans-serif;
-  text-align: center;
 }
 .form-action-set { display: grid; gap: 10px; }
 .form-action-set[hidden] { display: none; }
@@ -1730,8 +1727,9 @@ html[lang="en"] .chart-panel.export-mobile .planet-list span {
   }
   .form-panel .eyebrow { margin-bottom: 13px; font-size: 12px; }
   .form-panel h1 { margin-bottom: 17px; font-size: 45px; }
-  .form-intro { font-size: 15px; }
   .form-step { padding-top: 30px; }
+  .native-birth-grid { grid-template-columns: 1fr; gap: 18px; }
+  .native-birth-field { margin-bottom: 0; }
   .form-panel label { gap: 8px; margin-bottom: 12px; font-size: 14px; }
   .form-panel input,
   .form-panel select,

@@ -238,20 +238,24 @@
     <section class="form-panel">
       <p class="eyebrow" data-i18n="formEyebrow">人生使用说明书</p>
       <h1 data-i18n="formTitle">认识你自己</h1>
-      <p class="form-intro" data-i18n="formIntro">输入出生信息，生成你的专属人类图。</p>
       <p id="localModeNotice" class="local-mode-notice" role="status" data-i18n="localModeNotice" hidden>当前为临时 HTTP 连接，仅支持本地计算与生图。云端保存和匿名统计已停用。</p>
       <form id="chartForm" novalidate>
         <p id="formStepStatus" class="sr-only" aria-live="polite"></p>
 
         <section class="form-step" data-form-step="1" data-i18n-aria-label="stepBasic" aria-label="基本信息">
           <label class="name-field"><span data-i18n="name">姓名</span><input id="name" name="name" maxlength="80" autocomplete="name" required></label>
-          <p class="field-hint" data-i18n="nameHint">仅用于在你的人生说明书中显示。</p>
         </section>
 
         <section class="form-step" data-form-step="2" data-i18n-aria-label="stepBirthTime" aria-label="出生时间" hidden>
           <div class="native-birth-grid">
-            <label><span data-i18n="birthDate">出生日期</span><input id="birthDate" name="birthDate" type="date" min="1900-01-01" required></label>
-            <label><span data-i18n="birthTime">出生时间</span><input id="birthTime" name="birthTime" type="time" step="60" required></label>
+            <label class="native-birth-field">
+              <span class="native-birth-heading"><span data-i18n="birthDate">出生日期</span><small data-i18n="tapToChoose">点击选择</small></span>
+              <input id="birthDate" name="birthDate" type="date" min="1900-01-01" required>
+            </label>
+            <label class="native-birth-field">
+              <span class="native-birth-heading"><span data-i18n="birthTime">出生时间</span><small data-i18n="tapToChoose">点击选择</small></span>
+              <input id="birthTime" name="birthTime" type="time" step="60" required>
+            </label>
           </div>
           <input id="year" name="year" type="hidden" value="">
           <input id="month" name="month" type="hidden" value="">
@@ -281,7 +285,6 @@
         <p id="status" role="status" aria-live="polite"></p>
 
         <footer class="form-action-dock">
-          <p class="form-privacy-note" data-i18n="formPrivacyNote">出生资料默认仅在本设备处理。</p>
           <div class="form-action-set" data-form-actions="1">
             <button id="nextToBirth" type="button" data-i18n="nextStep">下一步</button>
             <button id="resumeHistory" class="form-text-action" type="button" data-i18n="resumeHistory">已有记录</button>

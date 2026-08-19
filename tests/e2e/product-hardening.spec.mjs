@@ -203,6 +203,22 @@ test("new-user defaults keep history locally and require every birth field", asy
   await expect(page.locator("#location")).not.toHaveAttribute("aria-invalid", "true");
 });
 
+test("language switching translates the current step without resetting the form", async ({ page }) => {
+  await page.goto("/");
+  await switchLanguage(page, "zh");
+  await page.locator("#name").fill("Language Fixture");
+  await page.locator("#nextToBirth").click();
+  await selectBirth(page, { ampm: "am" });
+  await page.locator("#nextToLocation").click();
+  await expect(page.locator("#formStepStatus")).toHaveText("第 3 步，共 3 步：出生地点");
+
+  await switchLanguage(page, "en");
+
+  await expect(page.locator("#formStepStatus")).toHaveText("Step 3 of 3: Birth place");
+  await expect(page.locator('[data-form-step="3"]')).toBeVisible();
+  await expect(page.locator("#name")).toHaveValue("Language Fixture");
+});
+
 test("a new user's generated chart is saved locally without backend requests", async ({ page }) => {
   const requests = [];
   page.on("request", (request) => requests.push(request.url()));

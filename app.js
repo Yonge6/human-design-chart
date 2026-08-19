@@ -1465,7 +1465,7 @@ function applyLanguage(nextLanguage, rerender = true) {
   locationResults.setAttribute("aria-label", t("locationSuggestions"));
   graph.setAttribute("aria-label", t("bodygraphLabel"));
   graph.querySelector("svg")?.setAttribute("aria-label", t("bodygraphLabel"));
-  renderFormStepState();
+  renderFormStepState({ announce: Boolean(formStepStatus.textContent.trim()) });
   languageButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.language === language)));
   if (statusState) status.textContent = t(statusState.key, statusState.values);
   renderHistory();

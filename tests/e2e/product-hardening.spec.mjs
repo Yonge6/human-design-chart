@@ -307,7 +307,10 @@ test("web drawer exposes about, contact, and WonderElian-first works", async ({ 
   await expect(page.locator("#openAbout")).toBeVisible();
   await expect(page.locator("#openContact")).toBeVisible();
   await expect(page.locator(".drawer-nav-icon img")).toHaveCount(4);
-  await expect(page.locator("#openContact .drawer-nav-icon img")).toHaveAttribute("src", "assets/icons/mail.svg");
+  await expect(page.locator("#openContact .drawer-nav-icon img")).toHaveAttribute(
+    "src",
+    /^assets\/icons\/mail\.svg(?:\?v=[0-9a-f]+)?$/,
+  );
   await expect(page.locator(".drawer-work-card")).toHaveCount(5);
   await expect(page.locator(".drawer-work-card").first()).toHaveAttribute("href", "https://wonderelian.com/");
   await expect(page.locator(".drawer-work-card").first()).toContainText("WonderElian 是永歌 Elian 的个人创作空间");

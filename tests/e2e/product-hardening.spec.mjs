@@ -303,7 +303,9 @@ test("web drawer exposes about, contact, and WonderElian-first works", async ({ 
   await expect(page.locator("#drawerContact")).toBeVisible();
   await page.locator("#drawerBack").click();
 
+  await page.locator("#closeMenu").click();
   await switchLanguage(page, "en");
+  await page.locator("#openMenu").click();
   await expect(page.locator(".drawer-work-card").first()).toContainText("Make complex ideas clear, beautiful, and human");
 });
 

@@ -139,6 +139,9 @@ test("homepage uses a bilingual three-step form without visible progress or the 
   const css = read("style.css");
 
   assert.doesNotMatch(html, /form-progress|formProgressTrack|data-form-step-label/);
+  assert.doesNotMatch(html, /nameHint|field-hint|仅用于在你的人生说明书中显示/);
+  assert.doesNotMatch(app, /nameHint|Used only to display your name in your Life Manual/);
+  assert.doesNotMatch(css, /\.field-hint/);
   assert.match(html, /data-form-step="1"[\s\S]*data-form-step="2"[\s\S]*data-form-step="3"/);
   assert.match(html, /data-form-step="1"[^>]*data-i18n-aria-label="stepBasic"/);
   assert.match(html, /id="nextToBirth"[\s\S]*id="nextToLocation"[\s\S]*type="submit"/);

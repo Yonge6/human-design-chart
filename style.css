@@ -979,11 +979,6 @@ h2 { font-size: 28px; }
   outline: 2px solid #d8b17d;
   outline-offset: 2px;
 }
-.field-hint {
-  margin: -3px 0 0;
-  color: #8f827d;
-  font: 13px/1.55 ui-sans-serif, system-ui, sans-serif;
-}
 .form-action-dock {
   position: sticky;
   z-index: 4;

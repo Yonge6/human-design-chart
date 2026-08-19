@@ -10,7 +10,7 @@ import { canUseSystemShare, isMobileDevice, sharePageLink } from "./src/services
 import { readStoredJson, writeStoredJson } from "./src/services/storage-service.js";
 import { createBodygraphRenderer } from "./src/renderer/bodygraph-renderer.js";
 import { renderPosterElement } from "./src/renderer/poster-renderer.js";
-import { applyAmPmSelection, validateBirthSelection } from "./src/app/form-validation.js";
+import { validateBirthSelection } from "./src/app/form-validation.js";
 import { canUseRemoteServices, effectiveRemoteConsent, isCapacitorNativeRuntime } from "./src/app/runtime-security.js";
 import { getReleaseFeatureAvailability } from "./src/app/release-feature-availability.js";
 import { hasSupabaseConfig } from "./src/config/runtime-config.js";
@@ -23,6 +23,8 @@ const planets = ["Sun", "Earth", "North Node", "South Node", "Moon", "Mercury", 
 const graph = document.querySelector("#bodygraph");
 const fields = {
   name: document.querySelector("#name"),
+  birthDate: document.querySelector("#birthDate"),
+  birthTime: document.querySelector("#birthTime"),
   year: document.querySelector("#year"),
   month: document.querySelector("#month"),
   day: document.querySelector("#day"),
@@ -39,9 +41,6 @@ const localModeNotice = document.querySelector("#localModeNotice");
 const chartForm = document.querySelector("#chartForm");
 const formSteps = [...document.querySelectorAll("[data-form-step]")];
 const formActionSets = [...document.querySelectorAll("[data-form-actions]")];
-const formStepLabels = [...document.querySelectorAll("[data-form-step-label]")];
-const formStepCount = document.querySelector("#formStepCount");
-const formProgressTrack = document.querySelector("#formProgressTrack");
 const formStepStatus = document.querySelector("#formStepStatus");
 const nextToBirthButton = document.querySelector("#nextToBirth");
 const nextToLocationButton = document.querySelector("#nextToLocation");
@@ -71,8 +70,6 @@ const resultSummaryFields = {
 const resultSummaryReading = document.querySelector("#resultSummaryReading");
 const chartQr = document.querySelector("#chartQr");
 const privacyToggle = document.querySelector("#privacyMode");
-const ampmSwitch = document.querySelector("#ampmSwitch");
-const ampmButtons = [...document.querySelectorAll("[data-ampm]")];
 const detailButton = document.querySelector("#detailReading");
 const detailDialog = document.querySelector("#detailDialog");
 const closeDetailButton = document.querySelector("#closeDetail");
@@ -151,7 +148,7 @@ const copy = {
   zh: {
     brand: "Pluto 人生使用说明书",
     brandShort: "人生使用说明书",
-    formEyebrow: "人生使用说明书", formTitle: "认识你自己", formIntro: "输入出生信息，生成你的专属人类图。", formProgress: "填写进度", stepBasic: "基本信息", stepBirthTime: "出生时间", stepBirthLocation: "出生地点", formStepAnnouncement: "第 {current} 步，共 {total} 步：{label}", namePlaceholder: "请输入你的姓名", nameHint: "仅用于在你的人生说明书中显示。", formPrivacyNote: "出生资料默认仅在本设备处理。", nextStep: "下一步", previousStep: "上一步", continueToLocation: "继续填写地点", resumeHistory: "已有记录", localModeNotice: "当前为临时 HTTP 连接，仅支持本地计算与生图。云端保存和匿名统计已停用。", disclaimer: "仅用于自我探索与娱乐，不构成科学结论、医疗、心理、法律或财务建议。", viewLegalNotice: "查看法律声明", resultSummaryTitle: "人生使用说明书结果摘要", summaryType: "类型", summaryStrategy: "策略", summaryAuthority: "内在权威", summaryProfile: "人生角色", summaryDefinition: "定义", summaryCross: "轮回交叉", summarySignature: "标志", summaryNotSelf: "非自己主题", name: "姓名", year: "年", month: "月", day: "日",
+    formEyebrow: "人生使用说明书", formTitle: "认识你自己", formIntro: "输入出生信息，生成你的专属人类图。", stepBasic: "基本信息", stepBirthTime: "出生时间", stepBirthLocation: "出生地点", formStepAnnouncement: "第 {current} 步，共 {total} 步：{label}", namePlaceholder: "请输入你的姓名", nameHint: "仅用于在你的人生说明书中显示。", formPrivacyNote: "出生资料默认仅在本设备处理。", nextStep: "下一步", previousStep: "上一步", continueToLocation: "继续填写地点", resumeHistory: "已有记录", localModeNotice: "当前为临时 HTTP 连接，仅支持本地计算与生图。云端保存和匿名统计已停用。", disclaimer: "仅用于自我探索与娱乐，不构成科学结论、医疗、心理、法律或财务建议。", viewLegalNotice: "查看法律声明", resultSummaryTitle: "人生使用说明书结果摘要", summaryType: "类型", summaryStrategy: "策略", summaryAuthority: "内在权威", summaryProfile: "人生角色", summaryDefinition: "定义", summaryCross: "轮回交叉", summarySignature: "标志", summaryNotSelf: "非自己主题", name: "姓名", birthDate: "出生日期", birthTime: "出生时间", year: "年", month: "月", day: "日",
     hour: "时", minute: "分", ampm: "上午/下午", am: "上午", pm: "下午", birthLocation: "出生地点",
     locationPlaceholder: "城市、区县或地区", locationSuggestions: "出生地点建议", clockOccurrence: "重复时刻",
     bodygraphLabel: "人生使用说明书图谱",
@@ -174,7 +171,7 @@ const copy = {
   en: {
     brand: "Pluto Life Manual",
     brandShort: "Life Manual",
-    formEyebrow: "Life Manual", formTitle: "Know Yourself", formIntro: "Enter your birth details to create your personal Human Design chart.", formProgress: "Form progress", stepBasic: "Basics", stepBirthTime: "Birth time", stepBirthLocation: "Birth place", formStepAnnouncement: "Step {current} of {total}: {label}", namePlaceholder: "Enter your name", nameHint: "Used only to display your name in your Life Manual.", formPrivacyNote: "Birth details are processed on this device by default.", nextStep: "Next", previousStep: "Back", continueToLocation: "Continue to birth place", resumeHistory: "Saved manuals", localModeNotice: "This temporary HTTP connection supports local calculation and image generation only. Cloud saving and analytics are disabled.", disclaimer: "For personal reflection and entertainment only. Not scientific, medical, psychological, legal, or financial advice.", viewLegalNotice: "View Legal Notice", resultSummaryTitle: "Life Manual Result Summary", summaryType: "Type", summaryStrategy: "Strategy", summaryAuthority: "Inner Authority", summaryProfile: "Profile", summaryDefinition: "Definition", summaryCross: "Incarnation Cross", summarySignature: "Signature", summaryNotSelf: "Not-Self Theme", name: "Name", year: "Year", month: "Month", day: "Day",
+    formEyebrow: "Life Manual", formTitle: "Know Yourself", formIntro: "Enter your birth details to create your personal Human Design chart.", stepBasic: "Basics", stepBirthTime: "Birth time", stepBirthLocation: "Birth place", formStepAnnouncement: "Step {current} of {total}: {label}", namePlaceholder: "Enter your name", nameHint: "Used only to display your name in your Life Manual.", formPrivacyNote: "Birth details are processed on this device by default.", nextStep: "Next", previousStep: "Back", continueToLocation: "Continue to birth place", resumeHistory: "Saved manuals", localModeNotice: "This temporary HTTP connection supports local calculation and image generation only. Cloud saving and analytics are disabled.", disclaimer: "For personal reflection and entertainment only. Not scientific, medical, psychological, legal, or financial advice.", viewLegalNotice: "View Legal Notice", resultSummaryTitle: "Life Manual Result Summary", summaryType: "Type", summaryStrategy: "Strategy", summaryAuthority: "Inner Authority", summaryProfile: "Profile", summaryDefinition: "Definition", summaryCross: "Incarnation Cross", summarySignature: "Signature", summaryNotSelf: "Not-Self Theme", name: "Name", birthDate: "Birth date", birthTime: "Birth time", year: "Year", month: "Month", day: "Day",
     hour: "Hour", minute: "Minute", ampm: "AM/PM", am: "AM", pm: "PM", birthLocation: "Birth location",
     locationPlaceholder: "City, district or region", locationSuggestions: "Birth location suggestions", clockOccurrence: "Clock occurrence",
     bodygraphLabel: "Life Manual bodygraph",
@@ -932,21 +929,11 @@ const formStepCopyKeys = {
 
 function renderFormStepState({ announce = false } = {}) {
   formPanel.dataset.currentFormStep = String(currentFormStep);
-  formStepCount.textContent = `${currentFormStep} / 3`;
-  formProgressTrack.setAttribute("aria-valuenow", String(currentFormStep));
-  formProgressTrack.style.setProperty("--form-progress", `${(currentFormStep / 3) * 100}%`);
   formSteps.forEach((step) => {
     step.hidden = Number(step.dataset.formStep) !== currentFormStep;
   });
   formActionSets.forEach((actions) => {
     actions.hidden = Number(actions.dataset.formActions) !== currentFormStep;
-  });
-  formStepLabels.forEach((label) => {
-    const step = Number(label.dataset.formStepLabel);
-    label.classList.toggle("is-active", step === currentFormStep);
-    label.classList.toggle("is-complete", step < currentFormStep);
-    if (step === currentFormStep) label.setAttribute("aria-current", "step");
-    else label.removeAttribute("aria-current");
   });
   if (announce) {
     formStepStatus.textContent = t("formStepAnnouncement", {
@@ -964,7 +951,7 @@ function setFormStep(nextStep, { focus = true, announce = true } = {}) {
   if (!focus) return;
   const focusTarget = {
     1: fields.name,
-    2: fields.year,
+    2: fields.birthDate,
     3: fields.location,
   }[currentFormStep];
   window.setTimeout(() => focusTarget?.focus({ preventScroll: true }), 0);
@@ -984,6 +971,7 @@ function validateNameStep() {
 }
 
 function currentBirthValidation() {
+  syncBirthPartsFromNativeControls();
   return validateBirthSelection({
     year: fields.year.value,
     month: fields.month.value,
@@ -997,13 +985,18 @@ function currentBirthValidation() {
 function hydrateForm(input) {
   if (!input) return;
   fields.name.value = input.name || "";
-  fields.year.value = String(input.year || "");
-  fields.month.value = String(input.month || "").padStart(2, "0");
-  updateDays();
-  fields.day.value = String(input.day || "").padStart(2, "0");
-  fields.hour.value = String(input.hour || "").padStart(2, "0");
-  fields.minute.value = String(input.minute || "").padStart(2, "0");
-  applyAmPmSelection(fields.ampm, ampmButtons, input.ampm);
+  const year = String(input.year || "").padStart(4, "0");
+  const month = String(input.month || "").padStart(2, "0");
+  const day = String(input.day || "").padStart(2, "0");
+  fields.birthDate.value = input.year && input.month && input.day ? `${year}-${month}-${day}` : "";
+  const hour12 = Number(input.hour);
+  const hour24 = Number.isInteger(hour12) && hour12 >= 1 && hour12 <= 12
+    ? (hour12 % 12) + (input.ampm === "pm" ? 12 : 0)
+    : Number.NaN;
+  fields.birthTime.value = Number.isInteger(hour24) && input.minute !== undefined && input.minute !== ""
+    ? `${String(hour24).padStart(2, "0")}:${String(input.minute).padStart(2, "0")}`
+    : "";
+  syncBirthPartsFromNativeControls();
   fields.location.value = input.location || input.place?.label || "";
   selectedPlace = input.place || null;
 }
@@ -1052,47 +1045,33 @@ async function shareLink(text) {
   });
 }
 
-function appendOptions(select, values, selected, includePlaceholder = true) {
-  const options = values.map(({ value, label }) => {
-    const option = document.createElement("option");
-    const formatted = String(value).padStart(2, "0");
-    option.value = formatted;
-    option.textContent = label ?? formatted;
-    option.selected = String(value) === String(selected);
-    return option;
-  });
-  if (includePlaceholder) {
-    const placeholder = document.createElement("option");
-    placeholder.value = "";
-    placeholder.textContent = "--";
-    placeholder.disabled = true;
-    placeholder.selected = selected === null || selected === undefined || selected === "";
-    options.unshift(placeholder);
+function syncBirthPartsFromNativeControls() {
+  const [year = "", month = "", day = ""] = fields.birthDate.value.split("-");
+  fields.year.value = year;
+  fields.month.value = month;
+  fields.day.value = day;
+
+  const [hour24Text = "", minute = ""] = fields.birthTime.value.split(":");
+  const hour24 = Number(hour24Text);
+  if (hour24Text !== "" && Number.isInteger(hour24) && hour24 >= 0 && hour24 <= 23) {
+    fields.hour.value = String((hour24 % 12) || 12).padStart(2, "0");
+    fields.minute.value = minute;
+    fields.ampm.value = hour24 >= 12 ? "pm" : "am";
+  } else {
+    fields.hour.value = "";
+    fields.minute.value = "";
+    fields.ampm.value = "";
   }
-  select.replaceChildren(...options);
 }
 
-function updateDays() {
-  const year = Number(fields.year.value);
-  const month = Number(fields.month.value);
-  if (!year || !month) {
-    appendOptions(fields.day, [], null);
-    return;
-  }
-  const currentDay = Number(fields.day.value);
-  const previous = currentDay ? Math.min(currentDay, new Date(year, month, 0).getDate()) : null;
-  const days = Array.from({ length: new Date(year, month, 0).getDate() }, (_, index) => ({ value: index + 1 }));
-  appendOptions(fields.day, days, previous);
-}
-
-function initializeSelectors() {
-  const currentYear = new Date().getFullYear();
-  appendOptions(fields.year, Array.from({ length: currentYear - 1899 }, (_, index) => ({ value: currentYear - index })), null);
-  appendOptions(fields.month, Array.from({ length: 12 }, (_, index) => ({ value: index + 1 })), null);
-  appendOptions(fields.hour, Array.from({ length: 12 }, (_, index) => ({ value: index + 1 })), null);
-  appendOptions(fields.minute, Array.from({ length: 60 }, (_, index) => ({ value: index })), null);
-  updateDays();
-  applyAmPmSelection(fields.ampm, ampmButtons, "");
+function initializeBirthControls() {
+  const today = new Date();
+  fields.birthDate.max = [
+    today.getFullYear(),
+    String(today.getMonth() + 1).padStart(2, "0"),
+    String(today.getDate()).padStart(2, "0"),
+  ].join("-");
+  syncBirthPartsFromNativeControls();
 }
 
 function placeLabel(properties) {
@@ -1708,11 +1687,6 @@ clearHistoryButton.addEventListener("click", async () => {
   renderHistory();
   setStatus("historyCleared");
 });
-ampmButtons.forEach((button) => button.addEventListener("click", () => {
-  applyAmPmSelection(fields.ampm, ampmButtons, button.dataset.ampm);
-  ampmSwitch.removeAttribute("aria-invalid");
-  fields.ampm.dispatchEvent(new Event("change", { bubbles: true }));
-}));
 privacyToggle.addEventListener("change", () => {
   if (!lastData) return;
   render(lastData)
@@ -1768,10 +1742,11 @@ function invalidateChart() {
   });
 }
 
-fields.year.addEventListener("change", updateDays);
-fields.month.addEventListener("change", updateDays);
-[fields.year, fields.month, fields.day, fields.hour, fields.minute, fields.ampm].forEach((field) => field.addEventListener("change", resetClockOccurrence));
-[fields.year, fields.month, fields.day, fields.hour, fields.minute].forEach((field) => field.addEventListener("change", () => field.removeAttribute("aria-invalid")));
+[fields.birthDate, fields.birthTime].forEach((field) => field.addEventListener("change", () => {
+  syncBirthPartsFromNativeControls();
+  resetClockOccurrence();
+  field.removeAttribute("aria-invalid");
+}));
 fields.name.addEventListener("input", () => fields.name.removeAttribute("aria-invalid"));
 fields.location.addEventListener("input", () => fields.location.removeAttribute("aria-invalid"));
 chartForm.addEventListener("input", invalidateChart);
@@ -1812,19 +1787,14 @@ resumeHistoryButton.addEventListener("click", () => {
 });
 
 function clearBirthValidationState() {
-  [fields.year, fields.month, fields.day, fields.hour, fields.minute].forEach((field) => field.removeAttribute("aria-invalid"));
-  ampmSwitch.removeAttribute("aria-invalid");
+  [fields.birthDate, fields.birthTime].forEach((field) => field.removeAttribute("aria-invalid"));
 }
 
 function focusBirthValidationError(validation) {
   clearBirthValidationState();
-  if (validation.field === "ampm") {
-    ampmSwitch.setAttribute("aria-invalid", "true");
-    ampmButtons[0].focus();
-  } else {
-    fields[validation.field]?.setAttribute("aria-invalid", "true");
-    fields[validation.field]?.focus();
-  }
+  const field = ["year", "month", "day"].includes(validation.field) ? fields.birthDate : fields.birthTime;
+  field.setAttribute("aria-invalid", "true");
+  field.focus();
   setStatus(validation.code);
 }
 
@@ -2068,7 +2038,7 @@ shareButton.addEventListener("click", async () => {
 paintBodygraph({ Design: {}, Personality: {}, "Defined Centers": [] }).catch((error) => {
   setStatus("failed", { message: error.message });
 });
-initializeSelectors();
+initializeBirthControls();
 defaultPrivacyInput.checked = appSettings.privacyByDefault;
 saveHistoryInput.checked = appSettings.keepHistory;
 privacyToggle.checked = appSettings.privacyByDefault;

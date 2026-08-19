@@ -94,20 +94,16 @@ test("insecure runtimes expose local-only mode and bypass every backend operatio
   assert.match(html, /id="deleteCloudData"[^>]*data-remote-setting/);
 });
 
-test("birth selectors start empty and use shared validation", () => {
+test("birth date and time use native mobile controls with shared validation", () => {
   const html = read("index.html");
   const app = read("app.js");
 
-  assert.doesNotMatch(app, /appendOptions\(fields\.year[^\n]*1997/);
-  assert.doesNotMatch(app, /fields\.day\.value = "07"/);
   assert.match(app, /validateBirthSelection\(\{/);
-  assert.match(html, /id="ampm" name="ampm" type="hidden" value=""/);
-  assert.match(html, /data-ampm="am"[^>]*aria-pressed="false"/);
-  assert.match(html, /data-ampm="pm"[^>]*aria-pressed="false"/);
-  assert.match(app, /function initializeSelectors\(\)[\s\S]{0,1200}applyAmPmSelection\(fields\.ampm, ampmButtons, ""\)/);
-  assert.doesNotMatch(app, /function initializeSelectors\(\)[\s\S]{0,1200}fields\.ampm\.value = "am"/);
-  assert.match(app, /function hydrateForm\(input\)[\s\S]{0,1200}applyAmPmSelection\(fields\.ampm, ampmButtons, input\.ampm\)/);
-  assert.match(app, /validation\.field === "ampm"[\s\S]{0,300}ampmButtons\[0\]\.focus\(\)/);
+  assert.match(html, /id="birthDate"[^>]*type="date"[^>]*min="1900-01-01"[^>]*required/);
+  assert.match(html, /id="birthTime"[^>]*type="time"[^>]*step="60"[^>]*required/);
+  assert.match(app, /function syncBirthPartsFromNativeControls\(\)/);
+  assert.match(app, /function initializeBirthControls\(\)[\s\S]{0,500}fields\.birthDate\.max/);
+  assert.doesNotMatch(html, /data-ampm=|<select id="(?:year|month|day|hour|minute)"/);
 });
 
 test("web source keeps cache versions out of the HTTP hash fallback import chain", () => {
@@ -137,18 +133,19 @@ test("mobile form remains vertically scrollable", () => {
   assert.match(css, /\.drawer-settings \.settings-list \{ padding: 7px 0 0; \}/);
 });
 
-test("homepage uses a bilingual three-step form without the Life Philosophy poster", () => {
+test("homepage uses a bilingual three-step form without visible progress or the Life Philosophy poster", () => {
   const html = read("index.html");
   const app = read("app.js");
   const css = read("style.css");
 
-  assert.match(html, /id="formProgressTrack"[^>]*role="progressbar"[^>]*aria-valuemax="3"/);
+  assert.doesNotMatch(html, /form-progress|formProgressTrack|data-form-step-label/);
   assert.match(html, /data-form-step="1"[\s\S]*data-form-step="2"[\s\S]*data-form-step="3"/);
+  assert.match(html, /data-form-step="1"[^>]*data-i18n-aria-label="stepBasic"/);
   assert.match(html, /id="nextToBirth"[\s\S]*id="nextToLocation"[\s\S]*type="submit"/);
   assert.match(app, /function setFormStep\(/);
   assert.match(app, /function currentBirthValidation\(/);
   assert.match(app, /stepBasic: "基本信息"[\s\S]*stepBasic: "Basics"/);
-  assert.match(css, /\.form-progress-track/);
+  assert.doesNotMatch(css, /\.form-progress(?:-track|-row)?|\.form-step-labels/);
   assert.match(css, /\.form-action-dock/);
   assert.doesNotMatch(html, /homepage-poster|lifePhilosophyPoster|生命观海报/);
   assert.doesNotMatch(app, /lifePhilosophyPoster|life-philosophy-poster/);

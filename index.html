@@ -241,43 +241,24 @@
       <p class="form-intro" data-i18n="formIntro">输入出生信息，生成你的专属人类图。</p>
       <p id="localModeNotice" class="local-mode-notice" role="status" data-i18n="localModeNotice" hidden>当前为临时 HTTP 连接，仅支持本地计算与生图。云端保存和匿名统计已停用。</p>
       <form id="chartForm" novalidate>
-        <div class="form-progress" data-i18n-aria-label="formProgress" aria-label="填写进度">
-          <div class="form-progress-row">
-            <strong id="formStepCount">1 / 3</strong>
-            <span id="formProgressTrack" class="form-progress-track" role="progressbar" aria-valuemin="1" aria-valuemax="3" aria-valuenow="1"><span></span></span>
-          </div>
-          <ol class="form-step-labels">
-            <li id="formStepLabel1" data-form-step-label="1" aria-current="step"><span data-i18n="stepBasic">基本信息</span></li>
-            <li id="formStepLabel2" data-form-step-label="2"><span data-i18n="stepBirthTime">出生时间</span></li>
-            <li id="formStepLabel3" data-form-step-label="3"><span data-i18n="stepBirthLocation">出生地点</span></li>
-          </ol>
-        </div>
-
         <p id="formStepStatus" class="sr-only" aria-live="polite"></p>
 
-        <section class="form-step" data-form-step="1" aria-labelledby="formStepLabel1">
+        <section class="form-step" data-form-step="1" data-i18n-aria-label="stepBasic" aria-label="基本信息">
           <label class="name-field"><span data-i18n="name">姓名</span><input id="name" name="name" maxlength="80" autocomplete="name" required></label>
           <p class="field-hint" data-i18n="nameHint">仅用于在你的人生说明书中显示。</p>
         </section>
 
-        <section class="form-step" data-form-step="2" aria-labelledby="formStepLabel2" hidden>
-          <div class="grid3">
-            <label><span data-i18n="year">年</span><select id="year" required></select></label>
-            <label><span data-i18n="month">月</span><select id="month" required></select></label>
-            <label><span data-i18n="day">日</span><select id="day" required></select></label>
+        <section class="form-step" data-form-step="2" data-i18n-aria-label="stepBirthTime" aria-label="出生时间" hidden>
+          <div class="native-birth-grid">
+            <label><span data-i18n="birthDate">出生日期</span><input id="birthDate" name="birthDate" type="date" min="1900-01-01" required></label>
+            <label><span data-i18n="birthTime">出生时间</span><input id="birthTime" name="birthTime" type="time" step="60" required></label>
           </div>
-          <div class="grid3 time-grid">
-            <label><span data-i18n="hour">时</span><select id="hour" required></select></label>
-            <label><span data-i18n="minute">分</span><select id="minute" required></select></label>
-            <div class="ampm-field">
-              <span id="ampmLabel" class="sr-only" data-i18n="ampm">上午/下午</span>
-              <div id="ampmSwitch" class="ampm-switch" role="group" aria-labelledby="ampmLabel">
-                <button type="button" data-ampm="am" data-i18n="am" aria-pressed="false">上午</button>
-                <button type="button" data-ampm="pm" data-i18n="pm" aria-pressed="false">下午</button>
-              </div>
-              <input id="ampm" name="ampm" type="hidden" value="">
-            </div>
-          </div>
+          <input id="year" name="year" type="hidden" value="">
+          <input id="month" name="month" type="hidden" value="">
+          <input id="day" name="day" type="hidden" value="">
+          <input id="hour" name="hour" type="hidden" value="">
+          <input id="minute" name="minute" type="hidden" value="">
+          <input id="ampm" name="ampm" type="hidden" value="">
           <label id="clockOccurrenceField" hidden><span data-i18n="clockOccurrence">重复时刻</span>
             <select id="clockOccurrence">
               <option value="earlier" data-i18n="firstOccurrence">第一次出现</option>
@@ -286,7 +267,7 @@
           </label>
         </section>
 
-        <section class="form-step" data-form-step="3" aria-labelledby="formStepLabel3" hidden>
+        <section class="form-step" data-form-step="3" data-i18n-aria-label="stepBirthLocation" aria-label="出生地点" hidden>
           <label><span data-i18n="birthLocation">出生地点</span>
             <div class="location-combobox">
               <input id="location" name="location" type="search" role="combobox" placeholder="城市、区县或地区" autocomplete="off" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="locationResults" aria-expanded="false" aria-describedby="status" required>

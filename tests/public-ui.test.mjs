@@ -150,6 +150,18 @@ test("mobile form remains vertically scrollable", () => {
   assert.match(css, /\.drawer-settings \.settings-list \{ padding: 7px 0 0; \}/);
 });
 
+test("mobile web and native shells prevent horizontal panning", () => {
+  const css = read("style.css");
+  const viewController = read("ios/App/App/PlutoViewController.swift");
+
+  assert.match(css, /html,\s*body \{[\s\S]*width: 100%;[\s\S]*max-width: 100%;[\s\S]*overflow-x: hidden;[\s\S]*overscroll-behavior-x: none;/);
+  assert.match(css, /body \{[\s\S]*touch-action: pan-y;/);
+  assert.match(css, /\.topbar,[\s\S]*\.drawer-scroll \{[\s\S]*min-width: 0;[\s\S]*max-width: 100%;/);
+  assert.match(viewController, /scrollView\.alwaysBounceHorizontal = false/);
+  assert.match(viewController, /scrollView\.showsHorizontalScrollIndicator = false/);
+  assert.match(viewController, /scrollView\.isDirectionalLockEnabled = true/);
+});
+
 test("homepage uses a bilingual three-step form without visible progress or the Life Philosophy poster", () => {
   const html = read("index.html");
   const app = read("app.js");

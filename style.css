@@ -23,6 +23,13 @@
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+}
 body {
   margin: 0;
   min-height: 100vh;
@@ -35,7 +42,24 @@ body {
     radial-gradient(circle at 22% 82%, rgba(126, 31, 46, .16), transparent 28%),
     linear-gradient(135deg, #120d15 0%, #241625 48%, #0e0c12 100%);
   font-family: Georgia, "Songti SC", "STSong", "Times New Roman", serif;
-  overflow-x: hidden;
+  position: relative;
+  touch-action: pan-y;
+}
+.topbar,
+.shell,
+.form-panel,
+.result-panel,
+.result-highlights,
+.result-toolbar,
+.chart-actions,
+.preview-stage,
+.native-birth-grid,
+.form-action-dock,
+.drawer-layer,
+.side-drawer,
+.drawer-scroll {
+  min-width: 0;
+  max-width: 100%;
 }
 .topbar {
   display: flex;

@@ -252,12 +252,18 @@
           <div class="native-birth-grid">
             <label class="native-birth-field">
               <span class="native-birth-heading"><span data-i18n="birthDate">出生日期</span><small data-i18n="tapToChoose">点击选择</small></span>
-              <input id="birthDate" name="birthDate" type="date" min="1900-01-01" aria-describedby="birthDateError" required>
+              <span class="native-birth-control">
+                <input id="birthDate" name="birthDate" type="date" min="1900-01-01" aria-describedby="birthDateError" required>
+                <span id="birthDateDisplay" class="native-birth-display is-placeholder" aria-hidden="true">年 / 月 / 日</span>
+              </span>
               <small id="birthDateError" class="field-error" aria-live="polite"></small>
             </label>
             <label class="native-birth-field">
               <span class="native-birth-heading"><span data-i18n="birthTime">出生时间</span><small data-i18n="tapToChoose">点击选择</small></span>
-              <input id="birthTime" name="birthTime" type="time" step="60" aria-describedby="birthTimeError" required>
+              <span class="native-birth-control">
+                <input id="birthTime" name="birthTime" type="time" step="60" aria-describedby="birthTimeError" required>
+                <span id="birthTimeDisplay" class="native-birth-display is-placeholder" aria-hidden="true">--:--</span>
+              </span>
               <small id="birthTimeError" class="field-error" aria-live="polite"></small>
             </label>
           </div>

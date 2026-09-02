@@ -48,6 +48,10 @@ const fieldErrors = {
   birthTime: document.querySelector("#birthTimeError"),
   location: document.querySelector("#locationError"),
 };
+const birthDisplays = {
+  date: document.querySelector("#birthDateDisplay"),
+  time: document.querySelector("#birthTimeDisplay"),
+};
 const nextToBirthButton = document.querySelector("#nextToBirth");
 const nextToLocationButton = document.querySelector("#nextToLocation");
 const backToNameButton = document.querySelector("#backToName");
@@ -156,7 +160,7 @@ const copy = {
   zh: {
     brand: "Pluto 人生使用说明书",
     brandShort: "人生使用说明书",
-    formEyebrow: "人生使用说明书", formTitle: "认识你自己", stepBasic: "基本信息", stepBirthTime: "出生时间", stepBirthLocation: "出生地点", formStepAnnouncement: "第 {current} 步，共 {total} 步：{label}", namePlaceholder: "请输入你的姓名", tapToChoose: "点击选择", nextStep: "下一步", previousStep: "上一步", continueToLocation: "继续填写地点", resumeHistory: "已有记录", localModeNotice: "当前为临时 HTTP 连接，仅支持本地计算与生图。云端保存和匿名统计已停用。", disclaimer: "仅用于自我探索与娱乐，不构成科学结论、医疗、心理、法律或财务建议。", viewLegalNotice: "查看法律声明", resultSummaryTitle: "人生使用说明书结果摘要", summaryType: "类型", summaryStrategy: "策略", summaryAuthority: "内在权威", summaryProfile: "人生角色", summaryDefinition: "定义", summaryCross: "轮回交叉", summarySignature: "标志", summaryNotSelf: "非自己主题", name: "姓名", birthDate: "出生日期", birthTime: "出生时间", year: "年", month: "月", day: "日",
+    formEyebrow: "人生使用说明书", formTitle: "认识你自己", stepBasic: "基本信息", stepBirthTime: "出生时间", stepBirthLocation: "出生地点", formStepAnnouncement: "第 {current} 步，共 {total} 步：{label}", namePlaceholder: "请输入你的姓名", tapToChoose: "点击选择", birthDatePlaceholder: "年 / 月 / 日", birthTimePlaceholder: "--:--", nextStep: "下一步", previousStep: "上一步", continueToLocation: "继续填写地点", resumeHistory: "已有记录", localModeNotice: "当前为临时 HTTP 连接，仅支持本地计算与生图。云端保存和匿名统计已停用。", disclaimer: "仅用于自我探索与娱乐，不构成科学结论、医疗、心理、法律或财务建议。", viewLegalNotice: "查看法律声明", resultSummaryTitle: "人生使用说明书结果摘要", summaryType: "类型", summaryStrategy: "策略", summaryAuthority: "内在权威", summaryProfile: "人生角色", summaryDefinition: "定义", summaryCross: "轮回交叉", summarySignature: "标志", summaryNotSelf: "非自己主题", name: "姓名", birthDate: "出生日期", birthTime: "出生时间", year: "年", month: "月", day: "日",
     hour: "时", minute: "分", ampm: "上午/下午", am: "上午", pm: "下午", birthLocation: "出生地点",
     locationPlaceholder: "城市、区县或地区", locationSuggestions: "出生地点建议", clockOccurrence: "重复时刻",
     bodygraphLabel: "人生使用说明书图谱",
@@ -178,7 +182,7 @@ const copy = {
   en: {
     brand: "Pluto Life Manual",
     brandShort: "Life Manual",
-    formEyebrow: "Life Manual", formTitle: "Know Yourself", stepBasic: "Basics", stepBirthTime: "Birth time", stepBirthLocation: "Birth place", formStepAnnouncement: "Step {current} of {total}: {label}", namePlaceholder: "Enter your name", tapToChoose: "Tap to choose", nextStep: "Next", previousStep: "Back", continueToLocation: "Continue to birth place", resumeHistory: "Saved manuals", localModeNotice: "This temporary HTTP connection supports local calculation and image generation only. Cloud saving and analytics are disabled.", disclaimer: "For personal reflection and entertainment only. Not scientific, medical, psychological, legal, or financial advice.", viewLegalNotice: "View Legal Notice", resultSummaryTitle: "Life Manual Result Summary", summaryType: "Type", summaryStrategy: "Strategy", summaryAuthority: "Inner Authority", summaryProfile: "Profile", summaryDefinition: "Definition", summaryCross: "Incarnation Cross", summarySignature: "Signature", summaryNotSelf: "Not-Self Theme", name: "Name", birthDate: "Birth date", birthTime: "Birth time", year: "Year", month: "Month", day: "Day",
+    formEyebrow: "Life Manual", formTitle: "Know Yourself", stepBasic: "Basics", stepBirthTime: "Birth time", stepBirthLocation: "Birth place", formStepAnnouncement: "Step {current} of {total}: {label}", namePlaceholder: "Enter your name", tapToChoose: "Tap to choose", birthDatePlaceholder: "YYYY / MM / DD", birthTimePlaceholder: "--:--", nextStep: "Next", previousStep: "Back", continueToLocation: "Continue to birth place", resumeHistory: "Saved manuals", localModeNotice: "This temporary HTTP connection supports local calculation and image generation only. Cloud saving and analytics are disabled.", disclaimer: "For personal reflection and entertainment only. Not scientific, medical, psychological, legal, or financial advice.", viewLegalNotice: "View Legal Notice", resultSummaryTitle: "Life Manual Result Summary", summaryType: "Type", summaryStrategy: "Strategy", summaryAuthority: "Inner Authority", summaryProfile: "Profile", summaryDefinition: "Definition", summaryCross: "Incarnation Cross", summarySignature: "Signature", summaryNotSelf: "Not-Self Theme", name: "Name", birthDate: "Birth date", birthTime: "Birth time", year: "Year", month: "Month", day: "Day",
     hour: "Hour", minute: "Minute", ampm: "AM/PM", am: "AM", pm: "PM", birthLocation: "Birth location",
     locationPlaceholder: "City, district or region", locationSuggestions: "Birth location suggestions", clockOccurrence: "Clock occurrence",
     bodygraphLabel: "Life Manual bodygraph",
@@ -1102,6 +1106,18 @@ function syncBirthPartsFromNativeControls() {
     fields.minute.value = "";
     fields.ampm.value = "";
   }
+  syncBirthControlDisplays();
+}
+
+function syncBirthControlDisplays() {
+  const [year = "", month = "", day = ""] = fields.birthDate.value.split("-");
+  const hasDate = Boolean(year && month && day);
+  birthDisplays.date.textContent = hasDate
+    ? (language === "zh" ? `${year} / ${month} / ${day}` : `${month} / ${day} / ${year}`)
+    : t("birthDatePlaceholder");
+  birthDisplays.time.textContent = fields.birthTime.value || t("birthTimePlaceholder");
+  birthDisplays.date.classList.toggle("is-placeholder", !hasDate);
+  birthDisplays.time.classList.toggle("is-placeholder", !fields.birthTime.value);
 }
 
 function initializeBirthControls() {
@@ -1503,6 +1519,7 @@ function applyLanguage(nextLanguage, rerender = true) {
   });
   fields.location.placeholder = t("locationPlaceholder");
   fields.name.placeholder = t("namePlaceholder");
+  syncBirthControlDisplays();
   locationResults.setAttribute("aria-label", t("locationSuggestions"));
   graph.setAttribute("aria-label", t("bodygraphLabel"));
   graph.querySelector("svg")?.setAttribute("aria-label", t("bodygraphLabel"));
@@ -1794,11 +1811,14 @@ function invalidateChart() {
   });
 }
 
-[fields.birthDate, fields.birthTime].forEach((field) => field.addEventListener("change", () => {
-  syncBirthPartsFromNativeControls();
-  resetClockOccurrence();
-  setFieldError(field === fields.birthDate ? "birthDate" : "birthTime", null);
-}));
+[fields.birthDate, fields.birthTime].forEach((field) => {
+  field.addEventListener("input", syncBirthControlDisplays);
+  field.addEventListener("change", () => {
+    syncBirthPartsFromNativeControls();
+    resetClockOccurrence();
+    setFieldError(field === fields.birthDate ? "birthDate" : "birthTime", null);
+  });
+});
 fields.name.addEventListener("input", () => setFieldError("name", null));
 fields.location.addEventListener("input", () => setFieldError("location", null));
 chartForm.addEventListener("input", invalidateChart);

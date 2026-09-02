@@ -43,15 +43,24 @@ confirmation, or complete closure of App Store distribution risk is represented.
 - Package: `html2canvas` 1.4.1
 - License: MIT; full text in `vendor/html2canvas/LICENSE`
 
-## BodyGraph provenance
+## Historical BodyGraph asset
 
-Repository history states that the current visual lineage was captured from a
-publicly loaded My Human Design result-page SVG for fidelity research. No exact
-source URL, BodyGraph visual license, or authorization file was found in the
-repository. The current evidence classification is `DERIVED_OR_UNCLEAR`; this
-is not a finding of infringement. No usable source-authorship evidence or
-applicable authorization is currently available. The planned App Store release
-path is a style-preserving, clean-room, independently generated replacement;
-Phase 6E has not started, and the current SVG remains unchanged in this phase
-and is not planned for the final App Store Release Candidate. See
+Repository history states that the historical visual lineage was captured from
+a publicly loaded My Human Design result-page SVG for fidelity research. No
+exact source URL, BodyGraph visual license, authorization file, or independent
+creation evidence for that asset was found in the repository. Its historical
+evidence classification remains `DERIVED_OR_UNCLEAR`; this is not a finding of
+infringement. The asset is retained in the provenance record but is not part of
+the source proposed by Draft PR #16. See
 `docs/bodygraph-provenance-audit.md`.
+
+## Proposed project-generated BodyGraph visual
+
+Draft PR #16 proposes a new BodyGraph visual produced by the project's
+deterministic generator from functional topology and independently defined
+geometry rules. It is not listed as a third-party component. The PR is not
+merged or deployed, and production remains version `1.1.0` at commit
+`63b0beff7202885f6a1a42c64fc3e8aa7de6a8a1`. Entry into a release requires
+merge of the exact reviewed head, a final distribution-archive exclusion check,
+content-rights review, and separate release authorization. This notice is not
+legal advice and does not claim Apple approval.

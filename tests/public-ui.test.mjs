@@ -150,6 +150,35 @@ test("mobile form remains vertically scrollable", () => {
   assert.match(css, /\.drawer-settings \.settings-list \{ padding: 7px 0 0; \}/);
 });
 
+test("mobile web and native shells prevent horizontal panning", () => {
+  const css = read("style.css");
+  const viewController = read("ios/App/App/PlutoViewController.swift");
+
+  assert.match(css, /html,\s*body \{[\s\S]*width: 100%;[\s\S]*max-width: 100%;[\s\S]*overflow-x: hidden;[\s\S]*overscroll-behavior-x: none;/);
+  assert.match(css, /body \{[\s\S]*touch-action: pan-y;/);
+  assert.match(css, /\.topbar,[\s\S]*\.drawer-scroll \{[\s\S]*min-width: 0;[\s\S]*max-width: 100%;/);
+  assert.match(viewController, /scrollView\.alwaysBounceHorizontal = false/);
+  assert.match(viewController, /scrollView\.showsHorizontalScrollIndicator = false/);
+  assert.match(viewController, /scrollView\.isDirectionalLockEnabled = true/);
+});
+
+test("mobile form controls and result actions stay inside the safe content width", () => {
+  const html = read("index.html");
+  const app = read("app.js");
+  const css = read("style.css");
+
+  assert.match(html, /id="birthDate"[\s\S]{0,220}id="birthDateDisplay"/);
+  assert.match(html, /id="birthTime"[\s\S]{0,220}id="birthTimeDisplay"/);
+  assert.match(app, /function syncBirthControlDisplays\(\)/);
+  assert.match(app, /field\.addEventListener\("input", syncBirthControlDisplays\)/);
+  assert.match(css, /@media \(max-width: 560px\)[\s\S]*\.native-birth-grid input \{[\s\S]*position: absolute;[\s\S]*opacity: 0;/);
+  assert.match(css, /\.native-birth-display \{[\s\S]*display: flex;[\s\S]*align-items: center;[\s\S]*overflow: hidden;/);
+  assert.match(css, /\.form-panel \.form-action-set > button \{[\s\S]*display: inline-flex;[\s\S]*justify-content: center;[\s\S]*min-width: 0;/);
+  assert.match(css, /@media \(max-width: 560px\)[\s\S]*\.form-action-dock \{[\s\S]*width: calc\(100% \+ 48px\);[\s\S]*max-width: none;/);
+  assert.match(css, /@media \(max-width: 560px\)[\s\S]*\.result-panel \{[\s\S]*padding: 0 max\(14px, env\(safe-area-inset-right\)\) 24px max\(14px, env\(safe-area-inset-left\)\);/);
+  assert.match(css, /\.chart-actions button \{ width: 100%; min-width: 0;[\s\S]*white-space: nowrap; \}/);
+});
+
 test("homepage uses a bilingual three-step form without visible progress or the Life Philosophy poster", () => {
   const html = read("index.html");
   const app = read("app.js");
@@ -181,14 +210,36 @@ test("homepage uses a bilingual three-step form without visible progress or the 
 });
 
 test("result media keeps its nonblocking dark loading placeholder", () => {
+  const html = read("index.html");
   const app = read("app.js");
   const css = read("style.css");
 
+  assert.match(html, /id="resultLoadingStatus"[^>]*role="status"/);
   assert.match(app, /function clearPoster\(\)[\s\S]{0,500}setMediaState\(previewStage, "loading"\)/);
   assert.match(app, /setMediaState\(previewStage, "ready"\)/);
+  assert.match(app, /showChartView\(\);\s*resultShown = true;\s*await createPosterImage\(\)/);
   assert.match(css, /\.media-loading-placeholder/);
+  assert.match(css, /\.result-loading-status/);
   assert.match(css, /@keyframes pluto-placeholder-shimmer/);
   assert.match(css, /prefers-reduced-motion: reduce/);
+});
+
+test("mobile flow keeps errors near fields and leads result pages with strengths", () => {
+  const html = read("index.html");
+  const app = read("app.js");
+  const css = read("style.css");
+
+  for (const id of ["nameError", "birthDateError", "birthTimeError", "locationError"]) {
+    assert.match(html, new RegExp(`id="${id}"[^>]*field-error`));
+  }
+  assert.match(app, /setFormStep\(2, \{ focus: false \}\)/);
+  assert.match(app, /setFormStep\(3, \{ focus: false \}\)/);
+  assert.match(app, /function setGenerationBusy\(/);
+  assert.match(html, /id="resultHighlights"[\s\S]*id="coreEnergyStrengthText"[\s\S]*id="decisionStrengthText"[\s\S]*id="workStyleStrengthText"/);
+  assert.match(app, /function renderResultHighlights\(/);
+  assert.match(app, /typeStrengthsZh[\s\S]*authorityStrengthsZh[\s\S]*typePracticalGuidanceZh/);
+  assert.match(css, /\.result-highlights/);
+  assert.doesNotMatch(css, /\.detail-fab \{[\s\S]{0,180}position: fixed/);
 });
 
 test("Swiss Ephemeris files download in parallel before entering the WASM filesystem", () => {

@@ -200,9 +200,10 @@ Privacy answers without that evidence and the exact final binary.
 ## Content Rights Draft
 
 The app contains developer-authored code and content, open-source components,
-Swiss Ephemeris, Human Design terminology, and a BodyGraph visual currently
+Swiss Ephemeris, Human Design terminology, and a proposed project-generated
+BodyGraph visual in Draft PR #16. The historical BodyGraph asset remains
 classified `DERIVED_OR_UNCLEAR` by the repository provenance audit. That
-classification records unresolved evidence and is not a finding of
+historical classification records unresolved evidence and is not a finding of
 infringement.
 
 The Swiss Ephemeris AGPL licensing path is selected and documented. The project
@@ -210,25 +211,31 @@ does not claim or rely on a Swiss Ephemeris Professional License. Before App
 Store distribution, the release must verify fulfillment of the applicable AGPL
 source-code, license, notice, and distribution obligations, and separately
 assess App Store distribution compatibility under that path.
+No separate Astrodienst authorization or Apple confirmation of AGPL
+compatibility is claimed.
 
-No usable BodyGraph source-authorship evidence or applicable authorization is
-currently available. The planned App Store release path is a style-preserving,
-clean-room, independently generated replacement. Supplemental evidence or
-authorization could change that plan, but none is currently claimed. Phase 6E
-has not started, the current PR does not modify the old SVG, and that SVG is not
-planned for the final App Store Release Candidate.
+Draft PR #16 proposes a style-preserving, clean-room release-candidate visual
+produced from deterministic functional topology, independently defined
+geometry, and an SVG generator. The historical asset is excluded from the
+PR's proposed source and verified A3 build outputs. Independent engineering
+review found no reason to redo the new geometry. The PR remains Draft, unmerged,
+and undeployed; production remains version `1.1.0` at commit
+`63b0beff7202885f6a1a42c64fc3e8aa7de6a8a1`.
 
 Do not submit a final content-rights declaration until:
 
 1. The final release has verified applicable AGPL source-code, license, notice,
    and distribution obligations and separately assessed App Store compatibility
    under the selected AGPL path.
-2. The clean-room BodyGraph replacement is complete and the current
-   `DERIVED_OR_UNCLEAR` SVG is absent from the final release candidate.
+2. PR #16 is merged at the exact reviewed head and the final post-merge
+   distribution archive confirms that the historical `DERIVED_OR_UNCLEAR`
+   asset remains absent.
 3. Relevant Human Design terminology and branding have been reviewed for the
    intended storefronts.
+4. A separate release is authorized; merge alone does not authorize Pages,
+   TestFlight, App Store Connect, or backend deployment.
 
-No final legal clearance is claimed by this draft.
+No final legal clearance or Apple approval is claimed by this draft.
 
 ## Export Compliance Draft
 

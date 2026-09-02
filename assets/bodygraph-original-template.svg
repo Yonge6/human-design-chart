@@ -1,0 +1,808 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 696" role="img" aria-labelledby="bodygraph-title bodygraph-description" data-bodygraph-template="original-phase-6e-v1">
+  <title id="bodygraph-title">Pluto Life Manual BodyGraph</title>
+  <desc id="bodygraph-description">An original vertical life-axis network with nine centers, sixty-four gates, and dual Personality and Design channel lanes.</desc>
+  <metadata>
+    Project: Pluto Life Manual
+    Asset: Original style-preserving BodyGraph template
+    Design version: Phase 6E v1
+    Generator: scripts/generate-original-bodygraph.mjs
+    Specification: docs/style-preserving-bodygraph-design-spec.md
+    License: AGPL-3.0-or-later
+  </metadata>
+  <defs>
+    <pattern id="undefined-grain" width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect width="8" height="8" fill="#f8eddd" fill-opacity="0.72" />
+      <path d="M -2 8 L 8 -2 M 3 11 L 11 3" stroke="#a87945" stroke-width="0.6" stroke-opacity="0.18" />
+    </pattern>
+    <style>
+      .channel-structure { fill: none; stroke: #8f765f; stroke-width: 1.2; stroke-opacity: .3; stroke-linecap: round; }
+      .channel-halo { fill: none; stroke: #f3e3cc; stroke-width: 6.8; stroke-opacity: 0; stroke-linecap: round; }
+      .channel-lane { fill: none; stroke-width: 2.2; stroke-opacity: 0; stroke-linecap: round; }
+      .channel-personality { stroke: #b9a6dd; }
+      .channel-design { stroke: #9a2838; stroke-dasharray: 3 2; }
+      .channel-clasp { fill: #d8b17d; stroke: #6d5035; stroke-width: .8; opacity: 0; }
+      .center-shape { fill: url(#undefined-grain); stroke: #a87945; stroke-width: 1.4; stroke-dasharray: 3.2 2.4; stroke-linejoin: round; }
+      .center-inner { fill: none; stroke: #b78345; stroke-width: 1; stroke-opacity: .24; }
+      .center-notch { fill: #f8eddd; stroke: #a87945; stroke-width: 1; }
+      .center-label { fill: #4f4541; font: 600 6.6px ui-sans-serif, system-ui, sans-serif; letter-spacing: 0; text-anchor: middle; dominant-baseline: middle; }
+      .gate-badge { fill: #f7ecdc; stroke: #cbbca8; stroke-width: 1; }
+      .gate-number { fill: #503d3d; font: 700 6.6px ui-sans-serif, system-ui, sans-serif; letter-spacing: 0; text-anchor: middle; dominant-baseline: middle; }
+      .gate-source { opacity: 0; }
+      .gate-source-personality { fill: #b9a6dd; stroke: #302936; stroke-width: .6; }
+      .gate-source-design { fill: #f8eddd; stroke: #9a2838; stroke-width: 1; }
+      @media (forced-colors: active) {
+        .channel-personality { stroke: CanvasText; }
+        .channel-design { stroke: CanvasText; stroke-dasharray: 3 2; }
+        .center-shape { fill: Canvas; stroke: CanvasText; }
+      }
+    </style>
+  </defs>
+  <g id="bodygraph-network" aria-label="BodyGraph channels">
+    <g id="channel-1-8" data-channel="1-8" data-gates="1 8" data-route="vertical">
+      <path data-channel-structure="1-8" class="channel-structure" d="M 181.039 243.424 C 176.968 272.567 203.552 217.509 183.263 238.822" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 183.922 244.816 C 179.851 273.959 206.435 218.901 186.146 240.214" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 183.922 244.816 C 179.851 273.959 206.435 218.901 186.146 240.214" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 178.156 242.032 C 174.085 271.175 200.669 216.117 180.38 237.43" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 178.156 242.032 C 174.085 271.175 200.669 216.117 180.38 237.43" />
+      <circle data-channel-clasp="start" cx="181.039" cy="243.424" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="183.263" cy="238.822" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-2-14" data-channel="2-14" data-gates="2 14" data-route="vertical">
+      <path data-channel-structure="2-14" class="channel-structure" d="M 182.959 342.034 C 186.803 371.197 187.959 364.662 174.091 390.603" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 186.108 342.607 C 189.952 371.77 191.108 365.235 177.24 391.176" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 186.108 342.607 C 189.952 371.77 191.108 365.235 177.24 391.176" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 179.81 341.461 C 183.654 370.624 184.81 364.089 170.942 390.03" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 179.81 341.461 C 183.654 370.624 184.81 364.089 170.942 390.03" />
+      <circle data-channel-clasp="start" cx="182.959" cy="342.034" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="174.091" cy="390.603" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-3-60" data-channel="3-60" data-gates="3 60" data-route="lower-s">
+      <path data-channel-structure="3-60" class="channel-structure" d="M 170.048 494.935 C 150.73 528.333 157.693 576.973 127.179 606.051" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 173.034 496.087 C 153.716 529.485 160.679 578.125 130.165 607.203" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 173.034 496.087 C 153.716 529.485 160.679 578.125 130.165 607.203" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 167.062 493.783 C 147.744 527.181 154.707 575.821 124.193 604.899" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 167.062 493.783 C 147.744 527.181 154.707 575.821 124.193 604.899" />
+      <circle data-channel-clasp="start" cx="170.048" cy="494.935" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="127.179" cy="606.051" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-4-63" data-channel="4-63" data-gates="4 63" data-route="vertical">
+      <path data-channel-structure="4-63" class="channel-structure" d="M 167.912 86.393 C 139.302 87.633 205.127 98.783 178.521 88.191" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 167.378 89.548 C 138.768 90.788 204.593 101.938 177.987 91.346" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 167.378 89.548 C 138.768 90.788 204.593 101.938 177.987 91.346" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 168.446 83.238 C 139.836 84.478 205.661 95.628 179.055 85.036" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 168.446 83.238 C 139.836 84.478 205.661 95.628 179.055 85.036" />
+      <circle data-channel-clasp="start" cx="167.912" cy="86.393" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="178.521" cy="88.191" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-5-15" data-channel="5-15" data-gates="5 15" data-route="vertical">
+      <path data-channel-structure="5-15" class="channel-structure" d="M 184.83 390.888 C 172.948 365.369 174.141 368.9 167.935 341.443" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 181.803 391.922 C 169.921 366.403 171.114 369.934 164.908 342.477" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 181.803 391.922 C 169.921 366.403 171.114 369.934 164.908 342.477" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 187.857 389.854 C 175.975 364.335 177.168 367.866 170.962 340.409" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 187.857 389.854 C 175.975 364.335 177.168 367.866 170.962 340.409" />
+      <circle data-channel-clasp="start" cx="184.83" cy="390.888" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="167.935" cy="341.443" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-6-59" data-channel="6-59" data-gates="6 59" data-route="vertical">
+      <path data-channel-structure="6-59" class="channel-structure" d="M 218.163 422.27 C 230.455 397.098 209.474 440.064 221.766 414.892" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 215.286 420.865 C 227.578 395.693 206.597 438.659 218.889 413.487" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 215.286 420.865 C 227.578 395.693 206.597 438.659 218.889 413.487" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 221.04 423.675 C 233.332 398.503 212.351 441.469 224.643 416.297" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 221.04 423.675 C 233.332 398.503 212.351 441.469 224.643 416.297" />
+      <circle data-channel-clasp="start" cx="218.163" cy="422.27" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="221.766" cy="414.892" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-7-31" data-channel="7-31" data-gates="7 31" data-route="vertical">
+      <path data-channel-structure="7-31" class="channel-structure" d="M 172.781 238.832 C 200.657 242.869 164.152 233.527 190.54 243.378" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 173.575 235.731 C 201.451 239.768 164.946 230.426 191.334 240.277" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 173.575 235.731 C 201.451 239.768 164.946 230.426 191.334 240.277" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 171.987 241.933 C 199.863 245.97 163.358 236.628 189.746 246.479" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 171.987 241.933 C 199.863 245.97 163.358 236.628 189.746 246.479" />
+      <circle data-channel-clasp="start" cx="172.781" cy="238.832" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="190.54" cy="243.378" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-9-52" data-channel="9-52" data-gates="9 52" data-route="lower-s">
+      <path data-channel-structure="9-52" class="channel-structure" d="M 183.802 494.597 C 157.01 520.226 160.13 566.278 133.338 591.907" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 186.644 496.069 C 159.852 521.698 162.972 567.75 136.18 593.379" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 186.644 496.069 C 159.852 521.698 162.972 567.75 136.18 593.379" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 180.96 493.125 C 154.168 518.754 157.288 564.806 130.496 590.435" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 180.96 493.125 C 154.168 518.754 157.288 564.806 130.496 590.435" />
+      <circle data-channel-clasp="start" cx="183.802" cy="494.597" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="133.338" cy="591.907" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-10-20" data-channel="10-20" data-gates="10 20" data-route="vertical">
+      <path data-channel-structure="10-20" class="channel-structure" d="M 146.261 321.158 C 154.938 294.361 157.852 280.608 160.655 252.581" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 143.128 320.502 C 151.805 293.705 154.719 279.952 157.522 251.925" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 143.128 320.502 C 151.805 293.705 154.719 279.952 157.522 251.925" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 149.394 321.814 C 158.071 295.017 160.985 281.264 163.788 253.237" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 149.394 321.814 C 158.071 295.017 160.985 281.264 163.788 253.237" />
+      <circle data-channel-clasp="start" cx="146.261" cy="321.158" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="160.655" cy="252.581" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-10-34" data-channel="10-34" data-gates="10 34" data-route="vertical-detour">
+      <path data-channel-structure="10-34" class="channel-structure" d="M 145.879 335.911 C 192.227 364.037 192.295 364.467 154.571 391.669" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 149.041 335.418 C 195.389 363.544 195.457 363.974 157.733 391.176" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 149.041 335.418 C 195.389 363.544 195.457 363.974 157.733 391.176" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 142.717 336.404 C 189.065 364.53 189.133 364.96 151.409 392.162" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 142.717 336.404 C 189.065 364.53 189.133 364.96 151.409 392.162" />
+      <circle data-channel-clasp="start" cx="145.879" cy="335.911" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="154.571" cy="391.669" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-10-57" data-channel="10-57" data-gates="10 57" data-route="vertical">
+      <path data-channel-structure="10-57" class="channel-structure" d="M 150.371 333.436 C 171.455 351.86 127.795 313.703 148.879 332.127" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 152.477 331.026 C 173.561 349.45 129.901 311.293 150.985 329.717" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 152.477 331.026 C 173.561 349.45 129.901 311.293 150.985 329.717" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 148.265 335.846 C 169.349 354.27 125.689 316.113 146.773 334.537" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 148.265 335.846 C 169.349 354.27 125.689 316.113 146.773 334.537" />
+      <circle data-channel-clasp="start" cx="150.371" cy="333.436" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="148.879" cy="332.127" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-11-56" data-channel="11-56" data-gates="11 56" data-route="vertical">
+      <path data-channel-structure="11-56" class="channel-structure" d="M 182.342 160.229 C 210.682 164.289 166.585 148.011 190.773 163.327" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 183.449 157.227 C 211.789 161.287 167.692 145.009 191.88 160.325" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 183.449 157.227 C 211.789 161.287 167.692 145.009 191.88 160.325" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 181.235 163.231 C 209.575 167.291 165.478 151.013 189.666 166.329" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 181.235 163.231 C 209.575 167.291 165.478 151.013 189.666 166.329" />
+      <circle data-channel-clasp="start" cx="182.342" cy="160.229" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="190.773" cy="163.327" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-12-22" data-channel="12-22" data-gates="12 22" data-route="vertical-detour">
+      <path data-channel-structure="12-22" class="channel-structure" d="M 228.566 240.483 C 281.118 268.632 279.287 289.926 221.863 317.553" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 231.753 240.761 C 284.305 268.91 282.474 290.204 225.05 317.831" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 231.753 240.761 C 284.305 268.91 282.474 290.204 225.05 317.831" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 225.379 240.205 C 277.931 268.354 276.1 289.648 218.676 317.275" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 225.379 240.205 C 277.931 268.354 276.1 289.648 218.676 317.275" />
+      <circle data-channel-clasp="start" cx="228.566" cy="240.483" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="221.863" cy="317.553" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-13-33" data-channel="13-33" data-gates="13 33" data-route="side">
+      <path data-channel-structure="13-33" class="channel-structure" d="M 193.765 238.548 C 150.961 232.626 169.212 230.66 156.352 242.63" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 194.111 241.729 C 151.307 235.807 169.558 233.841 156.698 245.811" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 194.111 241.729 C 151.307 235.807 169.558 233.841 156.698 245.811" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 193.419 235.367 C 150.615 229.445 168.866 227.479 156.006 239.449" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 193.419 235.367 C 150.615 229.445 168.866 227.479 156.006 239.449" />
+      <circle data-channel-clasp="start" cx="193.765" cy="238.548" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="156.352" cy="242.63" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-16-48" data-channel="16-48" data-gates="16 48" data-route="vertical-detour">
+      <path data-channel-structure="16-48" class="channel-structure" d="M 135.252 244.404 C 88.676 272.031 89.614 282.916 141.062 311.065" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 138.439 244.126 C 91.863 271.753 92.801 282.638 144.249 310.787" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 138.439 244.126 C 91.863 271.753 92.801 282.638 144.249 310.787" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 132.065 244.682 C 85.489 272.309 86.427 283.194 137.875 311.343" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 132.065 244.682 C 85.489 272.309 86.427 283.194 137.875 311.343" />
+      <circle data-channel-clasp="start" cx="135.252" cy="244.404" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="141.062" cy="311.065" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-17-62" data-channel="17-62" data-gates="17 62" data-route="vertical">
+      <path data-channel-structure="17-62" class="channel-structure" d="M 182.151 159.791 C 155.383 168.023 196.13 155.485 169.362 163.717" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 183.092 162.85 C 156.324 171.082 197.071 158.544 170.303 166.776" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 183.092 162.85 C 156.324 171.082 197.071 158.544 170.303 166.776" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 181.21 156.732 C 154.442 164.964 195.189 152.426 168.421 160.658" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 181.21 156.732 C 154.442 164.964 195.189 152.426 168.421 160.658" />
+      <circle data-channel-clasp="start" cx="182.151" cy="159.791" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="169.362" cy="163.717" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-18-58" data-channel="18-58" data-gates="18 58" data-route="lower-s-detour">
+      <path data-channel-structure="18-58" class="channel-structure" d="M 122.657 438.506 C 65.474 485.399 95.751 534.384 140.664 582.765" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 125.831 438.109 C 68.648 485.002 98.925 533.987 143.838 582.368" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 125.831 438.109 C 68.648 485.002 98.925 533.987 143.838 582.368" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 119.483 438.903 C 62.3 485.796 92.577 534.781 137.49 583.162" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 119.483 438.903 C 62.3 485.796 92.577 534.781 137.49 583.162" />
+      <circle data-channel-clasp="start" cx="122.657" cy="438.506" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="140.664" cy="582.765" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-19-49" data-channel="19-49" data-gates="19 49" data-route="lower-s">
+      <path data-channel-structure="19-49" class="channel-structure" d="M 206.075 579.809 C 228.068 541.182 224.271 486.28 257.4 452.129" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 203.105 578.615 C 225.098 539.988 221.301 485.086 254.43 450.935" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 203.105 578.615 C 225.098 539.988 221.301 485.086 254.43 450.935" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 209.045 581.003 C 231.038 542.376 227.241 487.474 260.37 453.323" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 209.045 581.003 C 231.038 542.376 227.241 487.474 260.37 453.323" />
+      <circle data-channel-clasp="start" cx="206.075" cy="579.809" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="257.4" cy="452.129" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-20-34" data-channel="20-34" data-gates="20 34" data-route="vertical-detour">
+      <path data-channel-structure="20-34" class="channel-structure" d="M 161.877 252.73 C 108.009 297.159 105.909 347.158 156.041 391.587" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 165.074 252.864 C 111.206 297.293 109.106 347.292 159.238 391.721" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 165.074 252.864 C 111.206 297.293 109.106 347.292 159.238 391.721" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 158.68 252.596 C 104.812 297.025 102.712 347.024 152.844 391.453" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 158.68 252.596 C 104.812 297.025 102.712 347.024 152.844 391.453" />
+      <circle data-channel-clasp="start" cx="161.877" cy="252.73" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="156.041" cy="391.587" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-20-57" data-channel="20-57" data-gates="20 57" data-route="vertical-detour">
+      <path data-channel-structure="20-57" class="channel-structure" d="M 161.569 252.716 C 104.254 280.383 102.482 301.419 155.149 329.584" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 164.759 252.982 C 107.444 280.649 105.672 301.685 158.339 329.85" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 164.759 252.982 C 107.444 280.649 105.672 301.685 158.339 329.85" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 158.379 252.45 C 101.064 280.117 99.292 301.153 151.959 329.318" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 158.379 252.45 C 101.064 280.117 99.292 301.153 151.959 329.318" />
+      <circle data-channel-clasp="start" cx="161.569" cy="252.716" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="155.149" cy="329.584" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-21-45" data-channel="21-45" data-gates="21 45" data-route="vertical-detour">
+      <path data-channel-structure="21-45" class="channel-structure" d="M 211.785 268 C 269.889 240.672 261.982 276.023 216.086 248.695" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 208.662 267.302 C 266.766 239.974 258.859 275.325 212.963 247.997" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 208.662 267.302 C 266.766 239.974 258.859 275.325 212.963 247.997" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 214.908 268.698 C 273.012 241.37 265.105 276.721 219.209 249.393" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 214.908 268.698 C 273.012 241.37 265.105 276.721 219.209 249.393" />
+      <circle data-channel-clasp="start" cx="211.785" cy="268" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="216.086" cy="248.695" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-23-43" data-channel="23-43" data-gates="23 43" data-route="vertical">
+      <path data-channel-structure="23-43" class="channel-structure" d="M 173.175 162.46 C 150.191 145.352 196.357 166.461 168.381 160.273" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 171.844 165.372 C 148.86 148.264 195.026 169.373 167.05 163.185" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 171.844 165.372 C 148.86 148.264 195.026 169.373 167.05 163.185" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 174.506 159.548 C 151.522 142.44 197.688 163.549 169.712 157.361" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 174.506 159.548 C 151.522 142.44 197.688 163.549 169.712 157.361" />
+      <circle data-channel-clasp="start" cx="173.175" cy="162.46" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="168.381" cy="160.273" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-24-61" data-channel="24-61" data-gates="24 61" data-route="vertical">
+      <path data-channel-structure="24-61" class="channel-structure" d="M 181.896 86.621 C 154.176 82.617 219.614 92.07 191.894 88.066" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 181.438 89.789 C 153.718 85.785 219.156 95.238 191.436 91.234" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 181.438 89.789 C 153.718 85.785 219.156 95.238 191.436 91.234" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 182.354 83.453 C 154.634 79.449 220.072 88.902 192.352 84.898" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 182.354 83.453 C 154.634 79.449 220.072 88.902 192.352 84.898" />
+      <circle data-channel-clasp="start" cx="181.896" cy="86.621" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="191.894" cy="88.066" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-25-51" data-channel="25-51" data-gates="25 51" data-route="vertical">
+      <path data-channel-structure="25-51" class="channel-structure" d="M 221.609 302.078 C 197.445 287.938 232.898 308.7 208.734 294.56" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 219.993 304.84 C 195.829 290.7 231.282 311.462 207.118 297.322" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 219.993 304.84 C 195.829 290.7 231.282 311.462 207.118 297.322" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 223.225 299.316 C 199.061 285.176 234.514 305.938 210.35 291.798" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 223.225 299.316 C 199.061 285.176 234.514 305.938 210.35 291.798" />
+      <circle data-channel-clasp="start" cx="221.609" cy="302.078" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="208.734" cy="294.56" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-26-44" data-channel="26-44" data-gates="26 44" data-route="side">
+      <path data-channel-structure="26-44" class="channel-structure" d="M 202.571 328.936 C 191.651 341.704 201.455 336.712 162.535 349.48" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 204.03 331.784 C 193.11 344.552 202.914 339.56 163.994 352.328" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 204.03 331.784 C 193.11 344.552 202.914 339.56 163.994 352.328" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 201.112 326.088 C 190.192 338.856 199.996 333.864 161.076 346.632" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 201.112 326.088 C 190.192 338.856 199.996 333.864 161.076 346.632" />
+      <circle data-channel-clasp="start" cx="202.571" cy="328.936" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="162.535" cy="349.48" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-27-50" data-channel="27-50" data-gates="27 50" data-route="vertical">
+      <path data-channel-structure="27-50" class="channel-structure" d="M 138.287 413.676 C 145.784 440.826 136.988 387.213 138.563 415.335" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 141.445 413.158 C 148.942 440.308 140.146 386.695 141.721 414.817" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 141.445 413.158 C 148.942 440.308 140.146 386.695 141.721 414.817" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 135.129 414.194 C 142.626 441.344 133.83 387.731 135.405 415.853" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 135.129 414.194 C 142.626 441.344 133.83 387.731 135.405 415.853" />
+      <circle data-channel-clasp="start" cx="138.287" cy="413.676" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="138.563" cy="415.335" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-28-38" data-channel="28-38" data-gates="28 38" data-route="lower-s">
+      <path data-channel-structure="28-38" class="channel-structure" d="M 107.165 437.137 C 110.862 486.496 150.67 530.293 154.367 579.652" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 110.202 436.132 C 113.899 485.491 153.707 529.288 157.404 578.647" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 110.202 436.132 C 113.899 485.491 153.707 529.288 157.404 578.647" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 104.128 438.142 C 107.825 487.501 147.633 531.298 151.33 580.657" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 104.128 438.142 C 107.825 487.501 147.633 531.298 151.33 580.657" />
+      <circle data-channel-clasp="start" cx="107.165" cy="437.137" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="154.367" cy="579.652" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-29-46" data-channel="29-46" data-gates="29 46" data-route="vertical-detour">
+      <path data-channel-structure="29-46" class="channel-structure" d="M 203.922 391.587 C 164.597 363.192 164.879 368.623 201.572 341.074" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 200.725 391.737 C 161.4 363.342 161.682 368.773 198.375 341.224" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 200.725 391.737 C 161.4 363.342 161.682 368.773 198.375 341.224" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 207.119 391.437 C 167.794 363.042 168.076 368.473 204.769 340.924" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 207.119 391.437 C 167.794 363.042 168.076 368.473 204.769 340.924" />
+      <circle data-channel-clasp="start" cx="203.922" cy="391.587" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="201.572" cy="341.074" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-30-41" data-channel="30-41" data-gates="30 41" data-route="lower-s-detour">
+      <path data-channel-structure="30-41" class="channel-structure" d="M 236.622 453.587 C 279.652 497.043 301.419 547.619 230.449 591.075" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 239.819 453.731 C 282.849 497.187 304.616 547.763 233.646 591.219" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 239.819 453.731 C 282.849 497.187 304.616 547.763 233.646 591.219" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 233.425 453.443 C 276.455 496.899 298.222 547.475 227.252 590.931" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 233.425 453.443 C 276.455 496.899 298.222 547.475 227.252 590.931" />
+      <circle data-channel-clasp="start" cx="236.622" cy="453.587" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="230.449" cy="591.075" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-32-54" data-channel="32-54" data-gates="32 54" data-route="lower-s">
+      <path data-channel-structure="32-54" class="channel-structure" d="M 95.442 434.511 C 105.596 489.649 155.718 530.158 176.348 579.452" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 98.236 432.953 C 108.39 488.091 158.512 528.6 179.142 577.894" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 98.236 432.953 C 108.39 488.091 158.512 528.6 179.142 577.894" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 92.648 436.069 C 102.802 491.207 152.924 531.716 173.554 581.01" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 92.648 436.069 C 102.802 491.207 152.924 531.716 173.554 581.01" />
+      <circle data-channel-clasp="start" cx="95.442" cy="434.511" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="176.348" cy="579.452" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-34-57" data-channel="34-57" data-gates="34 57" data-route="vertical">
+      <path data-channel-structure="34-57" class="channel-structure" d="M 155.584 391.579 C 158.052 363.522 158.2 372.505 154.668 344.562" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 152.384 391.64 C 154.852 363.583 155 372.566 151.468 344.623" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 152.384 391.64 C 154.852 363.583 155 372.566 151.468 344.623" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 158.784 391.518 C 161.252 363.461 161.4 372.444 157.868 344.501" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 158.784 391.518 C 161.252 363.461 161.4 372.444 157.868 344.501" />
+      <circle data-channel-clasp="start" cx="155.584" cy="391.579" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="154.668" cy="344.562" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-35-36" data-channel="35-36" data-gates="35 36" data-route="vertical-detour">
+      <path data-channel-structure="35-36" class="channel-structure" d="M 234.658 226.031 C 190.134 254.095 190.642 285.597 236.118 313.559" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 237.858 225.977 C 193.334 254.041 193.842 285.543 239.318 313.505" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 237.858 225.977 C 193.334 254.041 193.842 285.543 239.318 313.505" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 231.458 226.085 C 186.934 254.149 187.442 285.651 232.918 313.613" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 231.458 226.085 C 186.934 254.149 187.442 285.651 232.918 313.613" />
+      <circle data-channel-clasp="start" cx="234.658" cy="226.031" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="236.118" cy="313.559" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-37-40" data-channel="37-40" data-gates="37 40" data-route="vertical">
+      <path data-channel-structure="37-40" class="channel-structure" d="M 256 326.373 C 266.08 352.497 244.953 297.753 255.033 323.877" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 258.986 325.221 C 269.066 351.345 247.939 296.601 258.019 322.725" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 258.986 325.221 C 269.066 351.345 247.939 296.601 258.019 322.725" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 253.014 327.525 C 263.094 353.649 241.967 298.905 252.047 325.029" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 253.014 327.525 C 263.094 353.649 241.967 298.905 252.047 325.029" />
+      <circle data-channel-clasp="start" cx="256" cy="326.373" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="255.033" cy="323.877" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-39-55" data-channel="39-55" data-gates="39 55" data-route="lower-s-detour">
+      <path data-channel-structure="39-55" class="channel-structure" d="M 218.676 582.713 C 295.209 540.318 273.018 490.985 223.563 448.158" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 215.479 582.598 C 292.012 540.203 269.821 490.87 220.366 448.043" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 215.479 582.598 C 292.012 540.203 269.821 490.87 220.366 448.043" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 221.873 582.828 C 298.406 540.433 276.215 491.1 226.76 448.273" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 221.873 582.828 C 298.406 540.433 276.215 491.1 226.76 448.273" />
+      <circle data-channel-clasp="start" cx="218.676" cy="582.713" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="223.563" cy="448.158" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-42-53" data-channel="42-53" data-gates="42 53" data-route="lower-s">
+      <path data-channel-structure="42-53" class="channel-structure" d="M 159.731 493.178 C 167.474 539.111 213.633 567.187 231.516 606.712" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 162.435 491.469 C 170.178 537.402 216.337 565.478 234.22 605.003" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 162.435 491.469 C 170.178 537.402 216.337 565.478 234.22 605.003" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 157.027 494.887 C 164.77 540.82 210.929 568.896 228.812 608.421" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 157.027 494.887 C 164.77 540.82 210.929 568.896 228.812 608.421" />
+      <circle data-channel-clasp="start" cx="159.731" cy="493.178" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="231.516" cy="606.712" r="2.5" class="channel-clasp" />
+    </g>
+    <g id="channel-47-64" data-channel="47-64" data-gates="47 64" data-route="vertical">
+      <path data-channel-structure="47-64" class="channel-structure" d="M 169.048 87.775 C 197.302 92.453 162.363 94.108 190.053 86.798" />
+      <path data-channel-lane-halo="personality" class="channel-halo" pathLength="100" d="M 168.898 84.578 C 197.152 89.256 162.213 90.911 189.903 83.601" />
+      <path data-channel-lane="personality" class="channel-lane channel-personality" pathLength="100" d="M 168.898 84.578 C 197.152 89.256 162.213 90.911 189.903 83.601" />
+      <path data-channel-lane-halo="design" class="channel-halo" pathLength="100" d="M 169.198 90.972 C 197.452 95.65 162.513 97.305 190.203 89.995" />
+      <path data-channel-lane="design" class="channel-lane channel-design" pathLength="100" d="M 169.198 90.972 C 197.452 95.65 162.513 97.305 190.203 89.995" />
+      <circle data-channel-clasp="start" cx="169.048" cy="87.775" r="2.5" class="channel-clasp" />
+      <circle data-channel-clasp="end" cx="190.053" cy="86.798" r="2.5" class="channel-clasp" />
+    </g>
+  </g>
+  <g id="bodygraph-centers" aria-label="BodyGraph centers">
+    <g data-center-group="head" aria-label="Head center">
+      <path id="head-center" data-center-shape="head" data-center-state="undefined" class="center-shape" d="M 172.104 33.272 Q 180 32 187.896 33.272 L 200.373 35.286 Q 206.573 36.285 208.715 42.19 L 210.858 48.095 Q 213 54 210.858 59.905 L 208.715 65.81 Q 206.573 71.715 200.373 72.714 L 187.896 74.728 Q 180 76 172.104 74.728 L 159.627 72.714 Q 153.427 71.715 151.285 65.81 L 149.142 59.905 Q 147 54 149.142 48.095 L 151.285 42.19 Q 153.427 36.285 159.627 35.286 L 172.104 33.272 Z" />
+      <path data-center-inner="head" class="center-inner" d="M 175.05 39.69 Q 180 39 184.95 39.69 L 196.614 41.319 Q 200.936 41.921 202.626 45.946 L 204.31 49.975 Q 206 54 204.31 58.025 L 202.626 62.054 Q 200.936 66.079 196.614 66.681 L 184.95 68.31 Q 180 69 175.05 68.31 L 163.386 66.681 Q 159.064 66.079 157.374 62.054 L 155.69 58.025 Q 154 54 155.69 49.975 L 157.374 45.946 Q 159.064 41.921 163.386 41.319 L 175.05 39.69 Z" />
+      <path data-center-notch="head" class="center-notch" d="M 180 30.8 L 183.2 34 L 180 37.2 L 176.8 34 Z" />
+      <text x="180" y="56.4" class="center-label">HEAD</text>
+    </g>
+    <g data-center-group="ajna" aria-label="Ajna center">
+      <path id="ajna-center" data-center-shape="ajna" data-center-state="undefined" class="center-shape" d="M 171.099 99.999 Q 180 98.64 188.901 99.999 L 203.777 102.272 Q 210.599 103.314 213.069 109.757 L 215.53 116.197 Q 218 122.64 215.53 129.083 L 213.069 135.523 Q 210.599 141.966 203.777 143.008 L 188.901 145.281 Q 180 146.64 171.099 145.281 L 156.223 143.008 Q 149.401 141.966 146.931 135.523 L 144.47 129.083 Q 142 122.64 144.47 116.197 L 146.931 109.757 Q 149.401 103.314 156.223 102.272 L 171.099 99.999 Z" />
+      <path data-center-inner="ajna" class="center-inner" d="M 174.054 106.426 Q 180 105.64 185.946 106.426 L 200.021 108.298 Q 204.963 108.951 206.978 113.514 L 208.985 118.077 Q 211 122.64 208.985 127.203 L 206.978 131.766 Q 204.963 136.329 200.021 136.982 L 185.946 138.854 Q 180 139.64 174.054 138.854 L 159.979 136.982 Q 155.037 136.329 153.022 131.766 L 151.015 127.203 Q 149 122.64 151.015 118.077 L 153.022 113.514 Q 155.037 108.951 159.979 108.298 L 174.054 106.426 Z" />
+      <path data-center-notch="ajna" class="center-notch" d="M 180 97.44 L 183.2 100.64 L 180 103.84 L 176.8 100.64 Z" />
+      <text x="180" y="125.04" class="center-label">AJNA</text>
+    </g>
+    <g data-center-group="throat" aria-label="Throat center">
+      <path id="throat-center" data-center-shape="throat" data-center-state="undefined" class="center-shape" d="M 170.06 177.71 Q 180 176.58 189.94 177.71 L 206.28 179.577 Q 211.566 180.178 215.256 184.007 L 218.951 187.831 Q 222.641 191.66 222.641 196.978 L 222.641 214.182 Q 222.641 219.5 218.951 223.329 L 215.256 227.153 Q 211.566 230.982 206.28 231.583 L 189.94 233.45 Q 180 234.58 170.06 233.45 L 153.72 231.583 Q 148.434 230.982 144.744 227.153 L 141.049 223.329 Q 137.359 219.5 137.359 214.182 L 137.359 196.978 Q 137.359 191.66 141.049 187.831 L 144.744 184.007 Q 148.434 180.178 153.72 179.577 L 170.06 177.71 Z" />
+      <path data-center-inner="throat" class="center-inner" d="M 173.035 184.294 Q 180 183.58 186.965 184.294 L 202.314 185.875 Q 206.544 186.309 209.647 189.212 L 212.755 192.117 Q 215.858 195.02 215.858 199.271 L 215.858 211.889 Q 215.858 216.14 212.755 219.043 L 209.647 221.948 Q 206.544 224.851 202.314 225.285 L 186.965 226.866 Q 180 227.58 173.035 226.866 L 157.686 225.285 Q 153.456 224.851 150.353 221.948 L 147.245 219.043 Q 144.142 216.14 144.142 211.889 L 144.142 199.271 Q 144.142 195.02 147.245 192.117 L 150.353 189.212 Q 153.456 186.309 157.686 185.875 L 173.035 184.294 Z" />
+      <path data-center-notch="throat" class="center-notch" d="M 180 175.38 L 183.2 178.58 L 180 181.78 L 176.8 178.58 Z" />
+      <text x="180" y="207.98" class="center-label">THROAT</text>
+    </g>
+    <g data-center-group="g" aria-label="G center">
+      <path id="g-center" data-center-shape="g" data-center-state="undefined" class="center-shape" d="M 171.789 248.745 Q 180 247.66 188.211 248.745 L 199.925 250.304 Q 204.64 250.927 208.004 254.291 L 211.369 257.656 Q 214.733 261.02 215.356 265.735 L 216.915 277.449 Q 218 285.66 216.915 293.871 L 215.356 305.585 Q 214.733 310.3 211.369 313.664 L 208.004 317.029 Q 204.64 320.393 199.925 321.016 L 188.211 322.575 Q 180 323.66 171.789 322.575 L 160.075 321.016 Q 155.36 320.393 151.996 317.029 L 148.631 313.664 Q 145.267 310.3 144.644 305.585 L 143.085 293.871 Q 142 285.66 143.085 277.449 L 144.644 265.735 Q 145.267 261.02 148.631 257.656 L 151.996 254.291 Q 155.36 250.927 160.075 250.304 L 171.789 248.745 Z" />
+      <path data-center-inner="g" class="center-inner" d="M 173.302 255.545 Q 180 254.66 186.698 255.545 L 196.254 256.817 Q 200.101 257.325 202.845 260.069 L 205.591 262.815 Q 208.335 265.559 208.843 269.406 L 210.115 278.962 Q 211 285.66 210.115 292.358 L 208.843 301.914 Q 208.335 305.761 205.591 308.505 L 202.845 311.251 Q 200.101 313.995 196.254 314.503 L 186.698 315.775 Q 180 316.66 173.302 315.775 L 163.746 314.503 Q 159.899 313.995 157.155 311.251 L 154.409 308.505 Q 151.665 305.761 151.157 301.914 L 149.885 292.358 Q 149 285.66 149.885 278.962 L 151.157 269.406 Q 151.665 265.559 154.409 262.815 L 157.155 260.069 Q 159.899 257.325 163.746 256.817 L 173.302 255.545 Z" />
+      <path data-center-notch="g" class="center-notch" d="M 180 246.46 L 183.2 249.66 L 180 252.86 L 176.8 249.66 Z" />
+      <text x="180" y="288.06" class="center-label">G</text>
+    </g>
+    <g data-center-group="heart" aria-label="Heart center">
+      <path id="heart-center" data-center-shape="heart" data-center-state="undefined" class="center-shape" d="M 231.693 280.637 Q 238.938 278.174 246.58 278.541 L 255.69 278.982 Q 261.862 279.279 264.482 284.871 L 267.108 290.471 Q 269.728 296.063 268.752 302.161 L 267.769 308.267 Q 266.793 314.365 260.942 316.355 L 252.307 319.283 Q 245.062 321.746 237.42 321.379 L 228.31 320.938 Q 222.138 320.641 219.518 315.049 L 216.892 309.449 Q 214.272 303.857 215.248 297.759 L 216.231 291.653 Q 217.207 285.555 223.058 283.565 L 231.693 280.637 Z" />
+      <path data-center-inner="heart" class="center-inner" d="M 235.152 286.636 Q 239.912 285.106 244.912 285.261 L 252.814 285.513 Q 257.065 285.645 258.974 289.441 L 260.887 293.241 Q 262.796 297.037 262.005 301.216 L 261.218 305.389 Q 260.427 309.568 256.38 310.869 L 248.848 313.284 Q 244.088 314.814 239.088 314.659 L 231.186 314.407 Q 226.935 314.275 225.026 310.479 L 223.113 306.679 Q 221.204 302.883 221.995 298.704 L 222.782 294.531 Q 223.573 290.352 227.62 289.051 L 235.152 286.636 Z" />
+      <path data-center-notch="heart" class="center-notch" d="M 216.253 300.379 L 219.453 303.579 L 216.253 306.779 L 213.053 303.579 Z" />
+      <text x="242" y="302.36" class="center-label">HEART</text>
+    </g>
+    <g data-center-group="spleen" aria-label="Spleen center">
+      <path id="splenic-center" data-center-shape="spleen" data-center-state="undefined" class="center-shape" d="M 110.252 324.885 Q 117.85 323.818 124.964 326.688 L 132.85 329.878 Q 139.198 332.439 141.006 339.041 L 142.819 345.651 Q 144.627 352.253 143.792 359.053 L 139.846 391.189 Q 139.011 397.989 135.655 403.961 L 132.306 409.93 Q 128.95 415.902 122.17 416.854 L 113.748 418.035 Q 106.15 419.102 99.036 416.232 L 91.15 413.042 Q 84.802 410.481 82.994 403.879 L 81.181 397.269 Q 79.373 390.667 80.208 383.867 L 84.154 351.731 Q 84.989 344.931 88.345 338.959 L 91.694 332.99 Q 95.05 327.018 101.83 326.066 L 110.252 324.885 Z" />
+      <path data-center-inner="spleen" class="center-inner" d="M 111.096 331.747 Q 116.997 330.766 122.485 333.148 L 128.172 335.615 Q 133.466 337.913 134.805 343.531 L 136.145 349.143 Q 137.484 354.761 136.78 360.494 L 133.391 388.095 Q 132.687 393.828 130.031 398.955 L 127.369 404.077 Q 124.713 409.204 119.02 410.151 L 112.904 411.173 Q 107.003 412.154 101.515 409.772 L 95.828 407.305 Q 90.534 405.007 89.195 399.389 L 87.855 393.777 Q 86.516 388.159 87.22 382.426 L 90.609 354.825 Q 91.313 349.092 93.969 343.965 L 96.631 338.843 Q 99.287 333.716 104.98 332.769 L 111.096 331.747 Z" />
+      <path data-center-notch="spleen" class="center-notch" d="M 140.784 371.794 L 143.984 374.994 L 140.784 378.194 L 137.584 374.994 Z" />
+      <text x="112" y="373.86" class="center-label">SPLEEN</text>
+    </g>
+    <g data-center-group="solar-plexus" aria-label="Solar Plexus center">
+      <path id="solar-plexus-center" data-center-shape="solar-plexus" data-center-state="undefined" class="center-shape" d="M 236.942 334.146 Q 244.565 331.185 252.638 332.502 L 261.479 333.934 Q 268.783 335.126 272.254 341.661 L 275.726 348.199 Q 279.197 354.734 279.974 362.098 L 283.638 397.016 Q 284.415 404.38 282.38 411.492 L 280.341 418.613 Q 278.306 425.725 271.409 428.404 L 263.058 431.654 Q 255.435 434.615 247.362 433.298 L 238.521 431.866 Q 231.217 430.674 227.746 424.139 L 224.274 417.601 Q 220.803 411.066 220.026 403.702 L 216.362 368.784 Q 215.585 361.42 217.62 354.308 L 219.659 347.187 Q 221.694 340.075 228.591 337.396 L 236.942 334.146 Z" />
+      <path data-center-inner="solar-plexus" class="center-inner" d="M 239.306 340.646 Q 245.296 338.147 251.675 339.348 L 258.21 340.578 Q 264.43 341.749 267.22 347.431 L 270.011 353.103 Q 272.801 358.785 273.465 365.081 L 276.653 395.452 Q 277.317 401.748 275.767 407.885 L 274.22 414.015 Q 272.67 420.152 266.83 422.588 L 260.694 425.154 Q 254.704 427.653 248.325 426.452 L 241.79 425.222 Q 235.57 424.051 232.78 418.369 L 229.989 412.697 Q 227.199 407.015 226.535 400.719 L 223.347 370.348 Q 222.683 364.052 224.233 357.915 L 225.78 351.785 Q 227.33 345.648 233.17 343.212 L 239.306 340.646 Z" />
+      <path data-center-notch="solar-plexus" class="center-notch" d="M 219.17 382.94 L 222.37 386.14 L 219.17 389.34 L 215.97 386.14 Z" />
+      <text x="250" y="385.3" class="center-label">SOLAR</text>
+    </g>
+    <g data-center-group="sacral" aria-label="Sacral center">
+      <path id="sacral-center" data-center-shape="sacral" data-center-state="undefined" class="center-shape" d="M 169.715 410.361 Q 180 408.96 190.285 410.361 L 205.142 412.401 Q 210.848 413.178 214.458 417.663 L 218.062 422.155 Q 221.672 426.64 221.672 432.398 L 221.672 453.522 Q 221.672 459.28 218.062 463.765 L 214.458 468.257 Q 210.848 472.742 205.142 473.519 L 190.285 475.559 Q 180 476.96 169.715 475.559 L 154.858 473.519 Q 149.152 472.742 145.542 468.257 L 141.938 463.765 Q 138.328 459.28 138.328 453.522 L 138.328 432.398 Q 138.328 426.64 141.938 422.155 L 145.542 417.663 Q 149.152 413.178 154.858 412.401 L 169.715 410.361 Z" />
+      <path data-center-inner="sacral" class="center-inner" d="M 172.064 416.992 Q 180 415.96 187.936 416.992 L 201.192 418.707 Q 205.826 419.31 208.848 422.874 L 211.866 426.436 Q 214.888 430 214.888 434.671 L 214.888 451.249 Q 214.888 455.92 211.866 459.484 L 208.848 463.046 Q 205.826 466.61 201.192 467.213 L 187.936 468.928 Q 180 469.96 172.064 468.928 L 158.808 467.213 Q 154.174 466.61 151.152 463.046 L 148.134 459.484 Q 145.112 455.92 145.112 451.249 L 145.112 434.671 Q 145.112 430 148.134 426.436 L 151.152 422.874 Q 154.174 419.31 158.808 418.707 L 172.064 416.992 Z" />
+      <path data-center-notch="sacral" class="center-notch" d="M 180 407.76 L 183.2 410.96 L 180 414.16 L 176.8 410.96 Z" />
+      <text x="180" y="445.36" class="center-label">SACRAL</text>
+    </g>
+    <g data-center-group="root" aria-label="Root center">
+      <path id="root-center" data-center-shape="root" data-center-state="undefined" class="center-shape" d="M 170.06 598.11 Q 180 597 189.94 598.11 L 206.939 600.001 Q 212.283 600.598 216.057 604.426 L 219.837 608.252 Q 223.611 612.08 223.611 617.456 L 223.611 634.544 Q 223.611 639.92 219.837 643.748 L 216.057 647.574 Q 212.283 651.402 206.939 651.999 L 189.94 653.89 Q 180 655 170.06 653.89 L 153.061 651.999 Q 147.717 651.402 143.943 647.574 L 140.163 643.748 Q 136.389 639.92 136.389 634.544 L 136.389 617.456 Q 136.389 612.08 140.163 608.252 L 143.943 604.426 Q 147.717 600.598 153.061 600.001 L 170.06 598.11 Z" />
+      <path data-center-inner="root" class="center-inner" d="M 173.035 604.7 Q 180 604 186.965 604.7 L 202.97 606.298 Q 207.261 606.729 210.448 609.631 L 213.64 612.538 Q 216.827 615.44 216.827 619.753 L 216.827 632.247 Q 216.827 636.56 213.64 639.462 L 210.448 642.369 Q 207.261 645.271 202.97 645.702 L 186.965 647.3 Q 180 648 173.035 647.3 L 157.03 645.702 Q 152.739 645.271 149.552 642.369 L 146.36 639.462 Q 143.173 636.56 143.173 632.247 L 143.173 619.753 Q 143.173 615.44 146.36 612.538 L 149.552 609.631 Q 152.739 606.729 157.03 606.298 L 173.035 604.7 Z" />
+      <path data-center-notch="root" class="center-notch" d="M 180 595.8 L 183.2 599 L 180 602.2 L 176.8 599 Z" />
+      <text x="180" y="628.4" class="center-label">ROOT</text>
+    </g>
+  </g>
+  <g id="bodygraph-gates" aria-label="BodyGraph gates">
+    <g id="gate-1" data-gate="1" data-center="g">
+      <circle data-gate-marker="1" cx="184.302" cy="236.666" r="6" class="gate-badge" />
+      <circle data-gate-line="1" data-gate-line-type="personality" cx="181.052" cy="244.266" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="1" data-gate-line-type="design" cx="187.552" cy="244.266" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="1" x="184.302" y="236.916" class="gate-number">1</text>
+    </g>
+    <g id="gate-2" data-gate="2" data-center="g">
+      <circle data-gate-marker="2" cx="184.302" cy="334.654" r="6" class="gate-badge" />
+      <circle data-gate-line="2" data-gate-line-type="personality" cx="181.052" cy="342.254" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="2" data-gate-line-type="design" cx="187.552" cy="342.254" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="2" x="184.302" y="334.904" class="gate-number">2</text>
+    </g>
+    <g id="gate-3" data-gate="3" data-center="sacral">
+      <circle data-gate-marker="3" cx="172.748" cy="487.937" r="6" class="gate-badge" />
+      <circle data-gate-line="3" data-gate-line-type="personality" cx="169.498" cy="495.537" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="3" data-gate-line-type="design" cx="175.998" cy="495.537" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="3" x="172.748" y="488.187" class="gate-number">3</text>
+    </g>
+    <g id="gate-4" data-gate="4" data-center="ajna">
+      <circle data-gate-marker="4" cx="175.307" cy="87.646" r="6" class="gate-badge" />
+      <circle data-gate-line="4" data-gate-line-type="personality" cx="172.057" cy="95.246" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="4" data-gate-line-type="design" cx="178.557" cy="95.246" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="4" x="175.307" y="87.896" class="gate-number">4</text>
+    </g>
+    <g id="gate-5" data-gate="5" data-center="sacral">
+      <circle data-gate-marker="5" cx="187.252" cy="397.983" r="6" class="gate-badge" />
+      <circle data-gate-line="5" data-gate-line-type="personality" cx="184.002" cy="405.583" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="5" data-gate-line-type="design" cx="190.502" cy="405.583" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="5" x="187.252" y="398.233" class="gate-number">5</text>
+    </g>
+    <g id="gate-6" data-gate="6" data-center="solar-plexus">
+      <circle data-gate-marker="6" cx="214.871" cy="429.012" r="6" class="gate-badge" />
+      <circle data-gate-line="6" data-gate-line-type="personality" cx="211.621" cy="436.612" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="6" data-gate-line-type="design" cx="218.121" cy="436.612" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="6" x="214.871" y="429.262" class="gate-number">6</text>
+    </g>
+    <g id="gate-7" data-gate="7" data-center="g">
+      <circle data-gate-marker="7" cx="165.513" cy="236.972" r="6" class="gate-badge" />
+      <circle data-gate-line="7" data-gate-line-type="personality" cx="162.263" cy="244.572" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="7" data-gate-line-type="design" cx="168.763" cy="244.572" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="7" x="165.513" y="237.222" class="gate-number">7</text>
+    </g>
+    <g id="gate-8" data-gate="8" data-center="throat">
+      <circle data-gate-marker="8" cx="180" cy="245.58" r="6" class="gate-badge" />
+      <circle data-gate-line="8" data-gate-line-type="personality" cx="176.75" cy="253.18" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="8" data-gate-line-type="design" cx="183.25" cy="253.18" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="8" x="180" y="245.83" class="gate-number">8</text>
+    </g>
+    <g id="gate-9" data-gate="9" data-center="sacral">
+      <circle data-gate-marker="9" cx="187.252" cy="487.937" r="6" class="gate-badge" />
+      <circle data-gate-line="9" data-gate-line-type="personality" cx="184.002" cy="495.537" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="9" data-gate-line-type="design" cx="190.502" cy="495.537" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="9" x="187.252" y="488.187" class="gate-number">9</text>
+    </g>
+    <g id="gate-10" data-gate="10" data-center="g">
+      <circle data-gate-marker="10" cx="144.724" cy="328.501" r="6" class="gate-badge" />
+      <circle data-gate-line="10" data-gate-line-type="personality" cx="141.474" cy="336.101" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="10" data-gate-line-type="design" cx="147.974" cy="336.101" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="10" x="144.724" y="328.751" class="gate-number">10</text>
+    </g>
+    <g id="gate-11" data-gate="11" data-center="ajna">
+      <circle data-gate-marker="11" cx="175.307" cy="157.634" r="6" class="gate-badge" />
+      <circle data-gate-line="11" data-gate-line-type="personality" cx="172.057" cy="165.234" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="11" data-gate-line-type="design" cx="178.557" cy="165.234" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="11" x="175.307" y="157.884" class="gate-number">11</text>
+    </g>
+    <g id="gate-12" data-gate="12" data-center="throat">
+      <circle data-gate-marker="12" cx="229.218" cy="233.013" r="6" class="gate-badge" />
+      <circle data-gate-line="12" data-gate-line-type="personality" cx="225.968" cy="240.613" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="12" data-gate-line-type="design" cx="232.468" cy="240.613" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="12" x="229.218" y="233.263" class="gate-number">12</text>
+    </g>
+    <g id="gate-13" data-gate="13" data-center="g">
+      <circle data-gate-marker="13" cx="201.22" cy="237.738" r="6" class="gate-badge" />
+      <circle data-gate-line="13" data-gate-line-type="personality" cx="197.97" cy="245.338" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="13" data-gate-line-type="design" cx="204.47" cy="245.338" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="13" x="201.22" y="237.988" class="gate-number">13</text>
+    </g>
+    <g id="gate-14" data-gate="14" data-center="sacral">
+      <circle data-gate-marker="14" cx="172.748" cy="397.983" r="6" class="gate-badge" />
+      <circle data-gate-line="14" data-gate-line-type="personality" cx="169.498" cy="405.583" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="14" data-gate-line-type="design" cx="175.998" cy="405.583" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="14" x="172.748" y="398.233" class="gate-number">14</text>
+    </g>
+    <g id="gate-15" data-gate="15" data-center="g">
+      <circle data-gate-marker="15" cx="165.513" cy="334.348" r="6" class="gate-badge" />
+      <circle data-gate-line="15" data-gate-line-type="personality" cx="162.263" cy="341.948" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="15" data-gate-line-type="design" cx="168.763" cy="341.948" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="15" x="165.513" y="334.598" class="gate-number">15</text>
+    </g>
+    <g id="gate-16" data-gate="16" data-center="throat">
+      <circle data-gate-marker="16" cx="134.6" cy="236.934" r="6" class="gate-badge" />
+      <circle data-gate-line="16" data-gate-line-type="personality" cx="131.35" cy="244.534" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="16" data-gate-line-type="design" cx="137.85" cy="244.534" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="16" x="134.6" y="237.184" class="gate-number">16</text>
+    </g>
+    <g id="gate-17" data-gate="17" data-center="ajna">
+      <circle data-gate-marker="17" cx="189.321" cy="157.586" r="6" class="gate-badge" />
+      <circle data-gate-line="17" data-gate-line-type="personality" cx="186.071" cy="165.186" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="17" data-gate-line-type="design" cx="192.571" cy="165.186" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="17" x="189.321" y="157.836" class="gate-number">17</text>
+    </g>
+    <g id="gate-18" data-gate="18" data-center="spleen">
+      <circle data-gate-marker="18" cx="121.727" cy="431.066" r="6" class="gate-badge" />
+      <circle data-gate-line="18" data-gate-line-type="personality" cx="118.477" cy="438.666" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="18" data-gate-line-type="design" cx="124.977" cy="438.666" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="18" x="121.727" y="431.316" class="gate-number">18</text>
+    </g>
+    <g id="gate-19" data-gate="19" data-center="root">
+      <circle data-gate-marker="19" cx="203.278" cy="586.769" r="6" class="gate-badge" />
+      <circle data-gate-line="19" data-gate-line-type="personality" cx="200.028" cy="594.369" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="19" data-gate-line-type="design" cx="206.528" cy="594.369" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="19" x="203.278" y="587.019" class="gate-number">19</text>
+    </g>
+    <g id="gate-20" data-gate="20" data-center="throat">
+      <circle data-gate-marker="20" cx="162.192" cy="245.238" r="6" class="gate-badge" />
+      <circle data-gate-line="20" data-gate-line-type="personality" cx="158.942" cy="252.838" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="20" data-gate-line-type="design" cx="165.442" cy="252.838" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="20" x="162.192" y="245.488" class="gate-number">20</text>
+    </g>
+    <g id="gate-21" data-gate="21" data-center="heart">
+      <circle data-gate-marker="21" cx="210.15" cy="275.32" r="6" class="gate-badge" />
+      <circle data-gate-line="21" data-gate-line-type="personality" cx="206.9" cy="282.92" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="21" data-gate-line-type="design" cx="213.4" cy="282.92" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="21" x="210.15" y="275.57" class="gate-number">21</text>
+    </g>
+    <g id="gate-22" data-gate="22" data-center="solar-plexus">
+      <circle data-gate-marker="22" cx="221.211" cy="325.023" r="6" class="gate-badge" />
+      <circle data-gate-line="22" data-gate-line-type="personality" cx="217.961" cy="332.623" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="22" data-gate-line-type="design" cx="224.461" cy="332.623" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="22" x="221.211" y="325.273" class="gate-number">22</text>
+    </g>
+    <g id="gate-23" data-gate="23" data-center="throat">
+      <circle data-gate-marker="23" cx="180" cy="165.58" r="6" class="gate-badge" />
+      <circle data-gate-line="23" data-gate-line-type="personality" cx="176.75" cy="173.18" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="23" data-gate-line-type="design" cx="183.25" cy="173.18" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="23" x="180" y="165.83" class="gate-number">23</text>
+    </g>
+    <g id="gate-24" data-gate="24" data-center="ajna">
+      <circle data-gate-marker="24" cx="189.321" cy="87.694" r="6" class="gate-badge" />
+      <circle data-gate-line="24" data-gate-line-type="personality" cx="186.071" cy="95.294" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="24" data-gate-line-type="design" cx="192.571" cy="95.294" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="24" x="189.321" y="87.944" class="gate-number">24</text>
+    </g>
+    <g id="gate-25" data-gate="25" data-center="g">
+      <circle data-gate-marker="25" cx="228.082" cy="305.866" r="6" class="gate-badge" />
+      <circle data-gate-line="25" data-gate-line-type="personality" cx="224.832" cy="313.466" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="25" data-gate-line-type="design" cx="231.332" cy="313.466" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="25" x="228.082" y="306.116" class="gate-number">25</text>
+    </g>
+    <g id="gate-26" data-gate="26" data-center="heart">
+      <circle data-gate-marker="26" cx="209.246" cy="325.516" r="6" class="gate-badge" />
+      <circle data-gate-line="26" data-gate-line-type="personality" cx="205.996" cy="333.116" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="26" data-gate-line-type="design" cx="212.496" cy="333.116" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="26" x="209.246" y="325.766" class="gate-number">26</text>
+    </g>
+    <g id="gate-27" data-gate="27" data-center="sacral">
+      <circle data-gate-marker="27" cx="137.072" cy="406.274" r="6" class="gate-badge" />
+      <circle data-gate-line="27" data-gate-line-type="personality" cx="133.822" cy="413.874" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="27" data-gate-line-type="design" cx="140.322" cy="413.874" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="27" x="137.072" y="406.524" class="gate-number">27</text>
+    </g>
+    <g id="gate-28" data-gate="28" data-center="spleen">
+      <circle data-gate-marker="28" cx="104.81" cy="430.02" r="6" class="gate-badge" />
+      <circle data-gate-line="28" data-gate-line-type="personality" cx="101.56" cy="437.62" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="28" data-gate-line-type="design" cx="108.06" cy="437.62" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="28" x="104.81" y="430.27" class="gate-number">28</text>
+    </g>
+    <g id="gate-29" data-gate="29" data-center="sacral">
+      <circle data-gate-marker="29" cx="204.274" cy="399.079" r="6" class="gate-badge" />
+      <circle data-gate-line="29" data-gate-line-type="personality" cx="201.024" cy="406.679" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="29" data-gate-line-type="design" cx="207.524" cy="406.679" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="29" x="204.274" y="399.329" class="gate-number">29</text>
+    </g>
+    <g id="gate-30" data-gate="30" data-center="solar-plexus">
+      <circle data-gate-marker="30" cx="236.959" cy="446.095" r="6" class="gate-badge" />
+      <circle data-gate-line="30" data-gate-line-type="personality" cx="233.709" cy="453.695" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="30" data-gate-line-type="design" cx="240.209" cy="453.695" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="30" x="236.959" y="446.345" class="gate-number">30</text>
+    </g>
+    <g id="gate-31" data-gate="31" data-center="throat">
+      <circle data-gate-marker="31" cx="197.808" cy="245.238" r="6" class="gate-badge" />
+      <circle data-gate-line="31" data-gate-line-type="personality" cx="194.558" cy="252.838" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="31" data-gate-line-type="design" cx="201.058" cy="252.838" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="31" x="197.808" y="245.488" class="gate-number">31</text>
+    </g>
+    <g id="gate-32" data-gate="32" data-center="spleen">
+      <circle data-gate-marker="32" cx="91.79" cy="427.963" r="6" class="gate-badge" />
+      <circle data-gate-line="32" data-gate-line-type="personality" cx="88.54" cy="435.563" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="32" data-gate-line-type="design" cx="95.04" cy="435.563" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="32" x="91.79" y="428.213" class="gate-number">32</text>
+    </g>
+    <g id="gate-33" data-gate="33" data-center="throat">
+      <circle data-gate-marker="33" cx="148.897" cy="243.44" r="6" class="gate-badge" />
+      <circle data-gate-line="33" data-gate-line-type="personality" cx="145.647" cy="251.04" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="33" data-gate-line-type="design" cx="152.147" cy="251.04" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="33" x="148.897" y="243.69" class="gate-number">33</text>
+    </g>
+    <g id="gate-34" data-gate="34" data-center="sacral">
+      <circle data-gate-marker="34" cx="155.726" cy="399.079" r="6" class="gate-badge" />
+      <circle data-gate-line="34" data-gate-line-type="personality" cx="152.476" cy="406.679" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="34" data-gate-line-type="design" cx="158.976" cy="406.679" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="34" x="155.726" y="399.329" class="gate-number">34</text>
+    </g>
+    <g id="gate-35" data-gate="35" data-center="throat">
+      <circle data-gate-marker="35" cx="234.53" cy="218.531" r="6" class="gate-badge" />
+      <circle data-gate-line="35" data-gate-line-type="personality" cx="231.28" cy="226.131" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="35" data-gate-line-type="design" cx="237.78" cy="226.131" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="35" x="234.53" y="218.781" class="gate-number">35</text>
+    </g>
+    <g id="gate-36" data-gate="36" data-center="solar-plexus">
+      <circle data-gate-marker="36" cx="236.246" cy="321.059" r="6" class="gate-badge" />
+      <circle data-gate-line="36" data-gate-line-type="personality" cx="232.996" cy="328.659" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="36" data-gate-line-type="design" cx="239.496" cy="328.659" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="36" x="236.246" y="321.309" class="gate-number">36</text>
+    </g>
+    <g id="gate-37" data-gate="37" data-center="solar-plexus">
+      <circle data-gate-marker="37" cx="253.3" cy="319.375" r="6" class="gate-badge" />
+      <circle data-gate-line="37" data-gate-line-type="personality" cx="250.05" cy="326.975" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="37" data-gate-line-type="design" cx="256.55" cy="326.975" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="37" x="253.3" y="319.625" class="gate-number">37</text>
+    </g>
+    <g id="gate-38" data-gate="38" data-center="root">
+      <circle data-gate-marker="38" cx="156.722" cy="586.769" r="6" class="gate-badge" />
+      <circle data-gate-line="38" data-gate-line-type="personality" cx="153.472" cy="594.369" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="38" data-gate-line-type="design" cx="159.972" cy="594.369" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="38" x="156.722" y="587.019" class="gate-number">38</text>
+    </g>
+    <g id="gate-39" data-gate="39" data-center="root">
+      <circle data-gate-marker="39" cx="218.406" cy="590.205" r="6" class="gate-badge" />
+      <circle data-gate-line="39" data-gate-line-type="personality" cx="215.156" cy="597.805" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="39" data-gate-line-type="design" cx="221.656" cy="597.805" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="39" x="218.406" y="590.455" class="gate-number">39</text>
+    </g>
+    <g id="gate-40" data-gate="40" data-center="heart">
+      <circle data-gate-marker="40" cx="257.733" cy="330.875" r="6" class="gate-badge" />
+      <circle data-gate-line="40" data-gate-line-type="personality" cx="254.483" cy="338.475" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="40" data-gate-line-type="design" cx="260.983" cy="338.475" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="40" x="257.733" y="331.125" class="gate-number">40</text>
+    </g>
+    <g id="gate-41" data-gate="41" data-center="root">
+      <circle data-gate-marker="41" cx="230.112" cy="598.567" r="6" class="gate-badge" />
+      <circle data-gate-line="41" data-gate-line-type="personality" cx="226.862" cy="606.167" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="41" data-gate-line-type="design" cx="233.362" cy="606.167" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="41" x="230.112" y="598.817" class="gate-number">41</text>
+    </g>
+    <g id="gate-42" data-gate="42" data-center="sacral">
+      <circle data-gate-marker="42" cx="155.726" cy="486.841" r="6" class="gate-badge" />
+      <circle data-gate-line="42" data-gate-line-type="personality" cx="152.476" cy="494.441" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="42" data-gate-line-type="design" cx="158.976" cy="494.441" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="42" x="155.726" y="487.091" class="gate-number">42</text>
+    </g>
+    <g id="gate-43" data-gate="43" data-center="ajna">
+      <circle data-gate-marker="43" cx="161.556" cy="157.153" r="6" class="gate-badge" />
+      <circle data-gate-line="43" data-gate-line-type="personality" cx="158.306" cy="164.753" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="43" data-gate-line-type="design" cx="164.806" cy="164.753" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="43" x="161.556" y="157.403" class="gate-number">43</text>
+    </g>
+    <g id="gate-44" data-gate="44" data-center="spleen">
+      <circle data-gate-marker="44" cx="155.86" cy="352.9" r="6" class="gate-badge" />
+      <circle data-gate-line="44" data-gate-line-type="personality" cx="152.61" cy="360.5" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="44" data-gate-line-type="design" cx="159.11" cy="360.5" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="44" x="155.86" y="353.15" class="gate-number">44</text>
+    </g>
+    <g id="gate-45" data-gate="45" data-center="throat">
+      <circle data-gate-marker="45" cx="217.721" cy="241.375" r="6" class="gate-badge" />
+      <circle data-gate-line="45" data-gate-line-type="personality" cx="214.471" cy="248.975" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="45" data-gate-line-type="design" cx="220.971" cy="248.975" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="45" x="217.721" y="241.625" class="gate-number">45</text>
+    </g>
+    <g id="gate-46" data-gate="46" data-center="g">
+      <circle data-gate-marker="46" cx="201.22" cy="333.582" r="6" class="gate-badge" />
+      <circle data-gate-line="46" data-gate-line-type="personality" cx="197.97" cy="341.182" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="46" data-gate-line-type="design" cx="204.47" cy="341.182" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="46" x="201.22" y="333.832" class="gate-number">46</text>
+    </g>
+    <g id="gate-47" data-gate="47" data-center="ajna">
+      <circle data-gate-marker="47" cx="161.556" cy="88.127" r="6" class="gate-badge" />
+      <circle data-gate-line="47" data-gate-line-type="personality" cx="158.306" cy="95.727" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="47" data-gate-line-type="design" cx="164.806" cy="95.727" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="47" x="161.556" y="88.377" class="gate-number">47</text>
+    </g>
+    <g id="gate-48" data-gate="48" data-center="spleen">
+      <circle data-gate-marker="48" cx="141.714" cy="318.535" r="6" class="gate-badge" />
+      <circle data-gate-line="48" data-gate-line-type="personality" cx="138.464" cy="326.135" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="48" data-gate-line-type="design" cx="144.964" cy="326.135" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="48" x="141.714" y="318.785" class="gate-number">48</text>
+    </g>
+    <g id="gate-49" data-gate="49" data-center="solar-plexus">
+      <circle data-gate-marker="49" cx="260.197" cy="445.169" r="6" class="gate-badge" />
+      <circle data-gate-line="49" data-gate-line-type="personality" cx="256.947" cy="452.769" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="49" data-gate-line-type="design" cx="263.447" cy="452.769" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="49" x="260.197" y="445.419" class="gate-number">49</text>
+    </g>
+    <g id="gate-50" data-gate="50" data-center="spleen">
+      <circle data-gate-marker="50" cx="139.778" cy="422.737" r="6" class="gate-badge" />
+      <circle data-gate-line="50" data-gate-line-type="personality" cx="136.528" cy="430.337" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="50" data-gate-line-type="design" cx="143.028" cy="430.337" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="50" x="139.778" y="422.987" class="gate-number">50</text>
+    </g>
+    <g id="gate-51" data-gate="51" data-center="heart">
+      <circle data-gate-marker="51" cx="202.261" cy="290.772" r="6" class="gate-badge" />
+      <circle data-gate-line="51" data-gate-line-type="personality" cx="199.011" cy="298.372" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="51" data-gate-line-type="design" cx="205.511" cy="298.372" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="51" x="202.261" y="291.022" class="gate-number">51</text>
+    </g>
+    <g id="gate-52" data-gate="52" data-center="root">
+      <circle data-gate-marker="52" cx="129.888" cy="598.567" r="6" class="gate-badge" />
+      <circle data-gate-line="52" data-gate-line-type="personality" cx="126.638" cy="606.167" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="52" data-gate-line-type="design" cx="133.138" cy="606.167" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="52" x="129.888" y="598.817" class="gate-number">52</text>
+    </g>
+    <g id="gate-53" data-gate="53" data-center="root">
+      <circle data-gate-marker="53" cx="235.521" cy="613.049" r="6" class="gate-badge" />
+      <circle data-gate-line="53" data-gate-line-type="personality" cx="232.271" cy="620.649" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="53" data-gate-line-type="design" cx="238.771" cy="620.649" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="53" x="235.521" y="613.299" class="gate-number">53</text>
+    </g>
+    <g id="gate-54" data-gate="54" data-center="root">
+      <circle data-gate-marker="54" cx="180" cy="586" r="6" class="gate-badge" />
+      <circle data-gate-line="54" data-gate-line-type="personality" cx="176.75" cy="593.6" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="54" data-gate-line-type="design" cx="183.25" cy="593.6" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="54" x="180" y="586.25" class="gate-number">54</text>
+    </g>
+    <g id="gate-55" data-gate="55" data-center="solar-plexus">
+      <circle data-gate-marker="55" cx="223.833" cy="440.666" r="6" class="gate-badge" />
+      <circle data-gate-line="55" data-gate-line-type="personality" cx="220.583" cy="448.266" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="55" data-gate-line-type="design" cx="227.083" cy="448.266" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="55" x="223.833" y="440.916" class="gate-number">55</text>
+    </g>
+    <g id="gate-56" data-gate="56" data-center="throat">
+      <circle data-gate-marker="56" cx="197.808" cy="165.922" r="6" class="gate-badge" />
+      <circle data-gate-line="56" data-gate-line-type="personality" cx="194.558" cy="173.522" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="56" data-gate-line-type="design" cx="201.058" cy="173.522" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="56" x="197.808" y="166.172" class="gate-number">56</text>
+    </g>
+    <g id="gate-57" data-gate="57" data-center="spleen">
+      <circle data-gate-marker="57" cx="154.526" cy="337.062" r="6" class="gate-badge" />
+      <circle data-gate-line="57" data-gate-line-type="personality" cx="151.276" cy="344.662" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="57" data-gate-line-type="design" cx="157.776" cy="344.662" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="57" x="154.526" y="337.312" class="gate-number">57</text>
+    </g>
+    <g id="gate-58" data-gate="58" data-center="root">
+      <circle data-gate-marker="58" cx="141.594" cy="590.205" r="6" class="gate-badge" />
+      <circle data-gate-line="58" data-gate-line-type="personality" cx="138.344" cy="597.805" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="58" data-gate-line-type="design" cx="144.844" cy="597.805" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="58" x="141.594" y="590.455" class="gate-number">58</text>
+    </g>
+    <g id="gate-59" data-gate="59" data-center="sacral">
+      <circle data-gate-marker="59" cx="225.058" cy="408.15" r="6" class="gate-badge" />
+      <circle data-gate-line="59" data-gate-line-type="personality" cx="221.808" cy="415.75" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="59" data-gate-line-type="design" cx="228.308" cy="415.75" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="59" x="225.058" y="408.4" class="gate-number">59</text>
+    </g>
+    <g id="gate-60" data-gate="60" data-center="root">
+      <circle data-gate-marker="60" cx="124.479" cy="613.049" r="6" class="gate-badge" />
+      <circle data-gate-line="60" data-gate-line-type="personality" cx="121.229" cy="620.649" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="60" data-gate-line-type="design" cx="127.729" cy="620.649" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="60" x="124.479" y="613.299" class="gate-number">60</text>
+    </g>
+    <g id="gate-61" data-gate="61" data-center="head">
+      <circle data-gate-marker="61" cx="184.469" cy="86.993" r="6" class="gate-badge" />
+      <circle data-gate-line="61" data-gate-line-type="personality" cx="181.219" cy="94.593" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="61" data-gate-line-type="design" cx="187.719" cy="94.593" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="61" x="184.469" y="87.243" class="gate-number">61</text>
+    </g>
+    <g id="gate-62" data-gate="62" data-center="throat">
+      <circle data-gate-marker="62" cx="162.192" cy="165.922" r="6" class="gate-badge" />
+      <circle data-gate-line="62" data-gate-line-type="personality" cx="158.942" cy="173.522" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="62" data-gate-line-type="design" cx="165.442" cy="173.522" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="62" x="162.192" y="166.172" class="gate-number">62</text>
+    </g>
+    <g id="gate-63" data-gate="63" data-center="head">
+      <circle data-gate-marker="63" cx="171.126" cy="86.938" r="6" class="gate-badge" />
+      <circle data-gate-line="63" data-gate-line-type="personality" cx="167.876" cy="94.538" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="63" data-gate-line-type="design" cx="174.376" cy="94.538" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="63" x="171.126" y="87.188" class="gate-number">63</text>
+    </g>
+    <g id="gate-64" data-gate="64" data-center="head">
+      <circle data-gate-marker="64" cx="197.545" cy="86.446" r="6" class="gate-badge" />
+      <circle data-gate-line="64" data-gate-line-type="personality" cx="194.295" cy="94.046" r="1.45" class="gate-source gate-source-personality" />
+      <circle data-gate-line="64" data-gate-line-type="design" cx="200.795" cy="94.046" r="1.75" class="gate-source gate-source-design" />
+      <text data-gate-number="64" x="197.545" y="86.696" class="gate-number">64</text>
+    </g>
+  </g>
+</svg>

@@ -42,11 +42,23 @@ const chartForm = document.querySelector("#chartForm");
 const formSteps = [...document.querySelectorAll("[data-form-step]")];
 const formActionSets = [...document.querySelectorAll("[data-form-actions]")];
 const formStepStatus = document.querySelector("#formStepStatus");
+const fieldErrors = {
+  name: document.querySelector("#nameError"),
+  birthDate: document.querySelector("#birthDateError"),
+  birthTime: document.querySelector("#birthTimeError"),
+  location: document.querySelector("#locationError"),
+};
+const birthDisplays = {
+  date: document.querySelector("#birthDateDisplay"),
+  time: document.querySelector("#birthTimeDisplay"),
+};
 const nextToBirthButton = document.querySelector("#nextToBirth");
 const nextToLocationButton = document.querySelector("#nextToLocation");
 const backToNameButton = document.querySelector("#backToName");
 const backToBirthButton = document.querySelector("#backToBirth");
 const resumeHistoryButton = document.querySelector("#resumeHistory");
+const generateButton = document.querySelector("#generateChart");
+const generateLabel = document.querySelector("[data-generate-label]");
 const downloadButton = document.querySelector("#download");
 const shareButton = document.querySelector("#share");
 const shareLabel = document.querySelector("[data-share-label]");
@@ -68,6 +80,11 @@ const resultSummaryFields = {
   "Not Self Theme": document.querySelector("#summaryNotSelf"),
 };
 const resultSummaryReading = document.querySelector("#resultSummaryReading");
+const resultHighlights = document.querySelector("#resultHighlights");
+const coreEnergyStrengthText = document.querySelector("#coreEnergyStrengthText");
+const decisionStrengthText = document.querySelector("#decisionStrengthText");
+const workStyleStrengthText = document.querySelector("#workStyleStrengthText");
+const resultLoadingStatus = document.querySelector("#resultLoadingStatus");
 const chartQr = document.querySelector("#chartQr");
 const privacyToggle = document.querySelector("#privacyMode");
 const detailButton = document.querySelector("#detailReading");
@@ -143,12 +160,12 @@ const copy = {
   zh: {
     brand: "Pluto 人生使用说明书",
     brandShort: "人生使用说明书",
-    formEyebrow: "人生使用说明书", formTitle: "认识你自己", stepBasic: "基本信息", stepBirthTime: "出生时间", stepBirthLocation: "出生地点", formStepAnnouncement: "第 {current} 步，共 {total} 步：{label}", namePlaceholder: "请输入你的姓名", tapToChoose: "点击选择", nextStep: "下一步", previousStep: "上一步", continueToLocation: "继续填写地点", resumeHistory: "已有记录", localModeNotice: "当前为临时 HTTP 连接，仅支持本地计算与生图。云端保存和匿名统计已停用。", disclaimer: "仅用于自我探索与娱乐，不构成科学结论、医疗、心理、法律或财务建议。", viewLegalNotice: "查看法律声明", resultSummaryTitle: "人生使用说明书结果摘要", summaryType: "类型", summaryStrategy: "策略", summaryAuthority: "内在权威", summaryProfile: "人生角色", summaryDefinition: "定义", summaryCross: "轮回交叉", summarySignature: "标志", summaryNotSelf: "非自己主题", name: "姓名", birthDate: "出生日期", birthTime: "出生时间", year: "年", month: "月", day: "日",
+    formEyebrow: "人生使用说明书", formTitle: "认识你自己", stepBasic: "基本信息", stepBirthTime: "出生时间", stepBirthLocation: "出生地点", formStepAnnouncement: "第 {current} 步，共 {total} 步：{label}", namePlaceholder: "请输入你的姓名", tapToChoose: "点击选择", birthDatePlaceholder: "年 / 月 / 日", birthTimePlaceholder: "--:--", nextStep: "下一步", previousStep: "上一步", continueToLocation: "继续填写地点", resumeHistory: "已有记录", localModeNotice: "当前为临时 HTTP 连接，仅支持本地计算与生图。云端保存和匿名统计已停用。", disclaimer: "仅用于自我探索与娱乐，不构成科学结论、医疗、心理、法律或财务建议。", viewLegalNotice: "查看法律声明", resultSummaryTitle: "人生使用说明书结果摘要", summaryType: "类型", summaryStrategy: "策略", summaryAuthority: "内在权威", summaryProfile: "人生角色", summaryDefinition: "定义", summaryCross: "轮回交叉", summarySignature: "标志", summaryNotSelf: "非自己主题", name: "姓名", birthDate: "出生日期", birthTime: "出生时间", year: "年", month: "月", day: "日",
     hour: "时", minute: "分", ampm: "上午/下午", am: "上午", pm: "下午", birthLocation: "出生地点",
     locationPlaceholder: "城市、区县或地区", locationSuggestions: "出生地点建议", clockOccurrence: "重复时刻",
     bodygraphLabel: "人生使用说明书图谱",
     firstOccurrence: "第一次出现", secondOccurrence: "第二次出现", attribution: "可直接输入完整地点，无需选择候选。",
-    generate: "免费获取人生使用说明书", yourChart: "你的人生使用说明书", emptyChart: "填写出生资料后生成。", editChart: "重新填写", download: "保存图片", share: "分享", previewAlt: "人生使用说明书",
+    generate: "免费获取人生使用说明书", generating: "正在生成，请稍候", yourChart: "你的人生使用说明书", emptyChart: "填写出生资料后生成。", editChart: "重新填写", download: "保存图片", share: "分享", previewAlt: "人生使用说明书", strengthsEyebrow: "优势先看", strengthsTitle: "先记住这三点", coreEnergyStrength: "核心能量", decisionStrength: "决策优势", workStyleStrength: "工作方式", buildingResult: "正在整理你的人生说明书…", posterFailed: "图片暂时未生成，你仍可查看优势与详细解读。",
     design: "设计", personality: "人格", watermark: "Swiss Ephemeris · 出生前回溯 88° 太阳弧 · True Node", interpretationTitle: "解读", celebrityTitle: "拥有相似基础配置的人物", celebrityBasis: "基于类型、权威、人生角色与定义匹配", celebrityNote: "名人结构参考公开出生资料；相似仅指基础配置，不代表完整图谱、性格、经历或命运相同。", qrLabel: "扫码获取", privacyMode: "隐私模式",
     searchingPlace: "正在搜索地点…", noPlace: "暂未显示候选，仍可直接点击生成人生使用说明书。", placeUnavailable: "搜索建议暂时未加载，仍可直接点击生成人生使用说明书。",
     resolvingPlace: "正在确认地点和当地时间…", placeNeedsDetail: "暂时无法确认这个地点，请补充城市、省/州和国家后再试。", enterName: "请输入姓名。",
@@ -165,12 +182,12 @@ const copy = {
   en: {
     brand: "Pluto Life Manual",
     brandShort: "Life Manual",
-    formEyebrow: "Life Manual", formTitle: "Know Yourself", stepBasic: "Basics", stepBirthTime: "Birth time", stepBirthLocation: "Birth place", formStepAnnouncement: "Step {current} of {total}: {label}", namePlaceholder: "Enter your name", tapToChoose: "Tap to choose", nextStep: "Next", previousStep: "Back", continueToLocation: "Continue to birth place", resumeHistory: "Saved manuals", localModeNotice: "This temporary HTTP connection supports local calculation and image generation only. Cloud saving and analytics are disabled.", disclaimer: "For personal reflection and entertainment only. Not scientific, medical, psychological, legal, or financial advice.", viewLegalNotice: "View Legal Notice", resultSummaryTitle: "Life Manual Result Summary", summaryType: "Type", summaryStrategy: "Strategy", summaryAuthority: "Inner Authority", summaryProfile: "Profile", summaryDefinition: "Definition", summaryCross: "Incarnation Cross", summarySignature: "Signature", summaryNotSelf: "Not-Self Theme", name: "Name", birthDate: "Birth date", birthTime: "Birth time", year: "Year", month: "Month", day: "Day",
+    formEyebrow: "Life Manual", formTitle: "Know Yourself", stepBasic: "Basics", stepBirthTime: "Birth time", stepBirthLocation: "Birth place", formStepAnnouncement: "Step {current} of {total}: {label}", namePlaceholder: "Enter your name", tapToChoose: "Tap to choose", birthDatePlaceholder: "YYYY / MM / DD", birthTimePlaceholder: "--:--", nextStep: "Next", previousStep: "Back", continueToLocation: "Continue to birth place", resumeHistory: "Saved manuals", localModeNotice: "This temporary HTTP connection supports local calculation and image generation only. Cloud saving and analytics are disabled.", disclaimer: "For personal reflection and entertainment only. Not scientific, medical, psychological, legal, or financial advice.", viewLegalNotice: "View Legal Notice", resultSummaryTitle: "Life Manual Result Summary", summaryType: "Type", summaryStrategy: "Strategy", summaryAuthority: "Inner Authority", summaryProfile: "Profile", summaryDefinition: "Definition", summaryCross: "Incarnation Cross", summarySignature: "Signature", summaryNotSelf: "Not-Self Theme", name: "Name", birthDate: "Birth date", birthTime: "Birth time", year: "Year", month: "Month", day: "Day",
     hour: "Hour", minute: "Minute", ampm: "AM/PM", am: "AM", pm: "PM", birthLocation: "Birth location",
     locationPlaceholder: "City, district or region", locationSuggestions: "Birth location suggestions", clockOccurrence: "Clock occurrence",
     bodygraphLabel: "Life Manual bodygraph",
     firstOccurrence: "First occurrence", secondOccurrence: "Second occurrence", attribution: "Enter the full place directly; selecting a suggestion is optional.",
-    generate: "Get Your Life Manual Free", yourChart: "Your Life Manual", emptyChart: "Enter details to generate.", editChart: "Edit Details", download: "Save Image", share: "Share", previewAlt: "Personal life manual",
+    generate: "Get Your Life Manual Free", generating: "Creating your manual…", yourChart: "Your Life Manual", emptyChart: "Enter details to generate.", editChart: "Edit Details", download: "Save Image", share: "Share", previewAlt: "Personal life manual", strengthsEyebrow: "Start with your strengths", strengthsTitle: "Three things to remember", coreEnergyStrength: "Core energy", decisionStrength: "Decision strength", workStyleStrength: "Work style", buildingResult: "Organizing your Life Manual…", posterFailed: "The image is not ready, but your strengths and full reading are available.",
     design: "Design", personality: "Personality", watermark: "Swiss Ephemeris · 88° pre-birth solar-arc · True Node", interpretationTitle: "Reading", celebrityTitle: "People with Similar Core Configurations", celebrityBasis: "Matched by type, authority, profile, and definition", celebrityNote: "Celebrity structures use public birth records; similarity means core configuration, not a complete chart, personality, experience, or destiny.", qrLabel: "Scan to get", privacyMode: "Privacy mode",
     searchingPlace: "Searching locations…", noPlace: "No suggestions yet. You can still generate the chart directly.", placeUnavailable: "Suggestions did not load. You can still generate the chart directly.",
     resolvingPlace: "Confirming the place and its local time…", placeNeedsDetail: "We could not confirm this place. Add the city, state or region, and country, then try again.", enterName: "Enter a name.",
@@ -501,6 +518,9 @@ if (historyEntries.length && !hasStoredKeepHistory) {
 }
 let language = localStorage.getItem("pluto-language") || (navigator.language?.toLowerCase().startsWith("zh") ? "zh" : "en");
 let statusState;
+let generationBusy = false;
+let resultLoadingKey = "buildingResult";
+const fieldErrorStates = {};
 
 function t(key, values = {}) {
   return Object.entries(values).reduce((text, [name, value]) => text.replace(`{${name}}`, value), copy[language][key] || key);
@@ -509,6 +529,32 @@ function t(key, values = {}) {
 function setStatus(key, values = {}) {
   statusState = key ? { key, values } : null;
   status.textContent = key ? t(key, values) : "";
+}
+
+function setFieldError(fieldName, key) {
+  const field = fields[fieldName];
+  const error = fieldErrors[fieldName];
+  if (!field || !error) return;
+  fieldErrorStates[fieldName] = key || null;
+  error.textContent = key ? t(key) : "";
+  if (key) field.setAttribute("aria-invalid", "true");
+  else field.removeAttribute("aria-invalid");
+}
+
+function setGenerationBusy(isBusy) {
+  generationBusy = isBusy;
+  generateButton.disabled = isBusy;
+  generateButton.classList.toggle("is-busy", isBusy);
+  generateButton.setAttribute("aria-busy", String(isBusy));
+  chartForm.setAttribute("aria-busy", String(isBusy));
+  generateLabel.textContent = t(isBusy ? "generating" : "generate");
+}
+
+function setResultLoadingMessage(key = "buildingResult") {
+  resultLoadingKey = key;
+  const label = resultLoadingStatus.querySelector("span:last-child");
+  label.dataset.i18n = key;
+  label.textContent = t(key);
 }
 
 function translatedValue(key, value) {
@@ -769,7 +815,7 @@ let pendingConfirmation = null;
 let pendingHistoryOptOut = null;
 const paintBodygraph = createBodygraphRenderer({
   container: graph,
-  templateUrl: "./assets/bodygraph-template.svg",
+  templateUrl: "./assets/bodygraph-original-template.svg",
   centerColors,
   label: "Life Manual BodyGraph",
 });
@@ -954,12 +1000,11 @@ function setFormStep(nextStep, { focus = true, announce = true } = {}) {
 function validateNameStep() {
   const name = fields.name.value.trim();
   if (name) {
-    fields.name.removeAttribute("aria-invalid");
+    setFieldError("name", null);
     return true;
   }
-  fields.name.setAttribute("aria-invalid", "true");
+  setFieldError("name", "enterName");
   fields.name.focus();
-  setStatus("enterName");
   return false;
 }
 
@@ -1004,8 +1049,14 @@ async function openHistoryEntry(entry) {
   setStatus("preparing");
   showChartView();
   await render(lastData);
-  await createPosterImage();
-  setStatus("calculated");
+  try {
+    await createPosterImage();
+    setStatus("calculated");
+  } catch (error) {
+    console.error(error);
+    setResultLoadingMessage("posterFailed");
+    setMediaState(previewStage, "error");
+  }
 }
 
 function isNativeApp() {
@@ -1055,6 +1106,18 @@ function syncBirthPartsFromNativeControls() {
     fields.minute.value = "";
     fields.ampm.value = "";
   }
+  syncBirthControlDisplays();
+}
+
+function syncBirthControlDisplays() {
+  const [year = "", month = "", day = ""] = fields.birthDate.value.split("-");
+  const hasDate = Boolean(year && month && day);
+  birthDisplays.date.textContent = hasDate
+    ? (language === "zh" ? `${year} / ${month} / ${day}` : `${month} / ${day} / ${year}`)
+    : t("birthDatePlaceholder");
+  birthDisplays.time.textContent = fields.birthTime.value || t("birthTimePlaceholder");
+  birthDisplays.date.classList.toggle("is-placeholder", !hasDate);
+  birthDisplays.time.classList.toggle("is-placeholder", !fields.birthTime.value);
 }
 
 function initializeBirthControls() {
@@ -1329,6 +1392,25 @@ function updateAccessibleResultSummary(data) {
     : `Pluto Life Manual: ${type}, ${authority}, Profile ${profile}`;
 }
 
+function renderResultHighlights(data) {
+  if (!data?.Properties) {
+    resultHighlights.hidden = true;
+    coreEnergyStrengthText.textContent = "";
+    decisionStrengthText.textContent = "";
+    workStyleStrengthText.textContent = "";
+    return;
+  }
+  const properties = data.Properties;
+  const typeStrengths = language === "zh" ? typeStrengthsZh : typeStrengthsEn;
+  const authorityStrengths = language === "zh" ? authorityStrengthsZh : authorityStrengthsEn;
+  const practicalGuidance = language === "zh" ? typePracticalGuidanceZh : typePracticalGuidanceEn;
+  coreEnergyStrengthText.textContent = typeStrengths[properties.Type] || translatedValue("Type", properties.Type);
+  decisionStrengthText.textContent = authorityStrengths[properties["Inner Authority"]]
+    || translatedValue("Inner Authority", properties["Inner Authority"]);
+  workStyleStrengthText.textContent = practicalGuidance[properties.Type]?.work || "";
+  resultHighlights.hidden = false;
+}
+
 async function render(data) {
   await paintBodygraph(data);
   document.querySelector("#personName").textContent = privacyToggle.checked ? "***" : data.Properties.Name;
@@ -1344,6 +1426,7 @@ async function render(data) {
   renderCelebrityMatches(data);
   renderDetailedReading(data);
   updateAccessibleResultSummary(data);
+  renderResultHighlights(data);
 }
 
 function clearPoster() {
@@ -1352,6 +1435,7 @@ function clearPoster() {
   if (posterUrl) URL.revokeObjectURL(posterUrl);
   posterUrl = undefined;
   chartPreview.removeAttribute("src");
+  setResultLoadingMessage("buildingResult");
   setMediaState(previewStage, "loading");
   chartResult.removeAttribute("aria-busy");
   downloadButton.disabled = true;
@@ -1362,6 +1446,7 @@ function clearPoster() {
 
 async function createPosterImage() {
   const renderVersion = ++posterRenderVersion;
+  setResultLoadingMessage("buildingResult");
   setMediaState(previewStage, "loading");
   chartResult.setAttribute("aria-busy", "true");
   downloadButton.disabled = true;
@@ -1434,10 +1519,16 @@ function applyLanguage(nextLanguage, rerender = true) {
   });
   fields.location.placeholder = t("locationPlaceholder");
   fields.name.placeholder = t("namePlaceholder");
+  syncBirthControlDisplays();
   locationResults.setAttribute("aria-label", t("locationSuggestions"));
   graph.setAttribute("aria-label", t("bodygraphLabel"));
   graph.querySelector("svg")?.setAttribute("aria-label", t("bodygraphLabel"));
   renderFormStepState({ announce: Boolean(formStepStatus.textContent.trim()) });
+  Object.entries(fieldErrors).forEach(([fieldName, error]) => {
+    if (fieldErrorStates[fieldName]) error.textContent = t(fieldErrorStates[fieldName]);
+  });
+  setGenerationBusy(generationBusy);
+  setResultLoadingMessage(resultLoadingKey);
   languageButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.language === language)));
   if (statusState) status.textContent = t(statusState.key, statusState.values);
   renderHistory();
@@ -1714,18 +1805,22 @@ function invalidateChart() {
   celebrityMatches.replaceChildren();
   detailContent.replaceChildren();
   updateAccessibleResultSummary(null);
+  renderResultHighlights(null);
   paintBodygraph({ Design: {}, Personality: {}, "Defined Centers": [] }).catch((error) => {
     setStatus("failed", { message: error.message });
   });
 }
 
-[fields.birthDate, fields.birthTime].forEach((field) => field.addEventListener("change", () => {
-  syncBirthPartsFromNativeControls();
-  resetClockOccurrence();
-  field.removeAttribute("aria-invalid");
-}));
-fields.name.addEventListener("input", () => fields.name.removeAttribute("aria-invalid"));
-fields.location.addEventListener("input", () => fields.location.removeAttribute("aria-invalid"));
+[fields.birthDate, fields.birthTime].forEach((field) => {
+  field.addEventListener("input", syncBirthControlDisplays);
+  field.addEventListener("change", () => {
+    syncBirthPartsFromNativeControls();
+    resetClockOccurrence();
+    setFieldError(field === fields.birthDate ? "birthDate" : "birthTime", null);
+  });
+});
+fields.name.addEventListener("input", () => setFieldError("name", null));
+fields.location.addEventListener("input", () => setFieldError("location", null));
 chartForm.addEventListener("input", invalidateChart);
 chartForm.addEventListener("change", invalidateChart);
 chartForm.addEventListener("input", () => trackEvent("form_started"), { once: true });
@@ -1733,7 +1828,7 @@ chartForm.addEventListener("input", () => trackEvent("form_started"), { once: tr
 nextToBirthButton.addEventListener("click", () => {
   if (!validateNameStep()) return;
   setStatus(null);
-  setFormStep(2);
+  setFormStep(2, { focus: false });
 });
 
 nextToLocationButton.addEventListener("click", () => {
@@ -1744,7 +1839,7 @@ nextToLocationButton.addEventListener("click", () => {
   }
   clearBirthValidationState();
   setStatus(null);
-  setFormStep(3);
+  setFormStep(3, { focus: false });
 });
 
 backToNameButton.addEventListener("click", () => {
@@ -1764,15 +1859,16 @@ resumeHistoryButton.addEventListener("click", () => {
 });
 
 function clearBirthValidationState() {
-  [fields.birthDate, fields.birthTime].forEach((field) => field.removeAttribute("aria-invalid"));
+  setFieldError("birthDate", null);
+  setFieldError("birthTime", null);
 }
 
 function focusBirthValidationError(validation) {
   clearBirthValidationState();
-  const field = ["year", "month", "day"].includes(validation.field) ? fields.birthDate : fields.birthTime;
-  field.setAttribute("aria-invalid", "true");
+  const fieldName = ["year", "month", "day"].includes(validation.field) ? "birthDate" : "birthTime";
+  const field = fields[fieldName];
+  setFieldError(fieldName, validation.code);
   field.focus();
-  setStatus(validation.code);
 }
 
 chartForm.addEventListener("submit", async (event) => {
@@ -1782,12 +1878,11 @@ chartForm.addEventListener("submit", async (event) => {
   const name = fields.name.value.trim();
   if (!name) {
     setFormStep(1, { focus: false });
-    fields.name.setAttribute("aria-invalid", "true");
+    setFieldError("name", "enterName");
     fields.name.focus();
-    setStatus("enterName");
     return;
   }
-  fields.name.removeAttribute("aria-invalid");
+  setFieldError("name", null);
   const birthValidation = currentBirthValidation();
   if (!birthValidation.valid) {
     setFormStep(2, { focus: false });
@@ -1799,13 +1894,13 @@ chartForm.addEventListener("submit", async (event) => {
   const locationQuery = fields.location.value.trim();
   if (!locationQuery) {
     setFormStep(3, { focus: false });
-    fields.location.setAttribute("aria-invalid", "true");
+    setFieldError("location", "enterLocation");
     fields.location.focus();
-    setStatus("enterLocation");
     return;
   }
-  fields.location.removeAttribute("aria-invalid");
-  submit.disabled = true;
+  setFieldError("location", null);
+  setGenerationBusy(true);
+  let resultShown = false;
   trackEvent("chart_generate_started");
   try {
     const place = selectedPlace?.label === locationQuery ? selectedPlace : await resolveTypedPlace(locationQuery);
@@ -1868,9 +1963,11 @@ chartForm.addEventListener("submit", async (event) => {
       place: { label: place.label, timezone: place.timezone },
     });
     setStatus("preparing");
+    setResultLoadingMessage("buildingResult");
+    showChartView();
+    resultShown = true;
     await createPosterImage();
     setStatus("calculated");
-    showChartView();
     trackEvent("chart_generate_succeeded", {
       schemaVersion: snapshot.schemaVersion,
       engineVersion: snapshot.engineVersion,
@@ -1878,10 +1975,15 @@ chartForm.addEventListener("submit", async (event) => {
     trackChartCompletionInGoogleAnalytics(snapshot);
   } catch (error) {
     console.error(error);
-    setStatus("failed", { message: error.message });
-    trackEvent("chart_generate_failed", { category: error instanceof RangeError ? "validation" : "calculation" });
+    if (resultShown) {
+      setResultLoadingMessage("posterFailed");
+      setMediaState(previewStage, "error");
+    } else {
+      setStatus("failed", { message: error.message });
+    }
+    trackEvent("chart_generate_failed", { category: resultShown ? "poster" : (error instanceof RangeError ? "validation" : "calculation") });
   } finally {
-    submit.disabled = false;
+    setGenerationBusy(false);
   }
 });
 

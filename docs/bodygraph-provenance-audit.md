@@ -2,20 +2,20 @@
 
 ## Scope
 
-This audit covers only `assets/bodygraph-template.svg` and the visual and
-rendering code that directly loads or changes that asset. It does not determine
-the intellectual-property status of the Human Design system, the chart data
-model, the calculation algorithm, or Swiss Ephemeris.
+This historical audit covers only `assets/bodygraph-template.svg` and the
+visual and rendering code that loaded or changed that asset. It does not
+determine the intellectual-property status of the Human Design system, the
+chart data model, the calculation algorithm, or Swiss Ephemeris.
 
 No SVG path, rendering behavior, chart result, or release binary was changed by
 this audit.
 
 ## Runtime Usage
 
-`app.js` creates the renderer with `createBodygraphRenderer` and passes
-`./assets/bodygraph-template.svg` as `templateUrl`.
-`src/renderer/bodygraph-renderer.js` fetches the template as text, injects it
-into the BodyGraph container, and then changes:
+At the audited historical revision, `app.js` created the renderer with
+`createBodygraphRenderer` and passed `./assets/bodygraph-template.svg` as
+`templateUrl`. `src/renderer/bodygraph-renderer.js` fetched the template as
+text, injected it into the BodyGraph container, and then changed:
 
 - gate marker and label state from active gates;
 - Personality and Design channel-track colors;
@@ -38,21 +38,21 @@ copyright question:
 
 | Evidence | Result | Source |
 | --- | --- | --- |
-| Current SVG path | `assets/bodygraph-template.svg` | `app.js` `templateUrl`; repository tree |
-| Current SVG SHA-256 | `92552e280efafd3167150c1230c588d430a49c00f361887093a4f8abc5ca870d` | `shasum -a 256 assets/bodygraph-template.svg` |
+| Historical audited SVG path | `assets/bodygraph-template.svg` | Historical `app.js` `templateUrl`; repository history |
+| Historical audited SVG SHA-256 | `92552e280efafd3167150c1230c588d430a49c00f361887093a4f8abc5ca870d` | Historical asset digest |
 | First known commit | `9cf6b3385a179a001bef6c503051ae8dc3e6128f` | `git log --follow -- assets/bodygraph-template.svg` |
 | Commit author | `YONG YUAN <yongyuan@YONGdeMac-mini.local>` | First known commit metadata |
 | Commit date | `2026-07-11 14:31:05 +0800` | First known commit metadata |
 | Commit message | `Implement local Swiss Ephemeris chart engine` | First known commit metadata |
 | First known diff | New file from `/dev/null`, 466 content lines | `git show 9cf6b338 -- assets/bodygraph-template.svg` |
-| Current-content history | Current Git blob `8d6e37284cafce2848c5a26a63c605f7cc5f3126` is the same blob introduced by `9cf6b338` and restored by `01b8bb80` | `git rev-parse <commit>:assets/bodygraph-template.svg`; `git log --find-object` |
-| Current blame | Every current content line is attributed to `01b8bb8022221704b1f8042ebf5da57dab9236ff`, `Restore historical BodyGraph visual` | `git blame assets/bodygraph-template.svg` |
-| Original source file found | No source design file for the current SVG was found | Current tree and `git rev-list --objects --all` |
+| Historical-content history | Git blob `8d6e37284cafce2848c5a26a63c605f7cc5f3126` is the same blob introduced by `9cf6b338` and restored by `01b8bb80` | `git rev-parse <commit>:assets/bodygraph-template.svg`; `git log --find-object` |
+| Historical blame | Every audited content line was attributed to `01b8bb8022221704b1f8042ebf5da57dab9236ff`, `Restore historical BodyGraph visual` | Historical `git blame assets/bodygraph-template.svg` record |
+| Original source file found | No source design file for the historical SVG was found | Audited tree and `git rev-list --objects --all` |
 | Third-party URL found | No exact source URL was found; repository history identifies a publicly loaded My Human Design result page by name | `THIRD_PARTY_NOTICES.md` at `9cf6b338`; `review/agpl-foundation.patch` |
 | Third-party license found | No BodyGraph visual license or authorization file was found | Current tree, notices, documentation, and Git history |
 | SVG metadata | No `title`, `desc`, `metadata`, comment, author, license, generator, Inkscape, Illustrator, Figma, or export marker | Current SVG header and metadata search |
-| Geometry-generation record | No generation record was found for the current SVG. A generator existed for a different temporary replacement with SHA-256 `e22d41a5aa11f162e210088ac63078d42a60bbf00a61e9c2f9d4917eb4e5012a`; it was deleted when the current historical blob was restored | `scripts/generate-bodygraph-template.mjs` history from `5f6b1f8c` through `01b8bb80` |
-| Independent-design evidence | No independent-design evidence was found for the current SVG. The temporary generated replacement is not the current audited object | Blob and SHA-256 comparison |
+| Geometry-generation record | No generation record was found for the historical SVG. A generator existed for a different temporary replacement with SHA-256 `e22d41a5aa11f162e210088ac63078d42a60bbf00a61e9c2f9d4917eb4e5012a`; it was deleted when the historical blob was restored | `scripts/generate-bodygraph-template.mjs` history from `5f6b1f8c` through `01b8bb80` |
+| Independent-design evidence | No independent-design evidence was found for the historical SVG. The temporary generated replacement is not the audited object | Blob and SHA-256 comparison |
 | Unresolved evidence | Exact source URL and terms, original designer, source file, capture/derivation method, permission scope, and owner creation records remain unresolved | Repository-wide audit |
 
 The first known commit also added `THIRD_PARTY_NOTICES.md`. Its BodyGraph
@@ -106,12 +106,12 @@ is not evidence for or against BodyGraph visual rights.
 
 ### DERIVED_OR_UNCLEAR
 
-The repository contains a specific historical statement that the current
+The repository contains a specific historical statement that the audited
 visual lineage was captured from a publicly loaded My Human Design result-page
 SVG. It does not contain an exact source URL, applicable license, permission
-record, or independent creation evidence for the current blob. The independent
+record, or independent creation evidence for the historical blob. The independent
 geometry generator found in history produced a different SVG and cannot be
-used as authorship evidence for the current asset.
+used as authorship evidence for the historical asset.
 
 Existing evidence is insufficient to confirm that the template is independently
 original, and it is also insufficient to directly conclude infringement. Before
@@ -140,37 +140,50 @@ completing the declaration:
 
 ## Release Decision
 
-`DERIVED_OR_UNCLEAR` remains a release-rights blocker for the current SVG
+`DERIVED_OR_UNCLEAR` remains a release-rights blocker for the historical SVG
 because source and authorization evidence are unresolved. Supplemental
 source-authorship evidence or applicable authorization could theoretically
 change the release decision, but no usable evidence or authorization is
 currently available or claimed.
 
-The planned App Store release path is therefore a style-preserving, clean-room,
-independently generated replacement. It may preserve the product's brand
-character, page layout, and interaction experience, but its SVG geometry must be
-formed independently. The current SVG is not planned for the final App Store
-Release Candidate.
+Draft PR #16 proposes a style-preserving, clean-room, project-generated visual
+created from deterministic functional topology, independently defined geometry,
+and an SVG generator. The historical SVG has been removed from the PR's
+proposed runtime source, web distribution, iOS public bundle, and A3 development
+archive. Independent engineering review found no mechanical reuse of the
+historical asset's specific paths, coordinates, human silhouette, or routing and
+found no reason to redo the new geometry.
 
-Phase 6E has not started. This PR does not modify or remove the current SVG.
-Any later replacement must preserve identical chart-calculation results.
+The historical classification applies only to the historical SVG and does not
+automatically transfer to the proposed visual. It is nevertheless retained as
+part of the repository's provenance history. Draft PR #16 is not merged or
+deployed; production remains version `1.1.0` at commit
+`63b0beff7202885f6a1a42c64fc3e8aa7de6a8a1`. The historical visual release gate
+can close only after merge of the exact reviewed head and confirmation from the
+final post-merge distribution archive that the historical asset remains
+excluded. Final content-rights review and separate release authorization also
+remain required. This resolution status does not claim legal clearance,
+absolute copyright safety, or Apple approval.
 
 ## Clean-room Task Isolation
 
-The Phase 6D-B audit task read the current SVG, the old Git blob, historical
+The Phase 6D-B audit task read the historical SVG, the old Git blob, historical
 diffs, and portions of the existing geometry while establishing provenance.
 That task and its conversation context must not perform the Phase 6E visual
 implementation.
 
-Phase 6E must:
+The A1, A2, and A3 tasks subsequently:
 
-- use a new Codex task with no old-geometry conversation context;
-- use an independent worktree;
-- begin from the latest `main` only after PR #15 is merged;
-- not read the old SVG, old screenshots, old Git blob, or related historical
+- used a new Codex task with no old-geometry conversation context;
+- used an independent worktree;
+- began from the latest `main` only after PR #15 was merged;
+- did not read the old SVG, old screenshots, old Git blob, or related historical
   diffs; and
 - read only brand CSS, page layout dimensions, functional topology, and a
   high-level style specification when forming the new visual.
 
-This isolation is development-process and provenance evidence. It is not an
+Those clean-room development records remain unchanged. B2 is a pre-merge
+governance repair and does not modify the proposed visual geometry, topology,
+generator, renderer, or product integration. This isolation is
+development-process and provenance evidence. It is not an
 absolute legal guarantee, legal opinion, authorization, or Apple approval.

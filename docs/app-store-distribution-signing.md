@@ -90,18 +90,21 @@ confirmation, or complete closure of distribution risk is represented.
 ## Relationship to BodyGraph Provenance
 
 Signing readiness does not establish that visual-rights review is complete.
-The current BodyGraph audit classification is `DERIVED_OR_UNCLEAR`; it records
+The historical BodyGraph audit classification is `DERIVED_OR_UNCLEAR`; it records
 an unresolved evidence status, not a finding of infringement or a fixed
 requirement to redesign.
 
 No usable source-authorship evidence or applicable authorization is currently
-available. The planned App Store release path is a style-preserving, clean-room,
-independently generated replacement. Supplemental evidence or authorization
-could change that plan, but none is currently claimed. Phase 6E has not started,
-this PR does not modify the current SVG, and the current SVG is not planned for
-the final App Store Release Candidate. Conversely, resolving BodyGraph
-provenance would not provide the missing Apple Distribution identity or matching
-App Store profile. See
+available for that historical asset. Draft PR #16 proposes a style-preserving,
+clean-room, project-generated release-candidate visual, and independent
+engineering review found no reason to redo the new geometry. The PR remains
+Draft, unmerged, and undeployed. Production remains version `1.1.0` at commit
+`63b0beff7202885f6a1a42c64fc3e8aa7de6a8a1`. Merge of the exact reviewed
+head, final post-merge distribution-archive confirmation that the historical
+asset remains excluded, content-rights review, and separate release
+authorization remain required. Conversely, resolving BodyGraph provenance
+would not provide the missing Apple Distribution identity or matching App Store
+profile. This status is not legal advice and does not claim Apple approval. See
 [bodygraph-provenance-audit.md](bodygraph-provenance-audit.md).
 
 ## ExportOptions Example

@@ -162,6 +162,17 @@ test("mobile web and native shells prevent horizontal panning", () => {
   assert.match(viewController, /scrollView\.isDirectionalLockEnabled = true/);
 });
 
+test("mobile form controls and result actions stay inside the safe content width", () => {
+  const css = read("style.css");
+
+  assert.match(css, /\.native-birth-grid input \{[\s\S]*inline-size: 100%;[\s\S]*min-inline-size: 0;[\s\S]*padding-block: 0;/);
+  assert.match(css, /\.native-birth-grid input::\-webkit-date-and-time-value \{[\s\S]*line-height: var\(--form-control-height\);/);
+  assert.match(css, /\.form-panel \.form-action-set > button \{[\s\S]*display: inline-flex;[\s\S]*justify-content: center;[\s\S]*min-width: 0;/);
+  assert.match(css, /@media \(max-width: 560px\)[\s\S]*\.form-action-dock \{[\s\S]*width: calc\(100% \+ 48px\);[\s\S]*max-width: none;/);
+  assert.match(css, /@media \(max-width: 560px\)[\s\S]*\.result-panel \{[\s\S]*padding: 0 max\(14px, env\(safe-area-inset-right\)\) 24px max\(14px, env\(safe-area-inset-left\)\);/);
+  assert.match(css, /\.chart-actions button \{ width: 100%; min-width: 0;[\s\S]*white-space: nowrap; \}/);
+});
+
 test("homepage uses a bilingual three-step form without visible progress or the Life Philosophy poster", () => {
   const html = read("index.html");
   const app = read("app.js");

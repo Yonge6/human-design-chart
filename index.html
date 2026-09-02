@@ -244,18 +244,21 @@
         <p id="formStepStatus" class="sr-only" aria-live="polite"></p>
 
         <section class="form-step" data-form-step="1" data-i18n-aria-label="stepBasic" aria-label="基本信息">
-          <label class="name-field"><span data-i18n="name">姓名</span><input id="name" name="name" maxlength="80" autocomplete="name" required></label>
+          <label class="name-field"><span data-i18n="name">姓名</span><input id="name" name="name" maxlength="80" autocomplete="name" aria-describedby="nameError" required></label>
+          <p id="nameError" class="field-error" aria-live="polite"></p>
         </section>
 
         <section class="form-step" data-form-step="2" data-i18n-aria-label="stepBirthTime" aria-label="出生时间" hidden>
           <div class="native-birth-grid">
             <label class="native-birth-field">
               <span class="native-birth-heading"><span data-i18n="birthDate">出生日期</span><small data-i18n="tapToChoose">点击选择</small></span>
-              <input id="birthDate" name="birthDate" type="date" min="1900-01-01" required>
+              <input id="birthDate" name="birthDate" type="date" min="1900-01-01" aria-describedby="birthDateError" required>
+              <small id="birthDateError" class="field-error" aria-live="polite"></small>
             </label>
             <label class="native-birth-field">
               <span class="native-birth-heading"><span data-i18n="birthTime">出生时间</span><small data-i18n="tapToChoose">点击选择</small></span>
-              <input id="birthTime" name="birthTime" type="time" step="60" required>
+              <input id="birthTime" name="birthTime" type="time" step="60" aria-describedby="birthTimeError" required>
+              <small id="birthTimeError" class="field-error" aria-live="polite"></small>
             </label>
           </div>
           <input id="year" name="year" type="hidden" value="">
@@ -275,10 +278,11 @@
         <section class="form-step" data-form-step="3" data-i18n-aria-label="stepBirthLocation" aria-label="出生地点" hidden>
           <label><span data-i18n="birthLocation">出生地点</span>
             <div class="location-combobox">
-              <input id="location" name="location" type="search" role="combobox" placeholder="城市、区县或地区" autocomplete="off" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="locationResults" aria-expanded="false" aria-describedby="status" required>
+              <input id="location" name="location" type="search" role="combobox" placeholder="城市、区县或地区" autocomplete="off" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="locationResults" aria-expanded="false" aria-describedby="locationError status" required>
               <ul id="locationResults" class="location-results" role="listbox" aria-label="出生地点建议" hidden></ul>
             </div>
           </label>
+          <p id="locationError" class="field-error" aria-live="polite"></p>
           <p class="place-attribution" data-i18n="attribution">可直接输入完整地点，无需选择候选。</p>
           <p class="form-disclaimer"><span data-i18n="disclaimer">仅用于自我探索与娱乐，不构成科学结论、医疗、心理、法律或财务建议。</span> <a href="legal.html" target="_blank" rel="noopener" data-i18n="viewLegalNotice">查看法律声明</a></p>
         </section>
@@ -296,7 +300,10 @@
           </div>
           <div class="form-action-set form-action-pair" data-form-actions="3" hidden>
             <button id="backToBirth" class="form-secondary-action" type="button" data-i18n="previousStep">上一步</button>
-            <button type="submit" data-i18n="generate">免费获取人生使用说明书</button>
+            <button id="generateChart" type="submit">
+              <span class="button-spinner" aria-hidden="true"></span>
+              <span data-generate-label data-i18n="generate">免费获取人生使用说明书</span>
+            </button>
           </div>
         </footer>
       </form>
@@ -329,9 +336,30 @@
         </dl>
         <p id="resultSummaryReading"></p>
       </section>
+      <section id="resultHighlights" class="result-highlights" aria-labelledby="resultHighlightsTitle" hidden>
+        <header>
+          <p class="eyebrow" data-i18n="strengthsEyebrow">优势先看</p>
+          <h2 id="resultHighlightsTitle" data-i18n="strengthsTitle">先记住这三点</h2>
+        </header>
+        <div class="result-highlight-list">
+          <article>
+            <span aria-hidden="true">01</span>
+            <div><h3 data-i18n="coreEnergyStrength">核心能量</h3><p id="coreEnergyStrengthText"></p></div>
+          </article>
+          <article>
+            <span aria-hidden="true">02</span>
+            <div><h3 data-i18n="decisionStrength">决策优势</h3><p id="decisionStrengthText"></p></div>
+          </article>
+          <article>
+            <span aria-hidden="true">03</span>
+            <div><h3 data-i18n="workStyleStrength">工作方式</h3><p id="workStyleStrengthText"></p></div>
+          </article>
+        </div>
+        <button id="detailReading" class="detail-fab" type="button"><span class="button-icon" aria-hidden="true">☷</span><span data-i18n="detailReading">详细解读</span></button>
+      </section>
       <div class="preview-stage" data-media-state="loading">
         <span class="media-loading-placeholder" aria-hidden="true"><span></span></span>
-        <button id="detailReading" class="detail-fab" type="button"><span class="button-icon" aria-hidden="true">☷</span><span data-i18n="detailReading">详细解读</span></button>
+        <p id="resultLoadingStatus" class="result-loading-status" role="status" aria-live="polite"><span class="loading-orbit" aria-hidden="true"></span><span data-i18n="buildingResult">正在整理你的人生说明书…</span></p>
         <img id="chartPreview" class="chart-preview" alt="人生使用说明书" data-i18n-alt="previewAlt" aria-describedby="resultSummary">
       </div>
     </section>

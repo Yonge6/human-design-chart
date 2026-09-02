@@ -181,14 +181,36 @@ test("homepage uses a bilingual three-step form without visible progress or the 
 });
 
 test("result media keeps its nonblocking dark loading placeholder", () => {
+  const html = read("index.html");
   const app = read("app.js");
   const css = read("style.css");
 
+  assert.match(html, /id="resultLoadingStatus"[^>]*role="status"/);
   assert.match(app, /function clearPoster\(\)[\s\S]{0,500}setMediaState\(previewStage, "loading"\)/);
   assert.match(app, /setMediaState\(previewStage, "ready"\)/);
+  assert.match(app, /showChartView\(\);\s*resultShown = true;\s*await createPosterImage\(\)/);
   assert.match(css, /\.media-loading-placeholder/);
+  assert.match(css, /\.result-loading-status/);
   assert.match(css, /@keyframes pluto-placeholder-shimmer/);
   assert.match(css, /prefers-reduced-motion: reduce/);
+});
+
+test("mobile flow keeps errors near fields and leads result pages with strengths", () => {
+  const html = read("index.html");
+  const app = read("app.js");
+  const css = read("style.css");
+
+  for (const id of ["nameError", "birthDateError", "birthTimeError", "locationError"]) {
+    assert.match(html, new RegExp(`id="${id}"[^>]*field-error`));
+  }
+  assert.match(app, /setFormStep\(2, \{ focus: false \}\)/);
+  assert.match(app, /setFormStep\(3, \{ focus: false \}\)/);
+  assert.match(app, /function setGenerationBusy\(/);
+  assert.match(html, /id="resultHighlights"[\s\S]*id="coreEnergyStrengthText"[\s\S]*id="decisionStrengthText"[\s\S]*id="workStyleStrengthText"/);
+  assert.match(app, /function renderResultHighlights\(/);
+  assert.match(app, /typeStrengthsZh[\s\S]*authorityStrengthsZh[\s\S]*typePracticalGuidanceZh/);
+  assert.match(css, /\.result-highlights/);
+  assert.doesNotMatch(css, /\.detail-fab \{[\s\S]{0,180}position: fixed/);
 });
 
 test("Swiss Ephemeris files download in parallel before entering the WASM filesystem", () => {

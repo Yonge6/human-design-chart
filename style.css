@@ -2086,6 +2086,17 @@ body { background: #100e14; }
 .daily-share-actions button { flex:1; min-height:44px; border:1px solid #c5a36b; border-radius:5px; background:transparent; color:#d8b17d; }
 .daily-share-actions button:last-child { background:#c5a36b; color:#211a12; }
 .native-summary:focus { outline:1px solid #c5a36b; outline-offset:4px; }
+
+/* Keep modal titles and actions below notches and above the home indicator. */
+.detail-dialog,
+.app-dialog,
+.daily-share-dialog {
+  position: fixed;
+  inset-block-start: max(16px, env(safe-area-inset-top, 0px));
+  inset-block-end: max(16px, env(safe-area-inset-bottom, 0px));
+  margin-block: auto;
+  max-height: calc(100dvh - max(16px, env(safe-area-inset-top, 0px)) - max(16px, env(safe-area-inset-bottom, 0px)));
+}
 .daily-share-header h2 { flex:1; min-width:0; }
 .daily-share-header button { flex:0 0 auto; width:auto; }
 /* Reference comparison: light editorial type and compact heading actions. */

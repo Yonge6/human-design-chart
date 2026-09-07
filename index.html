@@ -237,14 +237,21 @@
 
   <main class="shell form-view">
     <section class="form-panel">
-      <p class="eyebrow" data-i18n="formEyebrow">人生使用说明书</p>
-      <h1 data-i18n="formTitle">认识你自己</h1>
+      <h1 class="sr-only" data-i18n="formTitle">认识你自己</h1>
+      <aside id="dailyTipCard" class="daily-tip-card" aria-labelledby="dailyTipTitle">
+        <div class="daily-date-row"><div class="daily-date-copy"><time id="dailyTipDate"></time><small id="dailyTipDateSecondary" aria-hidden="true"></small></div><img class="daily-moon" src="assets/pluto-daily-moon.webp" width="92" height="92" alt="" aria-hidden="true"></div>
+        <div class="daily-tip-heading"><h2 id="dailyTipTitle">今日提示</h2><button id="shareDailyTip" class="daily-share-link" type="button" hidden>分享图片</button></div>
+        <p id="dailyTipText"></p>
+        <p id="dailyTipSource" class="daily-tip-source"></p>
+        <button id="dailyTipAction" type="button"></button>
+      </aside>
       <p id="localModeNotice" class="local-mode-notice" role="status" data-i18n="localModeNotice" hidden>当前为临时 HTTP 连接，仅支持本地计算与生图。云端保存和匿名统计已停用。</p>
       <form id="chartForm" novalidate>
+        <header class="exploration-header"><p data-i18n="startExploration">开始新的探索</p><span id="visibleFormStep" aria-hidden="true">01 / 03</span></header>
         <p id="formStepStatus" class="sr-only" aria-live="polite"></p>
 
         <section class="form-step" data-form-step="1" data-i18n-aria-label="stepBasic" aria-label="基本信息">
-          <label class="name-field"><span data-i18n="name">姓名</span><input id="name" name="name" maxlength="80" autocomplete="name" aria-describedby="nameError" required></label>
+          <label class="name-field"><span id="nameLabel" data-i18n="howCallYou">怎么称呼你</span><small id="nameHelp" class="name-help" data-i18n="nameHelp">我们将用这个名字，陪伴你的探索之旅。</small><input id="name" name="name" maxlength="80" autocomplete="name" aria-labelledby="nameLabel" aria-describedby="nameHelp nameError" required></label>
           <p id="nameError" class="field-error" aria-live="polite"></p>
         </section>
 
@@ -312,6 +319,7 @@
             </button>
           </div>
         </footer>
+        <p class="exploration-note" data-i18n="explorationNote">接下来，我们会了解你的出生信息与地点，以更深入地为你解读。</p>
       </form>
     </section>
 
@@ -470,6 +478,12 @@
     </section>
   </main>
   <script src="vendor/tz-lookup/tz.js"></script>
+  <dialog id="dailyShareDialog" class="daily-share-dialog" aria-labelledby="dailyShareTitle">
+    <div class="daily-share-header"><h2 id="dailyShareTitle">分享今日提示</h2><button id="closeDailyShare" type="button">关闭</button></div>
+    <img id="dailySharePreview" alt="今日提示分享卡片，右下角带有 Pluto 首页二维码">
+    <p id="dailyShareStatus" role="status" aria-live="polite"></p>
+    <div class="daily-share-actions"><button id="saveDailyImage" type="button">保存图片</button><button id="sendDailyImage" type="button">分享图片</button></div>
+  </dialog>
   <script src="vendor/html2canvas/html2canvas.min.js"></script>
   <script src="runtime-config.js"></script>
   <script src="build-provenance.js" defer></script>

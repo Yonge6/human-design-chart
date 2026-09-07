@@ -108,10 +108,11 @@ test("distribution diagnostic is read-only and reports blocked and manual states
 });
 
 test("Release signing settings and shipped capabilities remain minimal", () => {
-  assert.equal((project.match(/CODE_SIGN_STYLE = Automatic;/g) || []).length, 2);
-  assert.equal((project.match(/DEVELOPMENT_TEAM = L855ZVM679;/g) || []).length, 2);
+  assert.equal((project.match(/CODE_SIGN_STYLE = Automatic;/g) || []).length, 4);
+  assert.equal((project.match(/DEVELOPMENT_TEAM = L855ZVM679;/g) || []).length, 4);
   assert.equal((project.match(/CODE_SIGN_IDENTITY = "iPhone Developer";/g) || []).length, 2);
-  assert.doesNotMatch(project, /CODE_SIGN_ENTITLEMENTS/);
+  assert.match(project, /CODE_SIGN_ENTITLEMENTS = App\/App.entitlements/);
+  assert.match(project, /CODE_SIGN_ENTITLEMENTS = PlutoDailyWidget\/PlutoDailyWidget.entitlements/);
   assert.doesNotMatch(project, /SystemCapabilities/);
   assert.match(infoPlist, /<key>ITSAppUsesNonExemptEncryption<\/key>\s*<false\/>/);
   assert.match(infoPlist, /<key>UILaunchStoryboardName<\/key>\s*<string>LaunchScreen<\/string>/);

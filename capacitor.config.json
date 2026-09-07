@@ -1,7 +1,7 @@
 {
   "appId": "com.yonge6.plutolifemanual",
   "appName": "Pluto 人生使用说明书",
-  "webDir": "dist",
+  "webDir": "dist-native",
   "ios": {
     "contentInset": "never",
     "preferredContentMode": "mobile"

@@ -12,6 +12,7 @@ const types = {
   ".json": "application/json; charset=utf-8",
   ".md": "text/markdown; charset=utf-8",
   ".png": "image/png",
+  ".webp": "image/webp",
   ".se1": "application/octet-stream",
   ".svg": "image/svg+xml",
   ".wasm": "application/wasm",

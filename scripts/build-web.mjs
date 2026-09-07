@@ -37,6 +37,7 @@ export async function buildWeb({
   rootDirectory = root,
   outputDirectory = resolve(rootDirectory, "dist"),
   environment = process.env,
+  native = false,
 } = {}) {
   await rm(outputDirectory, { recursive: true, force: true });
   await mkdir(outputDirectory, { recursive: true });
@@ -46,9 +47,27 @@ export async function buildWeb({
     ...directories.map((directory) => cp(
       resolve(rootDirectory, directory),
       resolve(outputDirectory, directory),
-      { recursive: true },
+      {
+        recursive: true,
+        filter: (path) => {
+          const name = relative(rootDirectory, path).split("\\").join("/");
+          if (name === "assets/bodygraph-original-template.svg" || name.startsWith("src/visualization") || name.endsWith("bodygraph-original-renderer.js")) return false;
+          if (native && (name === "assets/bodygraph-template.svg" || name.startsWith("vendor/html2canvas"))) return false;
+          return true;
+        },
+      },
     )),
   ]);
+  if (native) {
+    await cp(resolve(rootDirectory, "src/app/native-bodygraph.js"), resolve(outputDirectory, "src/renderer/bodygraph-renderer.js"));
+    const appPath = resolve(outputDirectory, "app.js");
+    const app = await readFile(appPath, "utf8");
+    await writeFile(appPath, app.replace(/templateUrl: "\.\/assets\/bodygraph-template\.svg",/, ""));
+    const htmlPath = resolve(outputDirectory, "index.html");
+    await writeFile(htmlPath, (await readFile(htmlPath, "utf8"))
+      .replace(/<script src="vendor\/html2canvas\/html2canvas\.min\.js"><\/script>/, "")
+      .replace('<html lang="zh-CN">', '<html lang="zh-CN" class="native-text-results">'));
+  }
   await mkdir(resolve(outputDirectory, "supabase/functions/_shared"), { recursive: true });
   for (const contract of ["human-design-profile-contract.js", "product-event-contract.js"]) {
     await cp(
@@ -87,10 +106,11 @@ export async function buildWeb({
     if (rewritten !== content) await writeFile(path, rewritten);
   }));
 
-  console.log(`Built native web bundle in ${outputDirectory} (asset fingerprint ${fingerprint})`);
+  console.log(`Built ${native ? "native" : "H5"} bundle in ${outputDirectory} (asset fingerprint ${fingerprint})`);
   return { fingerprint, outputDirectory };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
-  await buildWeb();
+  const native = process.argv.includes("--native");
+  await buildWeb({ native, outputDirectory: resolve(root, native ? "dist-native" : "dist") });
 }

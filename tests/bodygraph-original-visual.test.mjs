@@ -4,8 +4,9 @@ import { execFile } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { promisify } from "node:util";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 
-import { createBodygraphRenderer } from "../src/renderer/bodygraph-renderer.js";
+import { createBodygraphRenderer } from "../src/renderer/bodygraph-original-renderer.js";
 import {
   BODYGRAPH_CENTERS,
   BODYGRAPH_CHANNELS,
@@ -198,8 +199,8 @@ test("generator is deterministic, self-contained, and matches the committed SVG"
   assert.doesNotMatch(generatorSources, /\breadFile\b|createReadStream/);
   assert.match(generatorSources, /\bwriteFile\b/);
 
-  const runGenerator = () => runFile(process.execPath, [generatorUrl.pathname], {
-    cwd: projectRoot.pathname,
+  const runGenerator = () => runFile(process.execPath, [fileURLToPath(generatorUrl)], {
+    cwd: fileURLToPath(projectRoot),
     env: { ...process.env },
   });
   await runGenerator();

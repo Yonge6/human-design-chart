@@ -57,17 +57,17 @@ test("provenance lists only the new visual implementation lineage", async () => 
   );
 });
 
-test("runtime integration consumes the new SVG after calculation without entering compute contracts", async () => {
+test("H5 restores the historical renderer while archived original geometry remains isolated from calculation", async () => {
   const [app, renderer, topology, geometry, specification] = await Promise.all([
     read("app.js"),
-    read("src/renderer/bodygraph-renderer.js"),
+    read("src/renderer/bodygraph-original-renderer.js"),
     read("src/visualization/bodygraph-functional-topology.js"),
     read("src/visualization/bodygraph-original-geometry.js"),
     read("docs/style-preserving-bodygraph-design-spec.md"),
   ]);
 
-  assert.match(app, /templateUrl:\s*"\.\/assets\/bodygraph-original-template\.svg"/);
-  assert.doesNotMatch(app, /templateUrl:\s*"\.\/assets\/bodygraph-template\.svg"/);
+  assert.match(app, /templateUrl:\s*"\.\/assets\/bodygraph-template\.svg"/);
+  assert.doesNotMatch(app, /templateUrl:\s*"\.\/assets\/bodygraph-original-template\.svg"/);
   assert.match(renderer, /createBodygraphRenderer/);
   assert.match(renderer, /data-channel-lane/);
   assert.match(renderer, /Defined Centers/);

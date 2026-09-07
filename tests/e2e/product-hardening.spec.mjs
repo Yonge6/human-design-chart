@@ -72,10 +72,14 @@ async function stubExternalNetwork(page, requests = []) {
 async function installNativeRuntime(page, settings) {
   await page.addInitScript(({ key, savedSettings }) => {
     globalThis.__plutoNativeCalls = [];
+    globalThis.__plutoNativeCalls ||= [];
     globalThis.Capacitor = {
       isNativePlatform: () => true,
       getPlatform: () => "ios",
-      registerPlugin: () => ({
+      Plugins: { PlutoNative: {
+        addListener: async (event, callback) => { globalThis.__dailyTipOpened = callback; return { remove() {} }; },
+        updateDailyWidget: async ({ payload }) => { globalThis.__plutoNativeCalls.push({ method: "updateDailyWidget", payload }); return { updated: true }; },
+        consumeWidgetLink: async () => { const openDailyTip = Boolean(globalThis.__pendingDailyTip); globalThis.__pendingDailyTip = false; return { openDailyTip }; },
         saveImage: async ({ fileName }) => {
           globalThis.__plutoNativeCalls.push({ method: "saveImage", fileName });
           return { completed: true };
@@ -84,7 +88,7 @@ async function installNativeRuntime(page, settings) {
           globalThis.__plutoNativeCalls.push({ method: "shareImage", fileName });
           return { completed: true };
         },
-      }),
+      } },
     };
     localStorage.setItem(key, JSON.stringify(savedSettings));
     localStorage.setItem("pluto-language", "zh");
@@ -337,10 +341,14 @@ test("web drawer exposes about, contact, and WonderElian-first works", async ({ 
 
 test("native drawer excludes support while keeping the other information", async ({ page }) => {
   await page.addInitScript(() => {
+    globalThis.__plutoNativeCalls ||= [];
     globalThis.Capacitor = {
       isNativePlatform: () => true,
       getPlatform: () => "ios",
-      registerPlugin: () => ({}),
+      Plugins: { PlutoNative: {
+        addListener: async (event, callback) => { globalThis.__dailyTipOpened = callback; return { remove() {} }; },
+        updateDailyWidget: async ({ payload }) => { globalThis.__plutoNativeCalls.push({ method: "updateDailyWidget", payload }); return { updated: true }; },
+        consumeWidgetLink: async () => { const openDailyTip = Boolean(globalThis.__pendingDailyTip); globalThis.__pendingDailyTip = false; return { openDailyTip }; },} },
     };
   });
   await page.goto("/");
@@ -534,7 +542,7 @@ test("Capacitor native runtime without Supabase hides and blocks remote features
   await expect(page.locator("#productAnalytics")).not.toBeChecked();
   await expect(page.locator("#defaultPrivacy")).toBeEnabled();
   await expect(page.locator("#saveHistory")).toBeEnabled();
-  await expect(page.locator(".settings-note")).toHaveText("隐私模式和本地历史记录仅保存在此设备。当前版本不提供云端保存或匿名统计。");
+  await expect(page.locator(".settings-note")).toHaveText("说明书和每日提示仅保存在此设备。关闭本地历史后，首页与小组件不再使用已保存的结果。");
 
   const storedSettings = {
     privacyByDefault: true,
@@ -560,15 +568,16 @@ test("Capacitor native runtime without Supabase hides and blocks remote features
   expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key) || "[]").length, historyKey)).toBe(1);
   expect(await page.evaluate(() => localStorage.getItem("pluto-anonymous-cloud-session-v1"))).toBeNull();
 
-  await page.locator("#download").click();
-  await expect.poll(() => page.evaluate(() => globalThis.__plutoNativeCalls.map((call) => call.method))).toContain("saveImage");
-  await page.locator("#share").click();
-  await expect.poll(() => page.evaluate(() => globalThis.__plutoNativeCalls.map((call) => call.method))).toContain("shareImage");
+  await expect(page.locator("#download")).toBeHidden();
+  await expect(page.locator("#share")).toBeHidden();
+  await expect(page.locator("#chartPreview")).toBeHidden();
+  await expect(page.locator("#resultSummary")).toBeVisible();
+  expect(requests.some(url => /bodygraph.*\.svg/.test(url))).toBe(false);
 
   await page.locator("#editChart").click();
   await switchLanguage(page, "en");
   await openDrawerItem(page, "#openSettings");
-  await expect(page.locator(".settings-note")).toHaveText("Privacy mode and local history stay on this device. Cloud saving and anonymous analytics are not available in this release.");
+  await expect(page.locator(".settings-note")).toHaveText("Life Manuals and daily tips stay on this device. Turning off local history stops saved results appearing on home and widgets.");
   expect(requests.some((url) => /supabase\.co|api-human-design\.wonderelian\.com/.test(url))).toBe(false);
   expect(failedLocalRequests).toEqual([]);
   expect(pageErrors).toEqual([]);
@@ -697,7 +706,7 @@ test("fingerprinted production bundle loads every calculation asset without modu
     "/app.js",
     "/runtime-config.js",
     "/build-provenance.js",
-    "/assets/bodygraph-original-template.svg",
+    "/assets/bodygraph-template.svg",
     "/vendor/swisseph/swisseph.wasm",
     "/vendor/swisseph/ephe/sepl_18.se1",
     "/vendor/swisseph/ephe/semo_18.se1",
@@ -757,4 +766,92 @@ test("signature summary uses the real engine Sign value across languages and his
   await switchLanguage(page, "en");
   await expect(page.locator("#summarySignature")).toHaveText("Satisfaction");
   await expect(page.locator("#summaryNotSelf")).toHaveText("Frustration");
+});
+
+test("homepage daily tip follows latest result and language, opens reading, and clears on opt-out", async ({ page }) => {
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/');
+  await switchLanguage(page,'zh');
+  await expect(page.locator('#dailyTipCard')).toHaveAttribute('data-state','empty');
+  await fillAndGenerate(page);
+  await page.locator('#editChart').click();
+  await expect(page.locator('#dailyTipCard')).toHaveAttribute('data-state','ready');
+  const tip=await page.locator('#dailyTipText').innerText();
+  expect(tip.length).toBeGreaterThan(10);
+  await switchLanguage(page,'en');
+  await expect(page.locator('#dailyTipText')).not.toHaveText(tip);
+  await page.locator('#dailyTipAction').click();
+  await expect(page.locator('#chartResult')).toBeVisible();
+  await page.locator('#editChart').click();
+  await openDrawerItem(page,'#openSettings');
+  await page.locator('#saveHistory').uncheck();
+  await page.locator('#keepHistoryRecords').click();
+  await page.locator('#closeMenu').click();
+  await expect(page.locator('#dailyTipCard')).toHaveAttribute('data-state','empty');
+});
+
+test("native text results and daily widget work without images across iPad windows", async ({ page }) => {
+  const requests=[];
+  await stubExternalNetwork(page,requests);
+  await installNativeRuntime(page,{privacyByDefault:false,keepHistory:true,cloudSave:false,productAnalytics:false});
+  await page.route('**/assets/bodygraph*',route=>route.abort());
+  await page.route('**/assets/pluto-chart*',route=>route.abort());
+  await page.goto('/');
+  await fillAndGenerate(page);
+  await expect(page.locator('#resultSummary')).toBeVisible();
+  await expect(page.locator('#chartPreview')).toBeHidden();
+  await expect(page.locator('#bodygraph svg')).toHaveCount(0);
+  await expect.poll(() => page.evaluate(() => globalThis.__plutoNativeCalls.filter(call=>call.method==='updateDailyWidget' && call.payload?.tips?.length).length)).toBeGreaterThan(0);
+  for (const width of [320,390,768,1024,1366]) {
+    await page.setViewportSize({width,height:1024});
+    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
+    expect(overflow,`no overflow at ${width}`).toBe(false);
+    await expect(page.locator('#summaryType')).toBeVisible();
+    await page.locator('#detailReading').click();
+    expect(await page.locator('#detailContent').innerText()).toContain('工作');
+    await page.locator('#closeDetail').click();
+  }
+  await page.locator('#editChart').click();
+  const displayed=await page.locator('#dailyTipText').innerText();
+  const payload=await page.evaluate(()=>globalThis.__plutoNativeCalls.filter(call=>call.payload).at(-1).payload);
+  expect(payload.tips.map(tip => tip.replace(/\s+/g, ""))).toContain(displayed.replace(/\s+/g, ""));
+  expect(JSON.stringify(payload)).not.toContain('Browser Fixture');
+  await page.evaluate(() => { globalThis.__pendingDailyTip = true; globalThis.__dailyTipOpened(); });
+  await expect(page.locator('#chartResult')).toBeVisible();
+  await page.locator('#editChart').click();
+  expect(requests.some(url=>/bodygraph.*\.svg/.test(url))).toBe(false);
+  await openDrawerItem(page,'#openSettings');
+  await page.locator('#saveHistory').uncheck();
+  await page.locator('#keepHistoryRecords').click();
+  await expect.poll(()=>page.evaluate(()=>globalThis.__plutoNativeCalls.filter(call=>call.method==='updateDailyWidget').at(-1).payload)).toBeNull();
+});
+
+test('daily advice exports a PNG with a QR footer in H5 and uses native image sharing', async ({ page }, testInfo) => {
+  await page.goto('/');
+  await switchLanguage(page, 'zh');
+  await expect(page.locator('#shareDailyTip')).toBeHidden();
+  await fillAndGenerate(page);
+  await page.locator('#editChart').click();
+  await page.locator('#shareDailyTip').click();
+  await expect(page.locator('#dailySharePreview')).toHaveAttribute('src', /^blob:/);
+  await expect.poll(() => page.locator('#dailySharePreview').evaluate(img => ({ width:img.naturalWidth, height:img.naturalHeight }))).toEqual({ width:1080, height:1440 });
+  const download = page.waitForEvent('download');
+  await page.locator('#saveDailyImage').click();
+  const downloaded = await download;
+  await downloaded.saveAs(testInfo.outputPath("daily-tip-zh.png"));
+  expect(downloaded.suggestedFilename()).toMatch(/^pluto-daily-\d{4}-\d{2}-\d{2}\.png$/);
+  await page.locator('#closeDailyShare').click();
+  await switchLanguage(page, 'en');
+  await page.locator('#shareDailyTip').click();
+  await expect(page.locator('#dailyShareTitle')).toHaveText('Share today’s thought');
+  await expect(page.locator('#dailySharePreview')).toHaveAttribute('src', /^blob:/);
+  await page.locator('#closeDailyShare').click();
+  await installNativeRuntime(page, { privacyByDefault:false, keepHistory:true, cloudSave:false, productAnalytics:false });
+  await page.reload();
+  await page.locator('#shareDailyTip').click();
+  await expect(page.locator('#sendDailyImage')).toBeEnabled();
+  await page.locator('#sendDailyImage').click();
+  await expect.poll(() => page.evaluate(() => globalThis.__plutoNativeCalls.filter(call => call.method === 'shareImage').length)).toBe(1);
+  await page.locator('#saveDailyImage').click();
+  await expect.poll(() => page.evaluate(() => globalThis.__plutoNativeCalls.filter(call => call.method === 'saveImage').length)).toBe(1);
 });

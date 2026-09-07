@@ -14,6 +14,9 @@ import { validateBirthSelection } from "./src/app/form-validation.js";
 import { canUseRemoteServices, effectiveRemoteConsent, isCapacitorNativeRuntime } from "./src/app/runtime-security.js";
 import { getReleaseFeatureAvailability } from "./src/app/release-feature-availability.js";
 import { hasSupabaseConfig } from "./src/config/runtime-config.js";
+import { createDailyTipPayload, getDailyTip, latestSavedResult, formatDailyTipText } from "./src/app/daily-tip.js";
+
+import { createDailyTipPoster } from "./src/renderer/daily-tip-poster.js";
 
 const publicAppUrl = "https://human-design.wonderelian.com/";
 preloadHumanDesignEngine().catch((error) => {
@@ -136,8 +139,10 @@ const historyOptOutDialog = document.querySelector("#historyOptOutDialog");
 const cancelHistoryOptOutButton = document.querySelector("#cancelHistoryOptOut");
 const keepHistoryRecordsButton = document.querySelector("#keepHistoryRecords");
 const deleteHistoryRecordsButton = document.querySelector("#deleteHistoryRecords");
-const nativePlugin = globalThis.Capacitor?.registerPlugin?.("PlutoNative") || null;
+const nativePlugin = globalThis.Capacitor?.Plugins?.PlutoNative
+  || globalThis.Capacitor?.registerPlugin?.("PlutoNative") || null;
 const nativeRuntime = isCapacitorNativeRuntime(globalThis.Capacitor);
+document.documentElement.classList.toggle("native-text-results", nativeRuntime);
 const remoteRuntimeAllowed = canUseRemoteServices({
   isSecureContext: globalThis.isSecureContext === true,
   isNativeRuntime: nativeRuntime,
@@ -160,7 +165,8 @@ const copy = {
   zh: {
     brand: "Pluto 人生使用说明书",
     brandShort: "人生使用说明书",
-    formEyebrow: "人生使用说明书", formTitle: "认识你自己", stepBasic: "基本信息", stepBirthTime: "出生时间", stepBirthLocation: "出生地点", formStepAnnouncement: "第 {current} 步，共 {total} 步：{label}", namePlaceholder: "请输入你的姓名", tapToChoose: "点击选择", birthDatePlaceholder: "年 / 月 / 日", birthTimePlaceholder: "--:--", nextStep: "下一步", previousStep: "上一步", continueToLocation: "继续填写地点", resumeHistory: "已有记录", localModeNotice: "当前为临时 HTTP 连接，仅支持本地计算与生图。云端保存和匿名统计已停用。", disclaimer: "仅用于自我探索与娱乐，不构成科学结论、医疗、心理、法律或财务建议。", viewLegalNotice: "查看法律声明", resultSummaryTitle: "人生使用说明书结果摘要", summaryType: "类型", summaryStrategy: "策略", summaryAuthority: "内在权威", summaryProfile: "人生角色", summaryDefinition: "定义", summaryCross: "轮回交叉", summarySignature: "标志", summaryNotSelf: "非自己主题", name: "姓名", birthDate: "出生日期", birthTime: "出生时间", year: "年", month: "月", day: "日",
+    startExploration: "开始新的探索", howCallYou: "怎么称呼你", nameHelp: "我们将用这个名字，陪伴你的探索之旅。", explorationNote: "接下来，我们会了解你的出生信息与地点，以更深入地为你解读。",
+    formEyebrow: "人生使用说明书", formTitle: "认识你自己", stepBasic: "基本信息", stepBirthTime: "出生时间", stepBirthLocation: "出生地点", formStepAnnouncement: "第 {current} 步，共 {total} 步：{label}", namePlaceholder: "请输入你的姓名", tapToChoose: "点击选择", birthDatePlaceholder: "年 / 月 / 日", birthTimePlaceholder: "--:--", nextStep: "继续", previousStep: "上一步", continueToLocation: "继续填写地点", resumeHistory: "已有记录", localModeNotice: "当前为临时 HTTP 连接，仅支持本地计算与生图。云端保存和匿名统计已停用。", disclaimer: "仅用于自我探索与娱乐，不构成科学结论、医疗、心理、法律或财务建议。", viewLegalNotice: "查看法律声明", resultSummaryTitle: "人生使用说明书结果摘要", summaryType: "类型", summaryStrategy: "策略", summaryAuthority: "内在权威", summaryProfile: "人生角色", summaryDefinition: "定义", summaryCross: "轮回交叉", summarySignature: "标志", summaryNotSelf: "非自己主题", name: "姓名", birthDate: "出生日期", birthTime: "出生时间", year: "年", month: "月", day: "日",
     hour: "时", minute: "分", ampm: "上午/下午", am: "上午", pm: "下午", birthLocation: "出生地点",
     locationPlaceholder: "城市、区县或地区", locationSuggestions: "出生地点建议", clockOccurrence: "重复时刻",
     bodygraphLabel: "人生使用说明书图谱",
@@ -177,12 +183,13 @@ const copy = {
     worksTitle: "沿途所作", worksIntro: "观世界，识自己，也学习看见美。", workWonderElian: "WonderElian", workWonderElianTagline: "让复杂的想法变得清晰、好看而有人情味", workWonderElianDescription: "WonderElian 是永歌 Elian 的个人创作空间。这里记录作品，也记录关于设计、AI、产品，以及如何慢慢成为自己的思考与探索。", workYixiu: "一休冥想", workYixiuTagline: "让声音带你回到当下", workYixiuDescription: "十四种真实自然录音，为休息、专注与冥想留一处空间。", workXiazi: "虾子曰", workXiaziTagline: "昨日世界", workXiaziDescription: "每天用全球热点与双语海报，把复杂世界讲清楚。", workWendao: "三慢问道", workWendaoTagline: "慢读原典", workWendaoDescription: "在古老文字与当下生活之间，留一处慢慢阅读的空间。", workStyleAtlas: "艺术风格图鉴", workStyleAtlasTagline: "学习看懂一种美", workStyleAtlasDescription: "沿着艺术与设计的脉络，找到自己的观看方式。",
     aboutKicker: "真实自己，流动人生", aboutHeading: "生命不是用来证明自己的。", aboutParagraphOne: "Pluto 人生使用说明书是一件面向自我探索的独立作品。我们把复杂的出生图谱整理成清晰、可保存的双语阅读体验，帮助你从另一个角度观察自己的节奏、选择与关系。", aboutParagraphTwo: "我们相信，认识自己、接纳自己、成为自己、活出自己，是一条持续展开的路。真实面对自己与世界，善待自己、他人与生命，并在创造和欣赏中活出生命之美。", aboutDisclaimer: "人类图仅作为自我观察与对话的视角，不是科学结论，也不替你作决定。", lifePhilosophyKicker: "我们的生命观", lifePhilosophyTitle: "生命不是用来证明自己的，而是用来认识、接纳、成为并活出自己。", lifePhilosophyIntro: "真正的成长，不是把自己改造成某个标准答案，而是在变化中越来越诚实地看见自己，越来越从容地选择自己的活法。", lifePathLabel: "核心路径", lifePathKnow: "认识自己", lifePathAccept: "接纳自己", lifePathBecome: "成为自己", lifePathLive: "活出自己", lifePrinciplePause: "一休", lifePrinciplePauseText: "先照顾身体，安顿情绪，再继续前行。", lifePrincipleWhole: "不二", lifePrincipleWholeText: "接纳高峰与低谷，拥抱完整而非完美。", lifePrincipleSlow: "三慢", lifePrincipleSlowText: "慢下来、慢慢来、慢慢成为，尊重生命的节奏。", lifePrincipleWater: "如水", lifePrincipleWaterText: "向内扎根，向外流动；顺应变化，不失本心。", lifePhilosophyQuote: "向内认识自己，向外如水而行。", lifePhilosophyVision: "我们愿陪伴彼此走过低谷与高峰，探索身心健康的工作与生活方式；真实面对自己与世界，善待自己、他人与生命，并在创造和欣赏中活出生命之美。", contactKicker: "保持联系", contactHeading: "一起把作品做得更好。", contactIntro: "欢迎分享你的使用感受、问题与建议。", emailLabel: "邮箱", redLabel: "小红书", douyinLabel: "抖音", openProfile: "打开主页",
     history: "历史记录", settings: "隐私设置", localOnly: "仅保存在此设备", historyEmpty: "还没有保存的人生使用说明书。", openHistory: "打开", deleteHistory: "删除", confirmDeleteTitle: "删除这条记录？", confirmDeleteHint: "删除后无法恢复。", cancel: "取消", confirmDelete: "确认删除", openSource: "源代码",
-    defaultPrivacy: "隐私模式", defaultPrivacyHint: "生成图片时隐藏姓名、日期、时间和地点；默认关闭。", saveHistory: "保存本地历史记录", saveHistoryHint: "默认开启，仅保存在本设备；关闭时可选择保留或删除已有记录。", cloudSave: "将新生成的说明书保存到云端", cloudSaveHint: "关闭时不上传姓名、出生资料或图谱；默认关闭。", productAnalytics: "帮助我们改进 Pluto", productAnalyticsHint: "仅发送允许的匿名操作事件，不包含出生资料或完整图谱；默认关闭。", deleteCloudData: "删除云端图谱与个人资料", deleteCloudConfirm: "这会删除当前匿名身份保存的姓名、出生资料和人类图记录。本地历史不会删除。已经记录的匿名使用事件会移除用户标识，并最多保留180天用于汇总统计。", deleteCloudTitle: "删除云端资料？", cloudDeleted: "云端图谱与个人资料已删除；匿名事件已去标识，本地历史保留。", clearHistory: "清空历史记录", clearHistoryTitle: "清空全部本地历史？", clearHistoryConfirm: "本设备保存的人生使用说明书会被永久删除，且无法恢复。", disableHistoryTitle: "关闭本地历史记录？", disableHistoryConfirm: "关闭后，今后生成的说明书不会加入本地历史。你可以保留已有记录，也可以同时全部删除。", keepHistoryRecords: "关闭但保留记录", deleteHistoryRecords: "关闭并删除全部记录", pleaseConfirm: "请确认", confirmAction: "确认", privacyPolicy: "隐私政策", support: "帮助与支持", legalNotice: "法律声明", privacyNote: "隐私模式、云端保存和匿名统计默认关闭；本地历史默认开启并仅保存在本设备。关闭本地历史时可选择保留或删除已有记录；删除云端资料不会删除本地历史。", nativeLocalOnlyPrivacyNote: "隐私模式和本地历史记录仅保存在此设备。当前版本不提供云端保存或匿名统计。", historyCleared: "历史记录已清空。", selectDate: "请选择完整的出生日期。", invalidDate: "请输入有效的出生日期。", selectTime: "请选择完整的出生时间。", invalidTime: "请输入有效的出生时间。", enterLocation: "请输入出生地点。",
+    defaultPrivacy: "隐私模式", defaultPrivacyHint: "生成图片时隐藏姓名、日期、时间和地点；默认关闭。", saveHistory: "保存本地历史记录", saveHistoryHint: "默认开启，仅保存在本设备；关闭时可选择保留或删除已有记录。", cloudSave: "将新生成的说明书保存到云端", cloudSaveHint: "关闭时不上传姓名、出生资料或图谱；默认关闭。", productAnalytics: "帮助我们改进 Pluto", productAnalyticsHint: "仅发送允许的匿名操作事件，不包含出生资料或完整图谱；默认关闭。", deleteCloudData: "删除云端图谱与个人资料", deleteCloudConfirm: "这会删除当前匿名身份保存的姓名、出生资料和人类图记录。本地历史不会删除。已经记录的匿名使用事件会移除用户标识，并最多保留180天用于汇总统计。", deleteCloudTitle: "删除云端资料？", cloudDeleted: "云端图谱与个人资料已删除；匿名事件已去标识，本地历史保留。", clearHistory: "清空历史记录", clearHistoryTitle: "清空全部本地历史？", clearHistoryConfirm: "本设备保存的人生使用说明书会被永久删除，且无法恢复。", disableHistoryTitle: "关闭本地历史记录？", disableHistoryConfirm: "关闭后，今后生成的说明书不会加入本地历史。你可以保留已有记录，也可以同时全部删除。", keepHistoryRecords: "关闭但保留记录", deleteHistoryRecords: "关闭并删除全部记录", pleaseConfirm: "请确认", confirmAction: "确认", privacyPolicy: "隐私政策", support: "帮助与支持", legalNotice: "法律声明", privacyNote: "隐私模式、云端保存和匿名统计默认关闭；本地历史默认开启并仅保存在本设备。关闭本地历史时可选择保留或删除已有记录；删除云端资料不会删除本地历史。", nativeLocalOnlyPrivacyNote: "说明书和每日提示仅保存在此设备。关闭本地历史后，首页与小组件不再使用已保存的结果。", historyCleared: "历史记录已清空。", selectDate: "请选择完整的出生日期。", invalidDate: "请输入有效的出生日期。", selectTime: "请选择完整的出生时间。", invalidTime: "请输入有效的出生时间。", enterLocation: "请输入出生地点。",
   },
   en: {
     brand: "Pluto Life Manual",
     brandShort: "Life Manual",
-    formEyebrow: "Life Manual", formTitle: "Know Yourself", stepBasic: "Basics", stepBirthTime: "Birth time", stepBirthLocation: "Birth place", formStepAnnouncement: "Step {current} of {total}: {label}", namePlaceholder: "Enter your name", tapToChoose: "Tap to choose", birthDatePlaceholder: "YYYY / MM / DD", birthTimePlaceholder: "--:--", nextStep: "Next", previousStep: "Back", continueToLocation: "Continue to birth place", resumeHistory: "Saved manuals", localModeNotice: "This temporary HTTP connection supports local calculation and image generation only. Cloud saving and analytics are disabled.", disclaimer: "For personal reflection and entertainment only. Not scientific, medical, psychological, legal, or financial advice.", viewLegalNotice: "View Legal Notice", resultSummaryTitle: "Life Manual Result Summary", summaryType: "Type", summaryStrategy: "Strategy", summaryAuthority: "Inner Authority", summaryProfile: "Profile", summaryDefinition: "Definition", summaryCross: "Incarnation Cross", summarySignature: "Signature", summaryNotSelf: "Not-Self Theme", name: "Name", birthDate: "Birth date", birthTime: "Birth time", year: "Year", month: "Month", day: "Day",
+    startExploration: "Start a new exploration", howCallYou: "What should we call you?", nameHelp: "A name to accompany your journey of discovery.", explorationNote: "Next, we’ll ask when and where you were born to create your personal reading.",
+    formEyebrow: "Life Manual", formTitle: "Know Yourself", stepBasic: "Basics", stepBirthTime: "Birth time", stepBirthLocation: "Birth place", formStepAnnouncement: "Step {current} of {total}: {label}", namePlaceholder: "Enter your name", tapToChoose: "Tap to choose", birthDatePlaceholder: "YYYY / MM / DD", birthTimePlaceholder: "--:--", nextStep: "Continue", previousStep: "Back", continueToLocation: "Continue to birth place", resumeHistory: "Saved manuals", localModeNotice: "This temporary HTTP connection supports local calculation and image generation only. Cloud saving and analytics are disabled.", disclaimer: "For personal reflection and entertainment only. Not scientific, medical, psychological, legal, or financial advice.", viewLegalNotice: "View Legal Notice", resultSummaryTitle: "Life Manual Result Summary", summaryType: "Type", summaryStrategy: "Strategy", summaryAuthority: "Inner Authority", summaryProfile: "Profile", summaryDefinition: "Definition", summaryCross: "Incarnation Cross", summarySignature: "Signature", summaryNotSelf: "Not-Self Theme", name: "Name", birthDate: "Birth date", birthTime: "Birth time", year: "Year", month: "Month", day: "Day",
     hour: "Hour", minute: "Minute", ampm: "AM/PM", am: "AM", pm: "PM", birthLocation: "Birth location",
     locationPlaceholder: "City, district or region", locationSuggestions: "Birth location suggestions", clockOccurrence: "Clock occurrence",
     bodygraphLabel: "Life Manual bodygraph",
@@ -199,7 +206,7 @@ const copy = {
     worksTitle: "Works along the way", worksIntro: "See the world, know yourself, and learn to see beauty.", workWonderElian: "WonderElian", workWonderElianTagline: "Make complex ideas clear, beautiful, and human", workWonderElianDescription: "An independent creative world from Wuhan, connecting visual culture, wellbeing, and real life through design, AI, and digital products.", workYixiu: "Yixiu Meditation", workYixiuTagline: "Let sound return you to now", workYixiuDescription: "Fourteen real nature recordings create space to rest, focus, and meditate.", workXiazi: "Xiazi Says", workXiaziTagline: "Yesterday's World", workXiaziDescription: "Global stories and bilingual posters make a complex world easier to see.", workWendao: "Wendao", workWendaoTagline: "Read the classics slowly", workWendaoDescription: "A quiet space between ancient words and life as it is lived today.", workStyleAtlas: "Style Atlas", workStyleAtlasTagline: "Learn to see a style", workStyleAtlasDescription: "Follow the lineages of art and design and discover your own way of looking.",
     aboutKicker: "True to yourself. Flow with life.", aboutHeading: "Life is not for proving yourself.", aboutParagraphOne: "Pluto Life Manual is an independent work for self-exploration. It turns a complex birth chart into a clear, bilingual reading you can keep, offering another lens on your rhythms, choices, and relationships.", aboutParagraphTwo: "We believe knowing, accepting, becoming, and living as yourself is an unfolding path: face yourself and the world truthfully, treat self, others, and life with kindness, and live the beauty of life through creation and appreciation.", aboutDisclaimer: "Human Design is offered as a lens for reflection and conversation, not a scientific conclusion or a substitute for your decisions.", lifePhilosophyKicker: "Our philosophy of life", lifePhilosophyTitle: "Life is not for proving yourself. It is for knowing, accepting, becoming, and living as yourself.", lifePhilosophyIntro: "Growth is not the work of turning yourself into a standard answer. It is learning to see yourself more honestly through change, and to choose your way of living with greater ease.", lifePathLabel: "Core path", lifePathKnow: "Know yourself", lifePathAccept: "Accept yourself", lifePathBecome: "Become yourself", lifePathLive: "Live as yourself", lifePrinciplePause: "Pause", lifePrinciplePauseText: "Care for the body, settle emotion, then continue.", lifePrincipleWhole: "Wholeness", lifePrincipleWholeText: "Accept peaks and valleys; choose wholeness over perfection.", lifePrincipleSlow: "Go slowly", lifePrincipleSlowText: "Slow down, take your time, and respect the rhythm of becoming.", lifePrincipleWater: "Be Water", lifePrincipleWaterText: "Root inwardly, move outwardly; adapt without losing your center.", lifePhilosophyQuote: "Know yourself within; move through the world like water.", lifePhilosophyVision: "We hope to accompany one another through valleys and peaks, exploring healthier ways to work and live: facing self and world truthfully, treating life with kindness, and creating and appreciating beauty.", contactKicker: "Stay in touch", contactHeading: "Help us make the work better.", contactIntro: "Share your experience, questions, and suggestions with us.", emailLabel: "Email", redLabel: "RED", douyinLabel: "Douyin", openProfile: "Open profile",
     history: "History", settings: "Privacy", localOnly: "Stored only on this device", historyEmpty: "No saved Life Manuals yet.", openHistory: "Open", deleteHistory: "Delete", confirmDeleteTitle: "Delete this record?", confirmDeleteHint: "This action cannot be undone.", cancel: "Cancel", confirmDelete: "Delete", openSource: "Open Source",
-    defaultPrivacy: "Privacy mode", defaultPrivacyHint: "Hide name, date, time, and location in generated images. Off by default.", saveHistory: "Save local history", saveHistoryHint: "On by default and stored only on this device. When turning it off, choose whether to keep or delete existing records.", cloudSave: "Save new Life Manuals to the cloud", cloudSaveHint: "When off, names, birth details, and charts are not uploaded. Off by default.", productAnalytics: "Help us improve Pluto", productAnalyticsHint: "Send only allowlisted anonymous actions, never birth details or a full chart. Off by default.", deleteCloudData: "Delete Cloud Charts and Personal Data", deleteCloudConfirm: "This deletes the name, birth details, and Human Design records saved for the current anonymous identity. Local history is not deleted. Previously recorded anonymous usage events are deidentified and retained for no more than 180 days for aggregate statistics.", deleteCloudTitle: "Delete cloud data?", cloudDeleted: "Cloud charts and personal data deleted. Events were deidentified; local history remains.", clearHistory: "Clear history", clearHistoryTitle: "Clear all local history?", clearHistoryConfirm: "Every Life Manual saved on this device will be permanently deleted. This cannot be undone.", disableHistoryTitle: "Turn off local history?", disableHistoryConfirm: "New Life Manuals will no longer be added to local history. You can keep existing records or delete them all.", keepHistoryRecords: "Turn Off & Keep Records", deleteHistoryRecords: "Turn Off & Delete All", pleaseConfirm: "Please confirm", confirmAction: "Confirm", privacyPolicy: "Privacy Policy", support: "Help & Support", legalNotice: "Legal Notice", privacyNote: "Privacy mode, cloud saving, and anonymous analytics are off by default. Local history is on by default and stored only on this device. When turning local history off, choose whether to keep or delete existing records; deleting cloud data does not delete local history.", nativeLocalOnlyPrivacyNote: "Privacy mode and local history stay on this device. Cloud saving and anonymous analytics are not available in this release.", historyCleared: "History cleared.", selectDate: "Choose a complete birth date.", invalidDate: "Enter a valid birth date.", selectTime: "Choose a complete birth time.", invalidTime: "Enter a valid birth time.", enterLocation: "Enter a birth location.",
+    defaultPrivacy: "Privacy mode", defaultPrivacyHint: "Hide name, date, time, and location in generated images. Off by default.", saveHistory: "Save local history", saveHistoryHint: "On by default and stored only on this device. When turning it off, choose whether to keep or delete existing records.", cloudSave: "Save new Life Manuals to the cloud", cloudSaveHint: "When off, names, birth details, and charts are not uploaded. Off by default.", productAnalytics: "Help us improve Pluto", productAnalyticsHint: "Send only allowlisted anonymous actions, never birth details or a full chart. Off by default.", deleteCloudData: "Delete Cloud Charts and Personal Data", deleteCloudConfirm: "This deletes the name, birth details, and Human Design records saved for the current anonymous identity. Local history is not deleted. Previously recorded anonymous usage events are deidentified and retained for no more than 180 days for aggregate statistics.", deleteCloudTitle: "Delete cloud data?", cloudDeleted: "Cloud charts and personal data deleted. Events were deidentified; local history remains.", clearHistory: "Clear history", clearHistoryTitle: "Clear all local history?", clearHistoryConfirm: "Every Life Manual saved on this device will be permanently deleted. This cannot be undone.", disableHistoryTitle: "Turn off local history?", disableHistoryConfirm: "New Life Manuals will no longer be added to local history. You can keep existing records or delete them all.", keepHistoryRecords: "Turn Off & Keep Records", deleteHistoryRecords: "Turn Off & Delete All", pleaseConfirm: "Please confirm", confirmAction: "Confirm", privacyPolicy: "Privacy Policy", support: "Help & Support", legalNotice: "Legal Notice", privacyNote: "Privacy mode, cloud saving, and anonymous analytics are off by default. Local history is on by default and stored only on this device. When turning local history off, choose whether to keep or delete existing records; deleting cloud data does not delete local history.", nativeLocalOnlyPrivacyNote: "Life Manuals and daily tips stay on this device. Turning off local history stops saved results appearing on home and widgets.", historyCleared: "History cleared.", selectDate: "Choose a complete birth date.", invalidDate: "Enter a valid birth date.", selectTime: "Choose a complete birth time.", invalidTime: "Enter a valid birth time.", enterLocation: "Enter a birth location.",
   },
 };
 
@@ -813,20 +820,82 @@ let selectedPlace = null;
 let pendingHistoryDeleteId = null;
 let pendingConfirmation = null;
 let pendingHistoryOptOut = null;
-const paintBodygraph = createBodygraphRenderer({
+const paintBodygraph = nativeRuntime ? async () => null : createBodygraphRenderer({
   container: graph,
-  templateUrl: "./assets/bodygraph-original-template.svg",
+  templateUrl: "./assets/bodygraph-template.svg",
   centerColors,
   label: "Life Manual BodyGraph",
 });
 
 function persistSettings() {
   writeStoredJson(settingsStorageKey, appSettings);
+  refreshDailyTip();
 }
 
 function persistHistory() {
   writeStoredJson(historyStorageKey, historyEntries);
+  refreshDailyTip();
 }
+
+let widgetSyncQueue = Promise.resolve();
+let lastWidgetPayload;
+function refreshDailyTip() {
+  const entry = latestSavedResult(historyEntries, appSettings.keepHistory);
+  const payload = createDailyTipPayload(entry?.data, language);
+  const tip = getDailyTip(payload);
+  const card = document.querySelector("#dailyTipCard");
+  card.dataset.state = tip ? "ready" : "empty";
+  document.querySelector("#shareDailyTip").hidden = !tip;
+  document.querySelector("#shareDailyTip").textContent = language === "zh" ? "分享图片" : "Share image";
+  document.querySelector("#dailyTipTitle").textContent = language === "zh" ? "今日提示" : "A thought for today";
+  const date = new Date();
+  const dateElement = document.querySelector("#dailyTipDate");
+  dateElement.textContent = new Intl.DateTimeFormat(language === "zh" ? "zh-CN" : "en", { month: "long", day: "numeric", weekday: "long" }).format(date).replace("日星期", "日 星期");
+  document.querySelector("#dailyTipDateSecondary").textContent = language === "zh"
+    ? new Intl.DateTimeFormat("en", { month:"long", day:"numeric", year:"numeric" }).format(date) : "";
+  dateElement.dateTime = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  document.querySelector("#dailyTipText").textContent = (tip ? formatDailyTipText(tip, language) : tip) || (language === "zh"
+    ? "生成你的第一份说明书，获得属于你的每日生活提示。"
+    : "Create your first Life Manual for a daily suggestion shaped by your result.");
+  document.querySelector("#dailyTipSource").textContent = tip
+    ? (language === "zh" ? "来自你最近一次的解读" : "From your latest Life Manual")
+    : (language === "zh" ? "从了解自己开始，让每一天更自在。" : "A little self-knowledge for a more grounded day.");
+  document.querySelector("#dailyTipAction").textContent = tip
+    ? (language === "zh" ? "查看我的解读" : "Read my Life Manual")
+    : (language === "zh" ? "开始认识自己" : "Get to know yourself");
+  if (nativeRuntime && nativePlugin?.updateDailyWidget) {
+    const serialized = JSON.stringify(payload);
+    if (serialized !== lastWidgetPayload) {
+      lastWidgetPayload = serialized;
+      widgetSyncQueue = widgetSyncQueue.then(() => nativePlugin.updateDailyWidget({ payload }))
+        .catch(error => { lastWidgetPayload = undefined; console.warn("Daily widget update deferred", error); });
+    }
+  }
+}
+
+async function openDailyTipResult() {
+  const entry = latestSavedResult(historyEntries, appSettings.keepHistory);
+  if (entry) await openHistoryEntry(entry);
+  else {
+    showFormView();
+    fields.name.focus();
+  }
+}
+document.querySelector("#dailyTipAction").addEventListener("click", () => {
+  openDailyTipResult().catch(error => setStatus("failed", { message: error.message }));
+});
+async function consumeWidgetLink() {
+  if (!nativeRuntime || !nativePlugin?.consumeWidgetLink) return;
+  const result = await nativePlugin.consumeWidgetLink();
+  if (result?.openDailyTip) await openDailyTipResult();
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) return;
+  refreshDailyTip();
+  consumeWidgetLink().catch(error => console.warn("Widget link deferred", error));
+});
+// Re-evaluate calendar dates while an app/browser stays open across midnight.
+window.setInterval(() => { if (!document.hidden) refreshDailyTip(); }, 60000);
 
 function settleConfirmation(accepted) {
   const resolve = pendingConfirmation;
@@ -968,6 +1037,8 @@ const formStepCopyKeys = {
 
 function renderFormStepState({ announce = false } = {}) {
   formPanel.dataset.currentFormStep = String(currentFormStep);
+  document.querySelector("#visibleFormStep").textContent = `0${currentFormStep} / 03`;
+  document.querySelector("#dailyTipCard").hidden = currentFormStep !== 1;
   formSteps.forEach((step) => {
     step.hidden = Number(step.dataset.formStep) !== currentFormStep;
   });
@@ -1412,7 +1483,10 @@ function renderResultHighlights(data) {
 }
 
 async function render(data) {
-  await paintBodygraph(data);
+  renderDetailedReading(data);
+  updateAccessibleResultSummary(data);
+  renderResultHighlights(data);
+  if (nativeRuntime) return;
   document.querySelector("#personName").textContent = privacyToggle.checked ? "***" : data.Properties.Name;
   document.querySelector("#birthLine").textContent = privacyToggle.checked ? privateBirthLine() : formattedBirth(data);
   document.querySelector("#designList").innerHTML = planets.map((planet) => row(planet, data.Design[planet])).join("");
@@ -1445,6 +1519,10 @@ function clearPoster() {
 }
 
 async function createPosterImage() {
+  if (nativeRuntime) {
+    chartResult.removeAttribute("aria-busy");
+    return;
+  }
   const renderVersion = ++posterRenderVersion;
   setResultLoadingMessage("buildingResult");
   setMediaState(previewStage, "loading");
@@ -1454,7 +1532,7 @@ async function createPosterImage() {
   privacyToggle.disabled = true;
   languageButtons.forEach((button) => { button.disabled = true; });
   try {
-    await Promise.all([document.fonts.ready, loadExportAssets()]);
+    await Promise.all([paintBodygraph(lastData), document.fonts.ready, loadExportAssets()]);
     const nextBlob = await renderPosterElement(chartPanel);
     if (renderVersion !== posterRenderVersion) return;
     if (posterUrl) URL.revokeObjectURL(posterUrl);
@@ -1532,6 +1610,7 @@ function applyLanguage(nextLanguage, rerender = true) {
   languageButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.language === language)));
   if (statusState) status.textContent = t(statusState.key, statusState.values);
   renderHistory();
+  refreshDailyTip();
   if (rerender && lastData) {
     render(lastData)
       .then(createPosterImage)
@@ -2124,4 +2203,100 @@ privacyToggle.checked = appSettings.privacyByDefault;
 updateRemoteServiceControls();
 syncGoogleAnalyticsConsent();
 applyLanguage(language, false);
+if (nativeRuntime) {
+  resultSummary.classList.remove("sr-only");
+  resultSummary.classList.add("native-summary");
+  previewStage.hidden = true;
+  downloadButton.hidden = true;
+  shareButton.hidden = true;
+  privacyToggle.closest("label").hidden = true;
+  defaultPrivacyInput.closest("label").hidden = true;
+  chartPanel.hidden = true;
+  privacyNote.textContent = language === "zh"
+    ? "说明书和每日提示仅保存在此设备。关闭本地历史后，首页与小组件不再使用已保存的结果。"
+    : "Life Manuals and daily tips stay on this device. Turning off local history stops saved results appearing on home and widgets.";
+  nativePlugin?.addListener?.("dailyTipOpened", () => {
+    consumeWidgetLink().catch(error => console.warn("Widget link deferred", error));
+  });
+  consumeWidgetLink().catch(error => console.warn("Widget link deferred", error));
+}
 trackEvent("app_open", { environment: globalThis.PLUTO_CONFIG?.environment || "development" });
+
+const dailyShareDialog = document.querySelector('#dailyShareDialog');
+let dailyShareBlob;
+let dailyShareUrl;
+let dailyShareFileName;
+let dailyShareLanguage = 'zh';
+let dailyShareBusy = false;
+function dailyShareText(zh, en) { return dailyShareLanguage === 'zh' ? zh : en; }
+function clearDailyShare() {
+  if (dailyShareUrl) URL.revokeObjectURL(dailyShareUrl);
+  dailyShareBlob = undefined;
+  dailyShareUrl = undefined;
+  document.querySelector('#dailySharePreview').removeAttribute('src');
+}
+dailyShareDialog.addEventListener('close', clearDailyShare);
+document.querySelector('#closeDailyShare').addEventListener('click', () => dailyShareDialog.close());
+document.querySelector('#shareDailyTip').addEventListener('click', async event => {
+  const entry = latestSavedResult(historyEntries, appSettings.keepHistory);
+  const date = new Date();
+  const tip = getDailyTip(createDailyTipPayload(entry?.data, language), date);
+  if (!tip) return;
+  const button = event.currentTarget;
+  button.disabled = true;
+  dailyShareLanguage = language;
+  clearDailyShare();
+  const status = document.querySelector('#dailyShareStatus');
+  document.querySelector('#dailyShareTitle').textContent = dailyShareText('分享今日提示', 'Share today’s thought');
+  document.querySelector('#closeDailyShare').textContent = dailyShareText('关闭', 'Close');
+  document.querySelector('#saveDailyImage').textContent = dailyShareText('保存图片', 'Save image');
+  document.querySelector('#sendDailyImage').textContent = dailyShareText('分享图片', 'Share image');
+  status.textContent = dailyShareText('正在生成分享卡片…', 'Creating your share card…');
+  document.querySelector('#saveDailyImage').disabled = true;
+  document.querySelector('#sendDailyImage').disabled = true;
+  dailyShareDialog.showModal();
+  try {
+    const blob = await createDailyTipPoster({ tip, language, date });
+    if (!dailyShareDialog.open) return;
+    dailyShareBlob = blob;
+    dailyShareUrl = URL.createObjectURL(blob);
+    dailyShareFileName = `pluto-daily-${document.querySelector('#dailyTipDate').dateTime}.png`;
+    const preview = document.querySelector('#dailySharePreview');
+    preview.alt = dailyShareText(`${tip} 右下角二维码可打开 Pluto 首页。`, `${tip} The QR code opens Pluto.`);
+    preview.src = dailyShareUrl;
+    status.textContent = dailyShareText('图片仅包含今日提示，不含姓名或出生信息。', 'Includes only today’s thought, without your name or birth details.');
+    document.querySelector('#saveDailyImage').disabled = false;
+    document.querySelector('#sendDailyImage').disabled = false;
+  } catch (error) {
+    status.textContent = dailyShareText('图片生成失败，请关闭后重试。', 'Image creation failed. Close and try again.');
+    console.warn('Daily share image failed', error);
+  } finally { button.disabled = false; }
+});
+async function shareDailyImage(save) {
+  if (!dailyShareBlob || dailyShareBusy) return;
+  dailyShareBusy = true;
+  const status = document.querySelector('#dailyShareStatus');
+  try {
+    const file = new File([dailyShareBlob], dailyShareFileName, { type:'image/png' });
+    if (nativeRuntime && nativePlugin) {
+      const base64 = await blobToBase64(dailyShareBlob);
+      const result = save
+        ? await nativePlugin.saveImage({ base64, fileName:dailyShareFileName })
+        : await nativePlugin.shareImage({ base64, fileName:dailyShareFileName });
+      if (result?.completed === false) return;
+      status.textContent = save ? dailyShareText('已保存到相册。', 'Saved to Photos.') : dailyShareText('已分享。', 'Shared.');
+    } else if (!save && canShareFile(file)) {
+      await navigator.share({ files:[file], title:dailyShareText('Pluto 今日提示', 'Pluto daily thought') });
+      status.textContent = dailyShareText('已分享。', 'Shared.');
+    } else {
+      const link = document.createElement('a');
+      link.download = dailyShareFileName; link.href = dailyShareUrl;
+      document.body.append(link); link.click(); link.remove();
+      status.textContent = dailyShareText('图片已下载，可以发送给朋友。', 'Image downloaded, ready to send.');
+    }
+  } catch (error) {
+    if (error?.name !== 'AbortError') status.textContent = dailyShareText('操作未完成，请重试或长按图片保存。', 'Could not finish. Try again or save the image with a long press.');
+  } finally { dailyShareBusy = false; }
+}
+document.querySelector('#saveDailyImage').addEventListener('click', () => shareDailyImage(true));
+document.querySelector('#sendDailyImage').addEventListener('click', () => shareDailyImage(false));

@@ -18,7 +18,24 @@
 		504EC30F1FED79650016851F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30E1FED79650016851F /* Assets.xcassets */; };
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
+		B9000000000000000000000A /* DailyTipStore.swift in App Sources */ = {isa = PBXBuildFile; fileRef = B90000000000000000000001; };
+		B9000000000000000000000B /* DailyTipStore.swift in Widget Sources */ = {isa = PBXBuildFile; fileRef = B90000000000000000000001; };
+		B9000000000000000000000C /* PlutoDailyWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90000000000000000000002; };
+		B9000000000000000000000D /* PrivacyInfo.xcprivacy in Widget Resources */ = {isa = PBXBuildFile; fileRef = B90000000000000000000003; };
+		B9000000000000000000000E /* Embed PlutoDailyWidget */ = {isa = PBXBuildFile; fileRef = B90000000000000000000006; settings = {ATTRIBUTES = (RemoveHeadersOnCopy,); }; };
+        B80000000000000000000004 /* Widget strings in Resources */ = {isa = PBXBuildFile; fileRef = B80000000000000000000003; };
 /* End PBXBuildFile section */
+
+
+/* Begin PBXCopyFilesBuildPhase section */
+        B90000000000000000000021 /* Embed App Extensions */ = {isa = PBXCopyFilesBuildPhase; buildActionMask = 2147483647; dstPath = ""; dstSubfolderSpec = 13; files = (B9000000000000000000000E,); name = "Embed App Extensions"; runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXCopyFilesBuildPhase section */
+/* Begin PBXContainerItemProxy section */
+        B90000000000000000000022 = {isa = PBXContainerItemProxy; containerPortal = 504EC2FC1FED79650016851F; proxyType = 1; remoteGlobalIDString = B90000000000000000000028; remoteInfo = PlutoDailyWidget; };
+/* End PBXContainerItemProxy section */
+/* Begin PBXTargetDependency section */
+        B90000000000000000000023 = {isa = PBXTargetDependency; target = B90000000000000000000028; targetProxy = B90000000000000000000022; };
+/* End PBXTargetDependency section */
 
 /* Begin PBXFileReference section */
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
@@ -34,6 +51,15 @@
 		504EC3131FED79650016851F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50B271D01FEDC1A000F3C39B /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = public; sourceTree = "<group>"; };
 		958DCC722DB07C7200EA8C5F /* debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = debug.xcconfig; path = ../debug.xcconfig; sourceTree = SOURCE_ROOT; };
+		B90000000000000000000001 /* DailyTipStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyTipStore.swift; sourceTree = "<group>"; };
+		B90000000000000000000002 /* PlutoDailyWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlutoDailyWidget.swift; sourceTree = "<group>"; };
+		B90000000000000000000003 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		B90000000000000000000004 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B90000000000000000000005 /* PlutoDailyWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PlutoDailyWidget.entitlements; sourceTree = "<group>"; };
+		B90000000000000000000006 /* PlutoDailyWidget.appex */ = {isa = PBXFileReference; lastKnownFileType = wrapper.app-extension; path = PlutoDailyWidget.appex; sourceTree = "BUILT_PRODUCTS_DIR"; };
+		B90000000000000000000007 /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
+        B80000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+        B80000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +71,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B90000000000000000000020 /* Widget Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -53,6 +80,8 @@
 			children = (
 				958DCC722DB07C7200EA8C5F /* debug.xcconfig */,
 				504EC3061FED79650016851F /* App */,
+				B90000000000000000000014 /* Shared */,
+				B90000000000000000000015 /* PlutoDailyWidget */,
 				504EC3051FED79650016851F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -61,6 +90,7 @@
 			isa = PBXGroup;
 			children = (
 				504EC3041FED79650016851F /* App.app */,
+				B90000000000000000000006 /* PlutoDailyWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -76,6 +106,7 @@
 				504EC30E1FED79650016851F /* Assets.xcassets */,
 				504EC3101FED79650016851F /* LaunchScreen.storyboard */,
 				504EC3131FED79650016851F /* Info.plist */,
+				B90000000000000000000007 /* App.entitlements */,
 				A20000000000000000000002 /* PrivacyInfo.xcprivacy */,
 				2FAD9762203C412B000D30F8 /* config.xml */,
 				50B271D01FEDC1A000F3C39B /* public */,
@@ -83,6 +114,8 @@
 			path = App;
 			sourceTree = "<group>";
 		};
+		B90000000000000000000014 /* Shared */ = {isa = PBXGroup; children = (B90000000000000000000001,); path = Shared; sourceTree = "<group>"; };
+		B90000000000000000000015 /* PlutoDailyWidget */ = {isa = PBXGroup; children = (B80000000000000000000003, B90000000000000000000002, B90000000000000000000003, B90000000000000000000004, B90000000000000000000005,); path = PlutoDailyWidget; sourceTree = "<group>"; };
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -93,10 +126,12 @@
 				504EC3001FED79650016851F /* Sources */,
 				504EC3011FED79650016851F /* Frameworks */,
 				504EC3021FED79650016851F /* Resources */,
+				B90000000000000000000021 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				B90000000000000000000023,
 			);
 			name = App;
 			packageProductDependencies = (
@@ -106,6 +141,7 @@
 			productReference = 504EC3041FED79650016851F /* App.app */;
 			productType = "com.apple.product-type.application";
 		};
+		B90000000000000000000028 /* PlutoDailyWidget */ = {isa = PBXNativeTarget; buildConfigurationList = B9000000000000000000002B; buildPhases = (B9000000000000000000001E, B90000000000000000000020, B9000000000000000000001F,); buildRules = (); dependencies = (); name = PlutoDailyWidget; productName = PlutoDailyWidget; productReference = B90000000000000000000006; productType = "com.apple.product-type.app-extension"; };
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -128,6 +164,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				"zh-Hans",
 				Base,
 			);
 			mainGroup = 504EC2FB1FED79650016851F;
@@ -139,6 +176,7 @@
 			projectRoot = "";
 			targets = (
 				504EC3031FED79650016851F /* App */,
+				B90000000000000000000028 /* PlutoDailyWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -158,6 +196,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B9000000000000000000001F /* Widget Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (B9000000000000000000000D, B80000000000000000000004,); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -168,9 +207,11 @@
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
 				A10000000000000000000001 /* PlutoNativePlugin.swift in Sources */,
 				A10000000000000000000002 /* PlutoViewController.swift in Sources */,
+				B9000000000000000000000A /* DailyTipStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B9000000000000000000001E /* Widget Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (B9000000000000000000000B, B9000000000000000000000C,); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
@@ -190,6 +231,7 @@
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
+        B80000000000000000000003 /* Localizable.strings */ = {isa = PBXVariantGroup; children = (B80000000000000000000001, B80000000000000000000002,); name = Localizable.strings; sourceTree = "<group>"; };
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -311,6 +353,7 @@
 				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = L855ZVM679;
 				INFOPLIST_FILE = App/Info.plist;
+				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -323,7 +366,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_VERSION = 5.0;
 				SUPPORTS_MACCATALYST = NO;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -335,6 +378,7 @@
 				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = L855ZVM679;
 				INFOPLIST_FILE = App/Info.plist;
+				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -346,10 +390,12 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
 				SWIFT_VERSION = 5.0;
 				SUPPORTS_MACCATALYST = NO;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
+		B90000000000000000000029 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {APPLICATION_EXTENSION_API_ONLY = YES; CODE_SIGN_ENTITLEMENTS = PlutoDailyWidget/PlutoDailyWidget.entitlements; CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 4; DEVELOPMENT_TEAM = L855ZVM679; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = PlutoDailyWidget/Info.plist; IPHONEOS_DEPLOYMENT_TARGET = 15.0; LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks"); MARKETING_VERSION = 1.1.0; PRODUCT_BUNDLE_IDENTIFIER = com.yonge6.plutolifemanual.dailywidget; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = iphoneos; SKIP_INSTALL = YES; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2"; SUPPORTS_MACCATALYST = NO; SWIFT_OPTIMIZATION_LEVEL = "-Onone";}; name = Debug; };
+		B9000000000000000000002A /* Release */ = {isa = XCBuildConfiguration; buildSettings = {APPLICATION_EXTENSION_API_ONLY = YES; CODE_SIGN_ENTITLEMENTS = PlutoDailyWidget/PlutoDailyWidget.entitlements; CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 4; DEVELOPMENT_TEAM = L855ZVM679; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = PlutoDailyWidget/Info.plist; IPHONEOS_DEPLOYMENT_TARGET = 15.0; LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks"); MARKETING_VERSION = 1.1.0; PRODUCT_BUNDLE_IDENTIFIER = com.yonge6.plutolifemanual.dailywidget; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = iphoneos; SKIP_INSTALL = YES; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2"; SUPPORTS_MACCATALYST = NO;}; name = Release; };
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -371,6 +417,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		B9000000000000000000002B /* Widget configuration */ = {isa = XCConfigurationList; buildConfigurations = (B90000000000000000000029, B9000000000000000000002A,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */

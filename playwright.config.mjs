@@ -1,5 +1,7 @@
 import { defineConfig } from "@playwright/test";
 
+const port = Number(process.env.PLUTO_TEST_PORT || 8789);
+
 export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 60_000,
@@ -8,8 +10,9 @@ export default defineConfig({
   workers: 1,
   reporter: process.env.CI ? "github" : "line",
   use: {
-    baseURL: "http://pluto.test:8789",
+    baseURL: `http://pluto.test:${port}`,
     browserName: "chromium",
+    channel: process.env.PLUTO_TEST_BROWSER_CHANNEL || undefined,
     launchOptions: {
       args: [
         "--host-resolver-rules=MAP pluto.test 127.0.0.1",
@@ -21,7 +24,8 @@ export default defineConfig({
   },
   webServer: {
     command: "node scripts/serve-dist.mjs",
-    url: "http://127.0.0.1:8789",
+    url: `http://127.0.0.1:${port}`,
+    env: { PORT: String(port) },
     reuseExistingServer: false,
     timeout: 20_000,
   },

@@ -1,6 +1,7 @@
 import Capacitor
 import Photos
 import UIKit
+import WidgetKit
 
 @objc(PlutoNativePlugin)
 public class PlutoNativePlugin: CAPPlugin, CAPBridgedPlugin {
@@ -10,7 +11,42 @@ public class PlutoNativePlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "saveImage", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "shareImage", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "shareLink", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "updateDailyWidget", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "consumeWidgetLink", returnType: CAPPluginReturnPromise),
     ]
+
+    public override func load() {
+        NotificationCenter.default.addObserver(self, selector: #selector(dailyTipOpened), name: Notification.Name("PlutoDailyTipOpened"), object: nil)
+    }
+
+    deinit { NotificationCenter.default.removeObserver(self) }
+
+    @objc private func dailyTipOpened() {
+        notifyListeners("dailyTipOpened", data: [:])
+    }
+
+    @objc func consumeWidgetLink(_ call: CAPPluginCall) {
+        let pending = UserDefaults.standard.bool(forKey: DailyTipStore.pendingLinkKey)
+        UserDefaults.standard.removeObject(forKey: DailyTipStore.pendingLinkKey)
+        call.resolve(["openDailyTip": pending])
+    }
+
+    @objc func updateDailyWidget(_ call: CAPPluginCall) {
+        do {
+            var payload: DailyTipPayload?
+            if let object = call.getObject("payload") {
+                let data = try JSONSerialization.data(withJSONObject: object)
+                let decoded = try JSONDecoder().decode(DailyTipPayload.self, from: data)
+                guard decoded.isValid else { call.reject("Invalid daily advice."); return }
+                payload = decoded
+            }
+            try DailyTipStore.save(payload)
+            WidgetCenter.shared.reloadTimelines(ofKind: DailyTipStore.widgetKind)
+            call.resolve(["updated": true])
+        } catch {
+            call.reject("Daily advice could not be shared with the widget.", nil, error)
+        }
+    }
 
     @objc func saveImage(_ call: CAPPluginCall) {
         guard let fileURL = writeTemporaryImage(call) else { return }

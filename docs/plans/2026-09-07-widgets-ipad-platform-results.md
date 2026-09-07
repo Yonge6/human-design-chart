@@ -34,10 +34,10 @@ The user subsequently requested daily-tip share images with a bottom-right QR. I
 
 Product Design QA passed after reference/render comparison iterations; see root `design-qa.md`. Screenshots and the real exported share PNG are under `qa/2026-09-07/`.
 
-## Remaining release verification
+## Remaining verification at the initial implementation gate
 
 SpringBoard widget placement and real-device timeline refresh are not manually verified. Distribution App Group registration and provisioning must be checked when releasing. No production deployment, git push/commit/merge, distribution archive signing/upload, or App Store Connect change occurred. Simulator-only ad-hoc signing was used for shared-container verification; no developer credentials or profiles were changed.
 
 ## Native release authorization — 2026-09-08
 
-The user explicitly requested withdrawal of the waiting App Store version, a new binary, refreshed iPhone/iPad screenshots, and App Review resubmission. Version 1.1.0 build 5 is prepared for that scope. This supersedes the earlier H5-only authorization boundary. Release notes and screenshots must describe native text results and daily tip sharing; the native binary excludes all BodyGraph artwork.
+The user explicitly requested withdrawal of the waiting App Store version, a new binary, refreshed iPhone/iPad screenshots, and App Review resubmission. Version 1.1.0 build 6 is prepared for that scope. Build 5 was superseded after native screenshot QA found that reading and share dialogs needed explicit device safe-area insets. This supersedes the earlier H5-only authorization boundary. Release notes and screenshots must describe native text results and daily tip sharing; the native binary excludes all BodyGraph artwork.

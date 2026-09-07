@@ -1,0 +1,86 @@
+[
+  {
+    "path": "iphone/en-US/01-daily-tip.jpg",
+    "width": 1320,
+    "height": 2868,
+    "sha256": "4b54c0d6dd3643d906d0693f545e85115ed2d06acdd6024ac3b546ab62e0ac97"
+  },
+  {
+    "path": "iphone/en-US/02-results.jpg",
+    "width": 1320,
+    "height": 2868,
+    "sha256": "547827ef6721b331f6e88c848a9e7ee478191c21c2d96ce3c30f6b07001c23a5"
+  },
+  {
+    "path": "iphone/en-US/03-reading.jpg",
+    "width": 1320,
+    "height": 2868,
+    "sha256": "5c92e6fa32e9d9f13ca41e06b7b7b18a64fe11fbc0adad5188ec6cfa7ecf8478"
+  },
+  {
+    "path": "iphone/en-US/04-share.jpg",
+    "width": 1320,
+    "height": 2868,
+    "sha256": "f6afdf1304389a6efefba2e13c1cbd008a1cd8f7f6612014b5f7d8449439f6a7"
+  },
+  {
+    "path": "iphone/zh-Hans/01-daily-tip.jpg",
+    "width": 1320,
+    "height": 2868,
+    "sha256": "81e9e5b42cfdffe8025f7fc87535fedce9ef0da6522c9836be4f65fa3bd576a3"
+  },
+  {
+    "path": "iphone/zh-Hans/02-results.jpg",
+    "width": 1320,
+    "height": 2868,
+    "sha256": "7ed5eccbf148271df32618f338bb7be0125da25eca94109bb6ab4a4842c5c5f1"
+  },
+  {
+    "path": "iphone/zh-Hans/03-reading.jpg",
+    "width": 1320,
+    "height": 2868,
+    "sha256": "e1983bd31a8b97e8cd9ea79ca367742afa6a71037d46786c686b7eccaec80443"
+  },
+  {
+    "path": "iphone/zh-Hans/04-share.jpg",
+    "width": 1320,
+    "height": 2868,
+    "sha256": "5da2ebcbbc90d07d494fd743c607c5b2d26905850a4e5c044ccd860aaaf210c6"
+  },
+  {
+    "path": "ipad/en-US/01-daily-tip.jpg",
+    "width": 2064,
+    "height": 2752,
+    "sha256": "309d09b3d5ec90659abc2ba970eea5c6f97d49f7269cd8c44aa09d1328074b10"
+  },
+  {
+    "path": "ipad/en-US/02-results.jpg",
+    "width": 2064,
+    "height": 2752,
+    "sha256": "d36e7e748cbfddb519ec26029e3224bf0783fb93c4f9f9a716025ee0adf88ca7"
+  },
+  {
+    "path": "ipad/en-US/03-reading.jpg",
+    "width": 2064,
+    "height": 2752,
+    "sha256": "9932a4cb22959c1b42192e484d6b52c68d34bab53d599dbaacb23c906ec93032"
+  },
+  {
+    "path": "ipad/en-US/04-share.jpg",
+    "width": 2064,
+    "height": 2752,
+    "sha256": "4532aa6a22ca99d2fb66d366272e1f0e763914fa8ef13063fef50a87022b42ce"
+  },
+  {
+    "path": "ipad/zh-Hans/01-daily-tip.jpg",
+    "width": 2064,
+    "height": 2752,
+    "sha256": "718d066fd21f8fa109d486d35ef2025bd0e557679cbc671dc00fe0042248feee"
+  },
+  {
+    "path": "ipad/zh-Hans/03-reading.jpg",
+    "width": 2064,
+    "height": 2752,
+    "sha256": "ca1506404b4463b6b810c603716835b2050090f37f33ae7cd5f0dc02e7e917ca"
+  }
+]

@@ -14,12 +14,17 @@ Native binary source commit: `0fa102ede230d865743eb846469a2cc289a222b1`.
 
 `metadata.json` contains submitted copy; `screenshots.json` records the 16 prepared upload materials and their hashes. The four primary images in each locale show the daily-tip home, results, detailed reading and QR share preview. Screenshot data is fictional.
 
-Archive, IPA, signing/export/upload logs, test logs and old screenshot backups are retained locally under `build/appstore-2026-09-08/` (not committed). ## Pending Apple authentication and final review submission
+Archive, IPA, signing/export/upload logs, test logs and old screenshot backups are retained locally under `build/appstore-2026-09-08/` (not committed). ## Submitted to App Review
 
-At 2026-09-08 00:59 Asia/Shanghai, the fresh App Store Connect page redirected to Apple login. The user was asked to restore the Chrome session. No new App Review submission has been confirmed.
+Apple readback confirmed **Waiting for Review** for **1.1.0 (6)** on **2026-09-08 at 01:25 Asia/Shanghai**.
 
-Before the session expired, Build 6 was selected and saved. Screenshot upload counts alone were insufficient: Apple reported screenshots still uploading, and language readback exposed an English iPad set on the Chinese view. A sequential Chinese iPad replacement was started, but its persistence must be verified after login. Check all four device/locale sets against the local assets, confirm real Apple-hosted thumbnails and the intended language/order, then add and submit for review. Preserve automatic release after approval.
+- Submission ID: `92b8e7a2-7bd6-44cb-ab51-4bec245c1e04`.
+- Review details: https://appstoreconnect.apple.com/apps/6795840459/distribution/reviewsubmissions/details/92b8e7a2-7bd6-44cb-ab51-4bec245c1e04
+- Final uploaded materials: **14 screenshots** — four each for English iPhone, Chinese iPhone and English iPad; two for Chinese iPad (home and detailed reading). The other two Chinese iPad files repeatedly stalled in Apple upload, including an RGB PNG retry; their failed placeholders were removed before submission. All sixteen prepared originals remain available locally.
+- `submitted-screenshots.json` lists the 14 submitted assets; `screenshots.json` lists all 16 prepared assets.
+- Old version/build 4 submission is confirmed Removed. Build 5 was superseded; build 6 alone is in the new review submission.
+- Existing automatic release after approval remains selected.
+- Native source and materials PR 40 merged after engine-web, API and Supabase CI passed. Main merge commit: `2d04f81c35bd141802ede3a3f241ff20f2b42a5c`.
+- Final IPA SHA-256: `bc63f9a8d1ca9e93a6134e85337e9b8f183d65555ece9c0c48a4df81e3df6d07`.
 
-Final IPA SHA-256: `bc63f9a8d1ca9e93a6134e85337e9b8f183d65555ece9c0c48a4df81e3df6d07`.
-
-Source/material PR: https://github.com/Yonge6/human-design-chart/pull/40. The first engine-web CI attempt reported aborted image requests in the production-bundle E2E (23/24 passed); the same final source passed all 24 locally. A single CI job rerun was requested, with the result pending at this checkpoint.
+Apple's first final validation returned a transient unexpected error. Reopening the version and retrying created the draft; Submit for Review returned a success dialog, followed by the submission detail row `iOS App 1.1.0 1.1.0 (6) App version Waiting for Review`. The live DOM readback is retained in `build/appstore-2026-09-08/review-submission-readback.txt`.

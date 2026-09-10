@@ -833,7 +833,7 @@ test('daily advice exports a PNG with a QR footer in H5 and uses native image sh
   await fillAndGenerate(page);
   await page.locator('#editChart').click();
   await page.locator('#shareDailyTip').click();
-  await expect(page.locator('#dailySharePreview')).toHaveAttribute('src', /^blob:/);
+  await expect(page.locator('#dailySharePreview')).toHaveAttribute('src', /^data:image\/png;base64,/);
   await expect.poll(() => page.locator('#dailySharePreview').evaluate(img => ({ width:img.naturalWidth, height:img.naturalHeight }))).toEqual({ width:1080, height:1440 });
   const download = page.waitForEvent('download');
   await page.locator('#saveDailyImage').click();
@@ -844,7 +844,7 @@ test('daily advice exports a PNG with a QR footer in H5 and uses native image sh
   await switchLanguage(page, 'en');
   await page.locator('#shareDailyTip').click();
   await expect(page.locator('#dailyShareTitle')).toHaveText('Share today’s thought');
-  await expect(page.locator('#dailySharePreview')).toHaveAttribute('src', /^blob:/);
+  await expect(page.locator('#dailySharePreview')).toHaveAttribute('src', /^data:image\/png;base64,/);
   await page.locator('#closeDailyShare').click();
   await installNativeRuntime(page, { privacyByDefault:false, keepHistory:true, cloudSave:false, productAnalytics:false });
   await page.reload();
@@ -854,4 +854,82 @@ test('daily advice exports a PNG with a QR footer in H5 and uses native image sh
   await expect.poll(() => page.evaluate(() => globalThis.__plutoNativeCalls.filter(call => call.method === 'shareImage').length)).toBe(1);
   await page.locator('#saveDailyImage').click();
   await expect.poll(() => page.evaluate(() => globalThis.__plutoNativeCalls.filter(call => call.method === 'saveImage').length)).toBe(1);
+});
+
+for (const [platform, userAgent] of [
+  ['iPhone', 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 MicroMessenger/8.0.61'],
+  ['Android', 'Mozilla/5.0 (Linux; Android 15) AppleWebKit/537.36 Mobile Safari/537.36 MicroMessenger/8.0.61'],
+]) {
+  test(`WeChat ${platform} offers a long-press PNG without downloading or sharing a link`, async ({ page }, testInfo) => {
+    await page.setViewportSize({ width:390, height:844 });
+    await page.addInitScript(({ entry, ua }) => {
+      localStorage.setItem('pluto-chart-history-v1', JSON.stringify([entry]));
+      Object.defineProperty(navigator, 'userAgent', { value:ua, configurable:true });
+      globalThis.__imageOperations = [];
+      Object.defineProperty(navigator, 'canShare', { value:() => true, configurable:true });
+      Object.defineProperty(navigator, 'share', { value:async payload => globalThis.__imageOperations.push(payload), configurable:true });
+      document.addEventListener('click', event => {
+        if (event.target.closest('a[download]')) globalThis.__imageOperations.push('download');
+      });
+    }, { entry:historyEntry, ua:userAgent });
+    await page.goto('/');
+    await switchLanguage(page, 'zh');
+    await page.locator('#shareDailyTip').click();
+    const preview = page.locator('#dailySharePreview');
+    await expect.poll(() => preview.evaluate(img => [img.naturalWidth, img.naturalHeight])).toEqual([1080,1440]);
+    await expect(preview).toHaveAttribute('src', /^data:image\/png;base64,/);
+    await expect(page.locator('#saveDailyImage')).toHaveText('长按保存图片');
+    await page.locator('#saveDailyImage').click();
+    await expect(page.locator('#dailyShareHelp')).toContainText('选择“保存图片”或“保存到手机”');
+    await expect(page.locator('#dailyShareStatus')).not.toContainText('已保存');
+    await page.locator('#sendDailyImage').click();
+    await expect(page.locator('#dailyShareHelp')).toContainText('选择“发送给朋友”');
+    await expect(page.locator('#dailyShareHelp')).toContainText('先保存图片');
+    expect(await page.evaluate(() => globalThis.__imageOperations)).toEqual([]);
+    expect(await preview.evaluate(img => getComputedStyle(img).pointerEvents)).toBe('auto');
+    expect(await page.locator('#dailyShareDialog').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+    await page.screenshot({ path:testInfo.outputPath(`wechat-${platform}.png`) });
+    await page.locator('#closeDailyShare').click();
+    await expect(preview).not.toHaveAttribute('src');
+    await switchLanguage(page, 'en');
+    await page.locator('#shareDailyTip').click();
+    await expect(page.locator('#sendDailyImage')).toHaveText('Send with a long press');
+    await expect(page.locator('#dailyShareHelp')).toContainText('Touch and hold');
+  });
+}
+
+test('mobile daily image save and share pass PNG files only and handle cancellation and failure', async ({ page }) => {
+  await page.addInitScript(entry => {
+    localStorage.setItem('pluto-chart-history-v1', JSON.stringify([entry]));
+    Object.defineProperty(navigator, 'userAgent', { value:'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1', configurable:true });
+    globalThis.__imageOperations = [];
+    Object.defineProperty(navigator, 'canShare', { value:() => true, configurable:true });
+    Object.defineProperty(navigator, 'share', { configurable:true, value:async payload => {
+      if (globalThis.__shareError) throw new DOMException('Test share error', globalThis.__shareError);
+      globalThis.__imageOperations.push({ keys:Object.keys(payload).sort(), type:payload.files[0].type, size:payload.files[0].size, name:payload.files[0].name });
+    }});
+  }, historyEntry);
+  await page.goto('/');
+  await switchLanguage(page, 'zh');
+  await page.locator('#shareDailyTip').click();
+  await expect(page.locator('#saveDailyImage')).toBeEnabled();
+  await page.locator('#saveDailyImage').click();
+  await expect(page.locator('#dailyShareStatus')).toContainText('系统面板');
+  await page.locator('#sendDailyImage').click();
+  const operations = await page.evaluate(() => globalThis.__imageOperations);
+  expect(operations).toHaveLength(2);
+  for (const operation of operations) {
+    expect(operation.keys).toEqual(['files','title']);
+    expect(operation.type).toBe('image/png');
+    expect(operation.size).toBeGreaterThan(10000);
+    expect(operation.name).toMatch(/^pluto-daily-.*\.png$/);
+  }
+  await page.evaluate(() => globalThis.__shareError = 'AbortError');
+  await page.locator('#sendDailyImage').click();
+  await expect(page.locator('#dailyShareStatus')).toContainText('已取消');
+  await page.evaluate(() => globalThis.__shareError = 'NotAllowedError');
+  await page.locator('#sendDailyImage').click();
+  await expect(page.locator('#dailyShareHelp')).toBeVisible();
+  await expect(page.locator('#dailyShareStatus')).toContainText('操作未完成');
+  expect(await page.evaluate(() => globalThis.__imageOperations.length)).toBe(2);
 });

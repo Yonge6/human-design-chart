@@ -6,7 +6,7 @@ import {
 import { fetchPlaceCandidates, inferTimezoneFromAddress } from "./src/services/location-service.js";
 import { createHumanDesignProfileSnapshot } from "./src/engine/profile-snapshot.js";
 import { DEFAULT_CONSENT, deleteCloudData, recordProductEvent, saveChartToCloud, updateConsent } from "./src/services/backend-service.js";
-import { canUseSystemShare, isMobileDevice, sharePageLink } from "./src/services/sharing-service.js";
+import { canUseSystemShare, isEmbeddedBrowser, isMobileDevice, sharePageLink } from "./src/services/sharing-service.js";
 import { readStoredJson, writeStoredJson } from "./src/services/storage-service.js";
 import { createBodygraphRenderer } from "./src/renderer/bodygraph-renderer.js";
 import { renderPosterElement } from "./src/renderer/poster-renderer.js";
@@ -2225,12 +2225,14 @@ trackEvent("app_open", { environment: globalThis.PLUTO_CONFIG?.environment || "d
 const dailyShareDialog = document.querySelector('#dailyShareDialog');
 let dailyShareBlob;
 let dailyShareUrl;
+let dailyShareGeneration = 0;
 let dailyShareFileName;
 let dailyShareLanguage = 'zh';
 let dailyShareBusy = false;
 function dailyShareText(zh, en) { return dailyShareLanguage === 'zh' ? zh : en; }
 function clearDailyShare() {
-  if (dailyShareUrl) URL.revokeObjectURL(dailyShareUrl);
+  dailyShareGeneration += 1;
+  dailyShareDialog.classList.remove('daily-share-guided');
   dailyShareBlob = undefined;
   dailyShareUrl = undefined;
   document.querySelector('#dailySharePreview').removeAttribute('src');
@@ -2246,7 +2248,10 @@ document.querySelector('#shareDailyTip').addEventListener('click', async event =
   button.disabled = true;
   dailyShareLanguage = language;
   clearDailyShare();
+  const generation = dailyShareGeneration;
   const status = document.querySelector('#dailyShareStatus');
+  const help = document.querySelector('#dailyShareHelp');
+  help.hidden = true;
   document.querySelector('#dailyShareTitle').textContent = dailyShareText('分享今日提示', 'Share today’s thought');
   document.querySelector('#closeDailyShare').textContent = dailyShareText('关闭', 'Close');
   document.querySelector('#saveDailyImage').textContent = dailyShareText('保存图片', 'Save image');
@@ -2257,13 +2262,20 @@ document.querySelector('#shareDailyTip').addEventListener('click', async event =
   dailyShareDialog.showModal();
   try {
     const blob = await createDailyTipPoster({ tip, language, date });
-    if (!dailyShareDialog.open) return;
+    // A real PNG data URL keeps the preview available to embedded-browser image menus.
+    const imageUrl = `data:image/png;base64,${await blobToBase64(blob)}`;
+    if (!dailyShareDialog.open || generation !== dailyShareGeneration) return;
     dailyShareBlob = blob;
-    dailyShareUrl = URL.createObjectURL(blob);
+    dailyShareUrl = imageUrl;
     dailyShareFileName = `pluto-daily-${document.querySelector('#dailyTipDate').dateTime}.png`;
     const preview = document.querySelector('#dailySharePreview');
     preview.alt = dailyShareText(`${tip} 右下角二维码可打开 Pluto 首页。`, `${tip} The QR code opens Pluto.`);
     preview.src = dailyShareUrl;
+    if (dailyImageNeedsLongPress()) {
+      document.querySelector('#saveDailyImage').textContent = dailyShareText('长按保存图片', 'Save with a long press');
+      document.querySelector('#sendDailyImage').textContent = dailyShareText('长按发送图片', 'Send with a long press');
+      showDailyImageHelp();
+    }
     status.textContent = dailyShareText('图片仅包含今日提示，不含姓名或出生信息。', 'Includes only today’s thought, without your name or birth details.');
     document.querySelector('#saveDailyImage').disabled = false;
     document.querySelector('#sendDailyImage').disabled = false;
@@ -2272,6 +2284,24 @@ document.querySelector('#shareDailyTip').addEventListener('click', async event =
     console.warn('Daily share image failed', error);
   } finally { button.disabled = false; }
 });
+function dailyImageNeedsLongPress() {
+  if (nativeRuntime && nativePlugin) return false;
+  return isEmbeddedBrowser() || (isMobileDevice() && !canShareFile(new File([dailyShareBlob], dailyShareFileName, { type: 'image/png' })));
+}
+function showDailyImageHelp(save) {
+  const help = document.querySelector('#dailyShareHelp');
+  help.hidden = false;
+  help.textContent = save === true
+    ? dailyShareText('长按下方图片，在菜单中选择“保存图片”或“保存到手机”，再到相册查看。', 'Touch and hold the image below, then choose Save Image. Check your Photos app afterwards.')
+    : save === false
+      ? dailyShareText('长按下方图片，选择“发送给朋友”。若菜单没有此项，请先保存图片，再从微信相册发送。', 'Touch and hold the image below and choose Send to a friend. If unavailable, save it first and send it from Photos in WeChat.')
+      : dailyShareText('长按图片，保存到手机或发送给朋友。若没有发送选项，请先保存，再从微信相册发送。', 'Touch and hold the image to save or send it. If sending is unavailable, save it first and send it from Photos in WeChat.');
+  if (save !== undefined) {
+    dailyShareDialog.classList.add('daily-share-guided');
+    help.scrollIntoView({ block: 'start', behavior: 'instant' });
+    help.focus({ preventScroll: true });
+  }
+}
 async function shareDailyImage(save) {
   if (!dailyShareBlob || dailyShareBusy) return;
   dailyShareBusy = true;
@@ -2285,17 +2315,26 @@ async function shareDailyImage(save) {
         : await nativePlugin.shareImage({ base64, fileName:dailyShareFileName });
       if (result?.completed === false) return;
       status.textContent = save ? dailyShareText('已保存到相册。', 'Saved to Photos.') : dailyShareText('已分享。', 'Shared.');
-    } else if (!save && canShareFile(file)) {
+    } else if (dailyImageNeedsLongPress()) {
+      showDailyImageHelp(save);
+    } else if (canShareFile(file)) {
+      status.textContent = save
+        ? dailyShareText('请在系统面板中选择“存储图像”或保存到相册。', 'Choose Save Image or save to Photos in the system sheet.')
+        : dailyShareText('请在系统面板中选择接收图片的应用或联系人。', 'Choose an app or contact to receive the image in the system sheet.');
       await navigator.share({ files:[file], title:dailyShareText('Pluto 今日提示', 'Pluto daily thought') });
-      status.textContent = dailyShareText('已分享。', 'Shared.');
     } else {
       const link = document.createElement('a');
       link.download = dailyShareFileName; link.href = dailyShareUrl;
       document.body.append(link); link.click(); link.remove();
-      status.textContent = dailyShareText('图片已下载，可以发送给朋友。', 'Image downloaded, ready to send.');
+      status.textContent = dailyShareText('已请求下载 PNG 图片，请在浏览器的下载记录中查看。', 'PNG download requested. Check your browser’s downloads.');
     }
   } catch (error) {
-    if (error?.name !== 'AbortError') status.textContent = dailyShareText('操作未完成，请重试或长按图片保存。', 'Could not finish. Try again or save the image with a long press.');
+    if (error?.name === 'AbortError') {
+      status.textContent = dailyShareText('已取消操作，图片仍可长按保存。', 'Cancelled. You can still touch and hold the image to save it.');
+    } else {
+      status.textContent = dailyShareText('操作未完成，请长按图片保存后发送。', 'Could not finish. Touch and hold the image to save it, then send it.');
+      showDailyImageHelp(save);
+    }
   } finally { dailyShareBusy = false; }
 }
 document.querySelector('#saveDailyImage').addEventListener('click', () => shareDailyImage(true));

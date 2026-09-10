@@ -2118,3 +2118,10 @@ body { background: #100e14; }
 .daily-moon { position:absolute; top:-20px; right:-12px; width:118px; height:118px; }
 .form-panel .form-action-set > button { box-shadow:none; }
 .daily-moon { mix-blend-mode:lighten; }
+
+/* Keep the exported PNG available to WeChat and mobile image context menus. */
+#dailySharePreview { -webkit-touch-callout:default; -webkit-user-select:auto; user-select:auto; pointer-events:auto; }
+.daily-share-help { margin:0 0 16px; padding:12px 14px; border:1px solid #65543e; border-radius:8px; background:#241e1a; color:#ead3ab; font:14px/1.7 ui-sans-serif,system-ui,sans-serif; }
+.daily-share-help[hidden] { display:none; }
+.daily-share-guided .daily-share-help { border-color:#c5a36b; outline:none; }
+@media (max-width:540px) { .daily-share-dialog { padding:16px; } .daily-share-actions { gap:8px; } .daily-share-actions button { font-size:14px; } }

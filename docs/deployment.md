@@ -8,9 +8,11 @@ Capacitor native builds are treated as trusted native runtimes. Verify the repor
 
 ## Web
 
-Merging to `main` is not a Web production release. After an administrator changes the Pages source from branch deployment to **GitHub Actions**, publish only through the manually triggered `Deploy Pages` workflow. See [the release process](release-process.md), [Pages deployment guide](pages-deployment.md), and [release checklist](release-checklist.md).
+As verified on 2026-09-10, `human-design.wonderelian.com` is served by Alibaba-hosted Nginx from `/srv/wonderelian/human-design.wonderelian.com`. Merging to `main` or completing `Deploy Pages` does not publish to this origin. The older [Pages deployment guide](pages-deployment.md) describes an alternative host, not the current production route.
 
-The workflow publishes only `dist/` to `https://human-design.wonderelian.com` and injects the exact `main` commit into `runtime-config.js`. No configured API or Supabase values means local-only operation. Never put a service-role key in any `PLUTO_*` browser variable.
+Build `dist/` from the reviewed main commit with `PLUTO_GIT_COMMIT`, `PLUTO_BUILD_DATE` (UTC), and `PLUTO_ENVIRONMENT=production`. Preserve the current backend configuration; empty API and Supabase values mean local-only operation. Never put a service-role key in browser variables.
+
+For the current origin, stage the exact artifact beside the site root, verify every file against a SHA-256 manifest, verify the existing production commit, and run `nginx -t`. Atomically exchange the two directories, retain the previous directory under `/srv/wonderelian/backups/`, and roll back on failed origin HTTP readback. Do not modify sibling sites or shared Nginx configuration. After publication, read the public HTTPS runtime configuration and compare all public asset hashes with the artifact; a successful copy alone is not release acceptance.
 
 ## API
 

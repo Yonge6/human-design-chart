@@ -3,11 +3,14 @@ import { readFile } from "node:fs/promises";
 import vm from "node:vm";
 import test from "node:test";
 
-const source = await readFile(new URL("../analytics.js", import.meta.url), "utf8");
+const source = await readFile(new URL("../analytics-frame.js", import.meta.url), "utf8");
+const bootstrap = await readFile(new URL("../analytics.js", import.meta.url), "utf8");
 function run({ hostname = "human-design.wonderelian.com", protocol = "https:", search = "?name=PRIVATE&birth=PRIVATE", native = false } = {}) {
   const scripts = [];
-  const window = { location: { hostname, protocol, search }, Capacitor: { isNativePlatform: () => native } };
-  vm.runInNewContext(source, { window, URLSearchParams, document: { createElement: () => ({}), head: { appendChild: (s) => scripts.push(s) } } });
+  const window = { location: { hostname, protocol, search, origin: 'https://human-design.wonderelian.com' }, parent: { location: { origin: 'https://human-design.wonderelian.com' } }, Capacitor: { isNativePlatform: () => native } };
+  const document = { currentScript: { src: 'https://human-design.wonderelian.com/analytics.js' }, createElement: () => ({style:{},setAttribute(){},addEventListener(){}}), body: { style:{}, appendChild: (s) => scripts.push(s) }, head: { appendChild: (s) => scripts.push(s) } };
+  vm.runInNewContext(bootstrap, { window, URL, URLSearchParams, document });
+  if (scripts.length) { scripts.length = 0; delete window.gtag; vm.runInNewContext(source, {window,document}); }
   return { calls: Array.from(window.dataLayer || [], (args) => Array.from(args)), scripts };
 }
 test("basic web visits exclude sensitive URL context and keep advertising disabled", () => {

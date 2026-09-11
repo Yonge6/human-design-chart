@@ -14,6 +14,8 @@ const files = [
   "style.css",
   "app.js",
   "analytics.js",
+  "analytics-frame.html",
+  "analytics-frame.js",
   "build-provenance.js",
   "human-design-engine.js",
   "location-service.js",

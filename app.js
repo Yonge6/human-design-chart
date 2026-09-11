@@ -954,14 +954,6 @@ function trackEvent(eventName, properties = {}) {
   });
 }
 
-function syncGoogleAnalyticsConsent() {
-  if (typeof window.gtag !== "function") return;
-  const analyticsStorage = remoteServicesAllowed && appSettings.productAnalytics === true
-    ? "granted"
-    : "denied";
-  window.gtag("consent", "update", { analytics_storage: analyticsStorage });
-}
-
 function trackChartCompletionInGoogleAnalytics(snapshot) {
   if (!remoteServicesAllowed || appSettings.productAnalytics !== true || typeof window.gtag !== "function") return;
   window.gtag("event", "chart_completion", {
@@ -1804,7 +1796,6 @@ productAnalyticsInput.addEventListener("change", () => {
   if (!remoteServicesAllowed) return;
   appSettings.productAnalytics = productAnalyticsInput.checked;
   persistSettings();
-  syncGoogleAnalyticsConsent();
   updateConsent(currentConsent()).catch((error) => console.warn("Analytics consent was not synchronized.", error));
   trackEvent("privacy_mode_changed", { setting: "productAnalytics", enabled: productAnalyticsInput.checked });
 });
@@ -2201,7 +2192,6 @@ defaultPrivacyInput.checked = appSettings.privacyByDefault;
 saveHistoryInput.checked = appSettings.keepHistory;
 privacyToggle.checked = appSettings.privacyByDefault;
 updateRemoteServiceControls();
-syncGoogleAnalyticsConsent();
 applyLanguage(language, false);
 if (nativeRuntime) {
   resultSummary.classList.remove("sr-only");

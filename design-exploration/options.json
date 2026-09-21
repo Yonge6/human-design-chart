@@ -1,0 +1,21 @@
+{
+  "status": "awaiting-selection",
+  "date": "2026-09-21",
+  "options": [
+    {
+      "displayedOption": 1,
+      "original": "/Users/yongyuan/.codex/generated_images/01a0c47a-a2c7-7f63-914a-ac13a9e87695/exec-a678eecf-6f84-45ac-86a9-0df4ea87de95.png",
+      "local": "/Users/yongyuan/.codex/worktrees/e3fe/buer-life-manual/design-exploration/concept-01.png"
+    },
+    {
+      "displayedOption": 2,
+      "original": "/Users/yongyuan/.codex/generated_images/01a0c47a-a2c7-7f63-914a-ac13a9e87695/exec-71877fdb-64ec-4b04-8f2a-0ff356a307c8.png",
+      "local": "/Users/yongyuan/.codex/worktrees/e3fe/buer-life-manual/design-exploration/concept-02.png"
+    },
+    {
+      "displayedOption": 3,
+      "original": "/Users/yongyuan/.codex/generated_images/01a0c47a-a2c7-7f63-914a-ac13a9e87695/exec-bea441ae-64b6-4f0d-9116-e1fb27728f34.png",
+      "local": "/Users/yongyuan/.codex/worktrees/e3fe/buer-life-manual/design-exploration/concept-03.png"
+    }
+  ]
+}

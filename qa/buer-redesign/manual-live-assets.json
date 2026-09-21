@@ -1,0 +1,41 @@
+{
+  "source": "6ffda8b9271fee5ebe091e7a4fa5cc49cc03a8d9",
+  "url": "https://yonge6.github.io/buer-life-manual-preview/?v=6ffda8b",
+  "checks": [
+    {
+      "file": "index.html",
+      "match": true,
+      "sha256": "4d7c040d49c4ad4e2eee5e8df35f484f955ff5001c9db0d9e348bfb7317e81e9"
+    },
+    {
+      "file": "runtime-config.js",
+      "match": true,
+      "sha256": "5edf522190442743d3ecebad3ecde7f4914da76a08cd10ecfa2808a8bec3f336"
+    },
+    {
+      "file": "app.js",
+      "match": true,
+      "sha256": "f6b27302d0224c059bf1b250f6b0a6c3f752ffda6f65ffe3187d6f11a42dade6"
+    },
+    {
+      "file": "buer.css",
+      "match": true,
+      "sha256": "e8dddc14c2659d9e59814ca25344791ad6bc5fef4d58971837a1866c73dc597a"
+    },
+    {
+      "file": "buer-manual.css",
+      "match": true,
+      "sha256": "2f1174cfda4d5cf34f8a0f50872d49d5b3d395bccae89271512acaeb9d19688f"
+    },
+    {
+      "file": "src/app/buer-manual.js",
+      "match": true,
+      "sha256": "a27fbca596270ab265f45ed414144aa58cbc6bdc455390e88a77d3e351a642e7"
+    },
+    {
+      "file": "src/app/buer-home.js",
+      "match": true,
+      "sha256": "0c4be3ba8cb1f1aaaad7c59c8ed1feb3e001e64d11d732027c6fcc7a3167602a"
+    }
+  ]
+}

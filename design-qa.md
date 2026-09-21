@@ -19,6 +19,8 @@ In-app browser verified: three-step calculation, current-result title, overview 
 
 This iteration updates only the isolated redesign branch and its independent H5 preview. Original production remains outside the deployment scope.
 
+Public acceptance: source `6ffda8b`, artifact `b83e3e5`, Pages run `35634530023` succeeded. https://yonge6.github.io/buer-life-manual-preview/?v=6ffda8b was independently opened and verified: new manual tabs, 15 chapters, current saved result, question draft with explicit report context, 390px document width equal to viewport, and no console warnings/errors. All seven critical public files match the local built artifacts (`manual-live-assets.json`). Screenshots: `manual-live-mobile.png` (390 × 844) and `manual-live-desktop.png` (1769 × 1170). Final suite: 126 tests passed; H5 historical SVG and native asset guards passed. Keyboard ArrowRight tab selection also passed locally. Original checkout remains clean at `a52f6ba`.
+
 final result: blocked
 
 The visual implementation has no remaining actionable P0/P1/P2 layout findings in the checked states. End-to-end AI readiness is blocked by the pending choice/configuration of the server-side DeepSeek key. No provider success is claimed from mocked tests.

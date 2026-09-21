@@ -1,0 +1,51 @@
+{
+  "source": "1ea0af1bff6b5b3dc185d75172da92d08630a1a0",
+  "url": "https://yonge6.github.io/buer-life-manual-preview/?v=1ea0af1",
+  "checks": [
+    {
+      "file": "index.html",
+      "match": true,
+      "sha256": "6d185a3d9cbe1d97b848c46cf8e179910e2b4e1f91d12d15ffd296b16095018c"
+    },
+    {
+      "file": "runtime-config.js",
+      "match": true,
+      "sha256": "1c878438de4af082e292621aa505100e1123453f98c33ff999103d112a87ce9d"
+    },
+    {
+      "file": "app.js",
+      "match": true,
+      "sha256": "d130532e79e2047d4f6da52a62afd799a1d25e78bf4042130f56c95a9bc5203c"
+    },
+    {
+      "file": "buer.css",
+      "match": true,
+      "sha256": "623ee41d797b0bb9fe68dc4941d94f2cbeb72be45a0f3e5107d93d22cc4d5d28"
+    },
+    {
+      "file": "src/app/buer-home.js",
+      "match": true,
+      "sha256": "45a5e1f0d19b8fec3d11859e19c82308f5ab82af54e2f4c531d17fde38e270f3"
+    },
+    {
+      "file": "src/renderer/daily-tip-poster.js",
+      "match": true,
+      "sha256": "715fb807cf3e6f4e57a7919edbec2962fcf55380e2e5c2cffe004ad92c4a9a6d"
+    },
+    {
+      "file": "privacy.html",
+      "match": true,
+      "sha256": "92e8cda1d470d85fe133523fb8c17c448deb64c5fb144f53a79f9b0948ad5a86"
+    },
+    {
+      "file": "support.html",
+      "match": true,
+      "sha256": "0e5948a530103f1d13afacfe337612c9baa94dab5fcb6f7c0bae5614002da8f6"
+    },
+    {
+      "file": "legal.html",
+      "match": true,
+      "sha256": "f52f8b4baf202bb829289b567b81bc1430513ad1ba6ece42ae5282213e96cf97"
+    }
+  ]
+}

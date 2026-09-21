@@ -71,3 +71,12 @@ Not verified: real provider response, physical iPad/iPhone keyboard, system Phot
 ## Public H5 addendum — 2026-09-22
 
 Independent preview is live at https://yonge6.github.io/buer-life-manual-preview/?v=b7612f3 (source `b7612f3`). Static H5 deployment acceptance passed: public HTTP/asset readback, actual calculation, daily advice and PNG/QR rendering, 390px overflow check and empty browser console. Live evidence is in `qa/buer-redesign/live-assets.json`, `live-mobile.png`, and `live-share.png`. Legacy form-driven hiding of the relocated daily card was found during live flow verification, removed, republished and retested. The overall AI readiness blocker above remains explicit; the static preview disables AI requests rather than returning a simulated answer.
+
+
+## Brand rename — 2026-09-22
+
+Product name is now 不二见己 (English: Buer Jianji). Life Manual remains the feature name. Updated home/navigation, document and sharing titles, daily poster artwork text, about/settings/legal/support copy, AI system identity, source README and preview README. App/Widget display names and Widget empty/footer copy are synchronized in source; bundle identifiers, storage keys and deep links remain compatible. This is not an App Store submission.
+
+Local validation: Chinese daily share image inspected, English title confirmed, 390px home has no horizontal overflow. 126 tests and H5/native asset guards passed; App and Widget plist syntax passed. Original chart and original project are preserved.
+
+Public rename acceptance: source `1ea0af1`, Pages run `35658156262` succeeded. Public document title and header show 不二见己; mobile PNG share card shows the new brand above and below the advice with its preview QR. Nine critical public files match local build bytes (`jianji-live-assets.json`), 390px width check passes, and console warnings/errors are empty. Evidence: `jianji-live-share.png`.

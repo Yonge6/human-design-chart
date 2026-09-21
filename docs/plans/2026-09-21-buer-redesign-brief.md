@@ -1,6 +1,6 @@
 # 不二·人生使用说明书 — redesign brief
 
-Status: visual exploration; await selection before implementing UI or the API.
+Status: option 3 selected by the user and implemented in the isolated branch. UI preview verified; real DeepSeek validation awaits the pending server credential choice.
 
 ## Isolation
 

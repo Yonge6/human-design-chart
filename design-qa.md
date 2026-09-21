@@ -1,51 +1,48 @@
-# Pluto Quiet Night Journal — design QA
+# 不二 option 3 — implementation QA
 
-Source visual truth: `qa/2026-09-07/selected-reference.png` (user selected the first displayed Product Design image).
-Implementation: `http://127.0.0.1:8794/`; screenshot `qa/2026-09-07/home-final.png`.
-Viewport and state: 390 × 844 CSS px, Chinese, dark theme, latest saved test result, daily advice ready, first form step. Source 853 × 1845 px was normalized to 390 × 844; implementation 390 × 844 at 1×. No browser chrome in the comparison.
-Full-view evidence: `qa/2026-09-07/home-comparison-final.png` contains the reference on the left and implementation on the right. Focus evidence: `qa/2026-09-07/home-comparison-focus.png`; the final full view also makes typography and controls readable at 1×.
+final result: blocked
 
-## Findings and comparison history
+The visual implementation has no remaining actionable P0/P1/P2 layout findings in the checked states. End-to-end AI readiness is blocked by the pending choice/configuration of the server-side DeepSeek key. No provider success is claimed from mocked tests.
 
-1. `home-comparison-1.png`: P1 missing moon image, P2 bold display fallback and quote/form displaced downward, P2 redundant home history action and footer outside the target fold. Generated a dedicated moon asset with built-in Image Gen, restored a light serif, compacted the heading/action layout, removed the redundant home action (history remains in the menu), and adjusted mobile rhythm.
-2. `home-comparison-2.png`: P2 share action's inherited minimum height still expanded the heading. Positioned the new share action independently with a 44 px hit target; restored the reference's quote wrapping and section divider. Matched the input/continue heights and reduced borders to single outlines.
-3. Final combined comparison: no remaining actionable P0/P1/P2 differences. Moon sizing corrected using the real generated asset; light compositing removes its darker rectangular background without drawing replacement art.
-4. Share dialog: P2 inherited full-width close control wrapped the title. Fixed flex sizing; verified both mobile browser and the actual iPad simulator share sheet. Poster line wrapping now preserves the sample advice's three readable clauses. Final PNG reviewed and QR decoded successfully.
+## Evidence and normalization
+
+- Source visual truth: `design-exploration/concept-03.png`, 1487 × 1058 pixels, unframed generated desktop concept.
+- Implementation: http://127.0.0.1:8798/; `qa/buer-redesign/desktop-home.png`, 1440 × 1024 pixels, 1440 × 1024 CSS px, DPR 1.
+- The images have effectively the same aspect ratio; source is judged at approximately 0.968 scale. Both were opened together in the same comparison input on the initial and final desktop review.
+- State difference: reference contains an illustrative two-message exchange and short example tip. Implementation uses an honest empty conversation and a real synthetic test result's longer daily tip. Actual user/error bubbles are recorded in `desktop-error.png`; no sample reply is presented as live AI.
+- Other captures: `mobile-home.png` and `mobile-error.png` (390 × 844); `mobile-small.png` (375 × 812); `ipad-home.png`, `ipad-english.png`, `ipad-share.png` (834 × 1194). All browser content screenshots at DPR 1, without simulated phone chrome.
+- Focused crops were unnecessary: the heading, message/avatar, composer, date/tip and manual entry remained readable in the full-size paired images. Mobile, tablet, English and share states were also inspected individually.
+
+## Findings and iteration history
+
+1. [P2, fixed] Inherited heading max-width caused incorrect centering/wrapping. Removed the legacy width constraint and introduced tablet/English wrapping. Evidence: final desktop and iPad captures.
+2. [P2, fixed] Automatic input focus scrolled the desktop header out of view; mobile error state pushed input controls toward bottom navigation. Post-response focus now avoids scrolling and is omitted on phone; mobile welcome/message/composer spacing was reduced. Evidence: `desktop-home.png`, `mobile-home.png`, `mobile-small.png`; 375px send bottom 570 < navigation top 747.
+3. [P2, fixed] Longer actual daily copy pushed the desktop manual/context beyond the viewport. Reduced tip size to 27px, sidebar gaps and manual section spacing. Final desktop document height and width equal 1024 and 1440 respectively.
+4. [P2, fixed] Timer refresh reverted the designed compact date to legacy long form. Date formatting is now consistent in the source refresh path.
+5. [P2, fixed] Error bubble used generic connection copy even when the provider was unconfigured. Bubble and status now preserve the specific error, including after history restoration.
+6. [P1, blocked] Real AI request cannot complete without the chosen server credential. User selection of existing Wendao configuration versus a separate key is pending. Fix: configure authorized server environment, restart, verify a real streamed reply and cancellation. No placeholder answers are supplied.
+
+Initial desktop evidence: `desktop-before.png` (local diagnostic capture, scrolled state, not used for final acceptance). Revised and final comparisons used the same 1440 × 1024 desktop viewport at scroll zero. Final screenshot comparison followed the typography, hero crop/fade, sidebar spacing and focus fixes.
 
 ## Required fidelity surfaces
 
-- Fonts/typography: light Songti/STSong/Noto Serif fallback for Chinese display copy, Georgia brand, system sans-serif controls; 29 px/1.5 mobile quote. Three-line sample matches the source. iPad uses larger readable type. Fallback glyph rendering differs slightly by browser/OS and is an accepted platform difference.
-- Spacing/layout: 76 px header, 28 px mobile gutters, matching main section divider, 48–52 px primary controls. Phone stays single-column, iPad home becomes two columns. 320 px and 768 px home checks found no horizontal overflow; native result coverage spans 320, 390, 768, 1024, 1366 px.
-- Colors/tokens: #100e14 background, warm ivory text and muted gold controls. Solid button/background treatment is a minor P3 simplification of the generated reference's subtle texture. Contrast and hierarchy remain intact.
-- Image quality: real generated gold crescent asset, no placeholder or handmade replacement. Share card uses the same asset; QR is the existing verified source image with its quiet zone. No BodyGraph is present in native results or native packaged assets.
-- Copy/content: daily suggestion uses the latest saved result and local calendar date. English/Chinese and empty states work. User-requested “分享图片” is an intentional addition to the selected mock. No birth details or names appear on daily share cards. H5 preserves the historical BodyGraph instead of combining drawing systems.
+- Typography: Songti-style Chinese display hierarchy and system sans UI retain the selected direction. Actual platform fallback rather than a fabricated embedded font; tablet/English wrapping checked. Source image has slightly different glyph rendering, classified P3.
+- Spacing/layout: slim fixed rail, atmospheric top image, large centered prompt, broad low composer and separated daily/manual sidebar retained. Report opt-in and processing note add functional lines below the composer. Mobile moves secondary material below conversation; desktop/iPad retain columns.
+- Colors/tokens: near-black navy `#080e1b`, soft white text, muted blue secondary text and cyan `#7cdeff` accents. Error outline has a restrained semantic tint. Visible focus states provided.
+- Assets: actual generated raster hero/avatar used, not CSS drawings. Hero cropped and lower edge faded. Phosphor library icons replace concept icons. Distinct generated loop shape/crop is acceptable art-direction variation, P3.
+- Copy: original brand replaced in visible homepage/share/legal/support surfaces. Daily advice is actual result-based content; conversation welcome explicitly serves as empty state. Error, stop and retry copy do not imply an AI response was received.
 
-## Interaction evidence
+## Interactions and gaps
 
-- 113 Node tests passed, including daily selection/privacy and existing calculation/schema tests.
-- 24 browser E2E tests passed. Includes history opt-out, translations, real local calculation, restored H5 assets, native graph-free results, widget payload/deep-link callback, and PNG save/native share bridge calls. After final visual compositing, the dedicated share E2E passed again.
-- Standalone Swift daily-date tests passed, including Shanghai, UTC and DST behavior.
-- H5 historical SVG SHA verified; both native output and synced iOS public assets omit graph templates/geometry.
-- Actual iPad simulator: completed form and calculation, read text results, opened daily-tip URL to the latest reading, generated share card, opened system share popover with a PNG attachment, and verified portrait/landscape home layout.
-- `ipad-native-share.jpg` shows the actual iOS share popover. `ipad-native-landscape.jpg` shows landscape home. `home-ipad-en.png` shows English iPad layout. `h5-restored-bodygraph.png` shows the rendered historical H5 graph.
-- `daily-tip-share-zh.png`: 1080 × 1440 exported PNG. Apple Vision decoded the bottom-right QR as `https://human-design.wonderelian.com/`.
-- Final E2E console/module/asset checks passed. Initial moon 404s were resolved before final acceptance.
+Verified in the in-app browser: legacy birth form and result using synthetic data, daily tip, QR share dialog, question suggestion/send, missing-config error, retry without duplicated user question, history restore, new conversation, and Chinese/English switching. Final console error/warning readback was empty. Automated tests: 126 passing plus H5/native asset guards.
 
-## Remaining verification boundaries
-
-WidgetKit extension compiles and embeds successfully, and the real simulator App Group contains the versioned advice payload. Timeline selection and JS/Swift bridge are verified. Adding the widget to SpringBoard and physical-device WidgetKit refresh have not been manually verified. Distribution App Group registration/provisioning remains a release check. No distribution signing, upload, deployment, push, merge, or App Store Connect changes occurred. Simulator builds used local ad-hoc signing only to enable App Group testing.
-
-## Follow-up polish
-
-P3: source's small ornamental separator/arrow cues are omitted; generated crescent texture and font rasterization differ slightly. These do not affect core content, hierarchy or controls.
+Not verified: real provider response, physical iPad/iPhone keyboard, system Photos/WeChat actions, native archive or App Store review. Legacy browser CLI E2E suite was not run; UI validation used the required in-app browser.
 
 ## Implementation checklist
 
-- [x] Selected concept 1 implemented and compared in the same input.
-- [x] Daily home advice, sharing PNG, QR and native sharing functional.
-- [x] Phone and iPad responsive states verified.
-- [x] H5 historical graph isolated from native text-only results.
-- [x] Build, source provenance isolation, unit and E2E verification passed.
-- [ ] Physical device / SpringBoard widget acceptance and distribution provisioning during release.
-
-final result: passed
+- [x] Selected option implemented in isolated branch.
+- [x] Desktop/mobile/tablet and major UI states inspected.
+- [x] Original chart/calculation preserved and asset guards passed.
+- [x] Server-only API integration, streaming/error/privacy tests.
+- [ ] Authorized DeepSeek configuration and real provider acceptance.
+- [ ] Deployment only after a separate release request.

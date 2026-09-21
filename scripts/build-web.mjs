@@ -12,6 +12,7 @@ const files = [
   "legal.html",
   "legal.css",
   "style.css",
+  "buer.css",
   "app.js",
   "analytics.js",
   "analytics-frame.html",

@@ -5,24 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0f0b12">
   <meta name="referrer" content="no-referrer">
-  <meta name="description" content="Pluto 人生使用说明书：在设备上生成 Human Design 人类图、基础解读与高清图片，支持中英文与隐私模式。">
+  <meta name="description" content="不二·人生使用说明书：在设备上生成 Human Design 人类图、基础解读与高清图片，支持中英文与隐私模式。">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Pluto Life Manual">
+  <meta property="og:site_name" content="Buer Life Manual">
   <meta property="og:locale" content="zh_CN">
-  <meta property="og:title" content="Pluto 人生使用说明书 | Human Design Chart">
+  <meta property="og:title" content="不二·人生使用说明书 | Human Design Chart">
   <meta property="og:description" content="在设备上生成你的人生使用说明书、人类图与基础解读。支持中英文、隐私模式和高清图片。">
   <meta property="og:url" content="https://human-design.wonderelian.com/">
   <meta property="og:image" content="https://human-design.wonderelian.com/assets/pluto-og-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Pluto Life Manual 人生使用说明书冥王星主题分享图">
+  <meta property="og:image:alt" content="Buer Life Manual 人生使用说明书冥王星主题分享图">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Pluto Life Manual | Human Design Chart">
+  <meta name="twitter:title" content="Buer Life Manual | Human Design Chart">
   <meta name="twitter:description" content="Generate a bilingual Human Design chart, foundational reading, and private high-resolution image on your device.">
   <meta name="twitter:image" content="https://human-design.wonderelian.com/assets/pluto-og-1200x630.png">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://photon.komoot.io https://geocode.arcgis.com https://api-human-design.wonderelian.com https://*.supabase.co https://www.google-analytics.com https://region1.google-analytics.com; img-src 'self' data: blob: https://wendao.wonderelian.com; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://www.googletagmanager.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
-  <title>Pluto 人生使用说明书 | Human Design Chart</title>
+  <title>不二·人生使用说明书 | Human Design Chart</title>
   <link rel="canonical" href="https://human-design.wonderelian.com/">
   <link rel="icon" type="image/png" href="assets/pluto-app-icon-180.png">
   <link rel="apple-touch-icon" href="assets/pluto-app-icon-180.png">
@@ -30,18 +30,20 @@
   <link rel="preload" as="image" href="assets/pluto-form-bg-v3.png">
   <link rel="preload" as="image" href="assets/pluto-form-mobile-v4.png" media="(max-width: 560px)">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="vendor/phosphor/style.css">
+  <link rel="stylesheet" href="buer.css">
   <script src="analytics.js" defer></script>
 </head>
-<body>
+<body data-workspace="home">
   <header class="topbar">
-    <div class="brand">Pluto <span class="brand-detail" data-i18n="brandShort">人生使用说明书</span></div>
+    <div class="brand">不二<span class="brand-detail"> · 人生使用说明书</span><small data-buer="tagline">与真实的自己 · 温柔相遇</small></div>
     <div class="topbar-actions">
       <div class="language-switch topbar-language-switch" role="group" aria-label="Language / 语言">
         <button type="button" data-language="zh" aria-pressed="true">中文</button>
         <button type="button" data-language="en" aria-pressed="false">EN</button>
       </div>
       <button id="openMenu" class="menu-button" type="button" data-i18n-aria-label="openMenu" aria-label="打开更多功能" aria-controls="appDrawer" aria-expanded="false">
-        <span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+        <i class="ph ph-list" aria-hidden="true"></i>
       </button>
     </div>
   </header>
@@ -55,7 +57,7 @@
           <button id="drawerBack" class="drawer-back" type="button" data-i18n-aria-label="drawerBack" aria-label="返回" hidden><span aria-hidden="true">←</span></button>
         </span>
         <div>
-          <span class="drawer-brand">PLUTO · LIFE MANUAL</span>
+          <span class="drawer-brand">BUER · LIFE MANUAL</span>
           <h2 id="drawerTitle" data-i18n="drawerTitle">你的空间</h2>
         </div>
         <button id="closeMenu" class="drawer-close" type="button" data-i18n-aria-label="closeMenu" aria-label="关闭菜单"><span aria-hidden="true">×</span></button>
@@ -82,7 +84,7 @@
           </button>
           <button id="openAbout" type="button">
             <span class="drawer-nav-icon" aria-hidden="true"><img src="assets/icons/circle-user-round.svg" alt=""></span>
-            <span><strong data-i18n="aboutUs">关于我们</strong><small data-i18n="drawerAboutHint">认识 Pluto 与我们相信的生命观</small></span>
+            <span><strong data-i18n="aboutUs">关于我们</strong><small data-i18n="drawerAboutHint">认识不二 与我们相信的生命观</small></span>
             <span class="drawer-chevron" aria-hidden="true">›</span>
           </button>
           <button id="openContact" type="button">
@@ -140,7 +142,7 @@
         <section id="drawerAbout" class="drawer-subview" aria-labelledby="drawerAboutTitle" hidden>
           <span class="drawer-kicker" data-i18n="aboutKicker">真实自己，流动人生</span>
           <h3 id="drawerAboutTitle" data-i18n="aboutHeading">生命不是用来证明自己的。</h3>
-          <p data-i18n="aboutParagraphOne">Pluto 人生使用说明书是一件面向自我探索的独立作品。我们把复杂的出生图谱整理成清晰、可保存的双语阅读体验，帮助你从另一个角度观察自己的节奏、选择与关系。</p>
+          <p data-i18n="aboutParagraphOne">不二·人生使用说明书是一件面向自我探索的独立作品。我们把复杂的出生图谱整理成清晰、可保存的双语阅读体验，帮助你从另一个角度观察自己的节奏、选择与关系。</p>
           <p data-i18n="aboutParagraphTwo">我们相信，认识自己、接纳自己、成为自己、活出自己，是一条持续展开的路。真实面对自己与世界，善待自己、他人与生命，并在创造和欣赏中活出生命之美。</p>
           <p class="drawer-note" data-i18n="aboutDisclaimer">人类图仅作为自我观察与对话的视角，不是科学结论，也不替你作决定。</p>
           <section class="drawer-life-philosophy" aria-labelledby="lifePhilosophyTitle">
@@ -204,7 +206,7 @@
               <input id="cloudSave" type="checkbox">
             </label>
             <label id="productAnalyticsSetting" class="settings-row" data-remote-setting>
-              <span><b data-i18n="productAnalytics">帮助我们改进 Pluto</b><small data-i18n="productAnalyticsHint">仅发送允许的匿名操作事件，不包含出生资料或完整图谱；默认关闭。</small></span>
+              <span><b data-i18n="productAnalytics">帮助我们改进不二</b><small data-i18n="productAnalyticsHint">仅发送允许的匿名操作事件，不包含出生资料或完整图谱；默认关闭。</small></span>
               <input id="productAnalytics" type="checkbox">
             </label>
           </div>
@@ -235,16 +237,48 @@
     </aside>
   </div>
 
-  <main class="shell form-view">
-    <section class="form-panel">
-      <h1 class="sr-only" data-i18n="formTitle">认识你自己</h1>
+
+  <nav class="buer-rail" aria-label="主要导航">
+    <button class="buer-mark" data-home aria-label="不二首页">不<br>二</button>
+    <button class="rail-item is-active" data-home><i class="ph ph-house" aria-hidden="true"></i><span data-buer="home">首页</span></button>
+    <button class="rail-item" data-manual><i class="ph ph-book-open-text" aria-hidden="true"></i><span data-buer="manual">人生说明书</span></button>
+    <button class="rail-item" id="buerHistoryButton"><i class="ph ph-clock-counter-clockwise" aria-hidden="true"></i><span data-buer="history">对话记录</span></button>
+    <div class="rail-foot" data-buer="railFoot">更认识<br>更自在</div>
+  </nav>
+  <img class="buer-hero-art" src="assets/buer-aurora-hero.webp" alt="" aria-hidden="true">
+  <section id="buerHome" class="buer-home" aria-label="与不二聊聊">
+    <div class="buer-conversation-column">
+      <header class="buer-welcome"><h1 data-buer="headline">从一个问题，靠近自己。</h1><p data-buer="intro">在这里，任何关于你的问题，都值得被认真对待。</p></header>
+      <div class="buer-messages" id="buerMessages" aria-label="对话内容" tabindex="0"></div>
+      <div class="buer-compose-zone">
+        <form id="buerChatForm" class="buer-composer">
+          <label class="sr-only" for="buerQuestion" data-buer="questionLabel">此刻，你想更了解自己的哪一面？</label>
+          <textarea id="buerQuestion" maxlength="2000" rows="2" placeholder="此刻，你想更了解自己的哪一面？"></textarea>
+          <div class="buer-compose-bottom"><div class="buer-suggestions"><button type="button" data-question="work" data-buer="workQuestion">我适合怎样的工作节奏？</button><button type="button" data-question="relationship" data-buer="relationshipQuestion">为什么我总在关系里内耗？</button></div><span data-buer="aiLabel">AI 陪你探索</span><button type="submit" class="buer-send" id="buerSend" aria-label="发送问题"><i class="ph ph-paper-plane-tilt" aria-hidden="true"></i></button><button type="button" class="buer-send" id="buerStop" aria-label="停止回答" hidden><i class="ph ph-stop" aria-hidden="true"></i></button></div>
+        </form>
+        <div class="buer-compose-meta"><label id="buerContextLabel" hidden><input id="buerUseReport" type="checkbox"><span data-buer="useReport">结合我的说明书</span></label><p id="buerChatStatus" role="status" aria-live="polite"></p><button type="button" id="buerNewChat" data-buer="newChat">新对话</button></div>
+        <p class="buer-data-note" data-buer="dataNote">提问发送至 DeepSeek 处理；对话记录仅保存在本机。</p>
+      </div>
+    </div>
+    <aside class="buer-context">
       <aside id="dailyTipCard" class="daily-tip-card" aria-labelledby="dailyTipTitle">
         <div class="daily-date-row"><div class="daily-date-copy"><time id="dailyTipDate"></time><small id="dailyTipDateSecondary" aria-hidden="true"></small></div><img class="daily-moon" src="assets/pluto-daily-moon.webp" width="92" height="92" alt="" aria-hidden="true"></div>
         <div class="daily-tip-heading"><h2 id="dailyTipTitle">今日提示</h2><button id="shareDailyTip" class="daily-share-link" type="button" hidden>分享图片</button></div>
         <p id="dailyTipText"></p>
         <p id="dailyTipSource" class="daily-tip-source"></p>
-        <button id="dailyTipAction" type="button"></button>
+
       </aside>
+
+      <section class="buer-manual-entry"><h2><span data-buer="myManual">我的人生说明书</span><i class="ph ph-arrow-right" aria-hidden="true"></i></h2><p data-buer="manualIntro">一份专属于你的说明书，帮你更了解自己的倾向、节奏与选择。</p><button id="dailyTipAction" type="button"></button><i class="ph ph-arrow-right manual-arrow" aria-hidden="true"></i></section>
+      <p class="buer-context-foot" data-buer="contextFoot">不是找到一个标准答案，<br>而是更清楚地，做自己。</p>
+    </aside>
+  </section>
+  <dialog id="buerHistory" class="buer-history-dialog"><header><h2 data-buer="history">对话记录</h2><button id="buerCloseHistory" type="button" aria-label="关闭对话记录"><i class="ph ph-x" aria-hidden="true"></i></button></header><p data-buer="localHistory">只保存在当前设备，不会同步到其他设备。</p><div id="buerHistoryList"></div><button type="button" id="buerClearChats" data-buer="clearChats">清空本机对话</button><form method="dialog" id="buerClearConfirm" hidden><p data-buer="clearConfirm">清空后无法恢复这些对话。确定清空吗？</p><button type="button" id="buerCancelClear" data-buer="cancel">取消</button><button type="button" id="buerConfirmClear" data-buer="confirmClear">确认清空</button></form></dialog>
+  <button class="buer-back-home" data-home><i class="ph ph-arrow-left" aria-hidden="true"></i><span data-buer="backHome">返回对话</span></button>
+
+  <main class="shell form-view">
+    <section class="form-panel">
+      <h1 class="sr-only" data-i18n="formTitle">认识你自己</h1>
       <p id="localModeNotice" class="local-mode-notice" role="status" data-i18n="localModeNotice" hidden>当前为临时 HTTP 连接，仅支持本地计算与生图。云端保存和匿名统计已停用。</p>
       <form id="chartForm" novalidate>
         <header class="exploration-header"><p data-i18n="startExploration">开始新的探索</p><span id="visibleFormStep" aria-hidden="true">01 / 03</span></header>
@@ -381,7 +415,7 @@
     <dialog id="detailDialog" class="detail-dialog">
       <div class="detail-dialog-header">
         <div>
-          <p class="eyebrow" data-i18n="brand">Pluto 人生使用说明书</p>
+          <p class="eyebrow" data-i18n="brand">不二·人生使用说明书</p>
           <h2 data-i18n="detailReading">详细解读</h2>
         </div>
         <div class="detail-dialog-actions">
@@ -481,7 +515,7 @@
   <dialog id="dailyShareDialog" class="daily-share-dialog" aria-labelledby="dailyShareTitle">
     <div class="daily-share-header"><h2 id="dailyShareTitle">分享今日提示</h2><button id="closeDailyShare" type="button">关闭</button></div>
     <p id="dailyShareHelp" class="daily-share-help" role="status" aria-live="polite" tabindex="-1" hidden></p>
-    <img id="dailySharePreview" alt="今日提示分享卡片，右下角带有 Pluto 首页二维码">
+    <img id="dailySharePreview" alt="今日提示分享卡片，右下角带有 不二首页二维码">
     <p id="dailyShareStatus" role="status" aria-live="polite"></p>
     <div class="daily-share-actions"><button id="saveDailyImage" type="button">保存图片</button><button id="sendDailyImage" type="button">分享图片</button></div>
   </dialog>

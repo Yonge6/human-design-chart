@@ -1,3 +1,4 @@
+import { createChatHandler } from "../api/chat.mjs";
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { createServer } from "node:http";
@@ -18,8 +19,14 @@ const types = {
   ".wasm": "application/wasm",
 };
 
+const chat = createChatHandler();
 createServer(async (request, response) => {
   try {
+    const host = request.headers.host;
+    if (request.headers.origin && request.headers.origin !== `http://${host}`) {
+      response.writeHead(403); response.end('Origin not allowed'); return;
+    }
+    if (await chat(request,response)) return;
     const pathname = decodeURIComponent(new URL(request.url || "/", `http://${request.headers.host}`).pathname);
     const relativePath = pathname === "/" ? "index.html" : pathname.replace(/^\/+/, "");
     const file = resolve(root, relativePath);
@@ -35,6 +42,6 @@ createServer(async (request, response) => {
     response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
     response.end("Not found");
   }
-}).listen(port, "0.0.0.0", () => {
+}).listen(port, "127.0.0.1", () => {
   process.stdout.write(`Serving dist on http://127.0.0.1:${port}\n`);
 });

@@ -29,25 +29,25 @@ export async function createDailyTipPoster({ tip, language, date = new Date() })
   if (!tip) throw new Error('A saved result is required.');
   const [qr, moon] = await Promise.all([
     loadImage(new URL('../../assets/chart-qr.png', import.meta.url).href),
-    loadImage(new URL('../../assets/pluto-daily-moon.webp', import.meta.url).href).catch(() => null),
+    loadImage(new URL('../../assets/buer-ai-orb.webp', import.meta.url).href).catch(() => null),
     document.fonts.ready,
   ]);
   const chinese = language === 'zh';
   const canvas = document.createElement('canvas');
   canvas.width = 1080; canvas.height = 1440;
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#100e14'; ctx.fillRect(0, 0, 1080, 1440);
+  ctx.fillStyle = '#080e1b'; ctx.fillRect(0, 0, 1080, 1440);
   ctx.textBaseline = 'top';
-  ctx.fillStyle = '#f1e7dc';
-  ctx.font = '58px Georgia, serif'; ctx.fillText('Pluto', 86, 86);
-  ctx.fillStyle = '#c5a36b'; ctx.font = '24px sans-serif';
+  ctx.fillStyle = '#edf2ff';
+  ctx.font = '58px Georgia, serif'; ctx.fillText(chinese ? '不二' : 'Buer', 86, 86);
+  ctx.fillStyle = '#a7ccf5'; ctx.font = '24px sans-serif';
   ctx.fillText(new Intl.DateTimeFormat(chinese ? 'zh-CN' : 'en', {year:'numeric', month:'long', day:'numeric'}).format(date), 88, 183);
   if (moon) {
     ctx.globalCompositeOperation = "lighten";
     ctx.drawImage(moon, 785, 76, 210, 210);
     ctx.globalCompositeOperation = "source-over";
   }
-  ctx.fillStyle = '#d8b17d'; ctx.font = '28px sans-serif';
+  ctx.fillStyle = '#b2d8ff'; ctx.font = '28px sans-serif';
   ctx.fillText(chinese ? '今日提示' : 'A thought for today', 88, 320);
   ctx.fillRect(88, 370, 42, 2);
   let size = chinese ? 76 : 62;
@@ -58,12 +58,12 @@ export async function createDailyTipPoster({ tip, language, date = new Date() })
     if (lines.length * size * 1.5 <= 475) break;
     size -= 2;
   } while (size > 38);
-  ctx.fillStyle = '#f1e7dc';
+  ctx.fillStyle = '#edf2ff';
   lines.forEach((line, index) => ctx.fillText(line, 88, 432 + index * size * 1.5));
   ctx.font = '25px sans-serif'; ctx.fillStyle = '#a99c96';
   ctx.fillText(chinese ? '来自我最近一次的人生使用说明书' : 'From my latest Life Manual', 88, 986);
   ctx.fillStyle = '#514237'; ctx.fillRect(88, 1060, 904, 1);
-  ctx.fillStyle = '#d8b17d'; ctx.font = '32px Georgia, serif'; ctx.fillText('PLUTO', 88, 1150);
+  ctx.fillStyle = '#b2d8ff'; ctx.font = '32px Georgia, serif'; ctx.fillText(chinese ? '不二 · 人生使用说明书' : 'BUER · LIFE MANUAL', 88, 1150);
   ctx.fillStyle = '#a99c96'; ctx.font = '25px sans-serif';
   ctx.fillText(chinese ? '从了解自己开始' : 'Begin with self-knowledge', 88, 1210);
   ctx.font = '19px sans-serif';

@@ -24,11 +24,13 @@
     "ios:distribution:readiness": "node scripts/ios-distribution-readiness.mjs",
     "ios:open": "npm run ios:sync && npx cap open ios",
     "ios:run": "npm run ios:sync && npx cap run ios",
-    "build:native": "node scripts/build-web.mjs --native"
+    "build:native": "node scripts/build-web.mjs --native",
+    "dev": "node --env-file-if-exists=.env.local scripts/serve-dist.mjs"
   },
   "dependencies": {
     "@capacitor/core": "^8.0.0",
-    "@capacitor/ios": "^8.0.0"
+    "@capacitor/ios": "^8.0.0",
+    "@phosphor-icons/web": "^2.1.2"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.0.0",

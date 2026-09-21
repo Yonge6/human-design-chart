@@ -64,3 +64,9 @@ merged or deployed, and production remains version `1.1.0` at commit
 merge of the exact reviewed head, a final distribution-archive exclusion check,
 content-rights review, and separate release authorization. This notice is not
 legal advice and does not claim Apple approval.
+
+## Phosphor Icons
+
+- Source: https://phosphoricons.com/
+- Package: `@phosphor-icons/web` 2.1.2
+- License: MIT; full text in `vendor/phosphor/LICENSE`

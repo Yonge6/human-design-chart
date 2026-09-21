@@ -1,3 +1,4 @@
+import { createChatHandler } from "./chat.mjs";
 import { randomUUID } from "node:crypto";
 import { createServer } from "node:http";
 
@@ -178,6 +179,7 @@ export function createApiServer(options = {}) {
   const calculate = options.calculateSnapshot || calculateSnapshot;
   const log = options.logger || ((entry) => console.info(JSON.stringify(entry)));
 
+  const chat = createChatHandler(options.chat);
   const server = createServer(async (request, response) => {
     const requestId = randomUUID();
     const startedAt = performance.now();
@@ -206,6 +208,12 @@ export function createApiServer(options = {}) {
           "Access-Control-Max-Age": "600",
         });
         response.end();
+        return;
+      }
+      if (request.url === "/v1/chat" || request.url === "/v1/chat/status") {
+        route = request.url;
+        for (const [key,value] of Object.entries(corsHeaders)) response.setHeader(key,value);
+        await chat(request,response);
         return;
       }
       if (request.method === "GET" && request.url === "/v1/health") {

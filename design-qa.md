@@ -1,5 +1,24 @@
 # 不二 option 3 — implementation QA
 
+## Life Manual integration — 2026-09-22
+
+Manual integration result: passed. Real AI provider acceptance remains blocked as described below.
+
+The selected homepage direction now extends through the birth form, result overview, 15 reading chapters, and original BodyGraph. Shared navigation, typography, navy surfaces, cyan controls and optical artwork connect the screens. The manual is a different screen from the homepage concept: fidelity is evaluated against the shared visual system, not identical positioning of different content.
+
+Evidence: `manual-before.png` records the previous public gold result; `manual-overview-desktop.png` (1440 × 1024), `manual-overview-mobile.png` and `manual-reading-mobile.png` (390 × 844), `manual-form-mobile.png` (390 × 844, step 2), and `manual-ipad.png` / `manual-ipad-english.png` (1024 × 1366). Browser content at DPR 1. Concept 03, desktop overview and mobile overview were opened together in one comparison input; remaining states were inspected separately. No remaining actionable P0/P1/P2 visual findings in these checked states.
+
+Resolved findings:
+
+- [P1] Newly generated result could read the previous record for the manual title/chapters because rendering precedes assignment to application state. The result event now carries the exact rendered data; generating a fresh synthetic record immediately shows the correct title and chapters.
+- [P2] Legacy gold form/date/button rules leaked into the new theme. Unified actual date/time wrappers, focus states, secondary buttons and step spacing; reduced repeated introductory content on mobile steps 2 and 3.
+- [P2] The old summary was hidden and detailed text opened an unrelated modal. Exposed core configuration, added overview/reading/chart tabs and 15 inline accordion chapters, preserving the original chart asset in its own tab.
+- [P2] Manual and home had disconnected actions. Topic/chapter actions now seed a draft and explicitly select only the four anonymous report fields; the user still sends the request. Daily-tip action returns to the visible home card. Restoring an unrelated conversation clears the previous report override.
+
+In-app browser verified: three-step calculation, current-result title, overview and reading tabs, original chart loading, chapter-to-conversation draft/context, daily-tip navigation, Chinese/English and iPad width (1024 document width = viewport width), mobile layout, and empty final console warning/error readback. Keyboard tab navigation is implemented with roving tabindex and Arrow/Home/End handlers. Physical device keyboard, Photos/WeChat system actions and native release were not tested in this scope.
+
+This iteration updates only the isolated redesign branch and its independent H5 preview. Original production remains outside the deployment scope.
+
 final result: blocked
 
 The visual implementation has no remaining actionable P0/P1/P2 layout findings in the checked states. End-to-end AI readiness is blocked by the pending choice/configuration of the server-side DeepSeek key. No provider success is claimed from mocked tests.

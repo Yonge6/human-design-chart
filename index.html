@@ -32,6 +32,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="vendor/phosphor/style.css">
   <link rel="stylesheet" href="buer.css">
+  <link rel="stylesheet" href="buer-manual.css">
   <script src="analytics.js" defer></script>
 </head>
 <body data-workspace="home">
@@ -278,7 +279,13 @@
 
   <main class="shell form-view">
     <section class="form-panel">
-      <h1 class="sr-only" data-i18n="formTitle">认识你自己</h1>
+      <div class="buer-form-intro">
+        <p class="buer-kicker" data-manual-copy="startKicker">认识自己 · 从这里开始</p>
+        <h1 data-manual-copy="formHeading">你的独特，<br>从这里展开。</h1>
+        <p class="buer-form-lead" data-manual-copy="formLead">一份理解自己的起点。用你的出生信息，探索能量、决策与相处的方式。</p>
+        <ol class="buer-step-list" aria-label="填写进度"><li data-manual-step="1"><span>01</span><div><b data-i18n="stepBasic">基本信息</b><small data-manual-copy="stepOne">用你喜欢的称呼开始</small></div></li><li data-manual-step="2"><span>02</span><div><b data-i18n="stepBirthTime">出生时间</b><small data-manual-copy="stepTwo">找到属于你的起点</small></div></li><li data-manual-step="3"><span>03</span><div><b data-i18n="stepBirthLocation">出生地点</b><small data-manual-copy="stepThree">让说明书更完整</small></div></li></ol>
+        <p class="buer-form-privacy"><i class="ph ph-lock-key" aria-hidden="true"></i><span data-manual-copy="privacy">计算在你的设备上完成。出生资料不会随 AI 对话自动发送。</span></p>
+      </div>
       <p id="localModeNotice" class="local-mode-notice" role="status" data-i18n="localModeNotice" hidden>当前为临时 HTTP 连接，仅支持本地计算与生图。云端保存和匿名统计已停用。</p>
       <form id="chartForm" novalidate>
         <header class="exploration-header"><p data-i18n="startExploration">开始新的探索</p><span id="visibleFormStep" aria-hidden="true">01 / 03</span></header>
@@ -358,19 +365,10 @@
     </section>
 
     <section class="result-panel" id="chartResult" hidden>
-      <div class="result-toolbar">
-        <label class="privacy-toggle">
-          <input id="privacyMode" type="checkbox">
-          <span class="toggle-track" aria-hidden="true"><span></span></span>
-          <span data-i18n="privacyMode">隐私模式</span>
-        </label>
-        <div class="chart-actions">
-          <button id="editChart" type="button"><span class="button-icon" aria-hidden="true">↺</span><span data-i18n="editChart">重新填写</span></button>
-          <button id="download" type="button" disabled><span class="button-icon" aria-hidden="true">↓</span><span data-i18n="download">保存图片</span></button>
-          <button id="share" type="button" disabled><span class="button-icon" aria-hidden="true">↗</span><span data-share-label data-i18n="share">分享</span></button>
-        </div>
-      </div>
-      <section id="resultSummary" class="sr-only" tabindex="-1" aria-labelledby="resultSummaryTitle">
+      <header class="buer-manual-heading"><div><p class="buer-kicker" data-manual-copy="resultKicker">每个人，都有自己的使用方式</p><h1 id="buerManualTitle">我的人生说明书</h1><p data-manual-copy="resultLead">理解你的倾向，把选择留给自己。</p></div><button id="editChart" type="button"><i class="ph ph-pencil-simple" aria-hidden="true"></i><span data-i18n="editChart">重新填写</span></button></header>
+      <nav class="buer-manual-tabs" role="tablist" aria-label="说明书内容"><button type="button" id="manualOverviewTab" role="tab" data-manual-tab="overview" aria-controls="manualOverview" aria-selected="true" data-manual-copy="overview">我的概览</button><button type="button" id="manualReadingTab" role="tab" data-manual-tab="reading" aria-controls="manualReading" aria-selected="false" tabindex="-1" data-manual-copy="reading">深入解读</button><button type="button" id="manualChartTab" role="tab" data-manual-tab="chart" aria-controls="manualChart" aria-selected="false" tabindex="-1" data-manual-copy="chart">人类图</button></nav>
+      <div class="buer-manual-layout"><div class="buer-manual-content"><div id="manualOverview" role="tabpanel" aria-labelledby="manualOverviewTab">
+      <section id="resultSummary" class="buer-summary" tabindex="-1" aria-labelledby="resultSummaryTitle">
         <h2 id="resultSummaryTitle" data-i18n="resultSummaryTitle">人生使用说明书结果摘要</h2>
         <dl>
           <div><dt data-i18n="summaryType">类型</dt><dd id="summaryType"></dd></div>
@@ -403,13 +401,34 @@
             <div><h3 data-i18n="workStyleStrength">工作方式</h3><p id="workStyleStrengthText"></p></div>
           </article>
         </div>
-        <button id="detailReading" class="detail-fab" type="button"><span class="button-icon" aria-hidden="true">☷</span><span data-i18n="detailReading">详细解读</span></button>
+        <button id="detailReading" class="detail-fab" type="button"><i class="ph ph-book-open" aria-hidden="true"></i><span data-i18n="detailReading">详细解读</span><i class="ph ph-arrow-right" aria-hidden="true"></i></button>
       </section>
+      <div class="buer-manual-questions"><p data-manual-copy="questionHeading">把说明书带进真实生活</p><button type="button" data-manual-question="work"><i class="ph ph-briefcase" aria-hidden="true"></i><span data-manual-copy="workQuestionLabel">找到适合我的工作节奏</span><i class="ph ph-arrow-up-right" aria-hidden="true"></i></button><button type="button" data-manual-question="relationship"><i class="ph ph-chats-circle" aria-hidden="true"></i><span data-manual-copy="relationshipQuestionLabel">在关系里少一点内耗</span><i class="ph ph-arrow-up-right" aria-hidden="true"></i></button></div>
+      </div>
+      <section id="manualReading" role="tabpanel" aria-labelledby="manualReadingTab" hidden><header class="buer-reading-intro"><p class="buer-kicker" data-manual-copy="readingKicker">慢一点，读懂自己</p><h2 data-manual-copy="readingHeading">不止是结论，更是观察的线索。</h2><p data-manual-copy="readingLead">从最在意的章节开始。把有共鸣的地方放进生活里验证。</p></header><div id="buerReadingContent"></div></section>
+      <section id="manualChart" role="tabpanel" aria-labelledby="manualChartTab" hidden><header class="buer-reading-intro"><h2 data-manual-copy="chartHeading">你的完整人类图</h2><p data-manual-copy="chartLead">保留完整图谱，方便查看和保存。你也可以随时回到文字解读。</p></header>
+      <div class="result-toolbar">
+        <label class="privacy-toggle">
+          <input id="privacyMode" type="checkbox">
+          <span class="toggle-track" aria-hidden="true"><span></span></span>
+          <span data-i18n="privacyMode">隐私模式</span>
+        </label>
+        <div class="chart-actions">
+          <button id="download" type="button" disabled><span class="button-icon" aria-hidden="true">↓</span><span data-i18n="download">保存图片</span></button>
+          <button id="share" type="button" disabled><span class="button-icon" aria-hidden="true">↗</span><span data-share-label data-i18n="share">分享</span></button>
+        </div>
+      </div>
       <div class="preview-stage" data-media-state="loading">
         <span class="media-loading-placeholder" aria-hidden="true"><span></span></span>
         <p id="resultLoadingStatus" class="result-loading-status" role="status" aria-live="polite"><span class="loading-orbit" aria-hidden="true"></span><span data-i18n="buildingResult">正在整理你的人生说明书…</span></p>
         <img id="chartPreview" class="chart-preview" alt="人生使用说明书" data-i18n-alt="previewAlt" aria-describedby="resultSummary">
       </div>
+      </section></div>
+      <aside class="buer-manual-aside">
+        <section class="buer-guide"><img src="assets/buer-ai-orb.webp" alt=""><p class="buer-kicker" data-manual-copy="guideKicker">让理解，继续发生</p><h2 data-manual-copy="guideHeading">读到这里，<br>你想到了什么？</h2><p data-manual-copy="guideLead">带上这份说明书，聊聊眼前的一个决定，或最近让你在意的一件事。</p><button type="button" data-manual-question="decision"><span data-manual-copy="talk">结合说明书聊一聊</span><i class="ph ph-arrow-up-right" aria-hidden="true"></i></button><small data-manual-copy="contextNote">仅带入类型、策略、权威与人生角色；你发送问题后才会请求 AI。</small></section>
+        <section class="buer-manual-daily"><p class="buer-kicker" data-manual-copy="dailyKicker">一点点，回到自己</p><h3 data-manual-copy="dailyHeading">每天，一个小提醒</h3><p data-manual-copy="dailyLead">首页会根据最近保存的说明书，为你准备一句今日提示。也可以分享给在意的人。</p><button type="button" id="buerManualDaily"><span data-manual-copy="viewDaily">看看今日提示</span><i class="ph ph-arrow-right" aria-hidden="true"></i></button></section>
+        <p class="buer-manual-note" data-manual-copy="reflectionNote">说明书是一份自我观察的邀请，不是对你的定义，也不替你决定人生。</p>
+      </aside></div>
     </section>
 
     <dialog id="detailDialog" class="detail-dialog">

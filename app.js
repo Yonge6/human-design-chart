@@ -1,3 +1,4 @@
+import { initBuerManual } from './src/app/buer-manual.js';
 import { initBuerHome } from "./src/app/buer-home.js";
 import {
   calculateHumanDesign,
@@ -1477,6 +1478,7 @@ async function render(data) {
   renderDetailedReading(data);
   updateAccessibleResultSummary(data);
   renderResultHighlights(data);
+  document.dispatchEvent(new CustomEvent('buer:result',{detail:{data}}));
   if (nativeRuntime) return;
   document.querySelector("#personName").textContent = privacyToggle.checked ? "***" : data.Properties.Name;
   document.querySelector("#birthLine").textContent = privacyToggle.checked ? privateBirthLine() : formattedBirth(data);
@@ -1835,7 +1837,6 @@ privacyToggle.addEventListener("change", () => {
 });
 detailButton.addEventListener("click", () => {
   if (lastData) {
-    detailDialog.showModal();
     trackEvent("detail_opened");
   }
 });
@@ -2334,9 +2335,19 @@ document.querySelector('#sendDailyImage').addEventListener('click', () => shareD
 
 initBuerHome({
   getLanguage: () => language,
-  openManual: openDailyTipResult,
+  openManual: () => lastData ? showChartView() : openDailyTipResult(),
   getReport: () => {
     const data = latestSavedResult(historyEntries, appSettings.keepHistory)?.data;
     return data?.Properties || null;
   },
+});
+
+initBuerManual({
+  getLanguage:()=>language,
+  getData:()=>lastData,
+  getSections:data=>[...detailedReadingSections(data),{
+    title:language==='zh'?'相似基础配置的人物':'People with similar core configurations',
+    text:getCelebrityMatches(data).map(person=>`${language==='zh'?person.nameZh:person.name}\n${celebrityDetailedReason(data.Properties,person)}`).join('\n\n'),
+  }],
+  isNative:nativeRuntime,
 });

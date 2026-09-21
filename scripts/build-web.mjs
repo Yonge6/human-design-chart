@@ -13,6 +13,7 @@ const files = [
   "legal.css",
   "style.css",
   "buer.css",
+  "buer-manual.css",
   "app.js",
   "analytics.js",
   "analytics-frame.html",

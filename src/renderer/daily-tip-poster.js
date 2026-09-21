@@ -28,7 +28,7 @@ export function wrapPosterText(context, text, maxWidth) {
 export async function createDailyTipPoster({ tip, language, date = new Date() }) {
   if (!tip) throw new Error('A saved result is required.');
   const [qr, moon] = await Promise.all([
-    loadImage(new URL('../../assets/chart-qr.png', import.meta.url).href),
+    loadImage(new URL(globalThis.PLUTO_CONFIG?.buerShareQrPath || '../../assets/chart-qr.png', import.meta.url).href),
     loadImage(new URL('../../assets/buer-ai-orb.webp', import.meta.url).href).catch(() => null),
     document.fonts.ready,
   ]);
@@ -67,7 +67,7 @@ export async function createDailyTipPoster({ tip, language, date = new Date() })
   ctx.fillStyle = '#a99c96'; ctx.font = '25px sans-serif';
   ctx.fillText(chinese ? '从了解自己开始' : 'Begin with self-knowledge', 88, 1210);
   ctx.font = '19px sans-serif';
-  ctx.fillText('human-design.wonderelian.com', 88, 1280);
+  ctx.fillText((globalThis.PLUTO_CONFIG?.buerPublicUrl || 'https://human-design.wonderelian.com/').replace(/^https?:\/\//,'').replace(/\/$/,''), 88, 1280);
   // The source QR includes its white quiet zone; disable smoothing for crisp scanning.
   ctx.imageSmoothingEnabled = false;
   ctx.drawImage(qr, 780, 1110, 216, 216);

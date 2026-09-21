@@ -66,6 +66,7 @@ export function initBuerHome({getLanguage,openManual,getReport}) {
     const active=new AbortController();controller=active;setBusy(true);setStatus('connecting');renderMessages();
     const timeout=setTimeout(()=>active.abort('timeout'),110000);
     try {
+      if(globalThis.PLUTO_CONFIG?.buerChatEnabled===false)throw new Error('AI_NOT_CONFIGURED');
       const report=$('#buerUseReport').checked?anonymousReport(getReport()):null;
       const response=await fetch(endpoint(),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history,...(report?{report}:{})}),signal:active.signal});
       if(!response.ok){const data=await response.json().catch(()=>({}));throw new Error(data.error || 'AI_UNAVAILABLE');}

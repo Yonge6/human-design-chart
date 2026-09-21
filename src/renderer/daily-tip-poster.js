@@ -39,7 +39,7 @@ export async function createDailyTipPoster({ tip, language, date = new Date() })
   ctx.fillStyle = '#080e1b'; ctx.fillRect(0, 0, 1080, 1440);
   ctx.textBaseline = 'top';
   ctx.fillStyle = '#edf2ff';
-  ctx.font = '58px Georgia, serif'; ctx.fillText(chinese ? '不二' : 'Buer', 86, 86);
+  ctx.font = '58px Georgia, serif'; ctx.fillText(chinese ? '不二见己' : 'Buer Jianji', 86, 86);
   ctx.fillStyle = '#a7ccf5'; ctx.font = '24px sans-serif';
   ctx.fillText(new Intl.DateTimeFormat(chinese ? 'zh-CN' : 'en', {year:'numeric', month:'long', day:'numeric'}).format(date), 88, 183);
   if (moon) {
@@ -63,7 +63,7 @@ export async function createDailyTipPoster({ tip, language, date = new Date() })
   ctx.font = '25px sans-serif'; ctx.fillStyle = '#a99c96';
   ctx.fillText(chinese ? '来自我最近一次的人生使用说明书' : 'From my latest Life Manual', 88, 986);
   ctx.fillStyle = '#514237'; ctx.fillRect(88, 1060, 904, 1);
-  ctx.fillStyle = '#b2d8ff'; ctx.font = '32px Georgia, serif'; ctx.fillText(chinese ? '不二 · 人生使用说明书' : 'BUER · LIFE MANUAL', 88, 1150);
+  ctx.fillStyle = '#b2d8ff'; ctx.font = '32px Georgia, serif'; ctx.fillText(chinese ? '不二见己' : 'BUER JIANJI', 88, 1150);
   ctx.fillStyle = '#a99c96'; ctx.font = '25px sans-serif';
   ctx.fillText(chinese ? '从了解自己开始' : 'Begin with self-knowledge', 88, 1210);
   ctx.font = '19px sans-serif';

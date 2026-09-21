@@ -1,6 +1,6 @@
 {
   "appId": "com.yonge6.plutolifemanual",
-  "appName": "Pluto 人生使用说明书",
+  "appName": "不二见己",
   "webDir": "dist-native",
   "ios": {
     "contentInset": "never",

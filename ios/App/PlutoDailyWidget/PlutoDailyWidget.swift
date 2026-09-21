@@ -7,8 +7,8 @@ struct DailyTipEntry: TimelineEntry {
     var isChinese: Bool { payload?.language == "zh" || (payload == nil && Locale.preferredLanguages.first?.hasPrefix("zh") == true) }
     var text: String {
         payload?.tip(on: date) ?? (isChinese
-            ? "打开 Pluto，生成你的说明书，获得每日生活提示。"
-            : "Open Pluto and create your Life Manual for a daily suggestion.")
+            ? "打开不二见己，生成你的说明书，获得每日生活提示。"
+            : "Open Buer Jianji and create your Life Manual for a daily suggestion.")
     }
 }
 
@@ -60,7 +60,7 @@ struct DailyTipWidgetView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
                 .accessibilityLabel(entry.text)
             HStack {
-                Text("PLUTO").font(.system(size: 9, weight: .semibold, design: .rounded)).tracking(2)
+                Text(entry.isChinese ? "不二见己" : "BUER JIANJI").font(.system(size: 9, weight: .semibold, design: .rounded)).tracking(2)
                 Spacer()
                 Image(systemName: "arrow.up.right").font(.caption2)
             }.foregroundStyle(gold.opacity(0.8))
@@ -83,7 +83,7 @@ struct PlutoDailyWidget: Widget {
         StaticConfiguration(kind: DailyTipStore.widgetKind, provider: DailyTipProvider()) { entry in
             DailyTipWidgetView(entry: entry)
         }
-        .configurationDisplayName("Daily Tip")
+        .configurationDisplayName("不二见己 · 今日提示")
         .description("A daily suggestion from your latest Life Manual.")
         .supportedFamilies([.systemSmall, .systemMedium])
         .contentMarginsDisabled()

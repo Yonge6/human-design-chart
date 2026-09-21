@@ -1,6 +1,6 @@
-# Pluto Human Design
+# 不二见己 · Buer Jianji
 
-Pluto Human Design is a complete, self-hostable Human Design calculation, BodyGraph, poster, basic-reading, and open API tool. It keeps the existing browser-first product usable offline while exposing the same versioned engine through a separately deployable HTTPS/JSON API.
+Buer Jianji is a complete, self-hostable Human Design calculation, BodyGraph, poster, basic-reading, and open API tool. It keeps the existing browser-first product usable offline while exposing the same versioned engine through a separately deployable HTTPS/JSON API.
 
 The project includes Swiss Ephemeris integration, historical IANA time-zone conversion, Personality and Design activations, Gate/Line/Color/Tone/Base, type, strategy, authority, definition, profile, incarnation cross, BodyGraph rendering, bilingual UI, local history, privacy controls, and an optional open-source Supabase backend.
 
@@ -81,7 +81,7 @@ Every API chart is an `engine_verified` `HumanDesignProfileSnapshot` containing 
 - Place-search text is sent only when the user searches for a location.
 - Cloud deletion and local-history deletion are independent.
 - Production keys, production data, logs, and backups are not source code and must never be committed.
-- On ordinary HTTP, Pluto enforces local-only mode: cloud saving, analytics, cloud deletion, and Supabase identity creation are unavailable. These remote features require a secure context or the Capacitor native runtime. The JavaScript SHA-256 fallback only preserves deterministic local hashing; it does not provide transport security and does not replace HTTPS.
+- On ordinary HTTP, Buer Jianji enforces local-only mode: cloud saving, analytics, cloud deletion, and Supabase identity creation are unavailable. These remote features require a secure context or the Capacitor native runtime. The JavaScript SHA-256 fallback only preserves deterministic local hashing; it does not provide transport security and does not replace HTTPS.
 
 The optional backend uses Supabase Auth, PostgreSQL, RLS, and Edge Functions. Its migrations and functions are fully open source under [`supabase/`](supabase/). See [backend architecture](docs/backend-data-architecture.md) and the [privacy data map](docs/privacy-data-map.md).
 

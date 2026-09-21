@@ -41,3 +41,15 @@ Deployment is not part of this branch handoff. Any later release needs the API r
 - Real DeepSeek responses, physical device keyboard behavior, system photo saving and App Store state are not verified by these browser checks.
 
 See `design-qa.md` and `qa/buer-redesign/` for visual evidence.
+
+## Independent public H5 preview — 2026-09-22
+
+- Public URL: https://yonge6.github.io/buer-life-manual-preview/?v=b7612f3
+- Dedicated artifact repository: https://github.com/Yonge6/buer-life-manual-preview
+- Source commit: `b7612f38d896a98a7302f0bd169e6dd1278b7e2a` on the existing isolated source branch.
+- Pages run: https://github.com/Yonge6/buer-life-manual-preview/actions/runs/35632049112 — success. HTTPS enforced, no custom domain; original Pages/site settings were not changed.
+- Rebuild with `node scripts/build-buer-preview.mjs`. This explicitly disables AI, clears remote backend configuration, uses noindex discovery metadata, includes the source link/license, and gives the daily poster a QR for the independent preview URL.
+- Public acceptance: HTTP 200; eight critical assets matched local SHA-256; real synthetic-input calculation completed; saved result reopened; returning from step 3 preserved daily-tip visibility; daily PNG poster rendered; AI displayed the expected unconfigured message. At 390px, document width was 390px, visible images loaded, and console warnings/errors were empty.
+- The live test caught and fixed legacy form logic hiding the homepage's relocated daily card. Focused regression suite: 27 tests passed. Earlier preview/chat/security/daily tests: 16 passed.
+- Evidence: `qa/buer-redesign/live-assets.json`, `live-mobile.png`, `live-share.png`.
+- This is a functional static H5 preview. Real AI still requires an authorized server credential and API deployment; Pages itself does not execute the Node handler. Physical WeChat Photos behavior was not verified.

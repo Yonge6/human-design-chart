@@ -1,0 +1,38 @@
+{
+  "url": "https://yonge6.github.io/buer-life-manual-preview/",
+  "source": "b7612f38d896a98a7302f0bd169e6dd1278b7e2a",
+  "checks": [
+    {
+      "path": "index.html",
+      "matches": true
+    },
+    {
+      "path": "runtime-config.js",
+      "matches": true
+    },
+    {
+      "path": "app.js",
+      "matches": true
+    },
+    {
+      "path": "buer.css",
+      "matches": true
+    },
+    {
+      "path": "src/app/buer-home.js",
+      "matches": true
+    },
+    {
+      "path": "assets/buer-aurora-hero.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/buer-ai-orb.webp",
+      "matches": true
+    },
+    {
+      "path": "assets/buer-preview-qr.png",
+      "matches": true
+    }
+  ]
+}

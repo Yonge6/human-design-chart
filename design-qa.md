@@ -46,3 +46,7 @@ Not verified: real provider response, physical iPad/iPhone keyboard, system Phot
 - [x] Server-only API integration, streaming/error/privacy tests.
 - [ ] Authorized DeepSeek configuration and real provider acceptance.
 - [ ] Deployment only after a separate release request.
+
+## Public H5 addendum — 2026-09-22
+
+Independent preview is live at https://yonge6.github.io/buer-life-manual-preview/?v=b7612f3 (source `b7612f3`). Static H5 deployment acceptance passed: public HTTP/asset readback, actual calculation, daily advice and PNG/QR rendering, 390px overflow check and empty browser console. Live evidence is in `qa/buer-redesign/live-assets.json`, `live-mobile.png`, and `live-share.png`. Legacy form-driven hiding of the relocated daily card was found during live flow verification, removed, republished and retested. The overall AI readiness blocker above remains explicit; the static preview disables AI requests rather than returning a simulated answer.

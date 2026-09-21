@@ -1030,7 +1030,6 @@ const formStepCopyKeys = {
 function renderFormStepState({ announce = false } = {}) {
   formPanel.dataset.currentFormStep = String(currentFormStep);
   document.querySelector("#visibleFormStep").textContent = `0${currentFormStep} / 03`;
-  document.querySelector("#dailyTipCard").hidden = currentFormStep !== 1;
   formSteps.forEach((step) => {
     step.hidden = Number(step.dataset.formStep) !== currentFormStep;
   });

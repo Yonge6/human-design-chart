@@ -90,3 +90,32 @@ html:not(.native-text-results) .native-birth-display{display:none}
 /* Keep form and report text above the decorative hero image. */
 .shell{position:relative;z-index:1}
 .buer-manual-heading h1,.buer-form-intro h1{text-shadow:0 2px 14px #080e1b}
+
+/* Brighter midnight-blue palette shared by home, manual and personal space. */
+:root{--buer-bg:#15243b;--buer-text:#f2f6ff;--buer-muted:#b8c9df;--buer-line:#49617e}
+body{background:linear-gradient(180deg,#1e3552 0,#15243b 520px,#15243b 100%);color:var(--buer-text)}
+.buer-hero-art,body[data-workspace="home"][data-conversation="active"] .buer-hero-art{opacity:1;mask-image:linear-gradient(#000 55%,transparent);-webkit-mask-image:linear-gradient(#000 55%,transparent)}
+.topbar{background:rgba(24,43,66,.7);border-bottom:1px solid #7694b32b}
+.buer-rail{background:#1a2d46f5;border-color:#49617e}
+.buer-rail .rail-item{color:#bdcde1}.buer-rail .rail-item.is-active{color:#a8eaff;background:#294361}
+.buer-mobile-language,.topbar .language-switch{background:#263e59;border-color:#56718e}
+.brand small,.buer-welcome p,.buer-empty p,.buer-manual-entry p,.buer-context-foot{color:#c0d0e5}
+.buer-composer{background:#21354ded;border-color:#82a4c8;box-shadow:0 10px 35px #07132330}
+.buer-composer textarea::placeholder{color:#b5c7de}
+.buer-suggestions button{color:#e0eafa;border-color:#91a9c6;background:#2b425c}
+.buer-message p{background:#23384f;border-color:#4b6481;color:#f2f6ff}
+.buer-message.user p{background:#31506d;border-color:#587998}
+.buer-message small,.buer-compose-meta label,.buer-compose-meta button,.buer-context #dailyTipSource,.buer-history-dialog>p{color:#b3c8e2}
+.buer-context,.buer-manual-entry,.buer-manual-tabs{border-color:#49617e}
+.buer-form-lead,.buer-form-privacy,.buer-manual-heading p:last-child,.buer-chapter-body p{color:#bdcfe5}
+.shell .form-panel #chartForm,.shell #resultSummary.buer-summary,.buer-chapter,.buer-history-dialog,.daily-share-dialog{background:#20344d;border-color:#526d8a}
+.shell .form-panel input,.shell .form-panel select,html:not(.native-text-results) .shell .native-birth-grid input{background:#192c44;border-color:#7189a7;color:#f2f6ff}
+.shell .form-panel input::placeholder{color:#b0c4df}
+#appDrawer .drawer-work-card,#appDrawer .history-card,#appDrawer .settings-row{background:#233a55;border-color:#4c6888}
+#appDrawer .side-drawer p,#appDrawer .drawer-work-card small,#appDrawer .drawer-links a span:last-child{color:#b8cae1}
+#appDrawer .drawer-nav-icon{background:#294661;border-color:#587994}
+#appDrawer .drawer-nav button,#appDrawer .drawer-header,#appDrawer .drawer-footer{border-color:#4a627e}
+.buer-manual-heading h1,.buer-form-intro h1{text-shadow:0 2px 12px #0e213a80}
+/* Clip horizontal overflow without creating a sticky-header scroll container. */
+html,body{overflow-x:clip;overflow-y:visible}
+.buer-empty img,.buer-avatar:not(.buer-user-avatar){mix-blend-mode:screen;border-radius:50%}

@@ -52,7 +52,7 @@
 
   <div id="appDrawer" class="drawer-layer" hidden>
     <button class="drawer-backdrop" type="button" data-i18n-aria-label="closeMenu" aria-label="关闭菜单"></button>
-    <aside class="side-drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" tabindex="-1">
+    <aside class="side-drawer" role="region" aria-labelledby="drawerTitle" tabindex="-1">
       <header class="drawer-header">
         <span class="drawer-leading">
           <span class="drawer-orbit" aria-hidden="true"><span></span></span>
@@ -74,9 +74,10 @@
         </section>
 
         <nav class="drawer-nav" data-i18n-aria-label="drawerActions" aria-label="你的空间">
+          <button id="buerHistoryButton" type="button"><span class="drawer-nav-icon" aria-hidden="true"><i class="ph ph-chats-circle"></i></span><span><strong data-buer="history">对话记录</strong><small data-buer="chatHistoryHint">继续上次的探索</small></span><span class="drawer-chevron" aria-hidden="true">›</span></button>
           <button id="openHistory" type="button">
             <span class="drawer-nav-icon" aria-hidden="true"><img src="assets/icons/history.svg" alt=""></span>
-            <span><strong data-i18n="history">历史记录</strong><small data-i18n="drawerHistoryHint">重新打开保存在本机的人生说明书</small></span>
+            <span><strong data-buer="manualHistory">说明书历史</strong><small data-i18n="drawerHistoryHint">重新打开保存在本机的人生说明书</small></span>
             <span class="drawer-chevron" aria-hidden="true">›</span>
           </button>
           <button id="openSettings" type="button">
@@ -244,7 +245,7 @@
     <button class="buer-mark" data-home aria-label="不二见己首页">不二<br>见己</button>
     <button class="rail-item is-active" data-home><i class="ph ph-house" aria-hidden="true"></i><span data-buer="home">首页</span></button>
     <button class="rail-item" data-manual><i class="ph ph-book-open-text" aria-hidden="true"></i><span data-buer="manual">人生说明书</span></button>
-    <button class="rail-item" id="buerHistoryButton"><i class="ph ph-clock-counter-clockwise" aria-hidden="true"></i><span data-buer="history">对话记录</span></button>
+    <button class="rail-item" id="buerProfileButton" data-profile><i class="ph ph-user-circle" aria-hidden="true"></i><span data-buer="profile">我的</span></button>
     <div class="rail-foot" data-buer="railFoot">更认识<br>更自在</div>
   </nav>
   <img class="buer-hero-art" src="assets/buer-aurora-hero.webp" alt="" aria-hidden="true">

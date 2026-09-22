@@ -1614,7 +1614,6 @@ function applyLanguage(nextLanguage, rerender = true) {
   }
 }
 
-let drawerRestoreFocus = null;
 let drawerView = "home";
 
 function setDrawerView(nextView, { focus = true } = {}) {
@@ -1637,6 +1636,7 @@ function setDrawerView(nextView, { focus = true } = {}) {
   drawerTitle.dataset.i18n = titleKey;
   drawerTitle.textContent = t(titleKey);
   sideDrawer.querySelector(".drawer-scroll").scrollTop = 0;
+  if(document.body.dataset.workspace === "profile") window.scrollTo({top:0,behavior:"instant"});
   if (!focus) return;
   if (drawerView !== "home") {
     drawerBackButton.focus({ preventScroll: true });
@@ -1652,27 +1652,20 @@ function setDrawerView(nextView, { focus = true } = {}) {
 }
 
 function openDrawer() {
-  drawerRestoreFocus = document.activeElement;
   setDrawerView("home", { focus: false });
+  document.body.dataset.workspace = "profile";
   appDrawer.hidden = false;
-  document.body.classList.add("drawer-open");
-  openMenuButton.setAttribute("aria-expanded", "true");
-  sideDrawer.focus({ preventScroll: true });
+  window.scrollTo({top:0,behavior:"instant"});
 }
 
-function closeDrawer({ restoreFocus = true } = {}) {
-  if (appDrawer.hidden) return;
+function closeDrawer() {
   appDrawer.hidden = true;
-  document.body.classList.remove("drawer-open");
-  openMenuButton.setAttribute("aria-expanded", "false");
-  if (restoreFocus && drawerRestoreFocus instanceof HTMLElement) drawerRestoreFocus.focus({ preventScroll: true });
-  drawerRestoreFocus = null;
 }
 
-function drawerFocusableElements() {
-  return [...sideDrawer.querySelectorAll("button, a[href], input, select, textarea, [tabindex]:not([tabindex='-1'])")]
-    .filter((element) => !element.disabled && !element.hidden && element.offsetParent !== null);
-}
+new MutationObserver(() => {
+  appDrawer.hidden = document.body.dataset.workspace !== "profile";
+}).observe(document.body, {attributes:true,attributeFilter:["data-workspace"]});
+document.querySelector('#buerProfileButton').addEventListener('click',openDrawer);
 
 openMenuButton.addEventListener("click", openDrawer);
 closeMenuButton.addEventListener("click", () => closeDrawer());
@@ -1680,24 +1673,8 @@ drawerBackdrop.addEventListener("click", () => closeDrawer());
 drawerBackButton.addEventListener("click", () => setDrawerView("home"));
 openAboutButton.addEventListener("click", () => setDrawerView("about"));
 openContactButton.addEventListener("click", () => setDrawerView("contact"));
-appDrawer.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") {
-    event.preventDefault();
-    closeDrawer();
-    return;
-  }
-  if (event.key !== "Tab") return;
-  const focusable = drawerFocusableElements();
-  if (!focusable.length) return;
-  const first = focusable[0];
-  const last = focusable[focusable.length - 1];
-  if (event.shiftKey && document.activeElement === first) {
-    event.preventDefault();
-    last.focus();
-  } else if (!event.shiftKey && document.activeElement === last) {
-    event.preventDefault();
-    first.focus();
-  }
+appDrawer.addEventListener("keydown", event => {
+  if(event.key === "Escape" && drawerView !== "home") setDrawerView("home");
 });
 
 languageButtons.forEach((button) => button.addEventListener("click", () => {

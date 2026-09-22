@@ -61,3 +61,24 @@ body[data-conversation="active"] .buer-compose-zone{flex-shrink:0}
   body[data-conversation="active"] .buer-composer{padding:12px 14px;border-radius:22px}
   body[data-conversation="active"] .buer-compose-bottom{justify-content:flex-end}
 }
+
+/* Personal space is a full navigation destination, not an overlay. */
+#openMenu,#closeMenu,.drawer-backdrop{display:none!important}
+body[data-workspace="profile"] #buerHome,body[data-workspace="profile"] .shell,body[data-workspace="profile"] .buer-back-home,body[data-workspace="profile"] .buer-manual-intro{display:none!important}
+body[data-workspace="profile"] .buer-hero-art{opacity:.2}
+#appDrawer{position:relative;inset:auto;z-index:1;margin:0 40px 40px calc(var(--buer-rail) + 40px)}
+#appDrawer .side-drawer{position:relative;inset:auto;display:block;width:100%;max-width:900px;height:auto;margin:auto;padding:0;background:transparent;border:0;box-shadow:none;animation:none}
+#appDrawer .drawer-header{padding:12px 0 24px;grid-template-columns:36px 1fr;border-bottom:1px solid #303b51}
+#appDrawer .drawer-scroll{overflow:visible;padding:24px 0 0}
+#appDrawer .drawer-intro{padding:0 0 22px}
+#appDrawer .drawer-nav{margin:0 0 32px}
+#appDrawer .drawer-nav-icon .ph{font-size:22px}
+#appDrawer .drawer-footer{margin-top:28px;padding:18px 0;border-color:#303b51}
+#appDrawer .drawer-work-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#appDrawer .drawer-work-card{border:1px solid #2b415d;border-radius:14px;padding:18px}
+@media(max-width:760px){
+  #appDrawer{margin:0;padding:8px 22px calc(88px + env(safe-area-inset-bottom))}
+  #appDrawer .drawer-work-list{grid-template-columns:1fr}
+  #appDrawer .drawer-work-card small{display:none}
+  #appDrawer .drawer-header{padding-top:0}
+}

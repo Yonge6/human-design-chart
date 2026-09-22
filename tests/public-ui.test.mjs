@@ -4,24 +4,18 @@ import test from "node:test";
 
 const read = (file) => readFileSync(new URL(`../${file}`, import.meta.url), "utf8");
 
-test("header keeps language beside the accessible side drawer", () => {
+test("personal space is a nonmodal tab with accessible settings and history", () => {
   const html = read("index.html");
-  const css = read("style.css");
+  const css = read("buer.css");
   const app = read("app.js");
-
-  assert.match(html, /id="openMenu"[^>]*aria-controls="appDrawer"[^>]*aria-expanded="false"/);
-  assert.match(html, /id="appDrawer"[^>]*class="drawer-layer"[^>]*hidden/);
-  assert.match(html, /class="side-drawer"[^>]*role="dialog"[^>]*aria-modal="true"/);
-  assert.match(html, /class="language-switch topbar-language-switch"[\s\S]*data-language="zh"[\s\S]*data-language="en"[\s\S]*id="openMenu"/);
-  assert.doesNotMatch(html, /class="drawer-nav-row"[\s\S]*data-language=/);
-  assert.match(html, /id="historyDialog"[^>]*class="drawer-subview drawer-history"[^>]*hidden/);
-  assert.match(html, /id="settingsDialog"[^>]*class="drawer-subview drawer-settings"[^>]*hidden/);
-  assert.match(css, /\.side-drawer \{[\s\S]*width: min\(88vw, 410px\);[\s\S]*height: 100dvh;/);
-  assert.match(css, /@keyframes drawer-enter/);
-  assert.match(app, /function openDrawer\(\)/);
-  assert.match(app, /event\.key === "Escape"/);
-  assert.match(app, /function drawerFocusableElements\(\)/);
-  assert.match(app, /new Set\(\["home", "about", "contact", "history", "settings"\]\)/);
+  assert.match(html, /id="buerProfileButton" data-profile/);
+  assert.match(html, /class="side-drawer"[^>]*role="region"[^>]*aria-labelledby="drawerTitle"/);
+  assert.match(html, /id="buerMobileLanguage"/);
+  assert.match(html, /id="buerHistoryButton"/);
+  assert.match(html, /id="historyDialog"[^>]*hidden/);
+  assert.match(html, /id="settingsDialog"[^>]*hidden/);
+  assert.match(css, /#openMenu,#closeMenu,\.drawer-backdrop\{display:none!important\}/);
+  assert.match(app, /document.body.dataset.workspace = "profile"/);
   assert.doesNotMatch(app, /historyDialog\.showModal|settingsDialog\.showModal/);
 });
 

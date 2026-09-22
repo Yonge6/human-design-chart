@@ -104,11 +104,11 @@ body[data-workspace="profile"] #buerHome,body[data-workspace="profile"] .shell,b
 
 /* Compact composer with a single horizontally scrollable prompt row. */
 .buer-composer{padding:12px 16px;border-radius:24px}
-.buer-composer textarea{min-height:46px;height:46px;padding:0 0 8px;font-size:15px}
+.buer-composer textarea{min-height:46px;height:46px;padding:0 0 8px;font-size:16px}
 .buer-compose-bottom{gap:12px;min-width:0}
 .buer-compose-bottom>span{display:none}
 .buer-suggestions{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;gap:8px;min-width:0;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;padding:5px 2px;scroll-snap-type:x proximity}
 .buer-suggestions::-webkit-scrollbar{display:none}
 .buer-suggestions button{flex:0 0 auto;white-space:nowrap;min-height:30px;padding:6px 10px;scroll-snap-align:start}
 .buer-composer .buer-send{width:44px;height:44px;min-height:44px;flex-basis:44px}
-@media(max-width:760px){.buer-composer{padding:12px 14px}.buer-composer textarea{min-height:42px;height:42px;font-size:14px}.buer-suggestions button{font-size:10px}}
+@media(max-width:760px){.buer-composer{padding:12px 14px}.buer-composer textarea{min-height:42px;height:42px;font-size:16px}.buer-suggestions button{font-size:10px}}

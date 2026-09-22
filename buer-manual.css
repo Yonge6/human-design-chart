@@ -81,3 +81,8 @@
 .shell .form-panel .form-action-set>.form-secondary-action:hover{background:#1d3650}
 .form-panel button:focus-visible{outline:2px solid #9adcf8;outline-offset:3px}
 @media(max-width:760px){.shell .buer-form-intro h1{white-space:pre-line}.form-panel:not([data-current-form-step="1"]) .buer-form-intro h1{font-size:25px;white-space:normal;margin-bottom:20px}.form-panel:not([data-current-form-step="1"]) .buer-form-lead,.form-panel:not([data-current-form-step="1"]) .buer-form-privacy{display:none}.shell .result-panel{padding:0}.shell .form-panel #chartForm{min-height:0}.form-panel .form-action-dock{margin-top:24px}.form-panel .native-birth-grid{gap:20px}}
+
+/* Web date/time fields remain editable even without a browser picker. */
+html:not(.native-text-results) .shell .native-birth-control{height:56px;border:0;overflow:visible}
+html:not(.native-text-results) .shell .native-birth-grid input{position:relative;inset:auto;z-index:auto;opacity:1;width:100%;height:56px;min-height:56px;padding:0 14px;border:1px solid #485d80;border-radius:10px;color:#e7edfa;cursor:pointer;color-scheme:dark}
+html:not(.native-text-results) .native-birth-display{display:none}

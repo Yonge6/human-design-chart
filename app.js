@@ -1862,6 +1862,11 @@ function invalidateChart() {
 }
 
 [fields.birthDate, fields.birthTime].forEach((field) => {
+  field.addEventListener("click", () => {
+    if (!nativeRuntime && typeof field.showPicker === "function") {
+      try { field.showPicker(); } catch { /* Keep native text editing available. */ }
+    }
+  });
   field.addEventListener("input", syncBirthControlDisplays);
   field.addEventListener("change", () => {
     syncBirthPartsFromNativeControls();

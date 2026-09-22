@@ -214,3 +214,5 @@ html,body{overflow-x:clip;overflow-y:visible}
 #capture .poster-center-legend i{width:9px;height:9px;border-radius:2px;display:block}
 #capture .defined-swatch{background:#8f69d6;border:1px solid #bccaff}
 #capture .undefined-swatch{background:#f4f7fc;border:1px solid #86a4d0}
+body[data-conversation="empty"] .buer-compose-zone{margin-top:44px}
+@media(max-width:760px){body[data-conversation="empty"] .buer-compose-zone{margin-top:36px}}

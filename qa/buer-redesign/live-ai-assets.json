@@ -1,0 +1,25 @@
+{
+  "source": "bd5a48e",
+  "checks": [
+    {
+      "file": "index.html",
+      "match": true,
+      "sha256": "079c183ea1124a142779ae778b6d0fd16d2b5baf7173115c675f27fb3f617a5c"
+    },
+    {
+      "file": "runtime-config.js",
+      "match": true,
+      "sha256": "238893205f0c04cfc4dbfc358dc6df34061714e12ad2bc4e777a750406c5f24c"
+    },
+    {
+      "file": "buer.css",
+      "match": true,
+      "sha256": "8d047ecb964db27242729541b3971d45d17996e9ce7d429debbb13bbace5180e"
+    },
+    {
+      "file": "src/app/buer-home.js",
+      "match": true,
+      "sha256": "c1dfb82135277da28c3eb70e5616b17e92d0708877170cd9670860f294b071d9"
+    }
+  ]
+}

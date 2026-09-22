@@ -21,9 +21,9 @@ This iteration updates only the isolated redesign branch and its independent H5 
 
 Public acceptance: source `6ffda8b`, artifact `b83e3e5`, Pages run `35634530023` succeeded. https://yonge6.github.io/buer-life-manual-preview/?v=6ffda8b was independently opened and verified: new manual tabs, 15 chapters, current saved result, question draft with explicit report context, 390px document width equal to viewport, and no console warnings/errors. All seven critical public files match the local built artifacts (`manual-live-assets.json`). Screenshots: `manual-live-mobile.png` (390 × 844) and `manual-live-desktop.png` (1769 × 1170). Final suite: 126 tests passed; H5 historical SVG and native asset guards passed. Keyboard ArrowRight tab selection also passed locally. Original checkout remains clean at `a52f6ba`.
 
-final result: blocked
+final result: passed (2026-09-22 live AI acceptance)
 
-The visual implementation has no remaining actionable P0/P1/P2 layout findings in the checked states. End-to-end AI readiness is blocked by the pending choice/configuration of the server-side DeepSeek key. No provider success is claimed from mocked tests.
+The visual implementation has no remaining actionable P0/P1/P2 layout findings in the checked states. The original AI configuration blocker was resolved on 2026-09-22 with a dedicated provider key and a real streamed reply in the public browser. Earlier blocked notes below are historical.
 
 ## Evidence and normalization
 
@@ -80,3 +80,10 @@ Product name is now 不二见己 (English: Buer Jianji). Life Manual remains the
 Local validation: Chinese daily share image inspected, English title confirmed, 390px home has no horizontal overflow. 126 tests and H5/native asset guards passed; App and Widget plist syntax passed. Original chart and original project are preserved.
 
 Public rename acceptance: source `1ea0af1`, Pages run `35658156262` succeeded. Public document title and header show 不二见己; mobile PNG share card shows the new brand above and below the advice with its preview QR. Nine critical public files match local build bytes (`jianji-live-assets.json`), 390px width check passes, and console warnings/errors are empty. Evidence: `jianji-live-share.png`.
+
+
+## Live AI and mobile language follow-up — 2026-09-22
+
+Dedicated DeepSeek Flash API is now live through HTTPS at buer-api.wonderelian.com. A real question sent from the public homepage received a complete Chinese response, with the send control restored and no error. Key is server-only, public bundle secret scan passed, permitted CORS preflight passed and unrelated origin was rejected. Mobile language follows the inspected Wendao header: EN in Chinese, 中文 in English, directly visible beside the menu. The 390px local view and both switching directions pass without overflow (`mobile-language.png`). See `docs/deployments/buer-ai.md`.
+
+Live final acceptance: 390px public EN/中文 switching, actual English provider reply, and immediate stop restoring input all passed. Removed per-message fade after observing it replay on stream deltas and obscure text. Final code source `5f43245`; server remains the dedicated systemd service. Evidence: `live-ai-english-mobile.png` records the pre-fix fade finding, `live-ai-assets.json` records final artifact readback.

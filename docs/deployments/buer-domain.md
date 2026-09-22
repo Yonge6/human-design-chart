@@ -6,7 +6,7 @@
 - Build: `node scripts/build-buer-preview.mjs`; writes CNAME and new public URL into runtime configuration, canonical/OG URL, sitemap and artifact README.
 - Poster QR: `assets/buer-preview-qr.png`, decoded independently using Apple Vision as `https://buer.wonderelian.com/`.
 - Source deployment: `c96d7fb`; artifact `cf575fb`; Pages run `35676436347` succeeded.
-- Preview keeps AI disabled until an authorized server configuration is supplied. No provider availability is implied by the domain.
+- AI enabled 2026-09-22: dedicated DeepSeek server at https://buer-api.wonderelian.com. See buer-ai.md.
 - Existing apex and `human-design.wonderelian.com` continue to return HTTP 200; no existing records were modified.
 
 ## Rollback

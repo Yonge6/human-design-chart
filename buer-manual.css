@@ -250,3 +250,4 @@ body[data-conversation="empty"] .buer-welcome{padding-top:0}
  body[data-workspace="manual"] .shell{padding-top:calc(var(--buer-hero-height) - var(--buer-header-height) - 80px)}
  body[data-workspace="manual"] .shell .form-panel,body[data-workspace="manual"] .buer-form-intro{padding-top:0}
 }
+body[data-workspace="home"][data-conversation="active"] .topbar{background:rgba(24,43,66,.9);border-bottom-color:#7694b32b;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}

@@ -795,15 +795,15 @@ function privateBirthLine() {
 }
 
 const centerColors = {
-  "head-center": "#a8a27c",
-  "ajna-center": "#777168",
-  "throat-center": "#b58b63",
-  "g-center": "#ddbf70",
-  "heart-center": "#c8afbd",
-  "sacral-center": "#b8756e",
-  "splenic-center": "#ad8764",
-  "solar-plexus-center": "#a995b6",
-  "root-center": "#c29d6b",
+  "head-center": "#a6dfff",
+  "ajna-center": "#b5b0ed",
+  "throat-center": "#92c9ed",
+  "g-center": "#c2b4f4",
+  "heart-center": "#d4b7ef",
+  "sacral-center": "#8bbbe9",
+  "splenic-center": "#a0cddd",
+  "solar-plexus-center": "#b2a4e6",
+  "root-center": "#9baee9",
 };
 
 let lastData;
@@ -1425,7 +1425,7 @@ async function decodeImage(image) {
 
 async function loadExportAssets() {
   const background = new Image();
-  background.src = "./assets/pluto-chart-mobile-v1.png";
+  background.src = "./assets/buer-aurora-hero.webp";
   await Promise.all([decodeImage(background), decodeImage(chartQr)]);
 }
 

@@ -39,7 +39,12 @@ export function initBuerHome({getLanguage,openManual,getReport}) {
     }
     if(wasNearBottom) messagesEl.scrollTop=messagesEl.scrollHeight;
   }
+  $('#buerMobileLanguage').addEventListener('click',()=>{document.querySelector(`[data-language="${getLanguage()==='zh'?'en':'zh'}"]`).click();});
   function refresh(){
+    const languageButton=$('#buerMobileLanguage');
+    languageButton.textContent=getLanguage()==='zh'?'EN':'中文';
+    languageButton.title=getLanguage()==='zh'?'切换到英文':'Switch to Chinese';
+    languageButton.setAttribute('aria-label',languageButton.title);
     document.querySelectorAll('[data-buer]').forEach(el=>{el.textContent=t(el.dataset.buer);});
     input.placeholder=t('questionLabel');$('#buerSend').ariaLabel=t('send');$('#buerStop').ariaLabel=t('stop');$('#buerCloseHistory').ariaLabel=t('closeHistory');
     $('#buerContextLabel').hidden=!currentReport();$('#buerContextLabel').title=t('contextHint');

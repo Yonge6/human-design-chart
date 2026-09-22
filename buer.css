@@ -36,3 +36,12 @@ body[data-workspace="manual"] .buer-hero-art{opacity:.24}
 @media(min-width:1101px){.buer-hero-art{width:calc(100% - var(--buer-rail) - 235px)}.buer-context #dailyTipText{font-size:27px;line-height:1.7}.buer-context .daily-date-row{margin-bottom:44px}.buer-manual-entry{margin-top:34px;padding-top:28px}.buer-context-foot{padding-top:26px}}
 
 html[lang="en"] .rail-foot{letter-spacing:0;width:100%;font-size:11px}html[lang="en"] .rail-item{font-size:10px}html[lang="en"] .buer-welcome h1{white-space:normal}
+
+/* Wendao-style direct language switch on compact headers. */
+.buer-mobile-language{display:none}
+@media(max-width:760px){
+  .topbar .brand{flex:1 1 auto;min-width:0;max-width:calc(100% - 102px)}
+  .topbar .brand small{white-space:normal;line-height:1.6}
+  .topbar-actions{flex:0 0 auto;gap:4px}
+  .buer-mobile-language{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;min-height:44px;padding:0;border:1px solid var(--buer-line);border-radius:8px;background:rgba(8,14,27,.68);color:#eaf8ff;font:600 12px/1 system-ui,sans-serif}
+}

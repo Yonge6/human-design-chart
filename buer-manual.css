@@ -244,3 +244,4 @@ body[data-conversation="empty"] .buer-welcome{padding-top:0}
 #capture .poster-signature strong{grid-column:2;grid-row:1}
 #capture .poster-signature p{grid-column:2;grid-row:2;margin:3px 0 0}
 #capture .poster-signature small{grid-column:2;grid-row:3;margin-top:10px}
+@media(max-width:760px){#appDrawer{padding-top:calc(var(--buer-hero-height) - var(--buer-header-height) - 80px)}}

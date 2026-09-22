@@ -58,7 +58,7 @@ body[data-conversation="active"] .buer-compose-zone{flex-shrink:0}
   body[data-conversation="active"] .buer-home{padding-top:8px}
   body[data-conversation="active"] .buer-conversation-column{height:calc(100dvh - 153px - var(--buer-bottom-inset));min-height:400px;max-height:none}
   body[data-conversation="active"] .buer-messages{flex:1;min-height:120px;padding-top:4px;padding-bottom:16px}
-  body[data-conversation="active"] .buer-composer{padding:12px 14px;border-radius:22px}
+  body[data-conversation="active"] .buer-composer{padding:12px 14px;border-radius:24px}
   body[data-conversation="active"] .buer-compose-bottom{justify-content:flex-end}
 }
 

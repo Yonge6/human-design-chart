@@ -216,3 +216,15 @@ html,body{overflow-x:clip;overflow-y:visible}
 #capture .undefined-swatch{background:#f4f7fc;border:1px solid #86a4d0}
 body[data-conversation="empty"] .buer-compose-zone{margin-top:44px}
 @media(max-width:760px){body[data-conversation="empty"] .buer-compose-zone{margin-top:36px}}
+
+#appDrawer .drawer-header{border-bottom:0}
+@media(max-width:760px){
+  body[data-workspace="home"][data-conversation="active"]{overflow:hidden}
+  body[data-workspace="home"][data-conversation="active"] .buer-home{position:fixed;top:64px;bottom:calc(65px + var(--buer-bottom-inset));left:0;right:0;min-height:0;padding:16px 22px 10px;gap:0;overflow:hidden}
+  body[data-workspace="home"][data-conversation="active"] .buer-conversation-column{height:100%;min-height:0;max-height:100%;flex:1}
+  body[data-workspace="home"][data-conversation="active"] .buer-messages{min-height:0;max-height:none;flex:1;overflow-y:auto;padding-top:0;scroll-padding-top:12px}
+  body[data-workspace="home"][data-conversation="active"] .buer-context{display:none}
+}
+
+.buer-rail .rail-item.is-active{color:#b6ebff;font-weight:700;background:transparent}
+.buer-rail .rail-item.is-active .ph{color:#b6ebff;transform:scale(1.12);-webkit-text-stroke:.6px currentColor;text-shadow:0 0 12px #88ceff88}

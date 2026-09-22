@@ -795,15 +795,15 @@ function privateBirthLine() {
 }
 
 const centerColors = {
-  "head-center": "#a6dfff",
-  "ajna-center": "#b5b0ed",
-  "throat-center": "#92c9ed",
-  "g-center": "#c2b4f4",
-  "heart-center": "#d4b7ef",
-  "sacral-center": "#8bbbe9",
-  "splenic-center": "#a0cddd",
-  "solar-plexus-center": "#b2a4e6",
-  "root-center": "#9baee9",
+  "head-center": "#3aa9ef",
+  "ajna-center": "#8b70df",
+  "throat-center": "#4796d7",
+  "g-center": "#9165de",
+  "heart-center": "#b971d8",
+  "sacral-center": "#4e85d3",
+  "splenic-center": "#48a7c2",
+  "solar-plexus-center": "#8f69d6",
+  "root-center": "#6976d4",
 };
 
 let lastData;
@@ -1490,6 +1490,8 @@ async function render(data) {
     return `<div class="property"><b>${label}</b><span>${translatedValue(key, data.Properties[key])}</span></div>`;
   }).join("");
   document.querySelector("#interpretationText").textContent = interpretation(data);
+  document.querySelector("#definedCenterLegend").textContent = language === "zh" ? "已定义中心" : "Defined center";
+  document.querySelector("#undefinedCenterLegend").textContent = language === "zh" ? "未定义中心" : "Undefined center";
   renderCelebrityMatches(data);
   renderDetailedReading(data);
   updateAccessibleResultSummary(data);

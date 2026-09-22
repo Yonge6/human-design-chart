@@ -489,6 +489,7 @@
     <section class="chart-panel export-mobile capture-source" id="capture" aria-hidden="true">
       <div class="chart-meta">
         <div>
+          <p class="poster-edition">BUER WITHIN · LIFE MANUAL</p>
           <p class="eyebrow" data-i18n="yourChart">你的人生使用说明书</p>
           <h2 id="personName">-</h2>
           <p id="birthLine" data-i18n="emptyChart">填写出生资料后生成。</p>
@@ -502,6 +503,7 @@
           </div>
           <div class="chart-graph">
             <div id="bodygraph" role="img" aria-label="Life Manual bodygraph"></div>
+            <div class="poster-center-legend"><span><i class="defined-swatch"></i><span id="definedCenterLegend">已定义中心</span></span><span><i class="undefined-swatch"></i><span id="undefinedCenterLegend">未定义中心</span></span></div>
             <p class="watermark" data-i18n="watermark">Swiss Ephemeris · 出生前回溯 88° 太阳弧 · True Node</p>
           </div>
           <div class="side-column right">
@@ -509,12 +511,7 @@
             <ol id="personalityList" class="planet-list right"></ol>
           </div>
         </div>
-        <footer class="poster-footer">
-          <div class="qr-block">
-            <img id="chartQr" src="assets/buer-preview-qr.png" width="360" height="360" alt="" aria-hidden="true">
-            <p data-i18n="qrLabel">扫码获取</p>
-          </div>
-        </footer>
+
       </div>
       <section class="interpretation" aria-labelledby="interpretationTitle">
         <p id="interpretationTitle" class="interpretation-title" data-i18n="interpretationTitle">解读</p>
@@ -529,6 +526,10 @@
         <p class="celebrity-note" data-i18n="celebrityNote">名人结构参考公开出生资料；相似仅指图谱结构，不代表性格、经历或命运相同。</p>
       </section>
       <div id="properties" class="properties"></div>
+      <footer class="poster-footer">
+        <div class="poster-signature"><img src="assets/buer-orb-v2.png" alt=""><div><strong data-i18n="brand">不二见己</strong><p data-buer="tagline">与真实的自己 · 温柔相遇</p><small>buer.wonderelian.com</small></div></div>
+        <div class="qr-block"><img id="chartQr" src="assets/buer-preview-qr.png" width="360" height="360" alt="" aria-hidden="true"><p data-i18n="qrLabel">扫码获取</p></div>
+      </footer>
     </section>
   </main>
   <script src="vendor/tz-lookup/tz.js"></script>

@@ -48,13 +48,18 @@ export function createBodygraphRenderer({ container, templateUrl, centerColors, 
     Object.keys(centerColors).forEach((id) => {
       const center = svg.querySelector(`#${id}`);
       if (!center) return;
-      center.style.fill = "#e5eefa";
+      center.style.fill = "#f4f7fc";
+      center.style.strokeWidth = "1.4";
       center.style.stroke = "#86a4d0";
     });
     for (const centerName of data["Defined Centers"] || []) {
       const id = centerName.replace(/\s+/g, "-");
       const center = svg.querySelector(`#${id}`);
-      if (center) center.style.fill = centerColors[id];
+      if (center) {
+        center.style.fill = centerColors[id];
+        center.style.stroke = "#405383";
+        center.style.strokeWidth = "2.4";
+      }
     }
     return svg;
   };

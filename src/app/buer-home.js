@@ -1,3 +1,4 @@
+import {nextQuestionBatch} from './buer-suggestions.js';
 import {readBuerEvents,anonymousReport,validChatHistory} from '../services/buer-conversation.js';
 
 const copy={
@@ -11,6 +12,19 @@ export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
   window.addEventListener('scroll',syncHeader,{passive:true});
   window.addEventListener('pageshow',syncHeader);
   syncHeader();
+  let suggestionState={},suggestions=[];
+  try{suggestionState=JSON.parse(localStorage.getItem('buer-suggestion-rotation-v1')||'{}');}catch{}
+  function renderSuggestions(){
+    const container=$('.buer-suggestions');container.replaceChildren();
+    for(const question of suggestions){const b=document.createElement('button');b.type='button';b.dataset.question=String(question.id);b.textContent=question[getLanguage()==='en'?'en':'zh'];b.addEventListener('click',()=>{input.value=b.textContent;input.dispatchEvent(new Event('input'));input.focus({preventScroll:true});});container.append(b);}
+    container.scrollLeft=0;
+  }
+  function rotateSuggestions(){
+    const next=nextQuestionBatch(suggestionState);suggestionState=next.state;suggestions=next.questions;
+    try{localStorage.setItem('buer-suggestion-rotation-v1',JSON.stringify(suggestionState));}catch{}
+    renderSuggestions();
+  }
+  rotateSuggestions();
   const key='buer-conversations-v1';let threads=[];
   try{threads=validChatHistory(JSON.parse(localStorage.getItem(key)||'[]'));}catch{}
   let current={id:crypto.randomUUID(),date:Date.now(),messages:[]},controller=null,activeStatus='',reportOverride=null,reportPreference=null;
@@ -64,7 +78,7 @@ export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
     syncReportSelection();$('#buerContextLabel').title=t('contextHint');
     const date=new Date();$('#dailyTipDate').textContent=`${String(date.getMonth()+1).padStart(2,'0')}.${String(date.getDate()).padStart(2,'0')}`;
     $('#dailyTipDateSecondary').textContent=new Intl.DateTimeFormat(getLanguage()==='zh'?'zh-CN':'en',{weekday:'long'}).format(date);
-    setStatus(activeStatus);renderMessages();
+    setStatus(activeStatus);renderSuggestions();renderMessages();
   }
   function showHome(){document.body.dataset.workspace='home';window.scrollTo({top:0,behavior:'instant'});refresh();}
   document.querySelectorAll('[data-home]').forEach(el=>el.addEventListener('click',showHome));
@@ -81,7 +95,6 @@ export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
     input.value=input.value.trim()?`${input.value.trim()}\n\n${question}`:question;
     reportPreference=null;showHome();input.dispatchEvent(new Event('input'));input.focus({preventScroll:true});form.scrollIntoView({block:'center',behavior:'smooth'});
   });
-  document.querySelectorAll('[data-question]').forEach(el=>el.addEventListener('click',()=>{input.value=t(el.dataset.buer);input.focus();}));
   input.addEventListener('focus',syncReportSelection);
   input.addEventListener('keydown',event=>{if(event.key==='Enter' && !event.shiftKey && !event.isComposing){event.preventDefault();form.requestSubmit();}});
   input.addEventListener('input',()=>{input.style.height='auto';input.style.height=`${Math.min(input.scrollHeight,160)}px`;});
@@ -112,7 +125,7 @@ export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
   }
   form.addEventListener('submit',event=>{event.preventDefault();void ask(input.value);});
   $('#buerStop').addEventListener('click',()=>controller?.abort());
-  $('#buerNewChat').addEventListener('click',()=>{if(controller)return;persist();current={id:crypto.randomUUID(),date:Date.now(),messages:[]};input.value='';reportOverride=null;reportPreference=null;syncReportSelection();setStatus('');renderMessages();if(matchMedia('(min-width:761px)').matches)input.focus({preventScroll:true});});
+  $('#buerNewChat').addEventListener('click',()=>{if(controller)return;persist();current={id:crypto.randomUUID(),date:Date.now(),messages:[]};input.value='';reportOverride=null;reportPreference=null;rotateSuggestions();syncReportSelection();setStatus('');renderMessages();if(matchMedia('(min-width:761px)').matches)input.focus({preventScroll:true});});
   function renderHistory(){const list=$('#buerHistoryList');list.replaceChildren();if(!threads.length){const p=document.createElement('p');p.textContent=t('noHistory');list.append(p);return;}
     for(const thread of threads){const first=thread.messages.find(m=>m.role==='user')?.content||t('newChat');const b=button(first.slice(0,80),()=>{if(controller)return;persist();current=structuredClone(thread);reportOverride=null;reportPreference=null;syncReportSelection();setStatus('');$('#buerHistory').close();showHome();});const small=document.createElement('small');small.textContent=new Intl.DateTimeFormat(getLanguage()==='zh'?'zh-CN':'en',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(thread.date));b.append(small);list.append(b);}
   }

@@ -251,3 +251,12 @@ body[data-conversation="empty"] .buer-welcome{padding-top:0}
  body[data-workspace="manual"] .shell .form-panel,body[data-workspace="manual"] .buer-form-intro{padding-top:0}
 }
 body[data-workspace="home"][data-conversation="active"] .topbar{background:rgba(24,43,66,.9);border-bottom-color:#7694b32b;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+/* A quieter glass composer, shared by the welcome and conversation states. */
+#buerChatForm.buer-composer{border:1px solid rgba(165,195,234,.48);border-radius:22px;background:linear-gradient(145deg,rgba(53,77,108,.64),rgba(28,46,69,.86));box-shadow:inset 0 1px 0 rgba(222,235,255,.09),0 8px 26px rgba(5,16,32,.12);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+#buerChatForm.buer-composer:focus-within{border-color:rgba(167,212,255,.78);box-shadow:inset 0 1px 0 rgba(233,243,255,.13),0 0 0 3px rgba(139,179,240,.06),0 8px 26px rgba(5,16,32,.14)}
+#buerChatForm textarea{font-weight:400;color:#edf4ff;letter-spacing:.1px}
+#buerChatForm textarea::placeholder{color:#b9cbe2}
+#buerChatForm .buer-suggestions button{border-color:rgba(158,185,224,.3);background:rgba(134,159,202,.09);color:#cbdaf0;font-weight:500;box-shadow:inset 0 1px 0 rgba(225,235,255,.035)}
+#buerChatForm .buer-suggestions button:hover{background:rgba(145,173,221,.18);border-color:rgba(177,205,241,.58)}
+#buerChatForm .buer-send{background:linear-gradient(145deg,#afe5ff,#b7baff);border-color:rgba(226,238,255,.7);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 3px 12px rgba(134,167,245,.18);color:#304973}
+#buerChatForm .buer-send:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 4px 16px rgba(134,167,245,.28)}

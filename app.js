@@ -1523,7 +1523,6 @@ async function createPosterImage() {
   downloadButton.disabled = true;
   shareButton.disabled = true;
   privacyToggle.disabled = true;
-  languageButtons.forEach((button) => { button.disabled = true; });
   try {
     await Promise.all([paintBodygraph(lastData), document.fonts.ready, loadExportAssets()]);
     const nextBlob = await renderPosterElement(chartPanel);
@@ -2317,6 +2316,7 @@ document.querySelector('#sendDailyImage').addEventListener('click', () => shareD
 
 initBuerHome({
   getLanguage: () => language,
+  setLanguage: nextLanguage => { applyLanguage(nextLanguage); trackEvent("language_changed", { language: nextLanguage }); },
   openManual: () => lastData ? showChartView() : openDailyTipResult(),
   getReport: () => {
     const data = lastData || latestSavedResult(historyEntries, appSettings.keepHistory)?.data;

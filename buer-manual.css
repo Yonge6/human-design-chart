@@ -86,3 +86,7 @@
 html:not(.native-text-results) .shell .native-birth-control{height:56px;border:0;overflow:visible}
 html:not(.native-text-results) .shell .native-birth-grid input{position:relative;inset:auto;z-index:auto;opacity:1;width:100%;height:56px;min-height:56px;padding:0 14px;border:1px solid #485d80;border-radius:10px;color:#e7edfa;cursor:pointer;color-scheme:dark}
 html:not(.native-text-results) .native-birth-display{display:none}
+
+/* Keep form and report text above the decorative hero image. */
+.shell{position:relative;z-index:1}
+.buer-manual-heading h1,.buer-form-intro h1{text-shadow:0 2px 14px #080e1b}

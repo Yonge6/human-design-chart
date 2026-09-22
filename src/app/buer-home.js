@@ -33,7 +33,7 @@ export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
     document.body.dataset.conversation=current.messages.length?'active':'empty';
     const wasNearBottom=messagesEl.scrollHeight-messagesEl.scrollTop-messagesEl.clientHeight<90;
     messagesEl.replaceChildren();
-    if(!current.messages.length){const empty=document.createElement('div');empty.className='buer-empty';const img=document.createElement('img');img.src='assets/buer-orb-v2.png';img.alt='';const p=document.createElement('p');p.textContent=t('welcome');p.style.whiteSpace='pre-line';empty.append(img,p);messagesEl.append(empty);return;}
+    if(!current.messages.length) return;
     for(const [i,message] of current.messages.entries()) {
       const article=document.createElement('article');article.className=`buer-message ${message.role==='user'?'user':'assistant'}${message.failed?' error':''}`;
       let avatar;

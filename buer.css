@@ -112,3 +112,6 @@ body[data-workspace="profile"] #buerHome,body[data-workspace="profile"] .shell,b
 .buer-suggestions button{flex:0 0 auto;white-space:nowrap;min-height:30px;padding:6px 10px;scroll-snap-align:start}
 .buer-composer .buer-send{width:44px;height:44px;min-height:44px;flex-basis:44px}
 @media(max-width:760px){.buer-composer{padding:12px 14px}.buer-composer textarea{min-height:42px;height:42px;font-size:16px}.buer-suggestions button{font-size:10px}}
+
+body[data-conversation="empty"] .buer-messages{display:none}
+body[data-conversation="empty"] .buer-conversation-column{min-height:0;max-height:none}

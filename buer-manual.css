@@ -95,7 +95,8 @@ html:not(.native-text-results) .native-birth-display{display:none}
 :root{--buer-bg:#15243b;--buer-text:#f2f6ff;--buer-muted:#b8c9df;--buer-line:#49617e}
 body{background:linear-gradient(180deg,#1e3552 0,#15243b 520px,#15243b 100%);color:var(--buer-text)}
 .buer-hero-art,body[data-workspace="home"][data-conversation="active"] .buer-hero-art{opacity:1;mask-image:linear-gradient(#000 55%,transparent);-webkit-mask-image:linear-gradient(#000 55%,transparent)}
-.topbar{background:rgba(24,43,66,.7);border-bottom:1px solid #7694b32b}
+.topbar{background:transparent;border-bottom:1px solid transparent;backdrop-filter:none;-webkit-backdrop-filter:none;transition:background .18s,border-color .18s}
+.topbar.is-scrolled{background:rgba(24,43,66,.9);border-bottom-color:#7694b32b;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 .buer-rail{background:#1a2d46f5;border-color:#49617e}
 .buer-rail .rail-item{color:#bdcde1}.buer-rail .rail-item.is-active{color:#a8eaff;background:#294361}
 .buer-mobile-language,.topbar .language-switch{background:#263e59;border-color:#56718e}

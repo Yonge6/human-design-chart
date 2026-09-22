@@ -7,6 +7,10 @@ const copy={
 export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
   const $=s=>document.querySelector(s),t=k=>copy[getLanguage()==='en'?'en':'zh'][k];
   const form=$('#buerChatForm'), input=$('#buerQuestion'), messagesEl=$('#buerMessages'), status=$('#buerChatStatus');
+  const syncHeader=()=>$('.topbar').classList.toggle('is-scrolled',window.scrollY>8);
+  window.addEventListener('scroll',syncHeader,{passive:true});
+  window.addEventListener('pageshow',syncHeader);
+  syncHeader();
   const key='buer-conversations-v1';let threads=[];
   try{threads=validChatHistory(JSON.parse(localStorage.getItem(key)||'[]'));}catch{}
   let current={id:crypto.randomUUID(),date:Date.now(),messages:[]},controller=null,activeStatus='',reportOverride=null,reportPreference=null;

@@ -338,3 +338,8 @@ body[data-workspace="home"][data-conversation="active"] .topbar{background:rgba(
 
 /* The native system owns App tabs; retain DOM buttons for routing only. */
 html.native-system-tabs .buer-rail{display:none!important}
+
+/* UIKit already includes its tab bar in the web view's bottom safe area. */
+@media(max-width:760px){
+ html.native-system-tabs body[data-workspace="home"][data-conversation="active"] .buer-home{bottom:calc(env(safe-area-inset-bottom,0px) + 8px)}
+}

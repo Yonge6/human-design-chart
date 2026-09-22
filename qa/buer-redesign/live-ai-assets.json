@@ -1,25 +1,25 @@
 {
-  "source": "bd5a48e",
+  "source": "5f43245",
   "checks": [
     {
       "file": "index.html",
       "match": true,
-      "sha256": "079c183ea1124a142779ae778b6d0fd16d2b5baf7173115c675f27fb3f617a5c"
+      "sha256": "cde266a4dd59fa7c9f21ca84f91bb9c2d58888d74c730f11ebe92087c95bc23a"
     },
     {
       "file": "runtime-config.js",
       "match": true,
-      "sha256": "238893205f0c04cfc4dbfc358dc6df34061714e12ad2bc4e777a750406c5f24c"
+      "sha256": "56fc628195bc2404a7a3e052a8614d0955a983b245ff7e1554248405147e2079"
     },
     {
       "file": "buer.css",
       "match": true,
-      "sha256": "8d047ecb964db27242729541b3971d45d17996e9ce7d429debbb13bbace5180e"
+      "sha256": "8430eb43e0a4e4d8029f4b43cf4621af537b231727ccf2af41325c02796b323e"
     },
     {
       "file": "src/app/buer-home.js",
       "match": true,
-      "sha256": "c1dfb82135277da28c3eb70e5616b17e92d0708877170cd9670860f294b071d9"
+      "sha256": "b8552ec56b542a440287bc6466532e2c12f4696cc2f3e52e06176677bd3f4cf0"
     }
   ]
 }

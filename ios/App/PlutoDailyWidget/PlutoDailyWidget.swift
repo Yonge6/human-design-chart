@@ -66,7 +66,7 @@ struct DailyTipWidgetView: View {
             }.foregroundStyle(gold.opacity(0.8))
         }
         .padding(16)
-        .widgetURL(URL(string: "plutolifemanual://daily-tip"))
+        .widgetURL(URL(string: "buerwithin://daily-tip"))
     }
     var body: some View {
         if #available(iOS 17.0, *) {

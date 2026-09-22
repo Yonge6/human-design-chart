@@ -1,0 +1,6 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {mkdtempSync} from 'node:fs';import {tmpdir} from 'node:os';import {join} from 'node:path';import {createChatAccess} from '../api/chat-access.mjs';
+const body={installationId:'11111111-1111-4111-8111-111111111111'};
+test('quota reserves concurrent requests, refunds failures, persists and resets next UTC day',async()=>{
+const file=join(mkdtempSync(join(tmpdir(),'buer-quota-')),'usage.json');let date=Date.UTC(2026,8,22);const make=()=>createChatAccess({file,now:()=>date});let a=make();const r=await Promise.all([a.reserve(body),a.reserve(body),a.reserve(body)]);await assert.rejects(a.reserve(body),/DAILY_LIMIT/);r[0].finish(false);r[1].finish(true);r[2].finish(true);(await a.reserve(body)).finish(true);a=make();await assert.rejects(a.reserve(body),/DAILY_LIMIT/);date+=86400000;(await a.reserve(body)).finish(true);
+});
+test('only verified membership skips quota',async()=>{const a=createChatAccess({verify:async proof=>proof==='verified'});for(let i=0;i<4;i++)(await a.reserve({...body,transactionJWS:'verified'})).finish(true);for(let i=0;i<3;i++)(await a.reserve({...body,transactionJWS:'forged'})).finish(true);await assert.rejects(a.reserve(body),/DAILY_LIMIT/);});

@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        if url.scheme == "plutolifemanual", url.host == "daily-tip" {
+        if url.scheme == "buerwithin", url.host == "daily-tip" {
             UserDefaults.standard.set(true, forKey: DailyTipStore.pendingLinkKey)
             NotificationCenter.default.post(name: Notification.Name("PlutoDailyTipOpened"), object: nil)
             return true

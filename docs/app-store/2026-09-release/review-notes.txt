@@ -1,0 +1,7 @@
+Buer Within is a bilingual self-reflection app combining AI conversation, on-device Human Design-based readings, local history, daily reflection sharing and a native Home Screen widget. No login is required. Human Design readings are interpretive and not scientific or professional advice.
+
+Test: switch to English using EN at the top. On Home, enter a question and accept the AI data-sharing consent. Messages are sent to our server and DeepSeek; birth details are not automatically sent. Free users receive 3 completed replies per UTC day; failed replies do not count.
+
+To test subscriptions: Me > Privacy Settings > Membership & subscriptions. Monthly and annual products unlock conversations without a daily message limit; anti-abuse rate limits remain. Restore purchases is available on the same screen. Life Manual generation and local history do not require a subscription. Use synthetic birth details. Cloud save and analytics are unavailable and hidden in this native build.
+
+The native release provides text readings; the full BodyGraph image is not part of this native release.

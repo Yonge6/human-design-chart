@@ -24,7 +24,7 @@ struct DailyTipPayload: Codable {
 }
 
 enum DailyTipStore {
-    static let group = "group.com.yonge6.plutolifemanual"
+    static let group = "group.com.yonge6.buerwithin"
     static let widgetKind = "PlutoDailyTip"
     static let key = "daily-tip-v1"
     static let pendingLinkKey = "pluto-pending-widget-link"

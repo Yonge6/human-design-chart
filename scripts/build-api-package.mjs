@@ -23,6 +23,7 @@ await writeFile(resolve(output, "package.json"), `${JSON.stringify({
   license: sourcePackage.license,
   private: true,
   type: "module",
+  dependencies: {"@apple/app-store-server-library":sourcePackage.dependencies["@apple/app-store-server-library"]},
   scripts: { start: "node api/server.mjs" },
 }, null, 2)}\n`);
 console.log(`Built API production package in ${output}`);

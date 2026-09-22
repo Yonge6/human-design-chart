@@ -57,10 +57,10 @@
 	<array>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>com.yonge6.plutolifemanual</string>
+			<string>com.yonge6.buerwithin</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>plutolifemanual</string>
+				<string>buerwithin</string>
 			</array>
 		</dict>
 	</array>

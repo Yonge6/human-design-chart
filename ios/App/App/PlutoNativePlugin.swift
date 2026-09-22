@@ -2,12 +2,20 @@ import Capacitor
 import Photos
 import UIKit
 import WidgetKit
+import StoreKit
+import Security
 
 @objc(PlutoNativePlugin)
 public class PlutoNativePlugin: CAPPlugin, CAPBridgedPlugin {
     public let identifier = "PlutoNativePlugin"
     public let jsName = "PlutoNative"
+    private let subscriptionIDs = ["com.yonge6.buerwithin.plus.monthly", "com.yonge6.buerwithin.plus.annual"]
+    private var transactionListener: Task<Void, Never>?
+    private let installationLock = NSLock()
     public let pluginMethods: [CAPPluginMethod] = [
+        CAPPluginMethod(name: "subscriptionStatus", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "purchaseSubscription", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "restoreSubscriptions", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "saveImage", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "shareImage", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "shareLink", returnType: CAPPluginReturnPromise),
@@ -16,10 +24,75 @@ public class PlutoNativePlugin: CAPPlugin, CAPBridgedPlugin {
     ]
 
     public override func load() {
+        let ids = subscriptionIDs
+        transactionListener = Task {
+            for await result in Transaction.updates {
+                if Task.isCancelled { break }
+                if case .verified(let transaction) = result, ids.contains(transaction.productID) {
+                    await transaction.finish()
+                }
+            }
+        }
         NotificationCenter.default.addObserver(self, selector: #selector(dailyTipOpened), name: Notification.Name("PlutoDailyTipOpened"), object: nil)
     }
 
-    deinit { NotificationCenter.default.removeObserver(self) }
+    deinit { transactionListener?.cancel(); NotificationCenter.default.removeObserver(self) }
+
+    private func installationID() -> String {
+        installationLock.lock()
+        defer { installationLock.unlock() }
+        let query: [String: Any] = [kSecClass as String:kSecClassGenericPassword, kSecAttrService as String:"com.yonge6.buerwithin.installation", kSecAttrAccount as String:"anonymous", kSecReturnData as String:true]
+        var result: CFTypeRef?
+        if SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess, let data = result as? Data, let value = String(data:data,encoding:.utf8) { return value }
+        let value=UUID().uuidString.lowercased()
+        var add=query;add.removeValue(forKey:kSecReturnData as String);add[kSecValueData as String]=Data(value.utf8);add[kSecAttrAccessible as String]=kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
+        SecItemAdd(add as CFDictionary,nil)
+        return value
+    }
+
+    private func membership() async -> [String: Any] {
+        var proof=""
+        for await result in Transaction.currentEntitlements {
+            if case .verified(let transaction)=result, subscriptionIDs.contains(transaction.productID), transaction.revocationDate == nil, let expiry=transaction.expirationDate, expiry > Date() { proof=result.jwsRepresentation }
+        }
+        return ["installationId":installationID(),"transactionJWS":proof,"member":!proof.isEmpty]
+    }
+
+    @objc func subscriptionStatus(_ call: CAPPluginCall) {
+        Task {
+            var state=await membership()
+            do {
+                let products=try await Product.products(for:subscriptionIDs)
+                state["products"]=products.map { ["id":$0.id,"price":$0.displayPrice,"name":$0.displayName] }
+            } catch { state["products"]=[] as [[String:String]] }
+            call.resolve(state)
+        }
+    }
+
+    @objc func purchaseSubscription(_ call: CAPPluginCall) {
+        guard let id=call.getString("productId"),subscriptionIDs.contains(id) else {call.reject("INVALID_PRODUCT");return}
+        Task { @MainActor in
+            do {
+                guard let product=try await Product.products(for:[id]).first else {call.reject("PRODUCT_UNAVAILABLE");return}
+                let result=try await product.purchase()
+                switch result {
+                case .success(let verification):
+                    guard case .verified(let transaction)=verification else {call.reject("UNVERIFIED_PURCHASE");return}
+                    await transaction.finish();call.resolve(await membership())
+                case .userCancelled: call.resolve(["cancelled":true])
+                case .pending: call.resolve(["pending":true])
+                @unknown default: call.reject("PURCHASE_UNAVAILABLE")
+                }
+            } catch {call.reject("PURCHASE_UNAVAILABLE",nil,error)}
+        }
+    }
+
+    @objc func restoreSubscriptions(_ call: CAPPluginCall) {
+        Task { @MainActor in
+            do {try await AppStore.sync();call.resolve(await membership())}
+            catch {call.reject("RESTORE_UNAVAILABLE",nil,error)}
+        }
+    }
 
     @objc private func dailyTipOpened() {
         notifyListeners("dailyTipOpened", data: [:])

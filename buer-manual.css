@@ -294,3 +294,11 @@ body[data-workspace="home"][data-conversation="active"] .topbar{background:rgba(
 .shell .form-panel .form-action-set>.form-secondary-action::before{content:"‹";font-size:20px;margin-right:8px;vertical-align:-1px}
 .confirm-dialog{border-radius:20px}
 .confirm-dialog .confirm-dialog-actions button{min-height:44px;border-radius:10px}
+
+/* Keep the iOS status area separate from sticky content. */
+@media(max-width:760px){
+ html.native-text-results{--buer-bottom-inset:env(safe-area-inset-bottom,0px)}
+ html.native-text-results .topbar{top:env(safe-area-inset-top,0px)}
+ html.native-text-results body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:100;background:#192c43;pointer-events:none}
+ html.native-text-results body[data-workspace="home"][data-conversation="active"] .buer-home{top:calc(64px + env(safe-area-inset-top,0px))}
+}

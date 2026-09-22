@@ -1,3 +1,4 @@
+import {renderAssistantText} from './buer-message-format.js';
 import {nextQuestionBatch} from './buer-suggestions.js';
 import {readBuerEvents,anonymousReport,validChatHistory} from '../services/buer-conversation.js';
 
@@ -56,7 +57,8 @@ export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
       let avatar;
       if(message.role==='assistant'){avatar=document.createElement('img');avatar.src='assets/buer-orb-v2.png';avatar.alt='不二见己 AI';avatar.className='buer-avatar';}
       else {avatar=document.createElement('span');avatar.className='buer-avatar buer-user-avatar';const icon=document.createElement('i');icon.className='ph ph-user';icon.setAttribute('aria-hidden','true');avatar.append(icon);}
-      const wrap=document.createElement('div');wrap.className='buer-message-content';const text=document.createElement('p');text.textContent=message.content || t(message.failed?(message.errorKey||'failed'):'connecting');
+      const wrap=document.createElement('div');wrap.className='buer-message-content';const text=document.createElement('p');const content=message.content || t(message.failed?(message.errorKey||'failed'):'connecting');
+      if(message.role==='assistant')renderAssistantText(text,content);else text.textContent=content;
       const time=document.createElement('small');time.textContent=new Intl.DateTimeFormat(getLanguage()==='zh'?'zh-CN':'en',{hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(message.date));wrap.append(text,time);
       if(message.role==='assistant' && !controller){const actions=document.createElement('div');actions.className='buer-message-actions';
         if(message.content) actions.append(button(t('copy'),async()=>{try{await navigator.clipboard.writeText(message.content);setStatus('copied');}catch{setStatus('failed');}}));

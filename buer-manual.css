@@ -260,3 +260,37 @@ body[data-workspace="home"][data-conversation="active"] .topbar{background:rgba(
 #buerChatForm .buer-suggestions button:hover{background:rgba(145,173,221,.18);border-color:rgba(177,205,241,.58)}
 #buerChatForm .buer-send{background:linear-gradient(145deg,#afe5ff,#b7baff);border-color:rgba(226,238,255,.7);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 3px 12px rgba(134,167,245,.18);color:#304973}
 #buerChatForm .buer-send:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 4px 16px rgba(134,167,245,.28)}
+/* Scroll messages flush beneath the header; keep spacing inside the scroll area. */
+@media(max-width:760px){
+ body[data-workspace="home"][data-conversation="active"] .buer-home{padding-top:0}
+ body[data-workspace="home"][data-conversation="active"] .buer-messages{padding-top:16px}
+}
+
+.buer-message.assistant p strong{font-weight:700;color:#f5f8ff}
+
+/* Spacious local records and privacy controls. */
+#appDrawer .history-list{gap:12px;padding:8px 0;overflow:visible}
+#appDrawer .history-card{padding:20px;border:1px solid #526c894d;border-radius:16px;gap:16px;background:#21375099}
+#appDrawer .history-card h3{margin-bottom:8px;font-size:16px;line-height:1.4}
+#appDrawer .history-card p{color:#aec2da;line-height:1.7;overflow-wrap:anywhere}
+#appDrawer .history-card-actions{gap:10px}
+#appDrawer .history-card button{min-height:40px;padding:0 17px;border-radius:10px}
+#appDrawer .history-card .history-delete{background:transparent;border-color:#8fa5c23d;color:#b0bed0}
+#appDrawer .settings-list{gap:12px}
+#appDrawer .settings-row{padding:18px;border:1px solid #526c894d;border-radius:16px;background:#21375099;gap:20px}
+#appDrawer .settings-row span{min-width:0;gap:8px}
+#appDrawer .settings-row b{color:#d8e8fc;font-size:14px;line-height:1.5}
+#appDrawer .settings-row small{color:#a8bad0;font-size:12px;line-height:1.7}
+#appDrawer .settings-row input{appearance:none;-webkit-appearance:none;box-sizing:border-box;width:38px;height:22px;min-height:22px;padding:3px;border:1px solid #718ca9;border-radius:20px;background:#14263c;cursor:pointer}
+#appDrawer .settings-row input::before{content:"";display:block;width:14px;height:14px;border-radius:50%;background:#a4b8d0;transition:transform .18s ease}
+#appDrawer .settings-row input:checked{background:#8fcfe8;border-color:#a9e1f6}
+#appDrawer .settings-row input:checked::before{transform:translateX(16px);background:#18364b}
+#appDrawer .settings-row input:focus-visible{outline:2px solid #b6e6fb;outline-offset:4px}
+#appDrawer .drawer-back,.buer-back-home,.shell .form-panel .form-action-set>.form-secondary-action{border:1px solid #9fbdd342;border-radius:11px;background:#233b5059;color:#c6e2f2;box-shadow:inset 0 1px 0 #ffffff08;transition:background .18s,border-color .18s}
+#appDrawer .drawer-back .ph{font-size:19px}
+.buer-back-home{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:fit-content;padding:0 12px;min-height:36px}
+#appDrawer .drawer-back:hover,.buer-back-home:hover{background:#314b65;border-color:#a9d4ed88}
+#appDrawer .drawer-back:focus-visible,.buer-back-home:focus-visible{outline:2px solid #b6e6fb;outline-offset:3px}
+.shell .form-panel .form-action-set>.form-secondary-action::before{content:"‹";font-size:20px;margin-right:8px;vertical-align:-1px}
+.confirm-dialog{border-radius:20px}
+.confirm-dialog .confirm-dialog-actions button{min-height:44px;border-radius:10px}

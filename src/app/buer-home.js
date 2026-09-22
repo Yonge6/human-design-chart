@@ -20,6 +20,7 @@ export function initBuerHome({getLanguage,openManual,getReport}) {
   }
   function button(text,handler){const b=document.createElement('button');b.type='button';b.textContent=text;b.addEventListener('click',handler);return b;}
   function renderMessages(){
+    document.body.dataset.conversation=current.messages.length?'active':'empty';
     const wasNearBottom=messagesEl.scrollHeight-messagesEl.scrollTop-messagesEl.clientHeight<90;
     messagesEl.replaceChildren();
     if(!current.messages.length){const empty=document.createElement('div');empty.className='buer-empty';const img=document.createElement('img');img.src='assets/buer-ai-orb.webp';img.alt='';const p=document.createElement('p');p.textContent=t('welcome');p.style.whiteSpace='pre-line';empty.append(img,p);messagesEl.append(empty);return;}

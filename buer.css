@@ -4,7 +4,7 @@ body{margin:0;background:var(--buer-bg);color:var(--buer-text);font-family:"Ping
 body[data-workspace="home"] .shell,body[data-workspace="home"] .buer-back-home{display:none}
 body[data-workspace="manual"] #buerHome{display:none}
 .buer-hero-art{position:absolute;z-index:0;pointer-events:none;left:var(--buer-rail);top:0;width:calc(100% - var(--buer-rail));height:290px;object-fit:cover;object-position:center 42%;opacity:.92}
-body[data-workspace="manual"] .buer-hero-art{opacity:.24}
+
 .topbar{position:relative;z-index:2;display:flex;align-items:flex-start;justify-content:space-between;height:150px;max-width:none;margin:0 0 0 var(--buer-rail);padding:36px 50px;background:transparent;border:0;box-shadow:none}
 .topbar .brand{font-family:"Songti SC","Noto Serif CJK SC",serif;font-size:28px;font-weight:600;letter-spacing:2px;color:#f4f6ff;line-height:1.3;white-space:nowrap}.topbar .brand-detail{display:inline;font-size:inherit;font-weight:inherit;color:inherit}.brand small{display:block;margin-top:15px;font:12px/1.4 system-ui,sans-serif;letter-spacing:7px;color:#a3acc3}
 .topbar-actions{gap:14px;align-items:center}.language-switch{background:rgba(8,14,27,.68);border:1px solid var(--buer-line);border-radius:8px}.language-switch button{color:#a6b1ca;font-size:12px;padding:7px 10px;min-height:32px;min-width:36px}.language-switch button[aria-pressed="true"]{background:#202d43;color:#eaf8ff}.menu-button{background:rgba(8,14,27,.5);color:#bdc9e4;width:36px;min-height:36px;border:0}.menu-button .ph{font-size:24px}
@@ -65,7 +65,7 @@ body[data-conversation="active"] .buer-compose-zone{flex-shrink:0}
 /* Personal space is a full navigation destination, not an overlay. */
 #openMenu,#closeMenu,.drawer-backdrop{display:none!important}
 body[data-workspace="profile"] #buerHome,body[data-workspace="profile"] .shell,body[data-workspace="profile"] .buer-back-home,body[data-workspace="profile"] .buer-manual-intro{display:none!important}
-body[data-workspace="profile"] .buer-hero-art{opacity:.2}
+
 #appDrawer{position:relative;inset:auto;z-index:1;margin:0 40px 40px calc(var(--buer-rail) + 40px)}
 #appDrawer .side-drawer{position:relative;inset:auto;display:block;width:100%;max-width:900px;height:auto;margin:auto;padding:0;background:transparent;border:0;box-shadow:none;animation:none}
 #appDrawer .drawer-header{padding:12px 0 24px;grid-template-columns:36px 1fr;border-bottom:1px solid #303b51}

@@ -33,7 +33,7 @@ body[data-workspace="manual"] #buerHome{display:none}
 @media(min-width:761px) and (max-width:1100px){.buer-welcome h1{font-size:clamp(23px,2.9vw,31px);white-space:normal}}
 @media(max-width:760px){.buer-welcome{padding-top:56px;padding-bottom:18px}.buer-messages{max-height:26dvh;min-height:145px}.buer-compose-zone{margin-top:12px}.buer-composer textarea{min-height:54px}.buer-conversation-column{min-height:0}.buer-data-note{margin-top:6px}.buer-compose-meta{align-items:flex-start}.buer-compose-meta p{min-width:110px}}
 
-@media(min-width:1101px){.buer-hero-art{width:calc(100% - var(--buer-rail) - 235px)}.buer-context #dailyTipText{font-size:27px;line-height:1.7}.buer-context .daily-date-row{margin-bottom:44px}.buer-manual-entry{margin-top:34px;padding-top:28px}.buer-context-foot{padding-top:26px}}
+@media(min-width:1101px){.buer-hero-art{width:calc(100% - var(--buer-rail))}.buer-context #dailyTipText{font-size:27px;line-height:1.7}.buer-context .daily-date-row{margin-bottom:44px}.buer-manual-entry{margin-top:34px;padding-top:28px}.buer-context-foot{padding-top:26px}}
 
 html[lang="en"] .rail-foot{letter-spacing:0;width:100%;font-size:11px}html[lang="en"] .rail-item{font-size:10px}html[lang="en"] .buer-welcome h1{white-space:normal}
 

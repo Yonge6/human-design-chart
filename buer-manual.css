@@ -335,3 +335,6 @@ body[data-workspace="home"][data-conversation="active"] .topbar{background:rgba(
  html.native-text-results .buer-rail .rail-item .ph{font-size:22px}
  html.native-text-results body[data-workspace="home"][data-conversation="active"] .buer-home{bottom:calc(68px + max(8px,env(safe-area-inset-bottom,0px) - 12px))}
 }
+
+/* The native system owns App tabs; retain DOM buttons for routing only. */
+html.native-system-tabs .buer-rail{display:none!important}

@@ -82,3 +82,10 @@ body[data-workspace="profile"] #buerHome,body[data-workspace="profile"] .shell,b
   #appDrawer .drawer-work-card small{display:none}
   #appDrawer .drawer-header{padding-top:0}
 }
+
+/* Quiet text links close the personal page. */
+#appDrawer .drawer-links{padding:0}
+#appDrawer .drawer-links nav{display:flex;justify-content:center;align-items:center;gap:clamp(8px,2.4vw,20px);margin:0}
+#appDrawer .drawer-links a{display:inline-flex;align-items:center;min-height:40px;padding:0;border:0;font-size:clamp(9px,2.3vw,11px);white-space:nowrap;text-decoration:none}
+#appDrawer .drawer-links a span:last-child{color:#8fa5c2}
+#appDrawer .drawer-links a:hover span{color:#d8e8fc}

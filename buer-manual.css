@@ -228,3 +228,5 @@ body[data-conversation="empty"] .buer-compose-zone{margin-top:44px}
 
 .buer-rail .rail-item.is-active{color:#b6ebff;font-weight:700;background:transparent}
 .buer-rail .rail-item.is-active .ph{color:#b6ebff;transform:scale(1.12);-webkit-text-stroke:.6px currentColor;text-shadow:0 0 12px #88ceff88}
+
+#dailyShareStatus:empty{display:none}

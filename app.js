@@ -2252,7 +2252,7 @@ document.querySelector('#shareDailyTip').addEventListener('click', async event =
       document.querySelector('#sendDailyImage').textContent = dailyShareText('长按发送图片', 'Send with a long press');
       showDailyImageHelp();
     }
-    status.textContent = dailyShareText('图片仅包含今日提示，不含姓名或出生信息。', 'Includes only today’s thought, without your name or birth details.');
+    status.textContent = '';
     document.querySelector('#saveDailyImage').disabled = false;
     document.querySelector('#sendDailyImage').disabled = false;
   } catch (error) {

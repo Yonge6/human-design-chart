@@ -33,11 +33,11 @@ export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
     document.body.dataset.conversation=current.messages.length?'active':'empty';
     const wasNearBottom=messagesEl.scrollHeight-messagesEl.scrollTop-messagesEl.clientHeight<90;
     messagesEl.replaceChildren();
-    if(!current.messages.length){const empty=document.createElement('div');empty.className='buer-empty';const img=document.createElement('img');img.src='assets/buer-ai-orb.webp';img.alt='';const p=document.createElement('p');p.textContent=t('welcome');p.style.whiteSpace='pre-line';empty.append(img,p);messagesEl.append(empty);return;}
+    if(!current.messages.length){const empty=document.createElement('div');empty.className='buer-empty';const img=document.createElement('img');img.src='assets/buer-orb-v2.png';img.alt='';const p=document.createElement('p');p.textContent=t('welcome');p.style.whiteSpace='pre-line';empty.append(img,p);messagesEl.append(empty);return;}
     for(const [i,message] of current.messages.entries()) {
       const article=document.createElement('article');article.className=`buer-message ${message.role==='user'?'user':'assistant'}${message.failed?' error':''}`;
       let avatar;
-      if(message.role==='assistant'){avatar=document.createElement('img');avatar.src='assets/buer-ai-orb.webp';avatar.alt='不二见己 AI';avatar.className='buer-avatar';}
+      if(message.role==='assistant'){avatar=document.createElement('img');avatar.src='assets/buer-orb-v2.png';avatar.alt='不二见己 AI';avatar.className='buer-avatar';}
       else {avatar=document.createElement('span');avatar.className='buer-avatar buer-user-avatar';const icon=document.createElement('i');icon.className='ph ph-user';icon.setAttribute('aria-hidden','true');avatar.append(icon);}
       const wrap=document.createElement('div');wrap.className='buer-message-content';const text=document.createElement('p');text.textContent=message.content || t(message.failed?(message.errorKey||'failed'):'connecting');
       const time=document.createElement('small');time.textContent=new Intl.DateTimeFormat(getLanguage()==='zh'?'zh-CN':'en',{hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(message.date));wrap.append(text,time);

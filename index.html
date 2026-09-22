@@ -24,8 +24,8 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://buer-api.wonderelian.com https://photon.komoot.io https://geocode.arcgis.com https://api-human-design.wonderelian.com https://*.supabase.co https://www.google-analytics.com https://region1.google-analytics.com; img-src 'self' data: blob: https://wendao.wonderelian.com; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://www.googletagmanager.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
   <title>不二见己 | Human Design Chart</title>
   <link rel="canonical" href="https://human-design.wonderelian.com/">
-  <link rel="icon" type="image/png" href="assets/pluto-app-icon-180.png">
-  <link rel="apple-touch-icon" href="assets/pluto-app-icon-180.png">
+  <link rel="icon" type="image/png" href="assets/buer-favicon.png">
+  <link rel="apple-touch-icon" href="assets/buer-app-icon-180.png">
   <link rel="preload" as="image" href="assets/pluto-vellum-bg-v4.png">
   <link rel="preload" as="image" href="assets/pluto-form-bg-v3.png">
   <link rel="preload" as="image" href="assets/pluto-form-mobile-v4.png" media="(max-width: 560px)">
@@ -37,7 +37,7 @@
 </head>
 <body data-workspace="home">
   <header class="topbar">
-    <div class="brand"><span data-i18n="brand">不二见己</span><small data-buer="tagline">与真实的自己 · 温柔相遇</small></div>
+    <div class="brand"><img class="brand-symbol" src="assets/buer-orb-v2.png" alt=""><span data-i18n="brand">不二见己</span><small data-buer="tagline">与真实的自己 · 温柔相遇</small></div>
     <div class="topbar-actions">
       <button id="buerMobileLanguage" class="buer-mobile-language" type="button" aria-label="切换到英文" title="切换到英文">EN</button>
       <div class="language-switch topbar-language-switch" role="group" aria-label="Language / 语言">
@@ -55,7 +55,7 @@
     <aside class="side-drawer" role="region" aria-labelledby="drawerTitle" tabindex="-1">
       <header class="drawer-header">
         <span class="drawer-leading">
-          <span class="drawer-orbit" aria-hidden="true"><span></span></span>
+          <span class="drawer-orbit" aria-hidden="true"><img src="assets/buer-orb-v2.png" alt=""></span>
           <button id="drawerBack" class="drawer-back" type="button" data-i18n-aria-label="drawerBack" aria-label="返回" hidden><span aria-hidden="true">←</span></button>
         </span>
         <div>
@@ -242,7 +242,7 @@
 
 
   <nav class="buer-rail" aria-label="主要导航">
-    <button class="buer-mark" data-home aria-label="不二见己首页">不二<br>见己</button>
+    <button class="buer-mark" data-home aria-label="不二见己首页"><img src="assets/buer-orb-v2.png" alt=""></button>
     <button class="rail-item is-active" data-home><i class="ph ph-house" aria-hidden="true"></i><span data-buer="home">首页</span></button>
     <button class="rail-item" data-manual><i class="ph ph-book-open-text" aria-hidden="true"></i><span data-buer="manual">人生说明书</span></button>
     <button class="rail-item" id="buerProfileButton" data-profile><i class="ph ph-user-circle" aria-hidden="true"></i><span data-buer="profile">我的</span></button>
@@ -426,7 +426,7 @@
       </div>
       </section></div>
       <aside class="buer-manual-aside">
-        <section class="buer-guide"><img src="assets/buer-ai-orb.webp" alt=""><p class="buer-kicker" data-manual-copy="guideKicker">让理解，继续发生</p><h2 data-manual-copy="guideHeading">读到这里，<br>你想到了什么？</h2><p data-manual-copy="guideLead">带上这份说明书，聊聊眼前的一个决定，或最近让你在意的一件事。</p><button type="button" data-manual-question="decision"><span data-manual-copy="talk">结合说明书聊一聊</span><i class="ph ph-arrow-up-right" aria-hidden="true"></i></button><small data-manual-copy="contextNote">仅带入类型、策略、权威与人生角色；你发送问题后才会请求 AI。</small></section>
+        <section class="buer-guide"><img src="assets/buer-orb-v2.png" alt=""><p class="buer-kicker" data-manual-copy="guideKicker">让理解，继续发生</p><h2 data-manual-copy="guideHeading">读到这里，<br>你想到了什么？</h2><p data-manual-copy="guideLead">带上这份说明书，聊聊眼前的一个决定，或最近让你在意的一件事。</p><button type="button" data-manual-question="decision"><span data-manual-copy="talk">结合说明书聊一聊</span><i class="ph ph-arrow-up-right" aria-hidden="true"></i></button><small data-manual-copy="contextNote">仅带入类型、策略、权威与人生角色；你发送问题后才会请求 AI。</small></section>
         <section class="buer-manual-daily"><p class="buer-kicker" data-manual-copy="dailyKicker">一点点，回到自己</p><h3 data-manual-copy="dailyHeading">每天，一个小提醒</h3><p data-manual-copy="dailyLead">首页会根据最近保存的说明书，为你准备一句今日提示。也可以分享给在意的人。</p><button type="button" id="buerManualDaily"><span data-manual-copy="viewDaily">看看今日提示</span><i class="ph ph-arrow-right" aria-hidden="true"></i></button></section>
         <p class="buer-manual-note" data-manual-copy="reflectionNote">说明书是一份自我观察的邀请，不是对你的定义，也不替你决定人生。</p>
       </aside></div>

@@ -27,51 +27,63 @@ export function wrapPosterText(context, text, maxWidth) {
 
 export async function createDailyTipPoster({ tip, language, date = new Date() }) {
   if (!tip) throw new Error('A saved result is required.');
-  const [qr, moon] = await Promise.all([
+  const [qr, hero, orb] = await Promise.all([
     loadImage(new URL(globalThis.PLUTO_CONFIG?.buerShareQrPath || '../../assets/chart-qr.png', import.meta.url).href),
-    loadImage(new URL('../../assets/buer-ai-orb.webp', import.meta.url).href).catch(() => null),
+    loadImage(new URL('../../assets/buer-aurora-hero.webp', import.meta.url).href).catch(() => null),
+    loadImage(new URL("../../assets/buer-orb-v2.png", import.meta.url).href),
     document.fonts.ready,
   ]);
   const chinese = language === 'zh';
   const canvas = document.createElement('canvas');
   canvas.width = 1080; canvas.height = 1440;
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#080e1b'; ctx.fillRect(0, 0, 1080, 1440);
-  ctx.textBaseline = 'top';
-  ctx.fillStyle = '#edf2ff';
-  ctx.font = '58px Georgia, serif'; ctx.fillText(chinese ? '不二见己' : 'Buer Within', 86, 86);
-  ctx.fillStyle = '#a7ccf5'; ctx.font = '24px sans-serif';
-  ctx.fillText(new Intl.DateTimeFormat(chinese ? 'zh-CN' : 'en', {year:'numeric', month:'long', day:'numeric'}).format(date), 88, 183);
-  if (moon) {
-    ctx.globalCompositeOperation = "lighten";
-    ctx.drawImage(moon, 785, 76, 210, 210);
-    ctx.globalCompositeOperation = "source-over";
+  const background = ctx.createLinearGradient(0, 0, 0, 1440);
+  background.addColorStop(0, '#243e60'); background.addColorStop(1, '#15243b');
+  ctx.fillStyle = background; ctx.fillRect(0, 0, 1080, 1440);
+  if (hero) {
+    const scale = Math.max(1080 / hero.width, 570 / hero.height);
+    ctx.drawImage(hero, (1080 - hero.width * scale) / 2, 0, hero.width * scale, hero.height * scale);
+    const fade = ctx.createLinearGradient(0, 200, 0, 580);
+    fade.addColorStop(0, '#15243b00'); fade.addColorStop(1, '#1e3350');
+    ctx.fillStyle = fade; ctx.fillRect(0, 0, 1080, 590);
   }
-  ctx.fillStyle = '#b2d8ff'; ctx.font = '28px sans-serif';
-  ctx.fillText(chinese ? '今日提示' : 'A thought for today', 88, 320);
-  ctx.fillRect(88, 370, 42, 2);
-  let size = chinese ? 76 : 62;
+  ctx.drawImage(orb, 878, 60, 140, 140);
+  ctx.textBaseline = 'top';
+  ctx.fillStyle = '#f2f6ff'; ctx.font = '60px Georgia, serif';
+  ctx.fillText(chinese ? '不二见己' : 'Buer Within', 72, 70);
+  ctx.fillStyle = '#c5def5'; ctx.font = '23px sans-serif';
+  ctx.fillText(chinese ? '与真实的自己 · 温柔相遇' : 'Meet your true self', 74, 150);
+  ctx.fillStyle = '#f2f6ff'; ctx.font = '64px sans-serif';
+  ctx.fillText(`${String(date.getMonth()+1).padStart(2,'0')}.${String(date.getDate()).padStart(2,'0')}`, 74, 385);
+  ctx.font = '23px sans-serif'; ctx.fillStyle = '#c5def5';
+  ctx.fillText(new Intl.DateTimeFormat(chinese ? 'zh-CN' : 'en', {weekday:'long'}).format(date), 290, 422);
+  ctx.textAlign = 'right'; ctx.font = '24px sans-serif'; ctx.fillText(String(date.getFullYear()), 1006, 424); ctx.textAlign = 'left';
+  const panel = ctx.createLinearGradient(0, 520, 0, 1090);
+  panel.addColorStop(0, '#294560'); panel.addColorStop(1, '#20364f');
+  ctx.beginPath(); ctx.roundRect(64, 520, 952, 574, 32); ctx.fillStyle = panel; ctx.fill();
+  ctx.strokeStyle = '#7297b9'; ctx.lineWidth = 1.5; ctx.stroke();
+  ctx.fillStyle = '#a5e5ff'; ctx.fillRect(108, 570, 4, 25);
+  ctx.font = '26px sans-serif'; ctx.fillText(chinese ? '今日提示' : 'A thought for today', 132, 569);
+  let size = chinese ? 70 : 60;
   let lines;
   do {
     ctx.font = `300 ${size}px ${chinese ? '"Songti SC", "Noto Serif CJK SC",' : ''} Georgia, serif`;
-    lines = wrapPosterText(ctx, formatDailyTipText(tip, language), 890);
-    if (lines.length * size * 1.5 <= 475) break;
+    lines = wrapPosterText(ctx, formatDailyTipText(tip, language), 864);
+    if (lines.length * size * 1.5 <= 350) break;
     size -= 2;
-  } while (size > 38);
-  ctx.fillStyle = '#edf2ff';
-  lines.forEach((line, index) => ctx.fillText(line, 88, 432 + index * size * 1.5));
-  ctx.font = '25px sans-serif'; ctx.fillStyle = '#a99c96';
-  ctx.fillText(chinese ? '来自我最近一次的人生使用说明书' : 'From my latest Life Manual', 88, 986);
-  ctx.fillStyle = '#514237'; ctx.fillRect(88, 1060, 904, 1);
-  ctx.fillStyle = '#b2d8ff'; ctx.font = '32px Georgia, serif'; ctx.fillText(chinese ? '不二见己' : 'BUER WITHIN', 88, 1150);
-  ctx.fillStyle = '#a99c96'; ctx.font = '25px sans-serif';
-  ctx.fillText(chinese ? '从了解自己开始' : 'Begin with self-knowledge', 88, 1210);
-  ctx.font = '19px sans-serif';
-  ctx.fillText((globalThis.PLUTO_CONFIG?.buerPublicUrl || 'https://human-design.wonderelian.com/').replace(/^https?:\/\//,'').replace(/\/$/,''), 88, 1280);
-  // The source QR includes its white quiet zone; disable smoothing for crisp scanning.
-  ctx.imageSmoothingEnabled = false;
-  ctx.drawImage(qr, 780, 1110, 216, 216);
-  ctx.fillStyle = '#a99c96'; ctx.font = '20px sans-serif'; ctx.textAlign = 'center';
-  ctx.fillText(chinese ? '扫码，认识你自己' : 'Scan to explore', 888, 1348);
+  } while (size > 30);
+  ctx.fillStyle = '#f5f8ff';
+  lines.forEach((line, index) => ctx.fillText(line, 108, 648 + index * size * 1.5));
+  ctx.font = '22px sans-serif'; ctx.fillStyle = '#b9d0e6';
+  ctx.fillText(chinese ? '来自我最近一次的人生说明书' : 'From my latest Life Manual', 108, 1035);
+  ctx.fillStyle = '#a5e5ff'; ctx.font = '29px Georgia, serif'; ctx.fillText('BUER WITHIN', 74, 1180);
+  ctx.fillStyle = '#e3eefb'; ctx.font = '27px sans-serif';
+  ctx.fillText(chinese ? '从了解自己开始' : 'Begin with self-knowledge', 74, 1233);
+  ctx.font = '21px sans-serif'; ctx.fillStyle = '#b9d0e6';
+  ctx.fillText((globalThis.PLUTO_CONFIG?.buerPublicUrl || 'https://human-design.wonderelian.com/').replace(/^https?:\/\//,'').replace(/\/$/,''), 74, 1324);
+  // Preserve the white quiet zone and hard edges for reliable scanning.
+  ctx.imageSmoothingEnabled = false; ctx.drawImage(qr, 800, 1150, 216, 216);
+  ctx.font = '20px sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText(chinese ? '扫码，认识你自己' : 'Scan to explore', 908, 1384);
   return new Promise((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Image export failed.')), 'image/png'));
 }

@@ -120,3 +120,28 @@ body{background:linear-gradient(180deg,#1e3552 0,#15243b 520px,#15243b 100%);col
 /* Clip horizontal overflow without creating a sticky-header scroll container. */
 html,body{overflow-x:clip;overflow-y:visible}
 .buer-empty img,.buer-avatar:not(.buer-user-avatar){mix-blend-mode:screen;border-radius:50%}
+/* One transparent symbol across the brand, assistant and reading guide. */
+.topbar .brand{display:grid;grid-template-columns:36px minmax(0,1fr);column-gap:10px;align-items:center}
+.topbar .brand-symbol{grid-column:1;grid-row:1 / 3;width:36px;height:36px;object-fit:contain}
+.topbar .brand>span,.topbar .brand small{grid-column:2}
+.buer-rail .buer-mark img{width:52px;height:52px;object-fit:contain}
+.drawer-orbit{border:0;background:none;transform:none;width:36px;height:36px}
+.drawer-orbit img{width:36px;height:36px;object-fit:contain}
+.buer-empty img,.buer-avatar:not(.buer-user-avatar){mix-blend-mode:normal}
+#appDrawer .drawer-works{border-bottom:0}
+#appDrawer .drawer-footer{border-top:0}
+@media(max-width:380px){.topbar .brand{column-gap:7px;grid-template-columns:30px minmax(0,1fr)}.topbar .brand-symbol{width:30px;height:30px}.topbar .brand small{letter-spacing:1px}}
+/* Aurora accents echo the blue-violet glass brand mark. */
+:root{--buer-cyan:#a6dfff;--buer-blue:#a4bdff;--buer-violet:#c6b1ff}
+.buer-rail .rail-item .ph,.buer-manual-entry .ph,.buer-back-home .ph,.buer-compose-meta button{color:#b9c8ff}
+.buer-rail .rail-item.is-active{color:#e1d8ff;background:linear-gradient(135deg,#345379,#443c68)}
+.rail-item.is-active .ph{color:#d9d0ff;text-shadow:0 0 15px #a398ff80}
+.buer-composer .buer-send{background:linear-gradient(135deg,#9de4ff,#b8b2ff);border-color:#d2d8ff;color:#273765;box-shadow:0 0 22px #8b9cff45}
+#appDrawer .drawer-nav-icon{background:linear-gradient(135deg,#2c4e72,#3e365f);border-color:#7a8abd;color:#c8bbff}
+#appDrawer .drawer-nav-icon img{filter:brightness(0) saturate(100%) invert(81%) sepia(19%) saturate(1000%) hue-rotate(202deg)}
+#appDrawer .drawer-chevron,#appDrawer .drawer-work-index,#appDrawer .drawer-work-card>span:last-child{color:#c0b2ff}
+#appDrawer .drawer-kicker,.buer-kicker,.buer-step-list li>span{color:#b9c7ff}
+.buer-manual-tabs button[aria-selected="true"]{color:#cfbeff;border-color:#baa7ff}
+.buer-manual-entry .manual-arrow,.buer-manual-entry #dailyTipAction,.buer-context #shareDailyTip{color:#c7bcff}
+.shell .form-panel button[type="submit"],.shell #nextToBirth,.shell #nextToLocation,.daily-share-actions button:last-child{background:linear-gradient(110deg,#a1e1ff,#bcb7ff);color:#243558;border-color:#bbcfff}
+.buer-compose-meta input{accent-color:#b8b5ff}

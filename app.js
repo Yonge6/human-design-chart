@@ -2319,7 +2319,7 @@ initBuerHome({
   getLanguage: () => language,
   openManual: () => lastData ? showChartView() : openDailyTipResult(),
   getReport: () => {
-    const data = latestSavedResult(historyEntries, appSettings.keepHistory)?.data;
+    const data = lastData || latestSavedResult(historyEntries, appSettings.keepHistory)?.data;
     return data?.Properties || null;
   },
 });

@@ -1,0 +1,54 @@
+{
+  "url": "https://buer.wonderelian.com/",
+  "source": "c96d7fb",
+  "checks": [
+    {
+      "file": "index.html",
+      "status": 200,
+      "match": true,
+      "sha256": "f07024d637542dd4254d94689359f4885b8633cadd5c4690e4070e6b177afdee"
+    },
+    {
+      "file": "runtime-config.js",
+      "status": 200,
+      "match": true,
+      "sha256": "87bb73634c66a612b93f4dbb2f38a0a26e52684ae615986e024c57c5c4f4b395"
+    },
+    {
+      "file": "app.js",
+      "status": 200,
+      "match": true,
+      "sha256": "98049e60b9661035481f33ae17d35f0bb56397a7ecd1e3b4c4a8780e100d6992"
+    },
+    {
+      "file": "buer.css",
+      "status": 200,
+      "match": true,
+      "sha256": "623ee41d797b0bb9fe68dc4941d94f2cbeb72be45a0f3e5107d93d22cc4d5d28"
+    },
+    {
+      "file": "buer-manual.css",
+      "status": 200,
+      "match": true,
+      "sha256": "2f1174cfda4d5cf34f8a0f50872d49d5b3d395bccae89271512acaeb9d19688f"
+    },
+    {
+      "file": "src/app/buer-home.js",
+      "status": 200,
+      "match": true,
+      "sha256": "4086a15170c6581523e5b5a6771ba9683a6ee4b7b4774b9533864b2e378d48d9"
+    },
+    {
+      "file": "src/app/buer-manual.js",
+      "status": 200,
+      "match": true,
+      "sha256": "6134a8a2b88d80ee47c5af2ab6a616df494d2030a71ebebdc86d06cee6143f3f"
+    },
+    {
+      "file": "assets/buer-preview-qr.png",
+      "status": 200,
+      "match": true,
+      "sha256": "30d1e504a0b04c1a06fef91acf0723a7c3d5c22827b1aa3666b46772d189f4bc"
+    }
+  ]
+}

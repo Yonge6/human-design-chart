@@ -24,7 +24,7 @@ final class BuerTabController: UITabBarController, UITabBarControllerDelegate, W
         delegate = self
         overrideUserInterfaceStyle = .dark
         view.backgroundColor = UIColor(red: 0.09, green: 0.15, blue: 0.23, alpha: 1)
-        let titles = ["见己", "人生说明书", "我的"]
+        let titles = ["见己", "成长档案", "我的"]
         let symbols = ["house", "book", "person.crop.circle"]
         for (index, page) in pages.enumerated() {
             page.tabBarItem = UITabBarItem(title: titles[index], image: UIImage(systemName: symbols[index]), selectedImage: UIImage(systemName: symbols[index] + ".fill"))
@@ -41,7 +41,7 @@ final class BuerTabController: UITabBarController, UITabBarControllerDelegate, W
             if (!document.body || !document.querySelector('.buer-rail')) return;
             document.documentElement.classList.add('native-system-tabs');
             const sync = () => window.webkit.messageHandlers.buerNavigation.postMessage({
-              workspace: document.body.dataset.workspace || 'home',
+              workspace: document.body.dataset.workspace === 'growth' ? 'manual' : (document.body.dataset.workspace || 'home'),
               english: document.documentElement.lang.startsWith('en'),
               modal: !!document.querySelector('dialog[open]')
             });
@@ -79,7 +79,7 @@ final class BuerTabController: UITabBarController, UITabBarControllerDelegate, W
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard let state = message.body as? [String: Any] else { return }
         webReady = true
-        let titles = state["english"] as? Bool == true ? ["Home", "Life Manual", "Me"] : ["见己", "人生说明书", "我的"]
+        let titles = state["english"] as? Bool == true ? ["Home", "Growth", "Me"] : ["见己", "成长档案", "我的"]
         for (index, page) in pages.enumerated() { page.tabBarItem.title = titles[index] }
         tabBar.isHidden = state["modal"] as? Bool == true
         if let key = state["workspace"] as? String, let index = keys.firstIndex(of: key), selectedIndex != index {

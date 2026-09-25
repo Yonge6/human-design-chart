@@ -5,24 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0f0b12">
   <meta name="referrer" content="no-referrer">
-  <meta name="description" content="不二见己：在设备上生成 Human Design 人类图、基础解读与高清图片，支持中英文与隐私模式。">
+  <meta name="description" content="不二见己，你的专属 AI 成长教练。结合人类图自我观察、HUMAN 3.0 四领域访谈与个人经历，明确行动并持续复盘。">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="不二见己">
   <meta property="og:locale" content="zh_CN">
-  <meta property="og:title" content="不二见己 | Human Design Chart">
-  <meta property="og:description" content="在设备上生成你的人生使用说明书、人类图与基础解读。支持中英文、隐私模式和高清图片。">
+  <meta property="og:title" content="不二见己 | 你的专属 AI 成长教练">
+  <meta property="og:description" content="认识自己，明确行动，记录来时路。和你的 AI 成长教练一起，把理解变成真实的下一步。">
   <meta property="og:url" content="https://human-design.wonderelian.com/">
   <meta property="og:image" content="https://human-design.wonderelian.com/assets/pluto-og-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="不二见己 · 认识真实的自己">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Buer Within | Human Design Chart">
-  <meta name="twitter:description" content="Generate a bilingual Human Design chart, foundational reading, and private high-resolution image on your device.">
+  <meta name="twitter:title" content="Buer Within | Your Personal AI Growth Coach">
+  <meta name="twitter:description" content="Understand yourself, choose your next step and reflect on real progress with your personal AI growth coach.">
   <meta name="twitter:image" content="https://human-design.wonderelian.com/assets/pluto-og-1200x630.png">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://buer-api.wonderelian.com https://photon.komoot.io https://geocode.arcgis.com https://api-human-design.wonderelian.com https://*.supabase.co https://www.google-analytics.com https://region1.google-analytics.com; img-src 'self' data: blob: https://wendao.wonderelian.com; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://www.googletagmanager.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
-  <title>不二见己 | Human Design Chart</title>
+  <title>不二见己 | 你的专属 AI 成长教练</title>
   <link rel="canonical" href="https://human-design.wonderelian.com/">
   <link rel="icon" type="image/png" href="assets/buer-favicon.png">
   <link rel="apple-touch-icon" href="assets/buer-app-icon-180.png">
@@ -33,6 +33,7 @@
   <link rel="stylesheet" href="vendor/phosphor/style.css">
   <link rel="stylesheet" href="buer.css">
   <link rel="stylesheet" href="buer-manual.css">
+  <link rel="stylesheet" href="buer-growth.css">
   <script src="analytics.js" defer></script>
 </head>
 <body data-workspace="home">
@@ -73,7 +74,7 @@
           <p data-i18n="drawerIntroText">你的出生资料、图谱与历史记录默认保存在这台设备上。</p>
         </section>
 
-        <nav class="drawer-nav" data-i18n-aria-label="drawerActions" aria-label="你的空间">
+        <nav class="drawer-nav" data-i18n-aria-label="drawerActions" aria-label="你的空间"><button type="button" data-growth><span class="drawer-nav-icon"><i class="ph ph-path" aria-hidden="true"></i></span><span><strong data-buer="myGrowth">成长档案与行动</strong><small data-buer="growthSteps">认识自己、明确行动、补充经历</small></span><span class="drawer-chevron" aria-hidden="true">›</span></button>
           <button id="buerHistoryButton" type="button"><span class="drawer-nav-icon" aria-hidden="true"><i class="ph ph-chats-circle"></i></span><span><strong data-buer="history">对话记录</strong><small data-buer="chatHistoryHint">继续上次的探索</small></span><span class="drawer-chevron" aria-hidden="true">›</span></button>
           <button id="openHistory" type="button">
             <span class="drawer-nav-icon" aria-hidden="true"><img src="assets/icons/history.svg" alt=""></span>
@@ -247,6 +248,7 @@
   <section id="buerHome" class="buer-home" aria-label="与不二见己聊聊">
     <div class="buer-conversation-column">
       <header class="buer-welcome"><h1 data-buer="headline">从一个问题，靠近自己</h1><p data-buer="intro">在这里，任何关于你的问题，都值得被认真对待</p></header>
+      <button type="button" class="growth-home-path" data-growth><i class="ph ph-path" aria-hidden="true"></i><span><strong data-buer="growthHeadline">建立我的成长档案</strong><small data-buer="growthSteps">01 认识自己　02 明确行动　03 补充经历</small></span><i class="ph ph-arrow-up-right" aria-hidden="true"></i></button>
       <div class="buer-messages" id="buerMessages" aria-label="对话内容" tabindex="0"></div>
       <div class="buer-compose-zone">
         <form id="buerChatForm" class="buer-composer">
@@ -254,10 +256,10 @@
           <textarea id="buerQuestion" maxlength="2000" rows="2" placeholder="此刻，你想更了解自己的哪一面？"></textarea>
           <div class="buer-compose-bottom"><div class="buer-suggestions"><button type="button" data-question="work" data-buer="workQuestion">我适合怎样的工作节奏？</button><button type="button" data-question="relationship" data-buer="relationshipQuestion">为什么我总在关系里内耗？</button><button type="button" data-question="decision" data-buer="decisionQuestion">做决定时，怎样听见自己？</button><button type="button" data-question="energy" data-buer="energyQuestion">总觉得累，该怎样找回能量？</button><button type="button" data-question="strength" data-buer="strengthQuestion">怎样发现自己的优势？</button><button type="button" data-question="boundary" data-buer="boundaryQuestion">如何温柔地建立边界？</button></div><span data-buer="aiLabel">AI 陪你探索</span><button type="submit" class="buer-send" id="buerSend" aria-label="发送问题"><i class="ph ph-paper-plane-tilt" aria-hidden="true"></i></button><button type="button" class="buer-send" id="buerStop" aria-label="停止回答" hidden><i class="ph ph-stop" aria-hidden="true"></i></button></div>
         </form>
-        <div class="buer-compose-meta"><label id="buerContextLabel" hidden><input id="buerUseReport" type="checkbox"><span data-buer="useReport">结合我的说明书</span></label><p id="buerChatStatus" role="status" aria-live="polite"></p><button type="button" id="buerNewChat" data-buer="newChat">新对话</button></div>
+        <label class="buer-growth-context"><input id="buerUseGrowth" type="checkbox"><span data-buer="useGrowth">结合成长档案</span><small data-buer="growthContextHint">仅参考你允许的内容</small></label><div class="buer-compose-meta"><label id="buerContextLabel" hidden><input id="buerUseReport" type="checkbox"><span data-buer="useReport">结合我的说明书</span></label><p id="buerChatStatus" role="status" aria-live="polite"></p><button type="button" id="buerNewChat" data-buer="newChat">新对话</button></div>
       </div>
     </div>
-    <aside class="buer-context">
+    <aside class="buer-context"><div class="growth-next-action" id="growthHomeAction"></div>
       <aside id="dailyTipCard" class="daily-tip-card" aria-labelledby="dailyTipTitle">
         <div class="daily-date-row"><div class="daily-date-copy"><time id="dailyTipDate"></time><small id="dailyTipDateSecondary" aria-hidden="true"></small></div><img class="daily-moon" src="assets/pluto-daily-moon.webp" width="92" height="92" alt="" aria-hidden="true"></div>
         <div class="daily-tip-heading"><h2 id="dailyTipTitle">今日提示</h2><button id="shareDailyTip" class="daily-share-link" type="button" hidden>分享图片</button></div>
@@ -362,7 +364,7 @@
       <header class="buer-manual-heading"><div><p class="buer-kicker" data-manual-copy="resultKicker">每个人，都有自己的使用方式</p><h1 id="buerManualTitle">我的人生说明书</h1><p data-manual-copy="resultLead">理解你的倾向，把选择留给自己。</p></div><button id="editChart" type="button"><i class="ph ph-pencil-simple" aria-hidden="true"></i><span data-i18n="editChart">重新填写</span></button></header>
       <nav class="buer-manual-tabs" role="tablist" aria-label="说明书内容"><button type="button" id="manualOverviewTab" role="tab" data-manual-tab="overview" aria-controls="manualOverview" aria-selected="true" data-manual-copy="overview">我的概览</button><button type="button" id="manualReadingTab" role="tab" data-manual-tab="reading" aria-controls="manualReading" aria-selected="false" tabindex="-1" data-manual-copy="reading">深入解读</button><button type="button" id="manualChartTab" role="tab" data-manual-tab="chart" aria-controls="manualChart" aria-selected="false" tabindex="-1" data-manual-copy="chart">人类图</button></nav>
       <div class="buer-manual-layout"><div class="buer-manual-content"><div id="manualOverview" role="tabpanel" aria-labelledby="manualOverviewTab">
-      <section id="resultSummary" class="buer-summary" tabindex="-1" aria-labelledby="resultSummaryTitle">
+      <div class="growth-manual-next"><button type="button" class="growth-button primary" data-growth><span data-buer="nextGrowth">下一步：HUMAN 3.0 成长访谈</span> →</button></div><section id="resultSummary" class="buer-summary" tabindex="-1" aria-labelledby="resultSummaryTitle">
         <h2 id="resultSummaryTitle" data-i18n="resultSummaryTitle">人生使用说明书结果摘要</h2>
         <dl>
           <div><dt data-i18n="summaryType">类型</dt><dd id="summaryType"></dd></div>

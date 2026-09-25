@@ -38,13 +38,13 @@ export function initMembership(){
   const b=document.createElement('button');b.type='button';b.className='membership-entry';const render=()=>b.textContent=zh()?'会员与订阅':'Membership & subscriptions';render();document.addEventListener('buer:language',render);b.onclick=showMembership;document.querySelector('#settingsDialog .settings-list')?.before(b);
 }
 export async function ensureAIConsent(){
-  if(localStorage.getItem('buer-ai-consent-v1')==='yes')return true;
+  try{if(localStorage.getItem('buer-ai-consent-v2')==='yes')return true;}catch{}
   return new Promise(resolve=>{
     const d=document.createElement('dialog');d.className='buer-membership';
     const h=document.createElement('h2');h.textContent=zh()?'开始 AI 对话前':'Before your first AI conversation';
-    const p=document.createElement('p');p.textContent=zh()?'你的对话内容会发送至我们的服务器和 DeepSeek，用于生成回复。若勾选“结合我的说明书”，也会发送类型、策略、权威和人生角色摘要；不会自动发送姓名、出生日期、时间或地点。请勿输入不希望共享的敏感信息。':'Your messages are sent to our server and DeepSeek to generate replies. If you enable “Use my Life Manual”, we also send a summary of type, strategy, authority and profile. Your name, birth date, time and location are not automatically sent. Avoid entering sensitive information you do not wish to share.';
+    const p=document.createElement('p');p.textContent=zh()?'你的对话内容会发送至我们的服务器和 DeepSeek，用于生成回复。若勾选“结合我的说明书”，会发送匿名人类图摘要；勾选“结合成长档案”会发送你允许参考的访谈回答与相关经历。生成行动指南会发送访谈回答。不会自动发送出生资料，但你写入经历或对话的个人信息会随内容一起发送。请勿输入不希望共享的敏感信息。':'Your messages are sent to our server and DeepSeek to generate replies. If you enable “Use my Life Manual”, we send an anonymous reading summary. Profile context includes permitted reflection answers and relevant stories. Generating a guide sends your reflection answers. Birth details are not automatically attached, but personal information you write in shared stories or messages is included. Avoid entering sensitive information you do not wish to share.';
     const no=document.createElement('button');no.textContent=zh()?'暂不使用':'Not now';no.onclick=()=>d.close();
-    const yes=document.createElement('button');yes.textContent=zh()?'同意并继续':'Agree and continue';let agreed=false;yes.onclick=()=>{agreed=true;localStorage.setItem('buer-ai-consent-v1','yes');d.close();};
+    const yes=document.createElement('button');yes.textContent=zh()?'同意并继续':'Agree and continue';let agreed=false;yes.onclick=()=>{agreed=true;try{localStorage.setItem('buer-ai-consent-v2','yes');}catch{}d.close();};
     d.append(h,p,no,yes);d.addEventListener('close',()=>{d.remove();resolve(agreed)});document.body.append(d);d.showModal();
   });
 }

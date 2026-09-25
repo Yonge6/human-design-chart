@@ -19,3 +19,11 @@
 Cloud deletion and local-history deletion are intentionally independent. Cloud deletion removes personal cloud records atomically and deidentifies, rather than falsely claiming to delete, previously recorded product events.
 
 On ordinary HTTP outside Capacitor, effective cloud-save and analytics consent is always false and backend-service calls are skipped. Stored preferences are not erased. Location search remains a separate user-initiated geocoder request as described above. The SHA-256 compatibility fallback does not make HTTP secure; production remote features require HTTPS.
+
+## Growth coach (2026-09-25)
+
+- Reflection: twelve user-written answers and separate AI synthesis stay in `buer-growth-profile-v1`. Editing an answer invalidates the synthesis. Generate explicitly transmits answers to DeepSeek and uses one completed-reply allowance.
+- Stories: up to 100 local entries, editable/deletable/exportable. Permission defaults off for each entry. Profile context in chat defaults off too. Only with both permissions does a request attach up to four relevant stories, first 2,000 characters each. Selected assessment answers require separate permission.
+- Actions: local title, metric, review date, completion and reflection. Never automatically attached to AI.
+- Profile is independent of chart-history settings. Clear profile explicitly removes reflection, stories and actions, while conversations and chart history are separately managed. Deletion does not recall earlier provider requests.
+- No background uploads or cross-device sync. Consent version v2 discloses expanded user-selected context. Server validates bounded context, sends it as untrusted user data and does not log request bodies.

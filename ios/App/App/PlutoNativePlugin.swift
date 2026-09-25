@@ -19,6 +19,7 @@ public class PlutoNativePlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "saveImage", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "shareImage", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "shareLink", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "exportGrowthProfile", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "updateDailyWidget", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "consumeWidgetLink", returnType: CAPPluginReturnPromise),
     ]
@@ -150,6 +151,22 @@ public class PlutoNativePlugin: CAPPlugin, CAPBridgedPlugin {
         if let text = call.getString("text"), !text.isEmpty { items.append(text) }
         if let urlString = call.getString("url"), let url = URL(string: urlString) { items.append(url) }
         presentShareSheet(items: items, temporaryFile: fileURL, call: call)
+    }
+
+    @objc func exportGrowthProfile(_ call: CAPPluginCall) {
+        guard let json = call.getString("json"), let data = json.data(using: .utf8),
+              data.count <= 3_000_000,
+              (try? JSONSerialization.jsonObject(with: data)) is [String: Any] else {
+            call.reject("The growth profile is invalid or too large.")
+            return
+        }
+        let file = FileManager.default.temporaryDirectory.appendingPathComponent("buer-growth-\(UUID().uuidString).json")
+        do {
+            try data.write(to: file, options: [.atomic, .completeFileProtection])
+            presentShareSheet(items: [file], temporaryFile: file, call: call)
+        } catch {
+            call.reject("The growth profile could not be exported.", nil, error)
+        }
     }
 
     @objc func shareLink(_ call: CAPPluginCall) {

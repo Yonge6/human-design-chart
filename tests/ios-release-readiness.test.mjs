@@ -15,7 +15,7 @@ test("iOS release identity and versions remain aligned", () => {
   assert.equal(packageJson.version, "1.1.0");
   assert.equal(capacitorConfig.appId, "com.yonge6.buerwithin");
   assert.equal((project.match(/MARKETING_VERSION = 1\.0;/g) || []).length, 4);
-  assert.equal((project.match(/CURRENT_PROJECT_VERSION = 1;/g) || []).length, 4);
+  assert.equal((project.match(/CURRENT_PROJECT_VERSION = 2;/g) || []).length, 4);
   assert.equal((project.match(/PRODUCT_BUNDLE_IDENTIFIER = com\.yonge6\.buerwithin;/g) || []).length, 2);
   assert.ok((project.match(/IPHONEOS_DEPLOYMENT_TARGET = 15\.0;/g) || []).length >= 2);
 });

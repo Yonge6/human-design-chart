@@ -24,7 +24,7 @@ test('conversation strips private report details client-side and rejects extra f
 test('missing provider configuration returns a truthful 503 without calling provider',async t=>{
   const base=await server(t,{environment:{},fetchImpl:()=>{throw new Error('unexpected');}});
   assert.equal((await post(base)).status,503);
-  assert.deepEqual(await (await fetch(base+'/v1/chat/status')).json(),{configured:false});
+  assert.deepEqual(await (await fetch(base+'/v1/chat/status')).json(),{configured:false,growthCoach:1});
 });
 test('successful provider stream sends answer only, keeps key server-side and completes',async t=>{
   const requests=[];

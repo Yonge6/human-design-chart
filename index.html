@@ -61,7 +61,7 @@
         </span>
         <div>
           <span class="drawer-brand">BUER WITHIN</span>
-          <h2 id="drawerTitle" data-i18n="drawerTitle">我的宇宙</h2>
+          <h2 id="drawerTitle" data-i18n="drawerTitle">我的空间</h2>
         </div>
         <button id="closeMenu" class="drawer-close" type="button" data-i18n-aria-label="closeMenu" aria-label="关闭菜单"><span aria-hidden="true">×</span></button>
       </header>
@@ -74,7 +74,7 @@
           <p data-i18n="drawerIntroText">你的出生资料、图谱与历史记录默认保存在这台设备上。</p>
         </section>
 
-        <nav class="drawer-nav" data-i18n-aria-label="drawerActions" aria-label="你的空间"><button type="button" data-growth><span class="drawer-nav-icon"><i class="ph ph-path" aria-hidden="true"></i></span><span><strong data-buer="myGrowth">成长档案与行动</strong><small data-buer="growthSteps">认识自己、明确行动、补充经历</small></span><span class="drawer-chevron" aria-hidden="true">›</span></button>
+        <nav class="drawer-nav" data-i18n-aria-label="drawerActions" aria-label="你的空间"><button type="button" data-growth><span class="drawer-nav-icon"><i class="ph ph-path" aria-hidden="true"></i></span><span><strong data-buer="myGrowth">成长档案</strong><small data-buer="myGrowthHint">认识 · 行动 · 复盘</small></span><span class="drawer-chevron" aria-hidden="true">›</span></button>
           <button id="buerHistoryButton" type="button"><span class="drawer-nav-icon" aria-hidden="true"><i class="ph ph-chats-circle"></i></span><span><strong data-buer="history">对话记录</strong><small data-buer="chatHistoryHint">继续上次的探索</small></span><span class="drawer-chevron" aria-hidden="true">›</span></button>
           <button id="openHistory" type="button">
             <span class="drawer-nav-icon" aria-hidden="true"><img src="assets/icons/history.svg" alt=""></span>
@@ -248,7 +248,7 @@
   <section id="buerHome" class="buer-home" aria-label="与不二见己聊聊">
     <div class="buer-conversation-column">
       <header class="buer-welcome"><h1 data-buer="headline">从一个问题，靠近自己</h1><p data-buer="intro">在这里，任何关于你的问题，都值得被认真对待</p></header>
-      <button type="button" class="growth-home-path" data-growth><i class="ph ph-path" aria-hidden="true"></i><span><strong data-buer="growthHeadline">建立我的成长档案</strong><small data-buer="growthSteps">01 认识自己　02 明确行动　03 补充经历</small></span><i class="ph ph-arrow-up-right" aria-hidden="true"></i></button>
+      <button type="button" class="growth-home-path" data-growth><i class="ph ph-path" aria-hidden="true"></i><span><strong id="growthHomeTitle" data-buer="growthHeadline">建立我的成长档案</strong><small id="growthHomeSteps" data-buer="growthSteps">01 认识自己　02 明确行动　03 补充经历</small></span><i class="ph ph-arrow-up-right" aria-hidden="true"></i></button>
       <div class="buer-messages" id="buerMessages" aria-label="对话内容" tabindex="0"></div>
       <div class="buer-compose-zone">
         <form id="buerChatForm" class="buer-composer">
@@ -256,7 +256,7 @@
           <textarea id="buerQuestion" maxlength="2000" rows="2" placeholder="此刻，你想更了解自己的哪一面？"></textarea>
           <div class="buer-compose-bottom"><div class="buer-suggestions"><button type="button" data-question="work" data-buer="workQuestion">我适合怎样的工作节奏？</button><button type="button" data-question="relationship" data-buer="relationshipQuestion">为什么我总在关系里内耗？</button><button type="button" data-question="decision" data-buer="decisionQuestion">做决定时，怎样听见自己？</button><button type="button" data-question="energy" data-buer="energyQuestion">总觉得累，该怎样找回能量？</button><button type="button" data-question="strength" data-buer="strengthQuestion">怎样发现自己的优势？</button><button type="button" data-question="boundary" data-buer="boundaryQuestion">如何温柔地建立边界？</button></div><span data-buer="aiLabel">AI 陪你探索</span><button type="submit" class="buer-send" id="buerSend" aria-label="发送问题"><i class="ph ph-paper-plane-tilt" aria-hidden="true"></i></button><button type="button" class="buer-send" id="buerStop" aria-label="停止回答" hidden><i class="ph ph-stop" aria-hidden="true"></i></button></div>
         </form>
-        <label class="buer-growth-context"><input id="buerUseGrowth" type="checkbox"><span data-buer="useGrowth">结合成长档案</span><small data-buer="growthContextHint">仅参考你允许的内容</small></label><div class="buer-compose-meta"><label id="buerContextLabel" hidden><input id="buerUseReport" type="checkbox"><span data-buer="useReport">结合我的说明书</span></label><p id="buerChatStatus" role="status" aria-live="polite"></p><button type="button" id="buerNewChat" data-buer="newChat">新对话</button></div>
+        <label class="buer-context-option buer-growth-context"><input id="buerUseGrowth" type="checkbox"><span data-buer="useGrowth">结合成长档案</span><small data-buer="growthContextHint">仅参考你允许的内容</small></label><div class="buer-compose-meta"><label id="buerContextLabel" class="buer-context-option buer-report-context" hidden><input id="buerUseReport" type="checkbox"><span data-buer="useReport">结合我的说明书</span></label><p id="buerChatStatus" role="status" aria-live="polite"></p><button type="button" id="buerNewChat" data-buer="newChat">新对话</button></div>
       </div>
     </div>
     <aside class="buer-context"><div class="growth-next-action" id="growthHomeAction"></div>

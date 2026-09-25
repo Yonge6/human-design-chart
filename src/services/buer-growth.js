@@ -17,7 +17,8 @@ export const QUESTIONS=[
 const text=(v,n)=>typeof v==='string'?v.slice(0,n):'';
 export function cleanGrowth(value={}) {
  const v=value&&typeof value==='object'?value:{};
- return {version:1,answers:Object.fromEntries(QUESTIONS.map(q=>[q.id,text(v.answers?.[q.id],1200)])),cursor:Math.max(0,Math.min(11,Number.isInteger(v.cursor)?v.cursor:0)),skipped:v.skipped===true,shareAssessment:v.shareAssessment===true,
+ const shareAssessment=v.shareAssessment===true||v.version===1||(v.version==null&&v.shareAssessment==null);
+ return {version:2,answers:Object.fromEntries(QUESTIONS.map(q=>[q.id,text(v.answers?.[q.id],1200)])),cursor:Math.max(0,Math.min(11,Number.isInteger(v.cursor)?v.cursor:0)),skipped:v.skipped===true,shareAssessment,
  report:text(v.report,16000),reportDate:text(v.reportDate,40),
  stories:(Array.isArray(v.stories)?v.stories:[]).filter(x=>x&&typeof x.id==='string').slice(0,100).map(x=>({id:text(x.id,80),title:text(x.title,100),body:text(x.body,4000),useAI:x.useAI===true,date:text(x.date,40)})),
  actions:(Array.isArray(v.actions)?v.actions:[]).filter(x=>x&&typeof x.id==='string').slice(0,100).map(x=>({id:text(x.id,80),title:text(x.title,200),metric:text(x.metric,300),due:/^\d{4}-\d{2}-\d{2}$/.test(x.due)?x.due:'',done:x.done===true,reflection:text(x.reflection,1200)}))};

@@ -10,3 +10,18 @@
 .growth-tabs,.growth-workspace button{scroll-margin-top:100px}
 
 .growth-report #growthReportText{white-space:normal}.growth-report h3{font:26px/1.5 Georgia,"Songti SC",serif;margin:28px 0 14px;color:#dcf2fa}.growth-report p{margin:10px 0}.growth-report-item{padding-left:16px;text-indent:-12px}
+
+/* Keep every growth-profile permission control compact despite the legacy
+   full-width form-input rule in style.css. */
+.growth-check,.buer-context-option{display:flex!important;align-items:flex-start;justify-content:flex-start;max-width:100%;padding:0;color:#a9c6d8;line-height:1.5;cursor:pointer}
+.growth-check{box-sizing:border-box;width:100%;gap:9px;margin:16px 0}.buer-growth-context{width:fit-content;gap:7px;margin:10px 0 2px;font-size:12px}.buer-report-context{width:fit-content;gap:7px;margin:0;font-size:12px}
+.growth-check input[type="checkbox"],.buer-context-option input[type="checkbox"]{-webkit-appearance:checkbox;appearance:auto;box-sizing:border-box;flex:0 0 16px;width:16px;min-width:16px;max-width:16px;height:16px;min-height:16px;max-height:16px;margin:2px 0 0;padding:0;border:0;border-radius:3px;background:transparent;box-shadow:none;accent-color:#aaddf0}
+.growth-check input[type="checkbox"]:focus-visible,.buer-context-option input[type="checkbox"]:focus-visible{outline:2px solid var(--buer-cyan);outline-offset:3px}
+.growth-check>span,.growth-check>strong,.buer-context-option>span{min-width:0;line-height:1.5;overflow-wrap:anywhere}.buer-growth-context>span,.buer-report-context>span{flex:0 0 auto;font-weight:600;white-space:nowrap}.buer-growth-context>small{min-width:0;color:#849cb2;line-height:1.5}
+@media(max-width:760px){.buer-growth-context>small{white-space:normal}}
+
+.growth-path article.is-next{margin:12px -18px;padding:26px 18px;border:1px solid #55758a;border-radius:18px;background:linear-gradient(135deg,rgba(48,82,103,.44),rgba(25,45,63,.2));box-shadow:0 16px 42px rgba(3,10,20,.18)}
+.growth-next-label{display:inline-flex;margin:0 0 8px;padding:3px 8px;border:1px solid rgba(169,220,235,.34);border-radius:999px;color:#bdeaf4;font-size:10px;line-height:1.4;letter-spacing:.1em}
+.growth-permission-note{margin-top:-8px;padding-left:25px}
+.growth-home-path small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:760px){.growth-path article.is-next{margin:8px -10px;padding:22px 10px}.growth-permission-note{padding-left:25px}.growth-home-path small{white-space:normal}}

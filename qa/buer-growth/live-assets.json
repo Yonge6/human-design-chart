@@ -1,0 +1,32 @@
+[
+  {
+    "path": "index.html",
+    "status": 200,
+    "matches": true,
+    "sha256": "922d6c4c2bdc0addcbbbf828a2eb23159333603343b4b454af38dbb2eecdc33e"
+  },
+  {
+    "path": "buer-growth.css",
+    "status": 200,
+    "matches": true,
+    "sha256": "5c79391d5f777485a15c2e7c281cdffb0145fb1bfe4a7e9509c503611e87183d"
+  },
+  {
+    "path": "src/app/buer-growth.js",
+    "status": 200,
+    "matches": true,
+    "sha256": "7156ea1ebb53607a992fb646decd1aafabf7ab03128d3f04b152bf32405768a3"
+  },
+  {
+    "path": "src/services/buer-growth.js",
+    "status": 200,
+    "matches": true,
+    "sha256": "5111680030940d2bff1a0471c919115d46fc238b182317c61af6be0321e25b50"
+  },
+  {
+    "path": "runtime-config.js",
+    "status": 200,
+    "matches": true,
+    "sha256": "7020b39ba4613ecd36326b38ed629c0eb0af3c4f3a9ae3f2cd73b0a21e2ca04c"
+  }
+]

@@ -1,0 +1,43 @@
+# Growth Action Guide (Preliminary)
+
+**Current situation** — A preliminary observation from q1–q12: you work in design, respond well to real feedback (q1, q2), and already have some stable basics (7h sleep, walking). The main friction is starting too many things at once (q3) while wanting to finish one small project in three months (q12).
+
+## Four-domain check
+
+**Mind**
+- **Strength:** You update decisions based on evidence, not stubbornness (q1, q2).
+- **To verify:** "Planning helps but I begin too many tasks" (q3) — is the issue unclear priorities, or difficulty saying no?
+
+**Body**
+- **Strength:** Walking survives busy periods (q5, q6).
+- **To verify:** Meals disappear during deadlines (q5). Is this a scheduling problem or an energy problem?
+
+**Relationships & meaning**
+- **Strength:** A friend listening to your project uncertainty felt meaningful (q7); useful work and time with friends feel worthwhile (q9).
+- **To verify:** You want to ask for help earlier (q8), but it's unclear what specifically makes that hard.
+
+**Vocation**
+- **Strength:** Collaboration helps; you've created value with a simple prototype (q10, q11).
+- **To verify:** Vague briefs drain you (q10). Can "one small project" (q12) be scoped to avoid that drain?
+
+## Possible cross-domain link
+
+Starting too many tasks (q3), missing meals under deadline (q5), and not asking for help early (q8) may share a pattern — **carrying too much alone under time pressure**. This is a hypothesis, not a causal claim.
+
+**Most worth testing first:** Can you name one small project and one boundary around it before starting?
+
+## Actions
+
+**Next 24 hours**
+Write down the one small project you want to finish (q12) in one sentence, plus one thing you will *not* start this month.
+
+**30-day practice + indicator**
+Share a rough version with one colleague or friend within two weeks and ask for one piece of feedback — using the prototype habit that already works for you (q2, q11).
+*Indicator:* Did you get feedback before the project was "ready"?
+
+**90-day review**
+Ask: Did you finish the small project (q12)? Did you ask for help at least once before a deadline (q8)? Did meals hold during busy weeks (q5)?
+
+## One question worth sitting with
+
+What makes it hard to ask for help earlier — is it time, pride, or not knowing what to ask for?

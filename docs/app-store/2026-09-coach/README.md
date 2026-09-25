@@ -1,6 +1,6 @@
 # Buer Within — growth coach revision
 
-Status: new product/metadata candidate, not uploaded or submitted to App Store Connect.
+Status: product revision deployed to H5 and the independent AI service; iOS simulator build passed. Store metadata remains a candidate, not uploaded or submitted to App Store Connect.
 Previous 1.0(1) review and poster package remain in `../2026-09-release/` as historical evidence.
 
 Proposed names:
@@ -20,4 +20,4 @@ Implemented scope:
 
 Unchanged commercial terms: free 3 completed AI replies/day (UTC reset), one completed guide counts as one reply, failed replies refunded. Paid members have no daily cap with anti-abuse limits. US monthly $9.99 / annual $89.99; China monthly ¥19.90 / annual ¥159.00. No trial added.
 
-Before a future review submission: verify a production provider run and build on devices, replace store screenshots with actual revised UI, update data collection disclosures if required by the shipped data handling, and accurately explain the new flows. Do not describe the new functionality as reviewed or approved. The 4.3(a) duplicate-record question remains unresolved, and retaining Human Design first does not eliminate 4.3(b) risk. No Pluto changes are part of this revision.
+Before a future review submission: complete on-device acceptance (production provider run already passed), replace store screenshots with actual revised UI, update data collection disclosures if required by the shipped data handling, and accurately explain the new flows. Do not describe the new functionality as reviewed or approved. The 4.3(a) duplicate-record question remains unresolved, and retaining Human Design first does not eliminate 4.3(b) risk. No Pluto changes are part of this revision.

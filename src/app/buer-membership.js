@@ -43,8 +43,9 @@ export async function ensureAIConsent(){
     const d=document.createElement('dialog');d.className='buer-membership';
     const h=document.createElement('h2');h.textContent=zh()?'开始 AI 对话前':'Before your first AI conversation';
     const p=document.createElement('p');p.textContent=zh()?'你的对话内容会发送至我们的服务器和 DeepSeek，用于生成回复。若勾选“结合我的说明书”，会发送匿名人类图摘要；勾选“结合成长档案”会发送你允许参考的访谈回答与相关经历。生成行动指南会发送访谈回答。不会自动发送出生资料，但你写入经历或对话的个人信息会随内容一起发送。请勿输入不希望共享的敏感信息。':'Your messages are sent to our server and DeepSeek to generate replies. If you enable “Use my Life Manual”, we send an anonymous reading summary. Profile context includes permitted reflection answers and relevant stories. Generating a guide sends your reflection answers. Birth details are not automatically attached, but personal information you write in shared stories or messages is included. Avoid entering sensitive information you do not wish to share.';
-    const no=document.createElement('button');no.textContent=zh()?'暂不使用':'Not now';no.onclick=()=>d.close();
-    const yes=document.createElement('button');yes.textContent=zh()?'同意并继续':'Agree and continue';let agreed=false;yes.onclick=()=>{agreed=true;try{localStorage.setItem('buer-ai-consent-v2','yes');}catch{}d.close();};
-    d.append(h,p,no,yes);d.addEventListener('close',()=>{d.remove();resolve(agreed)});document.body.append(d);d.showModal();
+    const actions=document.createElement('div');actions.className='ai-consent-actions';
+    const no=document.createElement('button');no.className='consent-secondary';no.textContent=zh()?'暂不使用':'Not now';no.onclick=()=>d.close();
+    const yes=document.createElement('button');yes.className='consent-primary';yes.textContent=zh()?'同意并继续':'Agree and continue';let agreed=false;yes.onclick=()=>{agreed=true;try{localStorage.setItem('buer-ai-consent-v2','yes');}catch{}d.close();};
+    actions.append(no,yes);d.append(h,p,actions);d.addEventListener('close',()=>{d.remove();resolve(agreed)});document.body.append(d);d.showModal();
   });
 }

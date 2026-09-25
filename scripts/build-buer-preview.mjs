@@ -25,5 +25,5 @@ await writeFile(resolve(outputDirectory,'robots.txt'),'User-agent: *\nDisallow: 
 await writeFile(resolve(outputDirectory,'sitemap.xml'),`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${publicUrl}</loc></url></urlset>\n`);
 await writeFile(resolve(outputDirectory,'.nojekyll'),'');
 await writeFile(resolve(outputDirectory,'CNAME'),'buer.wonderelian.com\n');
-await writeFile(resolve(outputDirectory,'README.md'),`# 不二见己 — H5 体验版\n\n直接体验：${publicUrl}\n\n源码与许可证：https://github.com/Yonge6/human-design-chart/tree/${gitCommit}\n\n这是独立体验站，不覆盖原网站。包含新版首页、说明书计算、每日提示和图片分享。AI 对话由独立服务端连接 DeepSeek，密钥不会进入网页。\n\n构建命令：node scripts/build-buer-preview.mjs\n\n许可证：AGPL-3.0-or-later。第三方声明见 THIRD_PARTY_NOTICES.md。\n`);
+await writeFile(resolve(outputDirectory,'README.md'),`# 不二见己 — H5 体验版\n\n直接体验：${publicUrl}\n\n源码与许可证：https://github.com/Yonge6/human-design-chart/tree/${gitCommit}\n\n这是独立体验站，不覆盖原网站。包含 AI 成长教练、HUMAN 3.0 四领域访谈、个人经历、行动复盘、人类图说明书和每日提示。AI 对话由独立服务端连接 DeepSeek，密钥不会进入网页。\n\n构建命令：node scripts/build-buer-preview.mjs\n\n许可证：AGPL-3.0-or-later。第三方声明见 THIRD_PARTY_NOTICES.md。\n`);
 console.log(`Independent preview ready for ${publicUrl}; source ${gitCommit}`);

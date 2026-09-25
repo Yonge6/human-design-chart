@@ -4,6 +4,17 @@ import {ensureAIConsent,chatAccess,showMembership} from './buer-membership.js';
 import {renderAssistantText} from './buer-message-format.js';
 
 const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function renderGrowthReport(element,content){
+ element.replaceChildren();
+ for(const line of String(content).split('\n')){
+  if(!line.trim())continue;
+  const heading=/^#{1,3}\s+/.test(line),list=/^[-*]\s+/.test(line);
+  const node=document.createElement(heading?'h3':'p');
+  let value=line.replace(/^#{1,3}\s+/,'');
+  if(list){node.className='growth-report-item';value='• '+value.replace(/^[-*]\s+/,'');}
+  renderAssistantText(node,value);element.append(node);
+ }
+}
 export function initBuerGrowth({getLanguage,openHumanDesign,getReport}){
  const root=document.createElement('section');root.id='buerGrowth';root.className='growth-workspace';root.setAttribute('aria-label','Growth profile');document.querySelector('.shell').before(root);
  let state=readGrowth(localStorage),view='overview',editing=null,busy=false,controller=null,notice='';
@@ -46,7 +57,7 @@ export function initBuerGrowth({getLanguage,openHumanDesign,getReport}){
  content.querySelector('#growthShareAssessment').onchange=e=>{state.shareAssessment=e.target.checked;persist();};
  content.querySelector('#growthGenerate').disabled=count!==12||busy;content.querySelector('#growthGenerate').onclick=generate;
  content.querySelector('#growthStop')?.addEventListener('click',()=>controller?.abort());
- renderAssistantText(content.querySelector('#growthReportText'),state.report);
+ renderGrowthReport(content.querySelector('#growthReportText'),state.report);
  content.querySelector('#growthPlanAction').onclick=()=>{open();root.querySelector('#growthActionTitle').focus();};
  if(busy)content.querySelectorAll('textarea,input,[data-domain],#growthNext,#growthPrevious').forEach(x=>x.disabled=true);
  }
@@ -54,7 +65,7 @@ export function initBuerGrowth({getLanguage,openHumanDesign,getReport}){
  if(busy||answeredCount(state)!==12)return;
  if(!await ensureAIConsent()||busy)return;
  busy=true;notice='';controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),110000);render();let result='';
- try{if(globalThis.PLUTO_CONFIG?.buerChatEnabled===false)throw Error('AI_NOT_CONFIGURED');const response=await fetch(`${(globalThis.PLUTO_CONFIG?.apiBaseUrl||'').replace(/\/$/,'')}/v1/chat`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'growth-assessment',messages:[{role:'user',content:l('请根据我的四领域回答，整理我的成长行动指南。用中文回应。','Create my growth action guide from my four-domain answers. Respond in English.')}],growth:{answers:assessmentContext(state),stories:[]},...await chatAccess()}),signal:controller.signal});if(!response.ok){const data=await response.json().catch(()=>({}));throw Error(data.error||'AI_UNAVAILABLE');}await readBuerEvents(response.body,(type,data)=>{if(type==='delta'){result+=data.text;const report=root.querySelector('.growth-report');if(report){report.hidden=false;renderAssistantText(root.querySelector('#growthReportText'),result);}}});state.report=result;state.reportDate=new Date().toISOString();if(persist())notice=l('行动指南已保存。选一个你愿意尝试的行动，并设定回顾日期。','Guide saved. Choose one action and set a review date.');}
+ try{if(globalThis.PLUTO_CONFIG?.buerChatEnabled===false)throw Error('AI_NOT_CONFIGURED');const response=await fetch(`${(globalThis.PLUTO_CONFIG?.apiBaseUrl||'').replace(/\/$/,'')}/v1/chat`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'growth-assessment',messages:[{role:'user',content:l('请根据我的四领域回答，整理我的成长行动指南。用中文回应。','Create my growth action guide from my four-domain answers. Respond in English.')}],growth:{answers:assessmentContext(state),stories:[]},...await chatAccess()}),signal:controller.signal});if(!response.ok){const data=await response.json().catch(()=>({}));throw Error(data.error||'AI_UNAVAILABLE');}await readBuerEvents(response.body,(type,data)=>{if(type==='delta'){result+=data.text;const report=root.querySelector('.growth-report');if(report){report.hidden=false;renderGrowthReport(root.querySelector('#growthReportText'),result);}}});state.report=result;state.reportDate=new Date().toISOString();if(persist())notice=l('行动指南已保存。选一个你愿意尝试的行动，并设定回顾日期。','Guide saved. Choose one action and set a review date.');}
  catch(error){if(error.message==='DAILY_LIMIT')showMembership();notice=error.message==='DAILY_LIMIT'?l('今日免费额度已用完。回答已保存，可明天继续或开通会员。','Your free allowance is used. Answers are saved; continue tomorrow or subscribe.'):controller.signal.aborted?l('已停止，回答仍保留。','Stopped. Your answers are kept.'):l('暂时无法生成，回答已保留。请稍后重试。','Could not generate a guide. Your answers are kept. Please try again.');}
  finally{clearTimeout(timeout);busy=false;controller=null;render();}
  }

@@ -8,3 +8,5 @@
 .growth-header h1{text-wrap:balance}
 
 .growth-tabs,.growth-workspace button{scroll-margin-top:100px}
+
+.growth-report #growthReportText{white-space:normal}.growth-report h3{font:26px/1.5 Georgia,"Songti SC",serif;margin:28px 0 14px;color:#dcf2fa}.growth-report p{margin:10px 0}.growth-report-item{padding-left:16px;text-indent:-12px}

@@ -1,0 +1,32 @@
+Buer Within 1.0 (build 3) is a substantial product revision made in response to the previous Guideline 4.3 review.
+
+GUIDELINE 4.3(b) — PRIMARY EXPERIENCE
+The primary experience is personal growth coaching, structured reflection, user-authored context, and action review. An optional Human Design-based reading remains available and is described transparently in the listing. Its primary workflow is now:
+1. Discuss a current question with the AI coach.
+2. Complete an optional 12-question reflection across mind, body, connection and meaning, and vocation.
+3. Add user-authored experiences, goals, constraints and preferences to a private local growth profile.
+4. Choose a concrete action, progress criterion and review date, then record the outcome and adjust.
+
+Human Design remains an optional on-device self-reflection lens. It does not predict events or determine abilities, and it is no longer the primary store positioning or screenshot story. The new Growth Profile, four-domain reflection, permission-based story context, action records and review loop are implemented in this build.
+
+GUIDELINE 4.3(a) — DIFFERENTIATION
+Buer Within is now functionally distinct from the developer's earlier Life Manual product. The earlier product centered on a static Human Design reading. This build adds a persistent bilingual coaching workflow, a resumable four-domain interview, a user-controlled story repository, bounded relevant-context retrieval, action experiments, review dates and outcome reflection. The app uses its own bundle ID, brand, interface, screenshots and store copy. It is intended as one global product rather than a regional duplicate.
+
+REVIEW STEPS — NO LOGIN REQUIRED
+1. Open the Home tab and enter any question. Accept the AI data-sharing notice. AI requests go to our server and DeepSeek; birth details are not automatically attached.
+2. Open Growth. The Growth Path shows the three-stage profile and one recommended next step.
+3. Open HUMAN 3.0. Answer one or more questions, leave the page and return to verify local resume. A complete 12-answer guide uses one completed AI reply.
+4. Open My Story. Add a synthetic experience and choose whether AI may reference it.
+5. Return to Growth Path. Add one action with a progress criterion and review date, then mark it complete and write a reflection.
+6. Optional: create a Life Manual with synthetic birth details. This reading is local and does not require a subscription.
+
+PRIVACY AND CONTEXT
+The growth profile is stored on device and can be exported or cleared. Reflection answers and story entries are sent only after consent and only when the related permission controls are enabled. The app does not automatically import other phone data and has no login or cross-device profile sync.
+
+SUBSCRIPTIONS
+Free users receive 3 completed AI replies per UTC day; failed requests are refunded. Monthly and annual Plus subscriptions remove the daily AI reply cap, while reasonable anti-abuse limits remain. To test: Me > Privacy > Membership & subscriptions. Restore Purchases is on the same screen. Local profile, stories, actions and readings remain available without a subscription.
+
+The app is bilingual. Use the EN/中文 control at the top to switch language.
+
+BUILD 3 VISUAL UPDATE
+The app now uses a consistent warm ivory and sage theme across conversation, forms, readings, growth profiles, history, consent, settings and support pages. Native system tabs use the same light appearance. English and Simplified Chinese store screenshots have been replaced to match the current interface. No review-only feature switches are used.

@@ -1,0 +1,223 @@
+{
+  "checkedAt": "2026-09-26T14:12:54.207Z",
+  "screenshots": [
+    {
+      "locale": "en-US",
+      "device": "iphone",
+      "setId": "ae6b1485-9b5b-47e8-8bce-99d5b8083fc6",
+      "id": "c2c2898e-ce5f-4983-a17c-620273bc799b",
+      "file": "01.png",
+      "state": "COMPLETE",
+      "md5": "28ea99685a6a70f7955c5851c0eedeee",
+      "checksumMatches": true,
+      "width": 1284,
+      "height": 2778
+    },
+    {
+      "locale": "en-US",
+      "device": "iphone",
+      "setId": "ae6b1485-9b5b-47e8-8bce-99d5b8083fc6",
+      "id": "47089cd4-02d9-4824-83e2-3c58634400f2",
+      "file": "02.png",
+      "state": "COMPLETE",
+      "md5": "d9caa1585ccf7cd2693435a4bca5b4ec",
+      "checksumMatches": true,
+      "width": 1284,
+      "height": 2778
+    },
+    {
+      "locale": "en-US",
+      "device": "iphone",
+      "setId": "ae6b1485-9b5b-47e8-8bce-99d5b8083fc6",
+      "id": "2d716709-a0ff-420d-8ad3-bfde33ca36ac",
+      "file": "03.png",
+      "state": "COMPLETE",
+      "md5": "868b3512beafaa5a9a684b75b8af4e36",
+      "checksumMatches": true,
+      "width": 1284,
+      "height": 2778
+    },
+    {
+      "locale": "en-US",
+      "device": "iphone",
+      "setId": "ae6b1485-9b5b-47e8-8bce-99d5b8083fc6",
+      "id": "6030a4b9-7f71-4ee6-b30b-a6cb3aabe195",
+      "file": "04.png",
+      "state": "COMPLETE",
+      "md5": "6f1588746db5b92c6e56f09a221e6d76",
+      "checksumMatches": true,
+      "width": 1284,
+      "height": 2778
+    },
+    {
+      "locale": "en-US",
+      "device": "ipad",
+      "setId": "598bc023-bd11-495b-995e-53c630935703",
+      "id": "872c242d-856d-4d6b-8569-b03456f386a6",
+      "file": "01.png",
+      "state": "COMPLETE",
+      "md5": "7063d12fa758b7bf10e452a983a64fc5",
+      "checksumMatches": true,
+      "width": 2064,
+      "height": 2752
+    },
+    {
+      "locale": "en-US",
+      "device": "ipad",
+      "setId": "598bc023-bd11-495b-995e-53c630935703",
+      "id": "6dc95a73-5d5a-45f6-a777-61c3fb7086a3",
+      "file": "02.png",
+      "state": "COMPLETE",
+      "md5": "edaab5441fc6ef9af464bd833951ec8e",
+      "checksumMatches": true,
+      "width": 2064,
+      "height": 2752
+    },
+    {
+      "locale": "en-US",
+      "device": "ipad",
+      "setId": "598bc023-bd11-495b-995e-53c630935703",
+      "id": "81d1cc7c-2a69-4c85-af23-be0506e6d362",
+      "file": "03.png",
+      "state": "COMPLETE",
+      "md5": "ee9d111053e2dabfc10994d02e0b1141",
+      "checksumMatches": true,
+      "width": 2064,
+      "height": 2752
+    },
+    {
+      "locale": "en-US",
+      "device": "ipad",
+      "setId": "598bc023-bd11-495b-995e-53c630935703",
+      "id": "d4bca94d-f116-4ad8-b7c8-04d9b301a99f",
+      "file": "04.png",
+      "state": "COMPLETE",
+      "md5": "28a48cc94ba9436a06185a2a12315685",
+      "checksumMatches": true,
+      "width": 2064,
+      "height": 2752
+    },
+    {
+      "locale": "zh-Hans",
+      "device": "ipad",
+      "setId": "e02aed5b-80ad-492f-8b4d-a9858d9a348e",
+      "id": "3a86bc4e-4b6e-4b1c-b951-cea60bea38f1",
+      "file": "01.png",
+      "state": "COMPLETE",
+      "md5": "7c806c15e41538615597f2250e10ef8f",
+      "checksumMatches": true,
+      "width": 2064,
+      "height": 2752
+    },
+    {
+      "locale": "zh-Hans",
+      "device": "ipad",
+      "setId": "e02aed5b-80ad-492f-8b4d-a9858d9a348e",
+      "id": "c1152e8d-c12d-40fd-b8dd-9c64d5d24370",
+      "file": "02.png",
+      "state": "COMPLETE",
+      "md5": "ef3c40ee0386daf4198001ce5829f28d",
+      "checksumMatches": true,
+      "width": 2064,
+      "height": 2752
+    },
+    {
+      "locale": "zh-Hans",
+      "device": "ipad",
+      "setId": "e02aed5b-80ad-492f-8b4d-a9858d9a348e",
+      "id": "ccd722f7-db95-4bf0-93a6-074b5a297079",
+      "file": "03.png",
+      "state": "COMPLETE",
+      "md5": "bc69f3b24f9d2272c46ebb0b87de45e2",
+      "checksumMatches": true,
+      "width": 2064,
+      "height": 2752
+    },
+    {
+      "locale": "zh-Hans",
+      "device": "ipad",
+      "setId": "e02aed5b-80ad-492f-8b4d-a9858d9a348e",
+      "id": "4fd37d62-6c6c-4254-9c93-94caeb23417a",
+      "file": "04.png",
+      "state": "COMPLETE",
+      "md5": "ba56c597b6f6064d109fc028e7692527",
+      "checksumMatches": true,
+      "width": 2064,
+      "height": 2752
+    },
+    {
+      "locale": "zh-Hans",
+      "device": "iphone",
+      "setId": "dd059338-41b8-4c69-8033-2773022d2a95",
+      "id": "12b08442-aabc-4b17-afb2-61ccd51553da",
+      "file": "01.png",
+      "state": "COMPLETE",
+      "md5": "6f872c591e47a844a86731a0dcc5020f",
+      "checksumMatches": true,
+      "width": 1284,
+      "height": 2778
+    },
+    {
+      "locale": "zh-Hans",
+      "device": "iphone",
+      "setId": "dd059338-41b8-4c69-8033-2773022d2a95",
+      "id": "ad398095-04ad-4098-a6af-ccb9c2294f63",
+      "file": "02.png",
+      "state": "COMPLETE",
+      "md5": "b2f5f335da15656ff503f679bb5f6362",
+      "checksumMatches": true,
+      "width": 1284,
+      "height": 2778
+    },
+    {
+      "locale": "zh-Hans",
+      "device": "iphone",
+      "setId": "dd059338-41b8-4c69-8033-2773022d2a95",
+      "id": "46e204f5-9f8b-4b89-bd25-d4e47ad1967b",
+      "file": "03.png",
+      "state": "COMPLETE",
+      "md5": "088214d7a862806dfc199ab8245dba96",
+      "checksumMatches": true,
+      "width": 1284,
+      "height": 2778
+    },
+    {
+      "locale": "zh-Hans",
+      "device": "iphone",
+      "setId": "dd059338-41b8-4c69-8033-2773022d2a95",
+      "id": "49a49ee8-57c1-4745-b7a3-cfdbe955b402",
+      "file": "04.png",
+      "state": "COMPLETE",
+      "md5": "8446cdb1e9380d7777b42ce953da7fba",
+      "checksumMatches": true,
+      "width": 1284,
+      "height": 2778
+    }
+  ],
+  "metadata": [
+    {
+      "locale": "zh-Hans",
+      "descriptionMatches": true,
+      "promotionalTextMatches": true,
+      "keywordsMatch": true
+    },
+    {
+      "locale": "en-US",
+      "descriptionMatches": true,
+      "promotionalTextMatches": true,
+      "keywordsMatch": true
+    }
+  ],
+  "appInfo": [
+    {
+      "locale": "zh-Hans",
+      "name": "不二见己：AI成长教练",
+      "subtitle": "聊清困惑，走好下一步"
+    },
+    {
+      "locale": "en-US",
+      "name": "Buer Within: AI Growth Coach",
+      "subtitle": "Find clarity. Take one step."
+    }
+  ]
+}

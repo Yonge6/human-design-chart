@@ -22,8 +22,8 @@ final class BuerTabController: UITabBarController, UITabBarControllerDelegate, W
     override func viewDidLoad() {
         super.viewDidLoad()
         delegate = self
-        overrideUserInterfaceStyle = .dark
-        view.backgroundColor = UIColor(red: 0.09, green: 0.15, blue: 0.23, alpha: 1)
+        overrideUserInterfaceStyle = .light
+        view.backgroundColor = UIColor(red: 245 / 255, green: 242 / 255, blue: 234 / 255, alpha: 1)
         let titles = ["见己", "成长档案", "我的"]
         let symbols = ["house", "book", "person.crop.circle"]
         for (index, page) in pages.enumerated() {
@@ -31,7 +31,7 @@ final class BuerTabController: UITabBarController, UITabBarControllerDelegate, W
             page.view.backgroundColor = .clear
         }
         setViewControllers(pages, animated: false)
-        tabBar.tintColor = UIColor(red: 0.67, green: 0.91, blue: 1, alpha: 1)
+        tabBar.tintColor = UIColor(red: 86 / 255, green: 103 / 255, blue: 75 / 255, alpha: 1)
         attachWorkspace(to: pages[0])
         guard let web = workspace.webView else { return }
         web.configuration.userContentController.add(self, name: "buerNavigation")

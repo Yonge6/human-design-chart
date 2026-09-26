@@ -7,7 +7,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        window?.backgroundColor = UIColor(red: 15.0 / 255.0, green: 11.0 / 255.0, blue: 18.0 / 255.0, alpha: 1.0)
+        window?.backgroundColor = UIColor(red: 245.0 / 255.0, green: 242.0 / 255.0, blue: 234.0 / 255.0, alpha: 1.0)
         return true
     }
 

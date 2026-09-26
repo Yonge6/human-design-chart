@@ -260,7 +260,7 @@ body[data-workspace="home"][data-conversation="active"] .topbar{background:rgba(
  body[data-workspace="home"][data-conversation="active"] .buer-messages{padding-top:16px}
 }
 
-.buer-message.assistant p strong{font-weight:700;color:#f5f8ff}
+.buer-message.assistant p strong{font-weight:700;color:inherit}
 
 /* Spacious local records and privacy controls. */
 #appDrawer .history-list{gap:12px;padding:8px 0;overflow:visible}

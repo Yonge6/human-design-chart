@@ -1,0 +1,390 @@
+[
+  {
+    "file": "legal.html",
+    "match": true
+  },
+  {
+    "file": "index.html",
+    "match": true
+  },
+  {
+    "file": "LICENSE",
+    "match": true
+  },
+  {
+    "file": "CNAME",
+    "match": true
+  },
+  {
+    "file": "support.html",
+    "match": true
+  },
+  {
+    "file": "build-provenance.js",
+    "match": true
+  },
+  {
+    "file": "runtime-config.js",
+    "match": true
+  },
+  {
+    "file": "buer-editorial.css",
+    "match": true
+  },
+  {
+    "file": "THIRD_PARTY_NOTICES.md",
+    "match": true
+  },
+  {
+    "file": "README.md",
+    "match": true
+  },
+  {
+    "file": "legal.css",
+    "match": true
+  },
+  {
+    "file": "analytics.js",
+    "match": true
+  },
+  {
+    "file": "location-service.js",
+    "match": true
+  },
+  {
+    "file": "buer.css",
+    "match": true
+  },
+  {
+    "file": "analytics-frame.html",
+    "match": true
+  },
+  {
+    "file": "buer-growth.css",
+    "match": true
+  },
+  {
+    "file": "buer-manual.css",
+    "match": true
+  },
+  {
+    "file": "style.css",
+    "match": true
+  },
+  {
+    "file": "human-design-engine.js",
+    "match": true
+  },
+  {
+    "file": "sitemap.xml",
+    "match": true
+  },
+  {
+    "file": "analytics-frame.js",
+    "match": true
+  },
+  {
+    "file": "robots.txt",
+    "match": true
+  },
+  {
+    "file": "app.js",
+    "match": true
+  },
+  {
+    "file": "privacy.html",
+    "match": true
+  },
+  {
+    "file": "shared/human-design-profile-contract.js",
+    "match": true
+  },
+  {
+    "file": "shared/product-event-contract.js",
+    "match": true
+  },
+  {
+    "file": "schemas/human-design-profile-v1.schema.json",
+    "match": true
+  },
+  {
+    "file": "supabase/functions/_shared/human-design-profile-contract.js",
+    "match": true
+  },
+  {
+    "file": "supabase/functions/_shared/product-event-contract.js",
+    "match": true
+  },
+  {
+    "file": "assets/buer-aurora-hero.webp",
+    "match": true
+  },
+  {
+    "file": "assets/buer-app-icon-180.png",
+    "match": true
+  },
+  {
+    "file": "assets/pluto-form-mobile-v4.png",
+    "match": true
+  },
+  {
+    "file": "assets/editorial-journal.webp",
+    "match": true
+  },
+  {
+    "file": "assets/buer-preview-qr.png",
+    "match": true
+  },
+  {
+    "file": "assets/chart-qr.png",
+    "match": true
+  },
+  {
+    "file": "assets/pluto-chart-mobile-v1.png",
+    "match": true
+  },
+  {
+    "file": "assets/pluto-daily-moon.webp",
+    "match": true
+  },
+  {
+    "file": "assets/pluto-app-icon-180.png",
+    "match": true
+  },
+  {
+    "file": "assets/editorial-hero.webp",
+    "match": true
+  },
+  {
+    "file": "assets/pluto-form-bg-v3.png",
+    "match": true
+  },
+  {
+    "file": "assets/buer-ai-orb.webp",
+    "match": true
+  },
+  {
+    "file": "assets/buer-orb-v2.png",
+    "match": true
+  },
+  {
+    "file": "assets/life-philosophy-poster-zh.webp",
+    "match": true
+  },
+  {
+    "file": "assets/buer-app-icon-1024.png",
+    "match": true
+  },
+  {
+    "file": "assets/buer-favicon.png",
+    "match": true
+  },
+  {
+    "file": "assets/pluto-vellum-bg-v3.png",
+    "match": true
+  },
+  {
+    "file": "assets/life-philosophy-poster-en.webp",
+    "match": true
+  },
+  {
+    "file": "assets/bodygraph-template.svg",
+    "match": true
+  },
+  {
+    "file": "assets/pluto-vellum-bg-v4.png",
+    "match": true
+  },
+  {
+    "file": "assets/pluto-og-1200x630.png",
+    "match": true
+  },
+  {
+    "file": "assets/icons/circle-user-round.svg",
+    "match": true
+  },
+  {
+    "file": "assets/icons/mail.svg",
+    "match": true
+  },
+  {
+    "file": "assets/icons/settings-2.svg",
+    "match": true
+  },
+  {
+    "file": "assets/icons/history.svg",
+    "match": true
+  },
+  {
+    "file": "assets/fonts/human-design.woff2",
+    "match": true
+  },
+  {
+    "file": "vendor/natalengine/LICENSE",
+    "match": true
+  },
+  {
+    "file": "vendor/natalengine/incarnation-crosses.js",
+    "match": true
+  },
+  {
+    "file": "vendor/html2canvas/LICENSE",
+    "match": true
+  },
+  {
+    "file": "vendor/html2canvas/html2canvas.min.js",
+    "match": true
+  },
+  {
+    "file": "vendor/swisseph/LICENSE",
+    "match": true
+  },
+  {
+    "file": "vendor/swisseph/PATCHES.md",
+    "match": true
+  },
+  {
+    "file": "vendor/swisseph/swisseph-browser.js",
+    "match": true
+  },
+  {
+    "file": "vendor/swisseph/swisseph.js",
+    "match": true
+  },
+  {
+    "file": "vendor/swisseph/swisseph.wasm",
+    "match": true
+  },
+  {
+    "file": "vendor/swisseph/ephe/seas_18.se1",
+    "match": true
+  },
+  {
+    "file": "vendor/swisseph/ephe/sepl_18.se1",
+    "match": true
+  },
+  {
+    "file": "vendor/swisseph/ephe/semo_18.se1",
+    "match": true
+  },
+  {
+    "file": "vendor/tz-lookup/LICENSE",
+    "match": true
+  },
+  {
+    "file": "vendor/tz-lookup/tz.js",
+    "match": true
+  },
+  {
+    "file": "vendor/phosphor/Phosphor.woff2",
+    "match": true
+  },
+  {
+    "file": "vendor/phosphor/LICENSE",
+    "match": true
+  },
+  {
+    "file": "vendor/phosphor/style.css",
+    "match": true
+  },
+  {
+    "file": "src/renderer/daily-tip-poster.js",
+    "match": true
+  },
+  {
+    "file": "src/renderer/bodygraph-renderer.js",
+    "match": true
+  },
+  {
+    "file": "src/renderer/poster-renderer.js",
+    "match": true
+  },
+  {
+    "file": "src/app/daily-tip.js",
+    "match": true
+  },
+  {
+    "file": "src/app/buer-message-format.js",
+    "match": true
+  },
+  {
+    "file": "src/app/runtime-security.js",
+    "match": true
+  },
+  {
+    "file": "src/app/native-bodygraph.js",
+    "match": true
+  },
+  {
+    "file": "src/app/buer-growth.js",
+    "match": true
+  },
+  {
+    "file": "src/app/buer-membership.js",
+    "match": true
+  },
+  {
+    "file": "src/app/buer-manual.js",
+    "match": true
+  },
+  {
+    "file": "src/app/form-validation.js",
+    "match": true
+  },
+  {
+    "file": "src/app/release-feature-availability.js",
+    "match": true
+  },
+  {
+    "file": "src/app/buer-suggestions.js",
+    "match": true
+  },
+  {
+    "file": "src/app/buer-home.js",
+    "match": true
+  },
+  {
+    "file": "src/config/runtime-config.js",
+    "match": true
+  },
+  {
+    "file": "src/engine/timezone.js",
+    "match": true
+  },
+  {
+    "file": "src/engine/human-design-engine.js",
+    "match": true
+  },
+  {
+    "file": "src/engine/profile-snapshot.js",
+    "match": true
+  },
+  {
+    "file": "src/engine/chart-hash.js",
+    "match": true
+  },
+  {
+    "file": "src/services/sharing-service.js",
+    "match": true
+  },
+  {
+    "file": "src/services/backend-service.js",
+    "match": true
+  },
+  {
+    "file": "src/services/buer-growth.js",
+    "match": true
+  },
+  {
+    "file": "src/services/location-service.js",
+    "match": true
+  },
+  {
+    "file": "src/services/storage-service.js",
+    "match": true
+  },
+  {
+    "file": "src/services/buer-conversation.js",
+    "match": true
+  }
+]

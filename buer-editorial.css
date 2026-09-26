@@ -1,5 +1,5 @@
 /* Selected editorial direction. Kept separate from report/export artwork. */
-:root{color-scheme:light;--buer-bg:#f5f2ea;--buer-text:#242823;--buer-muted:#6b7266;--buer-line:#d4d5cb;--buer-cyan:#73816a;--ink:#242823;--muted:#6b7266;--panel:#f5f2ea;--line:#d4d5cb;--gold:#73816a;--gold-soft:#52604c;--buer-hero-height:80px;--buer-header-height:80px;--editorial-serif:"Songti SC","Noto Serif CJK SC","STSong",Georgia,serif}
+:root{color-scheme:light;--buer-bg:#f5f2ea;--buer-text:#242823;--buer-muted:#626b5b;--buer-line:#d4d5cb;--buer-cyan:#73816a;--ink:#242823;--muted:#626b5b;--panel:#f5f2ea;--line:#d4d5cb;--gold:#73816a;--gold-soft:#52604c;--buer-hero-height:80px;--buer-header-height:80px;--editorial-serif:"Songti SC","Noto Serif CJK SC","STSong",Georgia,serif}
 html,body{background:var(--buer-bg);color:var(--ink)}
 body{background-image:none;font-weight:400}
 body::before,body::after{display:none}
@@ -132,7 +132,7 @@ dialog::backdrop{background:#24282370;backdrop-filter:blur(5px)}
 }
 #appDrawer :is(h1,h2,h3,p,small,label,span,a,strong,em,i){color:var(--ink)!important;text-shadow:none}
 #appDrawer :is(small,em,.eyebrow){color:var(--muted)!important}
-#appDrawer .drawer-nav-icon .ph{color:#6a795e!important}
+#appDrawer .drawer-nav-icon .ph{color:var(--ui-accent)!important}
 #appDrawer :is(.settings-row,.history-card){padding:20px!important}
 dialog.buer-membership,dialog.buer-history-dialog,dialog.growth-confirm{background:var(--buer-bg);color:var(--ink);border-color:var(--line)}
 .buer-membership :is(h2,p,small,a){color:var(--ink)}
@@ -143,7 +143,7 @@ dialog.buer-membership,dialog.buer-history-dialog,dialog.growth-confirm{backgrou
 #buerGrowth .growth-tabs button{background:none}
 #buerGrowth .growth-tabs button[aria-selected="true"]{border-bottom:2px solid #74826b}
 #buerGrowth .growth-primary{background:#74826b;color:#fff}
-#appDrawer .side-drawer{--ink:#242823;--muted:#6b7266;--gold:#73816a;--gold-soft:#52604c;color:var(--ink)}
+#appDrawer .side-drawer{--ink:#242823;--muted:#626b5b;--gold:#73816a;--gold-soft:#52604c;color:var(--ink)}
 #appDrawer :is(b,dt,dd){color:var(--ink)}
 #appDrawer .settings-row input:checked{background:#74826b;border-color:#74826b;accent-color:#74826b}
 #appDrawer .drawer-back,.buer-back-home{background:#e9ece1;color:#526448;border-color:#c8d0c0;box-shadow:none}
@@ -177,7 +177,7 @@ body dialog.growth-confirm>button{margin:16px 12px 0 0}
 body dialog :is(.detail-content,.detail-dialog-header,.detail-section,.daily-share-header){background:transparent;border-color:var(--ui-line);color:var(--ui-ink)}
 body dialog :is(input,select,textarea){background:var(--ui-surface);color:var(--ui-ink);border-color:var(--ui-line)}
 body :is(button,input,textarea,select,a):focus-visible{outline:2px solid var(--ui-accent);outline-offset:3px;box-shadow:none}
-body :is(input,textarea)::placeholder{color:#737969;opacity:1}
+body :is(input,textarea)::placeholder{color:#626b5b;opacity:1}
 body button:disabled{opacity:.5;cursor:not-allowed}
 #buerGrowth .growth-button.primary,#buerGrowth button[type="submit"],.shell .form-panel :is(#nextToBirth,#nextToLocation,button[type="submit"]){background:var(--ui-accent);border-color:var(--ui-accent);color:white}
 #buerGrowth .growth-tabs [aria-current="page"]{color:var(--ui-accent);border-bottom:2px solid var(--ui-accent)}
@@ -201,3 +201,70 @@ body dialog.buer-history-dialog::backdrop,body dialog.app-dialog::backdrop,body 
 #appDrawer .settings-row input::before,#appDrawer .settings-row input:checked::before{background:#fff}
 #appDrawer .settings-row input:checked{background:var(--ui-accent);border-color:var(--ui-accent)}
 #appDrawer .settings-row input:focus-visible{outline-color:var(--ui-accent)}
+/* Birth-information flow: native picker chrome and custom search surfaces. */
+.shell .form-panel :is(input,select,textarea){color-scheme:light;background:var(--ui-paper);color:var(--ui-ink);border-color:#a6af9c;caret-color:var(--ui-accent)}
+.shell .form-panel :is(input,textarea)::placeholder{color:var(--ui-muted);opacity:1}
+.shell .form-panel :is(option,optgroup){background:var(--ui-paper);color:var(--ui-ink)}
+.shell .form-panel .native-birth-control{background:var(--ui-paper);border-color:#a6af9c;border-radius:12px}
+.shell .form-panel .native-birth-control:focus-within{outline:2px solid var(--ui-accent);outline-offset:3px}
+.shell .form-panel :is(.native-birth-heading,.native-birth-display){color:var(--ui-ink)}
+.shell .form-panel :is(.native-birth-heading small,.native-birth-display.is-placeholder,.name-help,.place-attribution,.form-disclaimer,.exploration-header span){color:var(--ui-muted)}
+.shell .form-panel .form-disclaimer a,.shell .form-panel .form-text-action{color:var(--ui-accent)}
+.shell .form-panel .location-results{background:var(--ui-paper);border-color:#a6af9c;box-shadow:0 10px 25px #2428231a}
+.shell .form-panel .location-results :is(li,strong){color:var(--ui-ink)}
+.shell .form-panel .location-results span{color:var(--ui-muted)}
+.shell .form-panel .location-results li:is(:hover,.active,[aria-selected="true"]){background:#dee6d5;color:var(--ui-ink)}
+.shell .form-panel :is(.field-error,#status){color:var(--ui-danger)}
+.shell .form-panel :is(input,select)[aria-invalid="true"]{border-color:var(--ui-danger);box-shadow:0 0 0 1px var(--ui-danger)}
+.shell .form-panel .native-birth-grid input[aria-invalid="true"]+.native-birth-display{box-shadow:inset 0 0 0 1px var(--ui-danger)}
+.shell .form-panel #generateChart{background:var(--ui-accent);color:white;border-color:var(--ui-accent)}
+.shell .form-panel .form-secondary-action{background:transparent;color:var(--ui-ink);border-color:var(--ui-line);box-shadow:none}
+
+/* Complete report workspace, including expanded chapters and chart controls. */
+body .shell .result-panel :is(h1,h2,h3,h4,p,dt,dd,summary,small,span,strong,b,i){color:var(--ui-ink);text-shadow:none}
+body .shell .result-panel :is(.buer-kicker,dt,small,.buer-manual-note,.buer-chapter-number){color:var(--ui-muted)}
+body .shell .result-panel :is(button,a){color:var(--ui-accent);background:var(--ui-surface);border-color:var(--ui-line);box-shadow:none}
+body .shell .result-panel button :is(span,i){color:inherit}
+body .shell .result-panel :is(.buer-manual-tabs button,.buer-manual-daily button){background:transparent}
+body .shell .result-panel .buer-manual-tabs button[aria-selected="true"]::after{background:var(--ui-accent)}
+body .shell .result-panel :is(.buer-manual-questions,.buer-manual-questions button,.buer-manual-daily,.buer-chapter[open],dl>div){border-color:var(--ui-line)}
+body .shell #resultSummary :is(h2,dd,p){color:var(--ui-ink)}
+body .shell #resultSummary dt{color:var(--ui-muted)}
+body .shell #manualChart :is(.result-toolbar,.preview-stage){background:var(--ui-surface);border-color:var(--ui-line)}
+body .shell #manualChart .chart-actions button{background:var(--ui-surface);color:var(--ui-accent);border-color:var(--ui-line)}
+body .shell #manualChart .toggle-track{background:#d5dacd;border-color:#8c9882}
+body .shell #manualChart .toggle-track span{background:white}
+body .shell #manualChart input:checked+.toggle-track{background:var(--ui-accent);border-color:var(--ui-accent)}
+html:not(.native-text-results) .shell .native-birth-grid input{color-scheme:light;background:var(--ui-paper);color:var(--ui-ink);border-color:#a6af9c}
+.shell .form-panel .form-action-set>.form-secondary-action{background:transparent;color:var(--ui-accent);border-color:var(--ui-line)}
+.shell .form-panel .form-action-set>.form-secondary-action:hover{background:#e0e7d7}
+body dialog :is(.detail-celebrity-list article,.daily-share-help){background:var(--ui-surface);border-color:var(--ui-line);color:var(--ui-ink)}
+body dialog .detail-dialog-header h2,body dialog .detail-content :is(h3,h4,p){color:var(--ui-ink)}
+body dialog button :is(span,strong,small,i){color:inherit}
+body dialog .daily-share-actions button:last-child{background:var(--ui-accent);color:white;border-color:var(--ui-accent)}
+#buerGrowth :is(.growth-action,.growth-report){border-color:var(--ui-line)}
+#buerGrowth :is(input,textarea,select){color-scheme:light;caret-color:var(--ui-accent)}
+#buerGrowth button.primary,#buerGrowth button[type="submit"]{background:var(--ui-accent);color:white;border-color:var(--ui-accent)}
+#buerGrowth button :is(span,strong,i){color:inherit}
+#buerGrowth .growth-next-action,#buerGrowth .growth-empty,.buer-data-note,.buer-empty p{color:var(--ui-muted)}
+body .buer-message :is(strong,em,a){color:inherit}
+body .buer-message-actions button:hover{background:#e0e7d7;color:var(--ui-accent)}
+html.native-text-results .buer-rail{background:rgba(245,242,234,.96);border-color:var(--ui-line);box-shadow:0 4px 20px #24282318}
+html.native-text-results .buer-rail .rail-item{color:var(--ui-muted)}
+html.native-text-results .buer-rail .rail-item.is-active{background:#dfe6d7;color:var(--ui-accent);box-shadow:none}
+body .shell #resultSummary dl>div:nth-child(n+5){border-color:var(--ui-line)}
+body .shell #resultSummary dl>div:nth-child(n+5) dd{color:var(--ui-ink)}
+body .buer-back-home .ph,body .buer-manual-entry .ph{color:var(--ui-accent)}
+
+/* Secondary copy and confirmation states meet the same contrast baseline. */
+.buer-rail .rail-item,.buer-rail .rail-item .ph,.buer-compose-meta button{color:var(--ui-muted)}
+.buer-context :is(#dailyTipTitle,#dailyTipSource,#dailyTipDateSecondary){color:var(--ui-muted)}
+.buer-context #dailyTipDate{color:var(--ui-ink)}
+.growth-home-path{color:var(--ui-accent)}
+.buer-manual-entry #dailyTipAction{background:transparent;color:var(--ui-accent);border-color:var(--ui-line)}
+#appDrawer :is(h4,blockquote){color:var(--ui-ink)!important}
+body dialog.confirm-dialog .confirm-dialog-body :is(h2,p){color:var(--ui-ink)}
+body dialog.confirm-dialog .confirm-dialog-body>p:last-child{color:var(--ui-muted)}
+body[data-workspace="manual"] .buer-back-home{color:var(--ui-accent)}
+#buerGrowth .growth-domains button[aria-current="step"] small{color:var(--ui-accent)}
+body dialog.buer-membership .membership-note{color:var(--ui-muted)}

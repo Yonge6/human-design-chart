@@ -31,15 +31,15 @@ test("drawer lists WonderElian first and does not include the retired support fl
   assert.doesNotMatch(app, /drawerSupport|supportDialog|openSupportButton|supportQr/);
 });
 
-test("drawer actions use one Lucide icon system", () => {
+test("drawer actions use the shared themeable Phosphor icon system", () => {
   const html = read("index.html");
-  const css = read("style.css");
-
-  assert.match(html, /id="openHistory"[\s\S]{0,180}assets\/icons\/history\.svg/);
-  assert.match(html, /id="openSettings"[\s\S]{0,180}assets\/icons\/settings-2\.svg/);
-  assert.match(html, /id="openAbout"[\s\S]{0,180}assets\/icons\/circle-user-round\.svg/);
-  assert.match(html, /id="openContact"[\s\S]{0,180}assets\/icons\/mail\.svg/);
-  assert.match(css, /\.drawer-nav-icon img[\s\S]{0,140}width: 16px;[\s\S]{0,80}height: 16px;/);
+  const icons = read("vendor/phosphor/style.css");
+  for (const [id, icon] of Object.entries({openHistory:"clock-counter-clockwise",openSettings:"sliders-horizontal",openAbout:"user-circle",openContact:"envelope"})) {
+    const button = html.slice(html.indexOf(`id="${id}"`)).split("</button>")[0];
+    assert.ok(button.includes(`class="ph ph-${icon}"`));
+    assert.ok(icons.includes(`.ph-${icon}:before`));
+    assert.doesNotMatch(button, /<img/);
+  }
 });
 
 test("about drawer carries the bilingual life philosophy module", () => {

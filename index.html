@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0f0b12">
+  <meta name="theme-color" content="#f5f2ea">
   <meta name="referrer" content="no-referrer">
   <meta name="description" content="不二见己，你的专属 AI 成长教练。结合人类图自我观察、HUMAN 3.0 四领域访谈与个人经历，明确行动并持续复盘。">
   <meta name="robots" content="index, follow, max-image-preview:large">
@@ -34,6 +34,7 @@
   <link rel="stylesheet" href="buer.css">
   <link rel="stylesheet" href="buer-manual.css">
   <link rel="stylesheet" href="buer-growth.css">
+  <link rel="stylesheet" href="buer-editorial.css">
   <script src="analytics.js" defer></script>
 </head>
 <body data-workspace="home">
@@ -248,13 +249,13 @@
   <section id="buerHome" class="buer-home" aria-label="与不二见己聊聊">
     <div class="buer-conversation-column">
       <header class="buer-welcome"><h1 data-buer="headline">从一个问题，靠近自己</h1><p data-buer="intro">在这里，任何关于你的问题，都值得被认真对待</p></header>
-      <button type="button" class="growth-home-path" data-growth><i class="ph ph-path" aria-hidden="true"></i><span><strong id="growthHomeTitle" data-buer="growthHeadline">建立我的成长档案</strong><small id="growthHomeSteps" data-buer="growthSteps">01 认识自己　02 明确行动　03 补充经历</small></span><i class="ph ph-arrow-up-right" aria-hidden="true"></i></button>
+
       <div class="buer-messages" id="buerMessages" aria-label="对话内容" tabindex="0"></div>
       <div class="buer-compose-zone">
         <form id="buerChatForm" class="buer-composer">
           <label class="sr-only" for="buerQuestion" data-buer="questionLabel">此刻，你想更了解自己的哪一面？</label>
           <textarea id="buerQuestion" maxlength="2000" rows="2" placeholder="此刻，你想更了解自己的哪一面？"></textarea>
-          <div class="buer-compose-bottom"><div class="buer-suggestions"><button type="button" data-question="work" data-buer="workQuestion">我适合怎样的工作节奏？</button><button type="button" data-question="relationship" data-buer="relationshipQuestion">为什么我总在关系里内耗？</button><button type="button" data-question="decision" data-buer="decisionQuestion">做决定时，怎样听见自己？</button><button type="button" data-question="energy" data-buer="energyQuestion">总觉得累，该怎样找回能量？</button><button type="button" data-question="strength" data-buer="strengthQuestion">怎样发现自己的优势？</button><button type="button" data-question="boundary" data-buer="boundaryQuestion">如何温柔地建立边界？</button></div><span data-buer="aiLabel">AI 陪你探索</span><button type="submit" class="buer-send" id="buerSend" aria-label="发送问题"><i class="ph ph-paper-plane-tilt" aria-hidden="true"></i></button><button type="button" class="buer-send" id="buerStop" aria-label="停止回答" hidden><i class="ph ph-stop" aria-hidden="true"></i></button></div>
+          <div class="buer-compose-bottom"><div class="buer-suggestions"><button type="button" data-question="work" data-buer="workQuestion">我适合怎样的工作节奏？</button><button type="button" data-question="relationship" data-buer="relationshipQuestion">为什么我总在关系里内耗？</button><button type="button" data-question="decision" data-buer="decisionQuestion">做决定时，怎样听见自己？</button><button type="button" data-question="energy" data-buer="energyQuestion">总觉得累，该怎样找回能量？</button><button type="button" data-question="strength" data-buer="strengthQuestion">怎样发现自己的优势？</button><button type="button" data-question="boundary" data-buer="boundaryQuestion">如何温柔地建立边界？</button></div><span data-buer="aiLabel">AI 陪你探索</span><button type="submit" class="buer-send" id="buerSend" aria-label="发送问题"><i class="ph ph-arrow-right" aria-hidden="true"></i></button><button type="button" class="buer-send" id="buerStop" aria-label="停止回答" hidden><i class="ph ph-stop" aria-hidden="true"></i></button></div>
         </form>
         <label class="buer-context-option buer-growth-context"><input id="buerUseGrowth" type="checkbox"><span data-buer="useGrowth">结合成长档案</span></label><div class="buer-compose-meta"><label id="buerContextLabel" class="buer-context-option buer-report-context" hidden><input id="buerUseReport" type="checkbox"><span data-buer="useReport">结合我的说明书</span></label><p id="buerChatStatus" role="status" aria-live="polite"></p><button type="button" id="buerNewChat" data-buer="newChat">新对话</button></div>
       </div>
@@ -268,6 +269,7 @@
 
       </aside>
 
+      <button type="button" class="growth-home-path" data-growth><i class="ph ph-path" aria-hidden="true"></i><span><strong id="growthHomeTitle" data-buer="growthHeadline">建立我的成长档案</strong><small id="growthHomeSteps" data-buer="growthSteps">01 认识自己　02 明确行动　03 补充经历</small></span><i class="ph ph-arrow-up-right" aria-hidden="true"></i></button>
       <section class="buer-manual-entry"><h2><span data-buer="myManual">我的人生说明书</span></h2><p data-buer="manualIntro">一份专属于你的说明书，帮你更了解自己的倾向、节奏与选择。</p><button id="dailyTipAction" type="button"></button><i class="ph ph-arrow-right manual-arrow" aria-hidden="true"></i></section>
       <p class="buer-context-foot" data-buer="contextFoot">不是找到一个标准答案，<br>而是更清楚地，做自己。</p>
     </aside>

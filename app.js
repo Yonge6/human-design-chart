@@ -850,18 +850,18 @@ function refreshDailyTip() {
   card.dataset.state = tip ? "ready" : "empty";
   document.querySelector("#shareDailyTip").hidden = !tip;
   document.querySelector("#shareDailyTip").textContent = language === "zh" ? "分享图片" : "Share image";
-  document.querySelector("#dailyTipTitle").textContent = language === "zh" ? "今日提示" : "A thought for today";
+  document.querySelector("#dailyTipTitle").textContent = language === "zh" ? "留给今天的一句话" : "A thought for today";
   const date = new Date();
   const dateElement = document.querySelector("#dailyTipDate");
   dateElement.textContent = `${String(date.getMonth()+1).padStart(2,"0")}.${String(date.getDate()).padStart(2,"0")}`;
   document.querySelector("#dailyTipDateSecondary").textContent = new Intl.DateTimeFormat(language === "zh" ? "zh-CN" : "en", {weekday:"long"}).format(date);
   dateElement.dateTime = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
   document.querySelector("#dailyTipText").textContent = (tip ? formatDailyTipText(tip, language) : tip) || (language === "zh"
-    ? "生成你的第一份说明书，获得属于你的每日生活提示。"
-    : "Create your first Life Manual for a daily suggestion shaped by your result.");
+    ? "先听见自己，\n再决定下一步。"
+    : "Listen to yourself.\nThen take the next step.");
   document.querySelector("#dailyTipSource").textContent = tip
     ? (language === "zh" ? "来自你最近一次的解读" : "From your latest Life Manual")
-    : (language === "zh" ? "从了解自己开始，让每一天更自在。" : "A little self-knowledge for a more grounded day.");
+    : (language === "zh" ? "给自己一点从容。" : "Leave a little room for yourself.");
   document.querySelector("#dailyTipAction").textContent = tip
     ? (language === "zh" ? "查看我的解读" : "Read my Life Manual")
     : (language === "zh" ? "开始认识自己" : "Get to know yourself");

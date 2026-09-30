@@ -226,6 +226,7 @@ body[data-conversation="empty"] .buer-conversation-column,#buerGrowth .companion
 :root{--buer-page-max:1200px;--buer-page-gutter:36px}
 .buer-home,body[data-conversation="empty"] .buer-home,#buerGrowth,#appDrawer,.shell{box-sizing:border-box;width:100%;max-width:var(--buer-page-max);margin-left:auto;margin-right:auto}
 .buer-home,body[data-conversation="empty"] .buer-home{padding-left:var(--buer-page-gutter);padding-right:var(--buer-page-gutter)}
+body[data-conversation="empty"] .buer-home{padding-top:32px}
 #appDrawer .side-drawer{width:100%;max-width:none}
 
 /* Shared reading hierarchy for navigation and portfolio cards. */
@@ -261,5 +262,6 @@ body[data-conversation="empty"] .buer-conversation-column,#buerGrowth .companion
 @media(max-width:760px){#manualChart .preview-stage{padding:12px 8px}}
 @media(max-width:760px){
  :root{--buer-page-gutter:20px}
+ body[data-conversation="empty"] .buer-home{padding-top:24px}
  .buer-home,body[data-conversation="empty"] .buer-home{padding-left:var(--buer-page-gutter);padding-right:var(--buer-page-gutter)}
 }

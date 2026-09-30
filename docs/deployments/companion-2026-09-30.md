@@ -41,3 +41,10 @@ Rollback by publishing the previous artifact tree as a new commit; retain CNAME 
 - 32 focused tests passed. Actual local privacy export saved as private-life-manual.png with masked name/birth data. Both languages' generated images were visually inspected.
 - Public runtime reports e64defe; HTML, runtime config, companion CSS, app JS and daily poster renderer all match the artifact SHA-256. Public daily image and 1200 × 3676 full-chart generation, Home/history returns, 16/14px computed fonts, and mobile no-overflow were independently verified with a synthetic UI Audit fixture.
 - No backend or native/App Store changes; pre-existing App Store materials were untouched.
+
+## BodyGraph theme consistency and assessment sidebar cleanup
+- Source 9047bf8742072fbf199a16d8f5c59ba68fe91715; artifact 6800b0ad00c23b2a85fbc45f96109c702f31f02e; rollback 45fa83c8070f09bb25e76f2f95cb3d8d48ec29eb.
+- Pages run 36699723323 succeeded; fingerprint 476febe4d6edaf6c.
+- BodyGraph centers, gate labels, tracks, active channels, arrows and legends now use the warm paper/sage theme. Design channels use warm brown; personality channels use deep sage. Geometry and calculations are unchanged.
+- Removed only the assessment sidebar framework-source hyperlink in both languages; retained the methodology disclaimer.
+- 36 focused tests passed; actual 1200px chart export visually reviewed. Public browser confirmed source version, sage legend, absence of the sidebar link in Chinese and English, and working question input.

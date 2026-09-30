@@ -22,3 +22,10 @@ Rollback by publishing the previous artifact tree as a new commit; retain CNAME 
 - Public browser confirms the language container and both buttons share center Y 43.5; both context labels, their text and checkboxes share center Y 546.7890625 (desktop saved-manual state).
 - Public My Space displays the warm header and loaded waving character, fingerprint f47abfe46ca250a9.
 - New header visual checks passed in Chinese desktop/mobile and English mobile; 34 targeted tests passed.
+
+## Shared primary-tab width
+- Source: 8c73059ec727ed4cac0edffea8a7be9e15c940f0.
+- Artifact: 1b760b4bb296ef1d3074f0e516d952d2e0f6856d; rollback 8603e63f88c9fc74841d7bd28063217bcaafd03d.
+- Pages run 36696293702 completed successfully; deployed fingerprint 13e7a134f501c20e.
+- Public browser readback at 1440 px confirmed Home, Growth and My Space use the same 1200 px outer grid and 1128 px content width. At 390 px, all three use 20 px page gutters and document width remains 390 px with no horizontal overflow.
+- Public `index.html`, `runtime-config.js` and `buer-companion.css` SHA-256 values match the published artifact exactly. The 33 directly related tests passed; the wider 139-test run retained one unrelated pre-existing iOS build-number alignment failure.

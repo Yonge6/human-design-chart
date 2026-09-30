@@ -14,3 +14,11 @@
 - No backend changes, native installation, App Store changes or live AI-provider certification in this release.
 
 Rollback by publishing the previous artifact tree as a new commit; retain CNAME and dedicated API configuration.
+
+## Growth / My Space extensions and alignment fix
+- Source: de8da791621e34a9293598bfca9b43bbad7b6acc.
+- Artifact: 8603e63f88c9fc74841d7bd28063217bcaafd03d; rollback 1354549913266946cc0eec746cf31b27778f3bbf.
+- Pages run 36686480619 completed successfully; runtime readback reports de8da79.
+- Public browser confirms the language container and both buttons share center Y 43.5; both context labels, their text and checkboxes share center Y 546.7890625 (desktop saved-manual state).
+- Public My Space displays the warm header and loaded waving character, fingerprint f47abfe46ca250a9.
+- New header visual checks passed in Chinese desktop/mobile and English mobile; 34 targeted tests passed.

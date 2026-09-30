@@ -2,6 +2,7 @@ import {chatAccess,showMembership,initMembership,ensureAIConsent} from './buer-m
 import {renderAssistantText} from './buer-message-format.js';
 import {readGrowth,growthContext,answeredCount} from '../services/buer-growth.js';
 import {nextQuestionBatch} from './buer-suggestions.js';
+import {welcomeForVisit} from './buer-welcome.js';
 import {readBuerEvents,anonymousReport,validChatHistory} from '../services/buer-conversation.js';
 
 const copy={
@@ -9,6 +10,8 @@ const copy={
   en:{growthHeadline:'Build my growth profile',growthSteps:'01 Know yourself · 02 Find direction · 03 Add your story',myGrowth:'Growth profile',myGrowthHint:'Know · Act · Reflect',nextGrowth:'Next: HUMAN 3.0 reflection',useGrowth:'Use my growth profile',growthContextHint:'Only context you allow',dailyLimit:'Your 3 free messages are used for today. Come back tomorrow or subscribe to continue.',followupLabel:'Share what’s on your mind…',decisionQuestion:'How can I trust my own decisions?',energyQuestion:'How can I restore my energy?',strengthQuestion:'How can I discover my strengths?',boundaryQuestion:'How can I set kinder boundaries?',profile:'Me',manualHistory:'Saved manuals',chatHistoryHint:'Continue your exploration',tagline:'Meet your true self',home:'Home',manual:'Growth',history:'Conversations',railFoot:'Know yourself\nLive freely',headline:'What’s on your mind today?',intro:'Your personal AI growth companion',questionLabel:'What’s on your mind today?',workQuestion:'What work rhythm suits me?',relationshipQuestion:'Why do I overthink relationships?',aiLabel:'Explore with AI',useReport:'Use my Life Manual',newChat:'New conversation',dataNote:'Questions are processed by DeepSeek. Chat history stays on this device.',myManual:'My growth path',manualIntro:'Start with Human Design, reflect across four life domains and build a profile from your own experiences and actions.',contextFoot:'Not one perfect answer.\nA clearer sense of being you.',localHistory:'Saved only on this device, without cross-device sync.',clearChats:'Clear local conversations',clearConfirm:'This cannot be undone. Clear these conversations?',cancel:'Cancel',confirmClear:'Clear conversations',backHome:'Back to conversation',backPrevious:'Back',welcome:'There is no rush to change yourself.\nStart with something that has been on your mind. We can explore it together.',connecting:'Reading your question…',streaming:'Buer Within is responding…',stopped:'Stopped. Ask another question, or try again.',failed:'The connection was interrupted. Please try again.',unconfigured:'AI is not ready yet. Your question has been kept.',rate:'A few too many questions. Try again in a minute.',retry:'Try again',copy:'Copy',copied:'Response copied',noHistory:'No conversations yet. Start with a question on the home screen.',send:'Send question',stop:'Stop response',closeHistory:'Close conversations',contextHint:'Only type, strategy, authority and profile are sent. No name or birth details.',noStorage:'Device storage is unavailable. This conversation lasts only while this page is open.'},
 };
 export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
+  let welcomeStorage;try{welcomeStorage=window.localStorage;}catch{}
+  const visitWelcome=welcomeForVisit(welcomeStorage);
   const $=s=>document.querySelector(s),t=k=>copy[getLanguage()==='en'?'en':'zh'][k];
   initMembership();
   const form=$('#buerChatForm'), input=$('#buerQuestion'), messagesEl=$('#buerMessages'), status=$('#buerChatStatus');
@@ -83,6 +86,7 @@ export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
     languageButton.title=getLanguage()==='zh'?'切换到英文':'Switch to Chinese';
     languageButton.setAttribute('aria-label',languageButton.title);
     document.querySelectorAll('[data-buer]').forEach(el=>{el.textContent=t(el.dataset.buer);});
+    $('[data-buer="headline"]').textContent=visitWelcome[getLanguage()==='en'?'en':'zh'];
     input.placeholder=t('questionLabel');$('#buerSend').ariaLabel=t('send');$('#buerStop').ariaLabel=t('stop');$('#buerCloseHistory').ariaLabel=t('closeHistory');
     syncReportSelection();$('#buerContextLabel').title=t('contextHint');
     const date=new Date();$('#dailyTipDate').textContent=`${String(date.getMonth()+1).padStart(2,'0')}.${String(date.getDate()).padStart(2,'0')}`;

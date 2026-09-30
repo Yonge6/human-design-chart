@@ -214,6 +214,11 @@ body dialog.buer-membership .ai-consent-actions .consent-secondary{background:tr
  .companion-section-art{position:static;grid-column:2;grid-row:3;width:132px;height:150px;margin:0 -6px;align-self:end;object-fit:contain}
 }
 #buerGrowth .companion-section-hero{width:100%;max-width:none;box-sizing:border-box}
+/* Shared landing-card geometry across Home, Growth and Me. */
+:root{--buer-landing-height:640px}
+body[data-conversation="empty"] .buer-conversation-column,#buerGrowth .companion-section-hero,#appDrawer .companion-section-hero{box-sizing:border-box;min-height:var(--buer-landing-height);height:var(--buer-landing-height)}
+@media(min-width:761px){.companion-section-art{width:42%;height:85%;right:18px;bottom:12px}#buerGrowth .companion-section-hero,#appDrawer .companion-section-hero{padding:76px 43% 40px 40px}}
+@media(max-width:760px){:root{--buer-landing-height:600px}#buerGrowth .companion-section-hero,#appDrawer .companion-section-hero{grid-template-rows:auto auto 1fr;align-content:start}.companion-section-art{height:240px;width:150px}html[lang="en"] .buer-welcome{width:58%}html[lang="en"] .buer-welcome h1{font-size:24px;hyphens:auto;overflow-wrap:anywhere}}
 #appDrawer:has(#drawerHome:not([hidden])) .drawer-header{padding-bottom:0}
 #appDrawer:has(#drawerHome:not([hidden])) .drawer-scroll{padding-top:0}
 

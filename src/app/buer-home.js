@@ -23,6 +23,23 @@ export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
   window.addEventListener('scroll',syncHeader,{passive:true});
   window.addEventListener('pageshow',syncHeader);
   syncHeader();
+  // iOS can pan the visual viewport when opening its keyboard. Keep web
+  // navigation inside that viewport without interfering with pinch zoom.
+  let viewportFrame=0;
+  const syncNavigationViewport=()=>{
+    cancelAnimationFrame(viewportFrame);
+    viewportFrame=requestAnimationFrame(()=>{
+      const viewport=window.visualViewport;
+      const follow=viewport&&matchMedia('(max-width:760px)').matches&&!document.documentElement.classList.contains('native-text-results')&&Math.abs(viewport.scale-1)<0.01;
+      document.documentElement.style.setProperty('--buer-viewport-top',`${follow?Math.max(0,viewport.offsetTop):0}px`);
+      document.documentElement.style.setProperty('--buer-viewport-bottom',`${follow?Math.max(0,window.innerHeight-viewport.height-viewport.offsetTop):0}px`);
+    });
+  };
+  window.visualViewport?.addEventListener('resize',syncNavigationViewport,{passive:true});
+  window.visualViewport?.addEventListener('scroll',syncNavigationViewport,{passive:true});
+  window.addEventListener('resize',syncNavigationViewport,{passive:true});
+  window.addEventListener('pageshow',syncNavigationViewport);
+  syncNavigationViewport();
   let suggestionState={},suggestions=[];
   try{suggestionState=JSON.parse(localStorage.getItem('buer-suggestion-rotation-v2')||'{}');}catch{}
   function renderSuggestions(){

@@ -1,5 +1,7 @@
 # Companion redesign and resubmission
 
+Latest status: build 4 was subsequently withdrawn to correct the native App icon. Build 5 with Doudoulong is now Waiting for Review, verified 2026-10-01 07:07 Asia/Shanghai. See [icon-build5.md](icon-build5.md) for the current submission and evidence. The build 4 record below is historical.
+
 ## Withdrawal verified — 2026-10-01
 
 At the user's explicit request, removed the current pending Buer Within submission from review in App Store Connect.

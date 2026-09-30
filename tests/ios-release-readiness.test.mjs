@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import { createHash } from "node:crypto";
 import test from "node:test";
 
 const project = fs.readFileSync("ios/App/App.xcodeproj/project.pbxproj", "utf8");
@@ -11,11 +12,22 @@ const metadataDraft = fs.readFileSync("docs/app-store-metadata-draft.md", "utf8"
 const releaseChecklist = fs.readFileSync("docs/app-store-release-checklist.md", "utf8");
 const releaseAvailability = fs.readFileSync("src/app/release-feature-availability.js", "utf8");
 
+test("the shipped AppIcon is the approved opaque 1024px Doudoulong artwork", () => {
+  const directory = "ios/App/App/Assets.xcassets/AppIcon.appiconset/";
+  const manifest = JSON.parse(fs.readFileSync(directory + "Contents.json", "utf8"));
+  const icon = fs.readFileSync(directory + manifest.images[0].filename);
+  assert.equal(icon.readUInt32BE(16), 1024);
+  assert.equal(icon.readUInt32BE(20), 1024);
+  assert.equal(icon[25], 2, "App Store icon must use opaque RGB");
+  assert.equal(createHash("sha256").update(icon).digest("hex"),
+    "beafb390b9e05216d9de01fd8c553c5d2428c3e6c7332ee0a33e6a816d29e7f7");
+});
+
 test("iOS release identity and versions remain aligned", () => {
   assert.equal(packageJson.version, "1.1.0");
   assert.equal(capacitorConfig.appId, "com.yonge6.buerwithin");
   assert.equal((project.match(/MARKETING_VERSION = 1\.0;/g) || []).length, 4);
-  assert.equal((project.match(/CURRENT_PROJECT_VERSION = 4;/g) || []).length, 4);
+  assert.equal((project.match(/CURRENT_PROJECT_VERSION = 5;/g) || []).length, 4);
   assert.equal((project.match(/PRODUCT_BUNDLE_IDENTIFIER = com\.yonge6\.buerwithin;/g) || []).length, 2);
   assert.ok((project.match(/IPHONEOS_DEPLOYMENT_TARGET = 15\.0;/g) || []).length >= 2);
 });

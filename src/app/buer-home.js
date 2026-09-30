@@ -104,7 +104,7 @@ export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
   new MutationObserver(()=>{document.querySelectorAll('.rail-item').forEach(el=>el.classList.toggle('is-active',el.hasAttribute(`data-${document.body.dataset.workspace==='growth'?'manual':document.body.dataset.workspace}`)));}).observe(document.body,{attributes:true,attributeFilter:['data-workspace']});
   document.addEventListener('buer:language',refresh);
   document.addEventListener('buer:growth-updated',()=>{if(!controller)refresh();});
-  document.addEventListener('buer:growth-question',event=>{if(controller)return;input.value=event.detail.question.slice(0,2000);showHome();input.dispatchEvent(new Event('input'));input.focus({preventScroll:true});form.scrollIntoView({block:'center',behavior:'smooth'});});
+  document.addEventListener('buer:growth-question',event=>{if(controller)return;input.value=event.detail.question.slice(0,2000);showHome();input.dispatchEvent(new Event('input'));input.focus({preventScroll:true});if(matchMedia('(min-width:761px)').matches)form.scrollIntoView({block:'center',behavior:'smooth'});});
   document.addEventListener('buer:manual-question',event=>{
     if(controller){showHome();return;}
     const {topic,chapter,report}=event.detail;
@@ -113,7 +113,7 @@ export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
     const questions=zh?{work:'结合这份说明书，我可以怎样找到更适合自己的工作节奏？',relationship:'结合这份说明书，我可以怎样在关系中减少内耗、建立边界？',decision:'结合这份说明书，做重要决定前，我可以怎样观察自己的感受？',chapter:`关于“${chapter||''}”这一章，我可以在生活中做什么小尝试？`}:{work:'Using my manual, how can I find a work rhythm that suits me?',relationship:'Using my manual, how can I build boundaries and feel more at ease in relationships?',decision:'Using my manual, what could I notice in myself before an important decision?',chapter:`What small experiment could I try based on the chapter “${chapter||''}”?`};
     const question=questions[topic]||questions.decision;
     input.value=input.value.trim()?`${input.value.trim()}\n\n${question}`:question;
-    reportPreference=null;showHome();input.dispatchEvent(new Event('input'));input.focus({preventScroll:true});form.scrollIntoView({block:'center',behavior:'smooth'});
+    reportPreference=null;showHome();input.dispatchEvent(new Event('input'));input.focus({preventScroll:true});if(matchMedia('(min-width:761px)').matches)form.scrollIntoView({block:'center',behavior:'smooth'});
   });
   input.addEventListener('focus',syncReportSelection);
   input.addEventListener('keydown',event=>{if(event.key==='Enter' && !event.shiftKey && !event.isComposing){event.preventDefault();form.requestSubmit();}});

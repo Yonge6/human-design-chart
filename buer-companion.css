@@ -149,7 +149,7 @@ body dialog .ai-consent-actions .consent-secondary{background:transparent;color:
  body[data-conversation="active"] .buer-conversation-column{height:100%;min-height:0}
  body[data-conversation="active"] .buer-compose-zone{padding:12px 14px;margin-top:8px;border-radius:18px}
  body[data-conversation="active"] #buerChatForm{padding:0;background:none;border:0}
- body[data-conversation="active"] #buerChatForm textarea{font-size:15px;padding:4px 48px 8px 0;height:48px;min-height:48px}
+ body[data-conversation="active"] #buerChatForm textarea{font-size:16px;padding:4px 48px 8px 0;height:48px;min-height:48px}
  .buer-message{gap:8px}.buer-avatar{width:30px;height:30px;flex-basis:30px}.buer-message-content{max-width:calc(100% - 38px)}
  .buer-message p{font-size:15px;line-height:1.8;padding:14px}
 }

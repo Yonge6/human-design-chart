@@ -57,7 +57,7 @@ export async function createDailyTipPoster({ tip, language, date = new Date() })
   ctx.fillText(`${date.getFullYear()} · ${new Intl.DateTimeFormat(chinese ? 'zh-CN' : 'en', {weekday:'long'}).format(date)}`, 1000, 142); ctx.textAlign = 'left';
   ctx.fillStyle = '#c86732'; ctx.font = '26px sans-serif';
   ctx.fillText(chinese ? '今日提示 / 给自己的一句话' : 'A thought for today', 80, 267);
-  let size = chinese ? 70 : 64;
+  let size = 64;
   let lines;
   do {
     ctx.font = `300 ${size}px ${chinese ? '"Songti SC", "Noto Serif CJK SC",' : ''} Georgia, serif`;

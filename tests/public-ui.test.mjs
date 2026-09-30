@@ -65,15 +65,14 @@ test("drawer lists WonderElian first and does not include the retired support fl
   assert.doesNotMatch(app, /drawerSupport|supportDialog|openSupportButton|supportQr/);
 });
 
-test("drawer actions use the shared themeable Phosphor icon system", () => {
+test("drawer actions use distinct accessible companion icons", () => {
   const html = read("index.html");
-  const icons = read("vendor/phosphor/style.css");
-  for (const [id, icon] of Object.entries({openHistory:"clock-counter-clockwise",openSettings:"sliders-horizontal",openAbout:"user-circle",openContact:"envelope"})) {
+  for (const [id, icon] of Object.entries({buerHistoryButton:"chat",openHistory:"history",openSettings:"privacy",openAbout:"about",openContact:"contact"})) {
     const button = html.slice(html.indexOf(`id="${id}"`)).split("</button>")[0];
-    assert.ok(button.includes(`class="ph ph-${icon}"`));
-    assert.ok(icons.includes(`.ph-${icon}:before`));
-    assert.doesNotMatch(button, /<img/);
+    assert.ok(button.includes(`src="assets/companion-icon-${icon}.svg" alt=""`));
+    assert.match(read(`assets/companion-icon-${icon}.svg`), /viewBox="0 0 64 64"/);
   }
+  assert.match(html, /src="assets\/companion-icon-growth.svg" alt=""/);
 });
 
 test("about drawer carries the bilingual life philosophy module", () => {

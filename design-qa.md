@@ -85,3 +85,5 @@ Scope: website visual redesign; existing conversation, profile permissions and g
 - 38 existing targeted tests passed: public UI, growth, build security, daily tips and rotating suggestions. `git diff --check` clean.
 - Daily-tip export palette/logo updated in source; live AI, native safe areas and actual poster download are not newly certified by this visual pass.
 - Website deployment/readback tracked separately in `docs/deployments/companion-2026-09-30.md`.
+
+Tablet follow-up: at 900 × 1000, reduced hero art to 80% height and composer to 52% width to keep the face clear, then blended the image top edge into the sage surface. No horizontal overflow.

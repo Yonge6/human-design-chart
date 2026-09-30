@@ -1,0 +1,198 @@
+[
+  {
+    "lang": "zh-Hans",
+    "device": "iphone",
+    "setId": "dd059338-41b8-4c69-8033-2773022d2a95",
+    "old": [
+      {
+        "id": "12b08442-aabc-4b17-afb2-61ccd51553da",
+        "fileName": "01.png",
+        "checksum": "6f872c591e47a844a86731a0dcc5020f"
+      },
+      {
+        "id": "ad398095-04ad-4098-a6af-ccb9c2294f63",
+        "fileName": "02.png",
+        "checksum": "b2f5f335da15656ff503f679bb5f6362"
+      },
+      {
+        "id": "46e204f5-9f8b-4b89-bd25-d4e47ad1967b",
+        "fileName": "03.png",
+        "checksum": "088214d7a862806dfc199ab8245dba96"
+      },
+      {
+        "id": "49a49ee8-57c1-4745-b7a3-cfdbe955b402",
+        "fileName": "04.png",
+        "checksum": "8446cdb1e9380d7777b42ce953da7fba"
+      }
+    ],
+    "added": [
+      {
+        "id": "745dc471-07d2-4da6-99b0-01ad5aed5c81",
+        "index": 1,
+        "checksum": "19570e3effe0cc0d059372b022a3d7bb"
+      },
+      {
+        "id": "93cef57e-cbef-4c72-929b-28b2c4cc9abf",
+        "index": 2,
+        "checksum": "630e5f559d9ade6518b248118a0ba568"
+      },
+      {
+        "id": "3f10ed12-800f-4118-8379-73dd28c4edb0",
+        "index": 3,
+        "checksum": "dfcad1122b26a7aa7fe42163d9582007"
+      },
+      {
+        "id": "3acb29ca-8fb6-41fe-a33f-a86cc8ab78ea",
+        "index": 4,
+        "checksum": "c5137dfe35916aad9ecd4228352049d5"
+      }
+    ]
+  },
+  {
+    "lang": "zh-Hans",
+    "device": "ipad",
+    "setId": "e02aed5b-80ad-492f-8b4d-a9858d9a348e",
+    "old": [
+      {
+        "id": "3a86bc4e-4b6e-4b1c-b951-cea60bea38f1",
+        "fileName": "01.png",
+        "checksum": "7c806c15e41538615597f2250e10ef8f"
+      },
+      {
+        "id": "c1152e8d-c12d-40fd-b8dd-9c64d5d24370",
+        "fileName": "02.png",
+        "checksum": "ef3c40ee0386daf4198001ce5829f28d"
+      },
+      {
+        "id": "ccd722f7-db95-4bf0-93a6-074b5a297079",
+        "fileName": "03.png",
+        "checksum": "bc69f3b24f9d2272c46ebb0b87de45e2"
+      },
+      {
+        "id": "4fd37d62-6c6c-4254-9c93-94caeb23417a",
+        "fileName": "04.png",
+        "checksum": "ba56c597b6f6064d109fc028e7692527"
+      }
+    ],
+    "added": [
+      {
+        "id": "f6faaa9d-5256-4f2e-a211-7c2756b08b63",
+        "index": 1,
+        "checksum": "fa26a9b3f9f1e72a0750a47eadec84f9"
+      },
+      {
+        "id": "f66226bf-d979-4542-82c6-83593260fe59",
+        "index": 2,
+        "checksum": "22a832da944f403a0582f14a3f2b0de8"
+      },
+      {
+        "id": "54b13b3a-cda1-4690-b8b8-f24db85f88c1",
+        "index": 3,
+        "checksum": "d166ef2c9bd219a5d110b026446b6e05"
+      },
+      {
+        "id": "8cc0e4a5-358f-405b-b015-0c4499dd78f3",
+        "index": 4,
+        "checksum": "1c9d06088bbe76798a923044dd69cc2d"
+      }
+    ]
+  },
+  {
+    "lang": "en-US",
+    "device": "iphone",
+    "setId": "ae6b1485-9b5b-47e8-8bce-99d5b8083fc6",
+    "old": [
+      {
+        "id": "c2c2898e-ce5f-4983-a17c-620273bc799b",
+        "fileName": "01.png",
+        "checksum": "28ea99685a6a70f7955c5851c0eedeee"
+      },
+      {
+        "id": "47089cd4-02d9-4824-83e2-3c58634400f2",
+        "fileName": "02.png",
+        "checksum": "d9caa1585ccf7cd2693435a4bca5b4ec"
+      },
+      {
+        "id": "2d716709-a0ff-420d-8ad3-bfde33ca36ac",
+        "fileName": "03.png",
+        "checksum": "868b3512beafaa5a9a684b75b8af4e36"
+      },
+      {
+        "id": "6030a4b9-7f71-4ee6-b30b-a6cb3aabe195",
+        "fileName": "04.png",
+        "checksum": "6f1588746db5b92c6e56f09a221e6d76"
+      }
+    ],
+    "added": [
+      {
+        "id": "4f463cd5-93ad-4c19-9522-b3e4ac91b36b",
+        "index": 1,
+        "checksum": "85efb87f5618725e4f7e05edf18b23eb"
+      },
+      {
+        "id": "24eef7aa-11a3-4d6a-a069-dc9f5faf37ec",
+        "index": 2,
+        "checksum": "c0e2b1890c9517d74be42debe06a1847"
+      },
+      {
+        "id": "c02b9f9e-c9f9-45b4-8a67-0bb96d2cc45f",
+        "index": 3,
+        "checksum": "8ae5482a8cf51eaa055bd6ac9db42401"
+      },
+      {
+        "id": "36298feb-10cf-460d-818f-738eb5da8752",
+        "index": 4,
+        "checksum": "d98bd7e90ae694d6a38dfcc476dd6bf2"
+      }
+    ]
+  },
+  {
+    "lang": "en-US",
+    "device": "ipad",
+    "setId": "598bc023-bd11-495b-995e-53c630935703",
+    "old": [
+      {
+        "id": "872c242d-856d-4d6b-8569-b03456f386a6",
+        "fileName": "01.png",
+        "checksum": "7063d12fa758b7bf10e452a983a64fc5"
+      },
+      {
+        "id": "6dc95a73-5d5a-45f6-a777-61c3fb7086a3",
+        "fileName": "02.png",
+        "checksum": "edaab5441fc6ef9af464bd833951ec8e"
+      },
+      {
+        "id": "81d1cc7c-2a69-4c85-af23-be0506e6d362",
+        "fileName": "03.png",
+        "checksum": "ee9d111053e2dabfc10994d02e0b1141"
+      },
+      {
+        "id": "d4bca94d-f116-4ad8-b7c8-04d9b301a99f",
+        "fileName": "04.png",
+        "checksum": "28a48cc94ba9436a06185a2a12315685"
+      }
+    ],
+    "added": [
+      {
+        "id": "f194d176-91ac-4d4c-ab98-56dea6204b0f",
+        "index": 1,
+        "checksum": "46c3aac59141baa69a2caba2b998ca08"
+      },
+      {
+        "id": "5d861ede-f003-472b-96ea-774a229ed693",
+        "index": 2,
+        "checksum": "20d616b7a3abe9c251366c6adc1dec4f"
+      },
+      {
+        "id": "7b3b87c1-e3bd-4361-81ca-169ee404f8b0",
+        "index": 3,
+        "checksum": "a92ba4ec4e25262b4f1a3f5ccb57e101"
+      },
+      {
+        "id": "946d7e6e-d46e-4cc7-9f85-b7531e9ad5d1",
+        "index": 4,
+        "checksum": "59346b1377363acdc2481b49ee057f43"
+      }
+    ]
+  }
+]

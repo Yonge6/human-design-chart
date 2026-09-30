@@ -1,0 +1,122 @@
+[
+  {
+    "lang": "zh-Hans",
+    "device": "iphone",
+    "assets": [
+      {
+        "id": "745dc471-07d2-4da6-99b0-01ad5aed5c81",
+        "name": "01-companion-zh-Hans-iphone.png",
+        "state": "COMPLETE",
+        "checksum": "19570e3effe0cc0d059372b022a3d7bb"
+      },
+      {
+        "id": "93cef57e-cbef-4c72-929b-28b2c4cc9abf",
+        "name": "02-companion-zh-Hans-iphone.png",
+        "state": "COMPLETE",
+        "checksum": "630e5f559d9ade6518b248118a0ba568"
+      },
+      {
+        "id": "3f10ed12-800f-4118-8379-73dd28c4edb0",
+        "name": "03-companion-zh-Hans-iphone.png",
+        "state": "COMPLETE",
+        "checksum": "dfcad1122b26a7aa7fe42163d9582007"
+      },
+      {
+        "id": "3acb29ca-8fb6-41fe-a33f-a86cc8ab78ea",
+        "name": "04-companion-zh-Hans-iphone.png",
+        "state": "COMPLETE",
+        "checksum": "c5137dfe35916aad9ecd4228352049d5"
+      }
+    ]
+  },
+  {
+    "lang": "zh-Hans",
+    "device": "ipad",
+    "assets": [
+      {
+        "id": "f6faaa9d-5256-4f2e-a211-7c2756b08b63",
+        "name": "01-companion-zh-Hans-ipad.png",
+        "state": "COMPLETE",
+        "checksum": "fa26a9b3f9f1e72a0750a47eadec84f9"
+      },
+      {
+        "id": "f66226bf-d979-4542-82c6-83593260fe59",
+        "name": "02-companion-zh-Hans-ipad.png",
+        "state": "COMPLETE",
+        "checksum": "22a832da944f403a0582f14a3f2b0de8"
+      },
+      {
+        "id": "54b13b3a-cda1-4690-b8b8-f24db85f88c1",
+        "name": "03-companion-zh-Hans-ipad.png",
+        "state": "COMPLETE",
+        "checksum": "d166ef2c9bd219a5d110b026446b6e05"
+      },
+      {
+        "id": "8cc0e4a5-358f-405b-b015-0c4499dd78f3",
+        "name": "04-companion-zh-Hans-ipad.png",
+        "state": "COMPLETE",
+        "checksum": "1c9d06088bbe76798a923044dd69cc2d"
+      }
+    ]
+  },
+  {
+    "lang": "en-US",
+    "device": "iphone",
+    "assets": [
+      {
+        "id": "4f463cd5-93ad-4c19-9522-b3e4ac91b36b",
+        "name": "01-companion-en-US-iphone.png",
+        "state": "COMPLETE",
+        "checksum": "85efb87f5618725e4f7e05edf18b23eb"
+      },
+      {
+        "id": "24eef7aa-11a3-4d6a-a069-dc9f5faf37ec",
+        "name": "02-companion-en-US-iphone.png",
+        "state": "COMPLETE",
+        "checksum": "c0e2b1890c9517d74be42debe06a1847"
+      },
+      {
+        "id": "c02b9f9e-c9f9-45b4-8a67-0bb96d2cc45f",
+        "name": "03-companion-en-US-iphone.png",
+        "state": "COMPLETE",
+        "checksum": "8ae5482a8cf51eaa055bd6ac9db42401"
+      },
+      {
+        "id": "36298feb-10cf-460d-818f-738eb5da8752",
+        "name": "04-companion-en-US-iphone.png",
+        "state": "COMPLETE",
+        "checksum": "d98bd7e90ae694d6a38dfcc476dd6bf2"
+      }
+    ]
+  },
+  {
+    "lang": "en-US",
+    "device": "ipad",
+    "assets": [
+      {
+        "id": "f194d176-91ac-4d4c-ab98-56dea6204b0f",
+        "name": "01-companion-en-US-ipad.png",
+        "state": "COMPLETE",
+        "checksum": "46c3aac59141baa69a2caba2b998ca08"
+      },
+      {
+        "id": "5d861ede-f003-472b-96ea-774a229ed693",
+        "name": "02-companion-en-US-ipad.png",
+        "state": "COMPLETE",
+        "checksum": "20d616b7a3abe9c251366c6adc1dec4f"
+      },
+      {
+        "id": "7b3b87c1-e3bd-4361-81ca-169ee404f8b0",
+        "name": "03-companion-en-US-ipad.png",
+        "state": "COMPLETE",
+        "checksum": "a92ba4ec4e25262b4f1a3f5ccb57e101"
+      },
+      {
+        "id": "946d7e6e-d46e-4cc7-9f85-b7531e9ad5d1",
+        "name": "04-companion-en-US-ipad.png",
+        "state": "COMPLETE",
+        "checksum": "59346b1377363acdc2481b49ee057f43"
+      }
+    ]
+  }
+]

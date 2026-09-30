@@ -70,7 +70,7 @@ body[data-conversation="empty"] .buer-compose-meta{margin:0;padding-top:14px;bor
 #appDrawer .drawer-nav-icon .ph{font-size:25px;color:#526b47!important}
 #appDrawer .drawer-nav-icon{width:48px;height:48px;flex:0 0 48px;background:transparent}
 #appDrawer .drawer-nav-icon img{display:block;width:48px;height:48px;object-fit:contain;filter:none}
-#appDrawer .drawer-nav>button{column-gap:16px}
+#appDrawer .drawer-nav>button{grid-template-columns:48px minmax(0,1fr) auto;column-gap:20px}
 #buerGrowth .growth-path-meta{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin-bottom:8px}
 #buerGrowth .growth-path-meta small,#buerGrowth .growth-path-meta .growth-next-label{margin:0}
 #appDrawer .drawer-nav button:hover{background:#edf0e4;border-color:#92a483}

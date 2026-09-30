@@ -48,3 +48,10 @@ Rollback by publishing the previous artifact tree as a new commit; retain CNAME 
 - BodyGraph centers, gate labels, tracks, active channels, arrows and legends now use the warm paper/sage theme. Design channels use warm brown; personality channels use deep sage. Geometry and calculations are unchanged.
 - Removed only the assessment sidebar framework-source hyperlink in both languages; retained the methodology disclaimer.
 - 36 focused tests passed; actual 1200px chart export visually reviewed. Public browser confirmed source version, sage legend, absence of the sidebar link in Chinese and English, and working question input.
+
+## Four-star mascot consistency
+- Source 5620d2f16c285422fdb7a8224a421bf18b95419c; artifact bfc3bc966a83453813e6e6b15bb3c99a435e5ce5; rollback 1851298c23450ddbef7c80aaa1a3bf013b0f9f61.
+- Pages run 36714930721 succeeded; fingerprint 7713a7c2ed40a849.
+- ChatGPT via Ego Browser edited all three page illustrations and the shared logo to four cream five-point hat stars. Original poses, sage palette and layout preserved; raw outputs and prompt specification are documented in `docs/design/companion-four-stars-2026-09-30.md`.
+- Growth and Profile alpha channels verified after compression. Local desktop review covered all three tabs; mobile width 390px remained overflow-free; daily share output remained 1080 × 1440.
+- Public runtime and all four asset SHA-256 hashes match the artifact. Public desktop Home/Growth and mobile Profile were visually read back; shared logo uses the new fingerprint.

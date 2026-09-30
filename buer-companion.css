@@ -214,11 +214,33 @@ body dialog.buer-membership .ai-consent-actions .consent-secondary{background:tr
  .companion-section-art{position:static;grid-column:2;grid-row:3;width:132px;height:150px;margin:0 -6px;align-self:end;object-fit:contain}
 }
 #buerGrowth .companion-section-hero{width:100%;max-width:none;box-sizing:border-box}
-/* Shared landing-card geometry across Home, Growth and Me. */
+/* About and Contact use the same readable scale as the main workspace. */
+#appDrawer :is(#drawerAbout,#drawerContact){font-size:16px;line-height:1.85}
+#appDrawer :is(#drawerAbout,#drawerContact) p{font-size:16px;line-height:1.85;margin-top:16px}
+#appDrawer :is(#drawerAbout,#drawerContact) .drawer-kicker{font-size:14px;line-height:1.6}
+#appDrawer :is(#drawerAbout,#drawerContact) h3{font-size:28px;line-height:1.5;margin:12px 0 20px}
+#appDrawer #drawerAbout h4{font-size:24px;line-height:1.6}
+#appDrawer #drawerAbout .drawer-life-path strong,#appDrawer #drawerAbout .drawer-life-principles strong{font-size:18px;line-height:1.5}
+#appDrawer #drawerAbout .drawer-life-path span{font-size:14px}
+#appDrawer #drawerAbout .drawer-life-principles{gap:16px}
+#appDrawer #drawerAbout .drawer-life-principles article{padding:20px}
+#appDrawer #drawerAbout blockquote{font-size:24px;line-height:1.7;margin:28px 0}
+#appDrawer #drawerContact .drawer-contact-list a{font-size:16px;line-height:1.7;min-height:72px;gap:16px;padding:16px 0}
+#appDrawer #drawerContact .drawer-contact-list strong{font-size:16px;line-height:1.7;overflow-wrap:anywhere}
+@media(max-width:760px){#appDrawer :is(#drawerAbout,#drawerContact) h3{font-size:24px}#appDrawer #drawerAbout h4,#appDrawer #drawerAbout blockquote{font-size:22px}#appDrawer #drawerAbout .drawer-life-principles{grid-template-columns:1fr}#appDrawer #drawerAbout .drawer-life-path{grid-template-columns:repeat(2,minmax(0,1fr))}#appDrawer #drawerContact .drawer-contact-list a{grid-template-columns:minmax(0,1fr) auto;gap:4px 12px}#appDrawer #drawerContact .drawer-contact-list a>span:first-child{grid-column:1}#appDrawer #drawerContact .drawer-contact-list strong{grid-column:1;text-align:left}#appDrawer #drawerContact .drawer-contact-list a>span:last-child{grid-column:2;grid-row:1/3}}
+/* Scrollable prompt choices: six from a rotating 100-question pool. */
+#buerChatForm .buer-compose-bottom{min-width:0;max-width:100%}
+#buerChatForm .buer-suggestions{display:flex;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;max-width:100%;min-width:0;padding-bottom:10px;scroll-snap-type:x proximity;scrollbar-width:thin;scrollbar-color:#92a483 transparent;overscroll-behavior-x:contain}
+#buerChatForm .buer-suggestions button{flex:0 0 auto;white-space:nowrap;scroll-snap-align:start;font-size:14px}
+@media(max-width:400px){body[data-conversation="empty"] .buer-conversation-column{background-image:linear-gradient(90deg,#e4e9da 10%,#e4e9dae8 38%,transparent 72%),url('assets/brand-companion-hero.webp');background-size:100% 260px,auto 230px;background-position:left top,right 20px}.buer-welcome h1{font-size:26px}.buer-welcome p{font-size:12px;line-height:1.7}}
+/* Home keeps room for composing; information-page heroes stay compact. */
 :root{--buer-landing-height:640px}
 body[data-conversation="empty"] .buer-conversation-column,#buerGrowth .companion-section-hero,#appDrawer .companion-section-hero{box-sizing:border-box;min-height:var(--buer-landing-height);height:var(--buer-landing-height)}
 @media(min-width:761px){.companion-section-art{width:42%;height:85%;right:18px;bottom:12px}#buerGrowth .companion-section-hero,#appDrawer .companion-section-hero{padding:76px 43% 40px 40px}}
 @media(max-width:760px){:root{--buer-landing-height:600px}#buerGrowth .companion-section-hero,#appDrawer .companion-section-hero{grid-template-rows:auto auto 1fr;align-content:start}.companion-section-art{height:240px;width:150px}html[lang="en"] .buer-welcome{width:58%}html[lang="en"] .buer-welcome h1{font-size:24px;hyphens:auto;overflow-wrap:anywhere}}
+#buerGrowth .companion-section-hero,#appDrawer .companion-section-hero{height:360px;min-height:360px}
+@media(min-width:761px){#buerGrowth .companion-section-hero,#appDrawer .companion-section-hero{padding:48px 34% 36px 40px}.companion-section-art{width:30%;height:calc(100% - 24px)}}
+@media(max-width:760px){body[data-conversation="empty"] .buer-conversation-column{height:auto;min-height:0;padding-bottom:20px}#buerGrowth .companion-section-hero,#appDrawer .companion-section-hero{height:auto;min-height:300px;grid-template-rows:auto auto 1fr}.companion-section-art{width:132px;height:150px}}
 #appDrawer:has(#drawerHome:not([hidden])) .drawer-header{padding-bottom:0}
 #appDrawer:has(#drawerHome:not([hidden])) .drawer-scroll{padding-top:0}
 
@@ -226,7 +248,7 @@ body[data-conversation="empty"] .buer-conversation-column,#buerGrowth .companion
 :root{--buer-page-max:1200px;--buer-page-gutter:36px}
 .buer-home,body[data-conversation="empty"] .buer-home,#buerGrowth,#appDrawer,.shell{box-sizing:border-box;width:100%;max-width:var(--buer-page-max);margin-left:auto;margin-right:auto}
 .buer-home,body[data-conversation="empty"] .buer-home{padding-left:var(--buer-page-gutter);padding-right:var(--buer-page-gutter)}
-body[data-conversation="empty"] .buer-home{padding-top:32px}
+body[data-conversation="empty"] .buer-home,#buerGrowth,#appDrawer:has(#drawerHome:not([hidden])){padding-top:20px}
 #appDrawer .side-drawer{width:100%;max-width:none}
 
 /* Shared reading hierarchy for navigation and portfolio cards. */
@@ -262,6 +284,6 @@ body[data-conversation="empty"] .buer-home{padding-top:32px}
 @media(max-width:760px){#manualChart .preview-stage{padding:12px 8px}}
 @media(max-width:760px){
  :root{--buer-page-gutter:20px}
- body[data-conversation="empty"] .buer-home{padding-top:24px}
+ body[data-conversation="empty"] .buer-home,#buerGrowth,#appDrawer:has(#drawerHome:not([hidden])){padding-top:12px}
  .buer-home,body[data-conversation="empty"] .buer-home{padding-left:var(--buer-page-gutter);padding-right:var(--buer-page-gutter)}
 }

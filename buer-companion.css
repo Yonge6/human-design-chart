@@ -214,6 +214,19 @@ body dialog.buer-membership .ai-consent-actions .consent-secondary{background:tr
  .companion-section-art{position:static;grid-column:2;grid-row:3;width:132px;height:150px;margin:0 -6px;align-self:end;object-fit:contain}
 }
 #buerGrowth .companion-section-hero{width:100%;max-width:none;box-sizing:border-box}
+/* Shared typography and motion, anchored to the Home tab. */
+:root{--companion-heading-ink:#213a2d;--companion-copy-ink:#3d5746;--companion-meta-ink:#5c6959;--companion-body-font:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;--companion-enter-duration:.7s}
+#buerHome,#buerGrowth,#appDrawer{font-family:var(--companion-body-font)}
+.buer-welcome h1,#buerGrowth .companion-section-hero h1,#appDrawer .companion-section-hero h3{font-family:var(--editorial-serif);font-weight:600;line-height:1.35;letter-spacing:0;color:var(--companion-heading-ink);text-shadow:none}
+.buer-welcome p,#buerGrowth .companion-section-hero>p:last-of-type,#appDrawer .companion-section-hero>p{font-family:var(--companion-body-font);font-weight:400;color:var(--companion-copy-ink);font-size:18px;line-height:1.7;letter-spacing:2px}
+#buerGrowth .companion-section-hero .growth-eyebrow,#appDrawer .companion-section-hero .drawer-kicker{font-family:var(--companion-body-font);font-weight:600;color:var(--companion-meta-ink)!important}
+#appDrawer .companion-section-hero h3{color:var(--companion-heading-ink)!important}
+#appDrawer .companion-section-hero>p{color:var(--companion-copy-ink)!important}
+#buerGrowth :is(h2,h3),#appDrawer :is(h3,h4){font-family:var(--editorial-serif);color:var(--companion-heading-ink)}
+@media(max-width:760px){.buer-welcome h1,#buerGrowth .companion-section-hero h1,#appDrawer .companion-section-hero h3{font-size:29px}#buerHome .buer-welcome p,#buerGrowth .companion-section-hero>p:last-of-type,#appDrawer .companion-section-hero>p{font-size:14px;line-height:1.7;letter-spacing:0}html[lang="en"] #buerHome .buer-welcome h1,html[lang="en"] #buerGrowth .companion-section-hero h1,html[lang="en"] #appDrawer .companion-section-hero h3{font-size:24px;line-height:1.35}}
+@media(max-width:400px){.buer-welcome h1,#buerGrowth .companion-section-hero h1,#appDrawer .companion-section-hero h3{font-size:26px}}
+@media(prefers-reduced-motion:no-preference){.buer-welcome{animation:buer-enter var(--companion-enter-duration) ease both}#buerGrowth .companion-section-hero>:not(img),#appDrawer .companion-section-hero>:not(img){animation:buer-enter var(--companion-enter-duration) ease both}}
+@media(prefers-reduced-motion:reduce){.buer-welcome,#buerGrowth .companion-section-hero>:not(img),#appDrawer .companion-section-hero>:not(img){animation:none!important;transition:none!important}}
 /* About and Contact use the same readable scale as the main workspace. */
 #appDrawer :is(#drawerAbout,#drawerContact){font-size:16px;line-height:1.85}
 #appDrawer :is(#drawerAbout,#drawerContact) p{font-size:16px;line-height:1.85;margin-top:16px}
@@ -240,7 +253,7 @@ body[data-conversation="empty"] .buer-conversation-column,#buerGrowth .companion
 @media(max-width:760px){:root{--buer-landing-height:600px}#buerGrowth .companion-section-hero,#appDrawer .companion-section-hero{grid-template-rows:auto auto 1fr;align-content:start}.companion-section-art{height:240px;width:150px}html[lang="en"] .buer-welcome{width:58%}html[lang="en"] .buer-welcome h1{font-size:24px;hyphens:auto;overflow-wrap:anywhere}}
 #buerGrowth .companion-section-hero,#appDrawer .companion-section-hero{height:360px;min-height:360px}
 @media(min-width:761px){#buerGrowth .companion-section-hero,#appDrawer .companion-section-hero{padding:48px 34% 36px 40px}.companion-section-art{width:30%;height:calc(100% - 24px)}}
-@media(max-width:760px){body[data-conversation="empty"] .buer-conversation-column{height:auto;min-height:0;padding-bottom:20px}#buerGrowth .companion-section-hero,#appDrawer .companion-section-hero{height:auto;min-height:300px;grid-template-rows:auto auto 1fr}.companion-section-art{width:132px;height:150px}}
+@media(max-width:760px){body[data-conversation="empty"] .buer-conversation-column{height:auto;min-height:0;padding-bottom:20px}#buerGrowth .companion-section-hero,#appDrawer .companion-section-hero{height:auto;min-height:0;grid-template-columns:minmax(0,1fr) 96px;grid-template-rows:auto auto auto;gap:10px;padding:20px}.companion-section-art{width:104px;height:104px;margin:0 -4px}#buerGrowth .companion-section-hero>p:last-of-type,#appDrawer .companion-section-hero>p{align-self:start}}
 #appDrawer:has(#drawerHome:not([hidden])) .drawer-header{padding-bottom:0}
 #appDrawer:has(#drawerHome:not([hidden])) .drawer-scroll{padding-top:0}
 

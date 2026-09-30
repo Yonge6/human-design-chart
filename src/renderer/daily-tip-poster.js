@@ -79,7 +79,5 @@ export async function createDailyTipPoster({ tip, language, date = new Date() })
   ctx.fillText((globalThis.PLUTO_CONFIG?.buerPublicUrl || 'https://buer.wonderelian.com/').replace(/^https?:\/\//,'').replace(/\/$/,''), 186, 1250);
   // Preserve the white quiet zone and hard edges for reliable scanning.
   ctx.imageSmoothingEnabled = false; ctx.drawImage(qr, 810, 1164, 190, 190);
-  ctx.font = '19px sans-serif'; ctx.textAlign = 'right';
-  ctx.fillText(chinese ? '扫码，认识自己' : 'Explore your Life Manual', 1000, 1370);
   return new Promise((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Image export failed.')), 'image/png'));
 }

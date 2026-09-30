@@ -101,7 +101,7 @@ body dialog .ai-consent-actions .consent-secondary{background:transparent;color:
  html[lang="en"] .topbar .brand{font-size:20px;letter-spacing:0}
 }
 @media(min-width:761px) and (max-width:1100px){
- .topbar .brand small{display:none}.topbar .brand{font-size:21px;max-width:240px}
+ .topbar .brand small{display:block}.topbar .brand{font-size:21px;max-width:240px}
  .buer-rail{left:56%}.buer-rail .rail-item{padding:10px 12px;font-size:13px;gap:7px}
  .buer-welcome h1{font-size:36px}.buer-welcome p{font-size:16px}
  body[data-conversation="empty"] .buer-compose-zone{width:68%;padding:18px;gap:0 10px}

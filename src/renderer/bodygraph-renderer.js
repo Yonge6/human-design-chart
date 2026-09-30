@@ -8,7 +8,10 @@ export function createBodygraphRenderer({ container, templateUrl, centerColors, 
       if (!response.ok) throw new Error("BodyGraph template failed to load");
       template = await response.text();
     }
-    container.innerHTML = template.replaceAll("#CF9236", "#a6baff");
+    container.innerHTML = template
+      .replaceAll("#CF9236", "#a8b49b")
+      .replaceAll("#9D97CC", "#a08059")
+      .replaceAll("#696692", "#526649");
     const svg = container.querySelector("svg");
     if (!svg) throw new Error("BodyGraph template does not contain an SVG element.");
     svg.removeAttribute("width");
@@ -29,18 +32,18 @@ export function createBodygraphRenderer({ container, templateUrl, centerColors, 
       const marker = gateLabel.previousElementSibling;
       const enabled = active.has(gate);
       if (marker) {
-        marker.style.fill = enabled ? "#263952" : "#e5eefa";
-        marker.style.stroke = enabled ? "#c0afff" : "#93b0d4";
+        marker.style.fill = enabled ? "#263c32" : "#f5f1e8";
+        marker.style.stroke = enabled ? "#d5deca" : "#9aaa8d";
       }
-      gateLabel.style.fill = enabled ? "#f5f7ff" : "#344767";
+      gateLabel.style.fill = enabled ? "#fffdf5" : "#344833";
     });
 
     svg.querySelectorAll("[data-gate-line]").forEach((line) => {
       const gate = Number(line.dataset.gateLine);
       if (design.has(gate) && personality.has(gate)) {
-        line.style.fill = line.dataset.gateLineType === "design" ? "#9580e9" : "#3678b6";
-      } else if (design.has(gate)) line.style.fill = "#9580e9";
-      else if (personality.has(gate)) line.style.fill = "#3678b6";
+        line.style.fill = line.dataset.gateLineType === "design" ? "#a08059" : "#526649";
+      } else if (design.has(gate)) line.style.fill = "#a08059";
+      else if (personality.has(gate)) line.style.fill = "#526649";
       else line.style.fill = "transparent";
       line.style.stroke = "none";
     });
@@ -48,16 +51,16 @@ export function createBodygraphRenderer({ container, templateUrl, centerColors, 
     Object.keys(centerColors).forEach((id) => {
       const center = svg.querySelector(`#${id}`);
       if (!center) return;
-      center.style.fill = "#f4f7fc";
+      center.style.fill = "#faf8ef";
       center.style.strokeWidth = "1.4";
-      center.style.stroke = "#86a4d0";
+      center.style.stroke = "#9aaa8d";
     });
     for (const centerName of data["Defined Centers"] || []) {
       const id = centerName.replace(/\s+/g, "-");
       const center = svg.querySelector(`#${id}`);
       if (center) {
         center.style.fill = centerColors[id];
-        center.style.stroke = "#405383";
+        center.style.stroke = "#40563b";
         center.style.strokeWidth = "2.4";
       }
     }

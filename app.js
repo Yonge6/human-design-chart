@@ -796,15 +796,15 @@ function privateBirthLine() {
 }
 
 const centerColors = {
-  "head-center": "#3aa9ef",
-  "ajna-center": "#8b70df",
-  "throat-center": "#4796d7",
-  "g-center": "#9165de",
-  "heart-center": "#b971d8",
-  "sacral-center": "#4e85d3",
-  "splenic-center": "#48a7c2",
-  "solar-plexus-center": "#8f69d6",
-  "root-center": "#6976d4",
+  "head-center": "#718565",
+  "ajna-center": "#718565",
+  "throat-center": "#718565",
+  "g-center": "#718565",
+  "heart-center": "#718565",
+  "sacral-center": "#718565",
+  "splenic-center": "#718565",
+  "solar-plexus-center": "#718565",
+  "root-center": "#718565",
 };
 
 let lastData;

@@ -237,6 +237,8 @@ body dialog.buer-membership .ai-consent-actions .consent-secondary{background:tr
 #capture #personName{font-family:Georgia,"Songti SC",serif!important;font-weight:400!important;font-size:38px!important}
 #capture .poster-edition{margin-bottom:20px;letter-spacing:2.4px}
 #capture .poster-signature>img{border-radius:10px}
+#capture .defined-swatch{background:#718565;border-color:#40563b}
+#capture .undefined-swatch{background:#faf8ef;border-color:#9aaa8d}
 #manualChart .preview-stage{background:#e7e9df!important;border-color:#ccd0bf!important;padding:24px 16px}
 #manualChart .chart-preview{box-shadow:0 8px 30px #263c3218}
 #manualChart .media-loading-placeholder{background:#f4f0e7!important}

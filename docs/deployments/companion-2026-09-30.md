@@ -29,3 +29,15 @@ Rollback by publishing the previous artifact tree as a new commit; retain CNAME 
 - Pages run 36696293702 completed successfully; deployed fingerprint 13e7a134f501c20e.
 - Public browser readback at 1440 px confirmed Home, Growth and My Space use the same 1200 px outer grid and 1128 px content width. At 390 px, all three use 20 px page gutters and document width remains 390 px with no horizontal overflow.
 - Public `index.html`, `runtime-config.js` and `buer-companion.css` SHA-256 values match the published artifact exactly. The 33 directly related tests passed; the wider 139-test run retained one unrelated pre-existing iOS build-number alignment failure.
+
+## Share posters, previous-page navigation and readable cards
+- Source: e64defe4db0e051a17545c8611866c44df2f2e91 (implementation 904e7ff).
+- Artifact: 45fa83c8070f09bb25e76f2f95cb3d8d48ec29eb; pre-change rollback 1b760b4bb296ef1d3074f0e516d952d2e0f6856d.
+- Pages run 36698946364 completed successfully; fingerprint 2760ef975bd16f74.
+- Daily note: 1080 × 1440 PNG, paper/sage editorial layout, separate mascot vignette, date rail and QR footer; Chinese punctuation wrapping tested.
+- Full chart: light paper export with legible dark text, structured planetary columns, preserved BodyGraph/data and branded loading/error states.
+- Back restores the originating workspace, existing subview, focus and scroll instead of reopening Home. Browser checks passed for Home, Growth (including editing), and My Space → history → manual → history.
+- Navigation and portfolio card titles use 16px/1.5; supporting text uses 14px/1.65. Chinese/English mobile checks at 390px show no horizontal overflow; desktop reviewed at 1320px.
+- 32 focused tests passed. Actual local privacy export saved as private-life-manual.png with masked name/birth data. Both languages' generated images were visually inspected.
+- Public runtime reports e64defe; HTML, runtime config, companion CSS, app JS and daily poster renderer all match the artifact SHA-256. Public daily image and 1200 × 3676 full-chart generation, Home/history returns, 16/14px computed fonts, and mobile no-overflow were independently verified with a synthetic UI Audit fixture.
+- No backend or native/App Store changes; pre-existing App Store materials were untouched.

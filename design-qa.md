@@ -48,3 +48,40 @@ User-reported gaps expanded the audit beyond the initial homepage:
 - Browser readback: populated conversation history; opening and cancelling clear confirmation without deleting data; growth route after scrolling; HUMAN 3.0; story form; privacy settings. Settings required an additional specificity fix; final readback confirms dark headings and sage/neutral switches.
 - Palette contrast ratios on warm ivory: body 13.38:1, muted 4.97:1, danger 5.92:1; white on primary 6.11:1.
 - Build and diff checks pass. This is local H5 verification; native-device and external legal/export surfaces are not newly certified.
+
+
+# Companion brand — selected website option 2 (2026-09-30)
+
+final result: passed
+
+Scope: website visual redesign; existing conversation, profile permissions and growth flows retained. Native iOS/App Store are outside this release.
+
+## Reference and comparison
+- Approved logo: `/Users/yongyuan/.codex/generated_images/01a0c47a-a2c7-7f63-914a-ac13a9e87695/exec-7c602ea5-f793-46df-b1be-a680a075418d.png`.
+- Selected website reference: `/Users/yongyuan/.codex/generated_images/01a0c47a-a2c7-7f63-914a-ac13a9e87695/exec-4ded5872-4ebf-4abf-8fa5-b3f37509dd0a.png` (1487 × 1058).
+- Same-size implementation: `docs/design/companion/desktop.webp`, Chinese home, empty conversation, no saved manual; reference and final screenshot examined together in one image input.
+- Mobile: 390 × 844, Chinese and English, screenshots alongside growth/profile/form/consent evidence under `docs/design/companion/`.
+
+## Iteration history
+1. P2 mascot crop: changed desktop illustration sizing to preserve hat and feet; mobile uses an independent 280px-high crop.
+2. P2 brand lockup offset: restored explicit grid columns and removed inherited left padding.
+3. P2 illustration boundary: blended the left edge into the sage surface.
+4. P2 mobile English headline: narrowed its measure and adjusted font size to avoid the hat.
+5. P2 English navigation and language wrapping: restored 15px desktop navigation and nonwrapping language controls; mobile toggle is 44px.
+6. P2 confirmation actions: matched sage primary and outlined secondary styles, retained spacing and cancel behavior.
+7. Converted illustration to 95KB WebP and recaptured. No unresolved P0/P1/P2 visual issues on the reviewed surfaces.
+
+## Five visual surfaces
+- Typography: serif headline and reflection text, system sans controls; consistent forest ink and readable muted text, independently tuned English mobile measure.
+- Spacing: desktop top navigation, 590px sage hero, white inset composer, two-column supporting section. Mobile stacks composer below illustration and uses bottom navigation. Compact context controls without empty extra row when no manual exists.
+- Colors: ivory, pale sage, forest ink, orange mascot and small accent icons; primary and secondary actions differentiated.
+- Images: approved full-body logo retained; matching generated seated character for hero, optimized WebP. P3 variation: exact mascot pose/hat folds differ from concept.
+- Copy: real rotating questions and real saved-report state retained. Empty-state thought and absent manual checkbox deliberately differ from the populated concept. No invented saved profile.
+
+## Interaction and regression checks
+- Browser: three navigation tabs, growth/assessment route, manual name input, history open/close, language switching, suggestion fills input, consent opens, cancel returns to an interactive home. No AI request sent in the visual check.
+- No horizontal overflow in checked 390px / 1487px home states.
+- Browser console: only Swiss Ephemeris initialization logs; no errors collected during checks.
+- 38 existing targeted tests passed: public UI, growth, build security, daily tips and rotating suggestions. `git diff --check` clean.
+- Daily-tip export palette/logo updated in source; live AI, native safe areas and actual poster download are not newly certified by this visual pass.
+- Website deployment/readback tracked separately in `docs/deployments/companion-2026-09-30.md`.

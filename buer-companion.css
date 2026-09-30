@@ -1,0 +1,183 @@
+/* Buer companion brand: selected Sage Studio direction, September 2026. */
+:root{--buer-rail:0px;--buer-bg:#f5f2e9;--buer-text:#263a30;--buer-muted:#5c6959;--buer-line:#d2d7c9;--buer-cyan:#607556;--ink:#263a30;--muted:#5c6959;--panel:#faf9f3;--line:#d2d7c9;--gold:#607556;--gold-soft:#475e42;--ui-paper:#f5f2e9;--ui-surface:#eeefe5;--ui-ink:#263a30;--ui-muted:#5c6959;--ui-accent:#4b6343;--ui-line:#cbd2c1;--ui-radius:16px;--companion-orange:#b95b2d;--buer-header-height:88px;--buer-hero-height:88px}
+html,body{background:var(--ui-paper);color:var(--ui-ink)}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+button,input,textarea,select{font-family:inherit}
+button,a,input,textarea,select{-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid #b95b2d;outline-offset:4px}
+.topbar,body[data-workspace="home"][data-conversation="active"] .topbar{height:88px;min-height:88px;margin:0;padding:14px 4%;background:var(--ui-paper);border-bottom:1px solid transparent;box-shadow:none}
+.topbar.is-scrolled{background:#f5f2e9f5;border-bottom-color:var(--line)}
+.topbar .brand{font:600 25px/1.25 inherit;letter-spacing:2px;padding-left:60px;max-width:330px}
+.topbar .brand small{font-size:10px;letter-spacing:2px;margin-top:7px;color:var(--muted)}
+.brand-symbol,.buer-mark img,.buer-avatar:not(.buer-user-avatar),.drawer-orbit img,.buer-guide>img{filter:none;box-shadow:none;object-fit:cover;border-radius:14px}
+.topbar .brand-symbol{width:50px;height:50px;left:0}
+.buer-rail{box-shadow:none;background:transparent;border:0}
+.buer-rail .rail-item,.buer-rail .rail-item .ph{color:var(--ink);text-shadow:none;transform:none}
+.buer-rail .rail-item.is-active{background:#e4e9db;color:#354d32}
+.buer-rail .rail-item.is-active .ph{color:#354d32}
+.buer-rail .rail-item:hover{background:#e9edde}
+.buer-rail .buer-mark,.buer-rail .rail-foot{display:none}
+.language-switch,.buer-mobile-language{border-radius:12px!important}
+.buer-home,body[data-conversation="empty"] .buer-home{display:block;margin:0 auto;padding:0 24px 56px;max-width:1600px;min-height:0}
+body[data-conversation="empty"] .buer-conversation-column{position:relative;min-height:560px;max-height:none;padding:56px 4% 40px;background:#e4e9da url('assets/brand-companion-hero.webp') center/cover no-repeat;border-radius:32px;overflow:hidden}
+.buer-welcome{background:none;margin:0;padding:20px 0 34px!important;min-height:0;width:65%}
+.buer-welcome h1{font:600 clamp(32px,3.5vw,50px)/1.35 var(--editorial-serif);white-space:normal!important;text-wrap:balance;letter-spacing:0;color:#213a2d}
+.buer-welcome p{font-size:18px;letter-spacing:2px;line-height:1.7;margin-top:16px;color:#3d5746}
+body[data-conversation="empty"] .buer-compose-zone{position:relative;margin:24px 0 0;padding:22px 26px 20px;width:64%;background:#fffdf7;border:1px solid #e2e5d9;border-radius:24px;display:grid;grid-template-columns:auto 1fr;gap:0 22px}
+#buerChatForm.buer-composer{grid-column:1/-1;background:transparent;border:0;border-radius:0;padding:0;box-shadow:none}
+#buerChatForm textarea{font-size:18px;line-height:1.65;padding:8px 62px 16px 0;height:82px;min-height:82px;border:0;background:none;color:var(--ink);resize:none}
+#buerChatForm textarea::placeholder{color:#697263;opacity:1}
+#buerChatForm .buer-send{top:18px;right:0;width:48px;height:48px;min-height:48px;background:#607556;color:white;border-radius:18px;box-shadow:none}
+#buerChatForm .buer-send:hover{background:#465d3f;transform:translateY(-1px)}
+#buerChatForm .buer-send .ph{font-size:25px}
+#buerChatForm .buer-suggestions{flex-direction:row;flex-wrap:wrap;gap:8px;margin:2px 0 18px;padding:0;border:0;overflow:visible}
+#buerChatForm .buer-suggestions button{flex:0 1 auto;width:auto;border:0;border-radius:12px;background:#f0f1e8;padding:8px 12px;min-height:36px;font-size:12px;line-height:1.5;color:#40553b}
+#buerChatForm .buer-suggestions button .ph{display:none}
+#buerChatForm .buer-suggestions button:hover{background:#e1e8d6}
+.buer-compose-bottom>span{display:none}
+body[data-conversation="empty"] .buer-growth-context{margin:0;align-self:center;padding-top:14px;border-top:1px solid var(--line);font-size:12px!important}
+body[data-conversation="empty"] .buer-compose-meta{margin:0;padding-top:14px;border-top:1px solid var(--line);display:flex;align-items:center;gap:16px;min-height:0}
+.buer-compose-meta #buerNewChat{margin-left:auto;font-size:12px;color:#5c6959;white-space:nowrap}
+#buerChatStatus:empty{display:none}
+.buer-context-option{gap:8px;min-height:32px;color:#40523d!important}
+.buer-context-option input[type="checkbox"],.growth-check input[type="checkbox"]{width:17px;height:17px;accent-color:#607556;flex-shrink:0}
+.buer-context{display:grid;grid-template-columns:1fr 1fr;gap:0 56px;align-items:start;border:0;margin:0;padding:38px 4% 0;background:none;min-height:0}
+.buer-context #dailyTipCard{grid-column:1;grid-row:1/5;padding:0 40px 0 0;border:0;border-right:1px solid var(--line);background:none;box-shadow:none}
+.buer-context #dailyTipTitle{font-size:14px;font-weight:600;color:#566c4c}
+.buer-context #dailyTipText{font-size:clamp(24px,2.4vw,32px);line-height:1.6;max-width:95%;color:#263a30;margin:20px 0}
+.buer-context #dailyTipSource{font-size:12px;color:#62725b;display:block}
+.buer-context #shareDailyTip{font-size:13px;color:#526649}
+.buer-manual-entry{grid-column:2;grid-row:1;border:0;padding:0;margin:0;display:block}
+.buer-manual-entry h2{font-size:17px;margin:0 0 18px;color:#516848}
+.buer-manual-entry p{font-size:15px;line-height:1.85;margin:0 0 18px;color:#5c6959}
+.buer-manual-entry #dailyTipAction{border:1px solid #bdc8b3;border-radius:14px;background:transparent;padding:10px 16px;min-height:44px;color:#405737}
+.buer-manual-entry .manual-arrow{display:none}
+.buer-context .growth-home-path{grid-column:2;grid-row:2;max-width:none;padding:14px 0 0;margin:0;min-height:44px;justify-content:flex-start;gap:10px;border:0}
+.buer-context .growth-home-path strong{text-decoration:none;font-size:14px;font-weight:600;color:#405737}
+.buer-context .growth-home-path>.ph:first-child{display:block;color:var(--companion-orange);font-size:24px}
+.buer-context-foot{grid-column:2;grid-row:4;padding:16px 0 0;font-size:12px;color:#63735c}
+#growthHomeAction:not(:empty){grid-column:2;grid-row:3;border-top:1px solid var(--line);margin-top:18px;padding-top:18px;color:var(--ink)}
+/* Apply the same tactile, quiet system to every working surface. */
+#buerGrowth,#appDrawer,.shell{max-width:1200px;margin-left:auto;margin-right:auto;width:100%}
+.growth-workspace{padding:32px 36px 64px;margin-top:0}
+#appDrawer{padding:32px 36px 64px;margin-top:0}
+#appDrawer .side-drawer{padding:0}
+#appDrawer .drawer-orbit{width:56px;height:56px;border:0;background:none}
+#appDrawer .drawer-orbit img{width:56px;height:56px}
+#appDrawer .drawer-nav{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+#appDrawer .drawer-nav button{border:1px solid var(--line);border-radius:18px;padding:20px;background:#faf9f3;min-width:0}
+#appDrawer .drawer-nav-icon{background:#e7ecde;border:0;border-radius:14px;color:#526b47}
+#appDrawer .drawer-nav-icon .ph{font-size:25px;color:#526b47!important}
+#appDrawer .drawer-nav button:hover{background:#edf0e4;border-color:#92a483}
+#appDrawer :is(.settings-row,.history-card,.drawer-work-card),#buerGrowth :is(.growth-question-card,.growth-story-form,.growth-action-form,.growth-path article.is-next),.shell #chartForm,.shell #resultSummary.buer-summary,.shell .buer-chapter{background:#faf9f3;border-color:var(--line);border-radius:20px;box-shadow:none}
+#appDrawer .history-card{margin-bottom:14px}
+#buerGrowth :is(input,select,textarea),.shell .form-panel :is(input,select){border-radius:12px;background:#f5f5ed;border-color:#b9c5af;color:var(--ink)}
+#buerGrowth :is(input,textarea):focus,.shell .form-panel :is(input,select):focus{outline:2px solid #73886b;outline-offset:2px}
+#buerGrowth :is(.growth-primary,button[type="submit"]),.shell :is(#nextToBirth,#nextToLocation,#calculateButton){background:#607556;color:#fff;border-color:#607556;border-radius:14px}
+#buerGrowth button,.shell button{border-radius:12px}
+#buerGrowth .growth-tabs button{border-radius:12px 12px 0 0}
+#buerGrowth .growth-tabs button[aria-selected="true"]{background:#e5ebdc;color:#385330;border-color:#6c815d}
+.shell{padding:24px 36px 72px}
+.buer-back-home{margin:18px auto 0;max-width:1128px;width:calc(100% - 72px);color:#526649}
+.buer-message p{background:#faf9f3;border:1px solid #d9dfcf;border-radius:4px 20px 20px 20px;color:var(--ink)}
+.buer-message.user p{background:#e1e8d6;border-color:#cbd6bd;border-radius:20px 4px 20px 20px}
+.buer-avatar{width:38px;height:38px;flex-basis:38px;border-radius:12px}
+.buer-user-avatar{background:#e2e8d8;color:#4d6742}
+body[data-conversation="active"] .buer-home{max-width:1000px;margin:auto;padding:16px 32px 32px}
+body[data-conversation="active"] .buer-conversation-column{height:calc(100dvh - 130px);min-height:0;max-height:none;background:none;padding:0}
+body[data-conversation="active"] .buer-compose-zone{margin-top:16px;background:#fffdf7;border:1px solid var(--line);border-radius:20px;padding:14px 20px;flex-shrink:0}
+body[data-conversation="active"] #buerChatForm textarea{height:58px;min-height:58px}
+body[data-conversation="active"] #buerChatForm .buer-send{top:4px}
+body[data-conversation="active"] .buer-growth-context{margin-top:8px}
+body[data-conversation="active"] .buer-compose-meta{margin-top:4px}
+body dialog :is(button,.secondary-button){border-radius:12px}
+body dialog .ai-consent-actions{gap:12px}
+body dialog .ai-consent-actions .consent-primary{background:#607556;border-color:#607556;color:#fff}
+body dialog .ai-consent-actions .consent-secondary{background:transparent;color:#4b6141;border-color:#a9b69c}
+@media(min-width:761px){
+ .buer-rail{position:fixed;inset:14px auto auto 50%;transform:translateX(-50%);width:auto;height:58px;padding:0;display:flex;flex-direction:row;gap:8px;z-index:40}
+ .buer-rail .rail-item{display:flex;flex-direction:row;align-items:center;gap:10px;width:auto;padding:12px 20px;min-height:48px;border-radius:14px;font-size:15px;font-weight:500}
+ .buer-rail .rail-item .ph{font-size:27px}
+ html[lang="en"] .topbar .brand{font-size:20px;letter-spacing:0}
+}
+@media(min-width:761px) and (max-width:1100px){
+ .topbar .brand small{display:none}.topbar .brand{font-size:21px;max-width:240px}
+ .buer-rail{left:56%}.buer-rail .rail-item{padding:10px 12px;font-size:13px;gap:7px}
+ .buer-welcome h1{font-size:36px}.buer-welcome p{font-size:16px}
+ body[data-conversation="empty"] .buer-compose-zone{width:68%;padding:18px;gap:0 10px}
+ .buer-context{gap:0 32px}
+}
+@media(max-width:760px){
+ :root{--buer-header-height:72px;--buer-hero-height:72px}
+ .topbar,body[data-workspace="home"][data-conversation="active"] .topbar{height:72px;min-height:72px;padding:10px 20px}
+ .topbar .brand{font-size:21px;padding-left:48px;max-width:calc(100% - 48px);letter-spacing:1px}.topbar .brand-symbol{width:40px;height:40px;border-radius:12px}.topbar .brand small{font-size:8px;letter-spacing:1px}
+ .buer-rail{inset:auto 0 0;transform:none;width:100%;height:calc(68px + var(--buer-bottom-inset));display:flex;flex-direction:row;gap:12px;padding:6px 18px calc(6px + var(--buer-bottom-inset));background:#f5f2e9f5;border-top:1px solid var(--line);z-index:40}
+ .buer-rail .rail-item{padding:6px 8px;border-radius:14px;gap:3px;font-size:11px}.buer-rail .rail-item .ph{font-size:24px}
+ .buer-home,body[data-conversation="empty"] .buer-home{margin:0;padding:0 12px 90px;gap:0}
+ body[data-conversation="empty"] .buer-conversation-column{min-height:0;padding:24px 16px 20px;border-radius:24px;background-size:auto 340px;background-position:65% 0;background-repeat:no-repeat;background-color:#e4e9da;overflow:hidden}
+ .buer-welcome{width:66%;padding:12px 0 24px!important;min-height:205px;margin:0}
+ .buer-welcome h1{font-size:30px;line-height:1.35;text-align:left;letter-spacing:0;text-wrap:balance}
+ .buer-welcome p{font-size:12px;letter-spacing:0;line-height:1.65;max-width:170px}
+ body[data-conversation="empty"] .buer-compose-zone{width:100%;margin:12px 0 0;padding:16px;border-radius:18px;display:flex;flex-wrap:wrap;gap:8px 14px}
+ #buerChatForm.buer-composer{width:100%}
+ #buerChatForm textarea{font-size:16px;min-height:76px;height:76px;padding-right:46px}
+ #buerChatForm .buer-send{width:40px;height:40px;min-height:40px;border-radius:14px;top:8px}
+ #buerChatForm .buer-suggestions{margin:0 0 8px;gap:6px}
+ #buerChatForm .buer-suggestions button{font-size:11px;padding:7px 9px;min-height:32px}
+ body[data-conversation="empty"] .buer-growth-context{padding:0;border:0;min-height:28px}
+ body[data-conversation="empty"] .buer-compose-meta,body[data-conversation="empty"] .buer-compose-meta:has(#buerContextLabel:not([hidden])){padding:0;margin:0;border:0;flex:1 1 100%;gap:8px;min-height:28px}
+ body[data-conversation="empty"] #buerNewChat{position:static;font-size:11px;margin-left:auto}
+ .buer-context-option,.buer-compose-meta label{font-size:11px!important}
+ .buer-context{display:flex;flex-direction:column;margin:0;padding:26px 12px 0;gap:0;background:none;min-height:0}
+ .buer-context #dailyTipCard{padding:0 0 24px;border:0;border-bottom:1px solid var(--line);width:100%}
+ .buer-context #dailyTipText{font-size:25px;line-height:1.6;max-width:100%;margin:16px 0}
+ .buer-context #dailyTipTitle{font-size:12px}.buer-context #shareDailyTip{font-size:12px}.buer-context #dailyTipSource{font-size:11px;max-width:100%}
+ .buer-manual-entry{display:block;padding:24px 0 0;order:1}.buer-manual-entry h2{font-size:16px;margin-bottom:12px}.buer-manual-entry p{font-size:13px;line-height:1.8}
+ .buer-context .growth-home-path{order:2;padding:16px 0 0;max-width:100%;margin:0}.buer-context-foot{display:block;order:4;line-height:1.8}
+ #growthHomeAction:not(:empty){order:3}
+ #buerGrowth,#appDrawer,.shell{width:100%;margin:0;padding:24px 20px 100px}
+ #appDrawer .drawer-nav{grid-template-columns:1fr;gap:10px}#appDrawer .drawer-nav button{padding:16px;border-radius:16px}
+ #appDrawer .drawer-header{margin-bottom:30px}.drawer-intro{margin-bottom:24px}
+ #buerGrowth :is(.growth-question-card,.growth-story-form,.growth-action-form){padding:20px;border-radius:18px}
+ .buer-back-home{width:calc(100% - 40px);margin:18px 20px 0}
+ body[data-workspace="home"][data-conversation="active"] .buer-home{top:72px;margin:0;max-width:none;padding:10px 14px 8px;bottom:calc(68px + var(--buer-bottom-inset))}
+ body[data-conversation="active"] .buer-conversation-column{height:100%;min-height:0}
+ body[data-conversation="active"] .buer-compose-zone{padding:12px 14px;margin-top:8px;border-radius:18px}
+ body[data-conversation="active"] #buerChatForm{padding:0;background:none;border:0}
+ body[data-conversation="active"] #buerChatForm textarea{font-size:15px;padding:4px 48px 8px 0;height:48px;min-height:48px}
+ .buer-message{gap:8px}.buer-avatar{width:30px;height:30px;flex-basis:30px}.buer-message-content{max-width:calc(100% - 38px)}
+ .buer-message p{font-size:15px;line-height:1.8;padding:14px}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+/* Fidelity pass: keep the entire mascot visible and align brand lockup. */
+.topbar .brand{padding-left:0;grid-template-columns:50px auto;column-gap:12px;font-family:var(--editorial-serif);font-size:26px;font-weight:600}
+body[data-conversation="empty"] .buer-conversation-column{min-height:590px;background-size:auto 100%;background-position:right center}
+.buer-welcome h1{font-size:clamp(32px,4vw,60px)}
+body[data-conversation="empty"] #buerChatForm{border-bottom:1px solid var(--line);margin-bottom:14px}
+body[data-conversation="empty"] .buer-growth-context,body[data-conversation="empty"] .buer-compose-meta{border-top:0;padding-top:0}
+@media(min-width:761px) and (max-width:1100px){body[data-conversation="empty"] .buer-compose-zone{width:56%}.buer-welcome h1{font-size:36px}}
+@media(max-width:760px){
+ .topbar .brand{grid-template-columns:40px auto;column-gap:8px;font-size:21px}
+ body[data-conversation="empty"] .buer-conversation-column{min-height:0;background-size:auto 280px;background-position:right top}
+ .buer-welcome{width:58%;min-height:225px;padding-top:10px!important}
+ .buer-welcome h1{font-size:29px}.buer-welcome p{font-size:12px}
+}
+
+/* Smooth the illustration into the hero and keep auxiliary controls compact. */
+@media(min-width:761px){body[data-conversation="empty"] .buer-conversation-column{background-image:linear-gradient(90deg,#e4e9da 20%,transparent 45%),url("assets/brand-companion-hero.webp")} .buer-welcome h1{font-size:clamp(36px,4.5vw,68px)}}
+body[data-workspace="manual"] .buer-back-home{width:fit-content;margin-left:max(36px,calc((100vw - 1128px)/2));padding:0 14px}
+@media(max-width:760px){body[data-workspace="manual"] .buer-back-home{margin-left:20px}body[data-conversation="empty"] .buer-compose-zone:not(:has(#buerContextLabel:not([hidden]))) .buer-compose-meta{flex:1 1 auto}}
+
+/* Optical balance and touch targets across both languages. */
+.buer-mobile-language{width:44px;height:44px;min-height:44px;border-radius:14px!important}
+body dialog.buer-membership .ai-consent-actions .consent-primary{background:#607556;border-color:#607556;color:#fff}
+body dialog.buer-membership .ai-consent-actions .consent-secondary{background:transparent;border-color:#a9b69c;color:#405737}
+@media(min-width:761px){.buer-rail .rail-item.is-active{background:transparent;position:relative}.buer-rail .rail-item.is-active::after{content:"";position:absolute;bottom:0;left:20px;right:20px;height:2px;border-radius:2px;background:#607556}.topbar .language-switch button{min-height:38px;padding:8px 18px}}
+@media(max-width:760px){html[lang="en"] .buer-welcome{width:46%}html[lang="en"] .buer-welcome h1{font-size:26px;line-height:1.24}html[lang="en"] .buer-welcome p{max-width:132px;font-size:11px;line-height:1.6}}
+@media(min-width:761px){
+ .topbar .language-switch{width:auto;overflow:hidden;align-items:stretch}
+ .topbar .language-switch button{width:auto;min-width:56px;white-space:nowrap}
+ html[lang="en"] .buer-rail .rail-item{font-size:15px}
+ html[lang="en"] .buer-rail .rail-item .ph{font-size:27px}
+ .buer-manual-entry p{font-size:16px}
+}

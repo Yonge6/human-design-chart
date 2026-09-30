@@ -16,6 +16,7 @@ const files = [
   "buer-manual.css",
   "buer-growth.css",
   "buer-editorial.css",
+  "buer-companion.css",
   "app.js",
   "analytics.js",
   "analytics-frame.html",

@@ -29,8 +29,8 @@ export async function createDailyTipPoster({ tip, language, date = new Date() })
   if (!tip) throw new Error('A saved result is required.');
   const [qr, hero, orb] = await Promise.all([
     loadImage(new URL(globalThis.PLUTO_CONFIG?.buerShareQrPath || '../../assets/chart-qr.png', import.meta.url).href),
-    loadImage(new URL('../../assets/buer-aurora-hero.webp', import.meta.url).href).catch(() => null),
-    loadImage(new URL("../../assets/buer-orb-v2.png", import.meta.url).href),
+    loadImage(new URL('../../assets/brand-companion-hero.webp', import.meta.url).href).catch(() => null),
+    loadImage(new URL("../../assets/buer-companion-logo.png", import.meta.url).href),
     document.fonts.ready,
   ]);
   const chinese = language === 'zh';
@@ -38,22 +38,22 @@ export async function createDailyTipPoster({ tip, language, date = new Date() })
   canvas.width = 1080; canvas.height = 1440;
   const ctx = canvas.getContext('2d');
   const background = ctx.createLinearGradient(0, 0, 0, 1440);
-  background.addColorStop(0, '#243e60'); background.addColorStop(1, '#15243b');
+  background.addColorStop(0, '#e4e9da'); background.addColorStop(1, '#f5f2e9');
   ctx.fillStyle = background; ctx.fillRect(0, 0, 1080, 1440);
   if (hero) {
     const scale = Math.max(1080 / hero.width, 570 / hero.height);
     ctx.drawImage(hero, (1080 - hero.width * scale) / 2, 0, hero.width * scale, hero.height * scale);
     const fade = ctx.createLinearGradient(0, 200, 0, 580);
-    fade.addColorStop(0, '#15243b00'); fade.addColorStop(1, '#1e3350');
+    fade.addColorStop(0, '#f5f2e900'); fade.addColorStop(1, '#f5f2e9');
     ctx.fillStyle = fade; ctx.fillRect(0, 0, 1080, 590);
   }
   ctx.textBaseline = 'top';
-  ctx.fillStyle = '#f2f6ff'; ctx.font = '64px sans-serif';
+  ctx.fillStyle = '#263a30'; ctx.font = '64px sans-serif';
   ctx.fillText(`${String(date.getMonth()+1).padStart(2,'0')}.${String(date.getDate()).padStart(2,'0')}`, 74, 385);
-  ctx.font = '23px sans-serif'; ctx.fillStyle = '#c5def5';
+  ctx.font = '23px sans-serif'; ctx.fillStyle = '#5c6959';
   ctx.fillText(new Intl.DateTimeFormat(chinese ? 'zh-CN' : 'en', {weekday:'long'}).format(date), 290, 422);
   ctx.textAlign = 'right'; ctx.font = '24px sans-serif'; ctx.fillText(String(date.getFullYear()), 1006, 424); ctx.textAlign = 'left';
-  ctx.fillStyle = '#b9c8ff'; ctx.font = '26px sans-serif';
+  ctx.fillStyle = '#526b47'; ctx.font = '26px sans-serif';
   ctx.fillText(chinese ? '今日提示' : 'A thought for today', 74, 540);
   let size = chinese ? 66 : 60;
   let lines;
@@ -63,14 +63,14 @@ export async function createDailyTipPoster({ tip, language, date = new Date() })
     if (lines.length * size * 1.5 <= 350) break;
     size -= 2;
   } while (size > 30);
-  ctx.fillStyle = '#f5f8ff';
+  ctx.fillStyle = '#263a30';
   lines.forEach((line, index) => ctx.fillText(line, 74, 625 + index * size * 1.5));
-  ctx.font = '22px sans-serif'; ctx.fillStyle = '#b9d0e6';
+  ctx.font = '22px sans-serif'; ctx.fillStyle = '#5c6959';
   ctx.fillText(chinese ? '来自我最近一次的人生说明书' : 'From my latest Life Manual', 74, Math.max(940, 625 + lines.length * size * 1.5 + 50));
   ctx.drawImage(orb, 68, 1170, 100, 100);
-  ctx.fillStyle = '#f2f6ff'; ctx.font = '48px Georgia, serif';
+  ctx.fillStyle = '#263a30'; ctx.font = '48px Georgia, serif';
   ctx.fillText(chinese ? '不二见己' : 'Buer Within', 192, 1170);
-  ctx.font = '21px sans-serif'; ctx.fillStyle = '#b9d0e6';
+  ctx.font = '21px sans-serif'; ctx.fillStyle = '#5c6959';
   ctx.fillText((globalThis.PLUTO_CONFIG?.buerPublicUrl || 'https://human-design.wonderelian.com/').replace(/^https?:\/\//,'').replace(/\/$/,''), 194, 1240);
   // Preserve the white quiet zone and hard edges for reliable scanning.
   ctx.imageSmoothingEnabled = false; ctx.drawImage(qr, 800, 1150, 216, 216);

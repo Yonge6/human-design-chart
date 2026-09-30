@@ -36,3 +36,5 @@ ios/ExportOptions-*.plist
 !assets/buer-orb-v2.png
 !assets/buer-app-icon-*.png
 !assets/buer-favicon.png
+
+!assets/buer-companion-*.png

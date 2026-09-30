@@ -1,0 +1,47 @@
+[
+  {
+    "path": "index.html",
+    "match": true,
+    "sha256": "13cd23a029d3a72bb28986a26ea953f3af30146fbe88c409e6ce2de8af526b75"
+  },
+  {
+    "path": "runtime-config.js",
+    "match": true,
+    "sha256": "b8b7b4d63970813826e626329b1a8048cf88155cb28d6570cefef5c98fac7dff"
+  },
+  {
+    "path": "buer-companion.css",
+    "match": true,
+    "sha256": "9a2078a6785270a11af6bd2b4dc01f540e32c7f611f155b2f9a02791a598ee0d"
+  },
+  {
+    "path": "assets/brand-companion-hero.webp",
+    "match": true,
+    "sha256": "e034e1ea4de22f903d3fd40218dd2c8b5ed74f2ab40ceb9fbe3d6cf7ec7385fc"
+  },
+  {
+    "path": "assets/buer-companion-logo.png",
+    "match": true,
+    "sha256": "9f8794767ce030767f73f171529cfaa9d147fa82fac28f3afc8eefe33292d5e1"
+  },
+  {
+    "path": "assets/buer-companion-touch.png",
+    "match": true,
+    "sha256": "11429e9c8b1c89515d7c5ac586cf408f999f779d311ae6c3e7d37239091e6198"
+  },
+  {
+    "path": "assets/buer-companion-favicon.png",
+    "match": true,
+    "sha256": "05e49e009e8c05e72020d5a5219bb83d3550ad805342da233fb3ece8523e3732"
+  },
+  {
+    "path": "src/app/buer-home.js",
+    "match": true,
+    "sha256": "b3020ba777938ededf3da58e901127544d76ee9ad5207c5264ba0e92656b8fcf"
+  },
+  {
+    "path": "src/renderer/daily-tip-poster.js",
+    "match": true,
+    "sha256": "fc3c7cb81c69566e9047dd6175d92b7ba5c664e7680d2b218fa5321db640e3cb"
+  }
+]

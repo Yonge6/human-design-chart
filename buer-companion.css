@@ -211,3 +211,13 @@ body dialog.buer-membership .ai-consent-actions .consent-secondary{background:tr
 #buerGrowth .companion-section-hero{width:100%;max-width:none;box-sizing:border-box}
 #appDrawer:has(#drawerHome:not([hidden])) .drawer-header{padding-bottom:0}
 #appDrawer:has(#drawerHome:not([hidden])) .drawer-scroll{padding-top:0}
+
+/* Keep every primary tab on one shared page grid. */
+:root{--buer-page-max:1200px;--buer-page-gutter:36px}
+.buer-home,body[data-conversation="empty"] .buer-home,#buerGrowth,#appDrawer,.shell{box-sizing:border-box;width:100%;max-width:var(--buer-page-max);margin-left:auto;margin-right:auto}
+.buer-home,body[data-conversation="empty"] .buer-home{padding-left:var(--buer-page-gutter);padding-right:var(--buer-page-gutter)}
+#appDrawer .side-drawer{width:100%;max-width:none}
+@media(max-width:760px){
+ :root{--buer-page-gutter:20px}
+ .buer-home,body[data-conversation="empty"] .buer-home{padding-left:var(--buer-page-gutter);padding-right:var(--buer-page-gutter)}
+}

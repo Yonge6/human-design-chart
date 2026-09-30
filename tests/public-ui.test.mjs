@@ -19,6 +19,16 @@ test("personal space is a nonmodal tab with accessible settings and history", ()
   assert.doesNotMatch(app, /historyDialog\.showModal|settingsDialog\.showModal/);
 });
 
+test("primary tabs share one responsive page width", () => {
+  const css = read("buer-companion.css");
+
+  assert.match(css, /:root\{--buer-page-max:1200px;--buer-page-gutter:36px\}/);
+  assert.match(css, /\.buer-home,body\[data-conversation="empty"\] \.buer-home,#buerGrowth,#appDrawer,\.shell\{[^}]*width:100%;[^}]*max-width:var\(--buer-page-max\);[^}]*margin-left:auto;margin-right:auto/);
+  assert.match(css, /\.buer-home,body\[data-conversation="empty"\] \.buer-home\{padding-left:var\(--buer-page-gutter\);padding-right:var\(--buer-page-gutter\)\}/);
+  assert.match(css, /#appDrawer \.side-drawer\{width:100%;max-width:none\}/);
+  assert.match(css, /@media\(max-width:760px\)\{\s*:root\{--buer-page-gutter:20px\}/);
+});
+
 test("drawer lists WonderElian first and does not include the retired support flow", () => {
   const html = read("index.html");
   const app = read("app.js");

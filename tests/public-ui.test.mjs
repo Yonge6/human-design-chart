@@ -29,6 +29,30 @@ test("primary tabs share one responsive page width", () => {
   assert.match(css, /@media\(max-width:760px\)\{\s*:root\{--buer-page-gutter:20px\}/);
 });
 
+test("Life Manual back navigation restores the previous in-app page", () => {
+  const html = read("index.html");
+  const home = read("src/app/buer-home.js");
+  const app = read("app.js");
+
+  assert.match(html, /id="buerBackPrevious"[^>]*>[\s\S]*?data-buer="backPrevious"/);
+  assert.doesNotMatch(html, /class="buer-back-home"[^>]*data-home/);
+  assert.match(home, /backPrevious:'返回上一页'/);
+  assert.match(home, /backPrevious:'Back'/);
+  assert.match(app, /rememberManualOrigin\(\)/);
+  assert.match(app, /#buerBackPrevious/);
+});
+
+test("share images and chart loading use the warm editorial Buer system", () => {
+  const html = read("index.html");
+  const poster = read("src/renderer/daily-tip-poster.js");
+  const manualCss = read("buer-manual.css");
+
+  assert.match(poster, /companion-growth\.webp/);
+  assert.doesNotMatch(poster, /brand-companion-hero\.webp/);
+  assert.match(html, /class="result-loading-companion"[^>]*buer-companion-logo\.png/);
+  assert.match(read('buer-companion.css'), /#capture\.chart-panel\.export-mobile\{[^}]*background:#f4f0e7!important/);
+});
+
 test("drawer lists WonderElian first and does not include the retired support flow", () => {
   const html = read("index.html");
   const app = read("app.js");

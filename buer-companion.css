@@ -217,6 +217,36 @@ body dialog.buer-membership .ai-consent-actions .consent-secondary{background:tr
 .buer-home,body[data-conversation="empty"] .buer-home,#buerGrowth,#appDrawer,.shell{box-sizing:border-box;width:100%;max-width:var(--buer-page-max);margin-left:auto;margin-right:auto}
 .buer-home,body[data-conversation="empty"] .buer-home{padding-left:var(--buer-page-gutter);padding-right:var(--buer-page-gutter)}
 #appDrawer .side-drawer{width:100%;max-width:none}
+
+/* Shared reading hierarchy for navigation and portfolio cards. */
+:root{--buer-card-title:16px;--buer-card-copy:14px}
+#appDrawer :is(.drawer-nav,.drawer-work-card) strong{font-size:var(--buer-card-title);line-height:1.5}
+#appDrawer :is(.drawer-nav small,.drawer-work-card em,.drawer-work-card small){font-size:var(--buer-card-copy);line-height:1.65;color:#586452}
+#appDrawer .drawer-work-card{padding:20px 18px;align-items:start}
+#appDrawer .drawer-work-index{font-size:12px;line-height:2}
+
+/* A printed field guide, independent of the screen theme. */
+#capture.chart-panel.export-mobile{background:#f4f0e7!important;color:#263c32!important;border-top:8px solid #526649!important;padding-top:30px!important}
+#capture :is(.chart-meta,.interpretation,.celebrity-matches,.properties,.property,.planet-list li,.poster-footer){border-color:#ccd0bf!important}
+#capture :is(#personName,#interpretationText,.planet-list b,.celebrity-card h3,.property,.poster-signature strong){color:#263c32!important}
+#capture :is(.poster-edition,.eyebrow,.side-column>p,.interpretation-title,.celebrity-title,.property b,.celebrity-rank){color:#526649!important}
+#capture :is(#birthLine,.celebrity-card p,.celebrity-note,.celebrity-heading p:last-child,.watermark,.planet-list span,.planet-list i,.qr-block p,.poster-signature p,.poster-signature small,.poster-center-legend){color:#596653!important}
+#capture .planet-list{background:#e7e9dc!important;border-radius:8px}
+#capture .celebrity-card{background:#eeeee3!important;border-color:#ccd0bf!important;color:#263c32!important}
+#capture .chart-frame::before,#capture .chart-frame::after,#capture .chart-graph::before{display:none!important}
+#capture #personName{font-family:Georgia,"Songti SC",serif!important;font-weight:400!important;font-size:38px!important}
+#capture .poster-edition{margin-bottom:20px;letter-spacing:2.4px}
+#capture .poster-signature>img{border-radius:10px}
+#manualChart .preview-stage{background:#e7e9df!important;border-color:#ccd0bf!important;padding:24px 16px}
+#manualChart .chart-preview{box-shadow:0 8px 30px #263c3218}
+#manualChart .media-loading-placeholder{background:#f4f0e7!important}
+#manualChart .result-loading-status{color:#263c32;gap:18px}
+#manualChart .result-loading-companion{width:80px;height:80px;border-radius:20px}
+#manualChart .result-loading-copy strong{display:block;font-size:16px;line-height:1.6}
+#manualChart .result-loading-copy small{display:block;font-size:14px;line-height:1.6;font-weight:400;color:#596653;margin-top:8px}
+#manualChart .loading-orbit{width:24px;height:24px;border-color:#ccd0bf;border-top-color:#526649}
+#manualChart [data-media-state="error"] .result-loading-copy small{display:none}
+@media(max-width:760px){#manualChart .preview-stage{padding:12px 8px}}
 @media(max-width:760px){
  :root{--buer-page-gutter:20px}
  .buer-home,body[data-conversation="empty"] .buer-home{padding-left:var(--buer-page-gutter);padding-right:var(--buer-page-gutter)}

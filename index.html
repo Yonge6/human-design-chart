@@ -275,7 +275,7 @@
     </aside>
   </section>
   <dialog id="buerHistory" class="buer-history-dialog"><header><h2 data-buer="history">对话记录</h2><button id="buerCloseHistory" type="button" aria-label="关闭对话记录"><i class="ph ph-x" aria-hidden="true"></i></button></header><p data-buer="localHistory">只保存在当前设备，不会同步到其他设备。</p><div id="buerHistoryList"></div><button type="button" id="buerClearChats" data-buer="clearChats">清空本机对话</button><form method="dialog" id="buerClearConfirm" hidden><p data-buer="clearConfirm">清空后无法恢复这些对话。确定清空吗？</p><button type="button" id="buerCancelClear" data-buer="cancel">取消</button><button type="button" id="buerConfirmClear" data-buer="confirmClear">确认清空</button></form></dialog>
-  <button class="buer-back-home" data-home><i class="ph ph-arrow-left" aria-hidden="true"></i><span data-buer="backHome">返回对话</span></button>
+  <button id="buerBackPrevious" class="buer-back-home" type="button"><i class="ph ph-arrow-left" aria-hidden="true"></i><span data-buer="backPrevious">返回上一页</span></button>
 
   <main class="shell form-view">
     <section class="form-panel">
@@ -418,7 +418,7 @@
       </div>
       <div class="preview-stage" data-media-state="loading">
         <span class="media-loading-placeholder" aria-hidden="true"><span></span></span>
-        <p id="resultLoadingStatus" class="result-loading-status" role="status" aria-live="polite"><span class="loading-orbit" aria-hidden="true"></span><span data-i18n="buildingResult">正在整理你的人生说明书…</span></p>
+        <p id="resultLoadingStatus" class="result-loading-status" role="status" aria-live="polite"><img class="result-loading-companion" src="assets/buer-companion-logo.png" alt="" aria-hidden="true"><span class="loading-orbit" aria-hidden="true"></span><span class="result-loading-copy"><strong class="result-loading-label" data-i18n="buildingResult">正在整理你的人生说明书…</strong><small data-i18n="buildingResultHint">正在绘制图谱与整理你的阅读内容</small></span></p>
         <img id="chartPreview" class="chart-preview" alt="人生使用说明书" data-i18n-alt="previewAlt" aria-describedby="resultSummary">
       </div>
       </section></div>

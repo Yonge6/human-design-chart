@@ -16,8 +16,15 @@ export function wrapPosterText(context, text, maxWidth) {
     let line = '';
     for (const token of tokens) {
       if (line && context.measureText(line + token).width > maxWidth) {
-        lines.push(line.trim());
-        line = token.trimStart();
+        if (/^[，。！？；：、）”’]/u.test(token)) {
+          const characters = [...line];
+          const last = characters.pop();
+          lines.push(characters.join('').trim());
+          line = last + token;
+        } else {
+          lines.push(line.trim());
+          line = token.trimStart();
+        }
       } else line += token;
     }
     if (line) lines.push(line.trim());
@@ -29,7 +36,7 @@ export async function createDailyTipPoster({ tip, language, date = new Date() })
   if (!tip) throw new Error('A saved result is required.');
   const [qr, hero, orb] = await Promise.all([
     loadImage(new URL(globalThis.PLUTO_CONFIG?.buerShareQrPath || '../../assets/chart-qr.png', import.meta.url).href),
-    loadImage(new URL('../../assets/brand-companion-hero.webp', import.meta.url).href).catch(() => null),
+    loadImage(new URL('../../assets/companion-growth.webp', import.meta.url).href).catch(() => null),
     loadImage(new URL("../../assets/buer-companion-logo.png", import.meta.url).href),
     document.fonts.ready,
   ]);
@@ -37,44 +44,42 @@ export async function createDailyTipPoster({ tip, language, date = new Date() })
   const canvas = document.createElement('canvas');
   canvas.width = 1080; canvas.height = 1440;
   const ctx = canvas.getContext('2d');
-  const background = ctx.createLinearGradient(0, 0, 0, 1440);
-  background.addColorStop(0, '#e4e9da'); background.addColorStop(1, '#f5f2e9');
-  ctx.fillStyle = background; ctx.fillRect(0, 0, 1080, 1440);
-  if (hero) {
-    const scale = Math.max(1080 / hero.width, 570 / hero.height);
-    ctx.drawImage(hero, (1080 - hero.width * scale) / 2, 0, hero.width * scale, hero.height * scale);
-    const fade = ctx.createLinearGradient(0, 200, 0, 580);
-    fade.addColorStop(0, '#f5f2e900'); fade.addColorStop(1, '#f5f2e9');
-    ctx.fillStyle = fade; ctx.fillRect(0, 0, 1080, 590);
-  }
+  ctx.fillStyle = '#f5f1e8'; ctx.fillRect(0, 0, 1080, 1440);
+  ctx.fillStyle = '#526649'; ctx.fillRect(0, 0, 1080, 18);
+  ctx.strokeStyle = '#cbd0be'; ctx.lineWidth = 2;
+  for (const y of [204, 1130]) { ctx.beginPath(); ctx.moveTo(80, y); ctx.lineTo(1000, y); ctx.stroke(); }
   ctx.textBaseline = 'top';
-  ctx.fillStyle = '#263a30'; ctx.font = '64px sans-serif';
-  ctx.fillText(`${String(date.getMonth()+1).padStart(2,'0')}.${String(date.getDate()).padStart(2,'0')}`, 74, 385);
-  ctx.font = '23px sans-serif'; ctx.fillStyle = '#5c6959';
-  ctx.fillText(new Intl.DateTimeFormat(chinese ? 'zh-CN' : 'en', {weekday:'long'}).format(date), 290, 422);
-  ctx.textAlign = 'right'; ctx.font = '24px sans-serif'; ctx.fillText(String(date.getFullYear()), 1006, 424); ctx.textAlign = 'left';
-  ctx.fillStyle = '#526b47'; ctx.font = '26px sans-serif';
-  ctx.fillText(chinese ? '今日提示' : 'A thought for today', 74, 540);
-  let size = chinese ? 66 : 60;
+  ctx.fillStyle = '#526649'; ctx.font = '22px sans-serif';
+  ctx.fillText('BUER WITHIN  /  DAILY NOTE', 80, 68);
+  ctx.fillStyle = '#263a30'; ctx.font = '62px Georgia, serif';
+  ctx.fillText(`${String(date.getMonth()+1).padStart(2,'0')}.${String(date.getDate()).padStart(2,'0')}`, 80, 112);
+  ctx.font = '24px sans-serif'; ctx.fillStyle = '#5c6959'; ctx.textAlign = 'right';
+  ctx.fillText(`${date.getFullYear()} · ${new Intl.DateTimeFormat(chinese ? 'zh-CN' : 'en', {weekday:'long'}).format(date)}`, 1000, 142); ctx.textAlign = 'left';
+  ctx.fillStyle = '#c86732'; ctx.font = '26px sans-serif';
+  ctx.fillText(chinese ? '今日提示 / 给自己的一句话' : 'A thought for today', 80, 267);
+  let size = chinese ? 70 : 64;
   let lines;
   do {
     ctx.font = `300 ${size}px ${chinese ? '"Songti SC", "Noto Serif CJK SC",' : ''} Georgia, serif`;
-    lines = wrapPosterText(ctx, formatDailyTipText(tip, language), 932);
-    if (lines.length * size * 1.5 <= 350) break;
+    lines = wrapPosterText(ctx, formatDailyTipText(tip, language), 920);
+    if (lines.length * size * 1.5 <= 420) break;
     size -= 2;
   } while (size > 30);
   ctx.fillStyle = '#263a30';
-  lines.forEach((line, index) => ctx.fillText(line, 74, 625 + index * size * 1.5));
+  lines.forEach((line, index) => ctx.fillText(line, 80, 350 + index * size * 1.5));
   ctx.font = '22px sans-serif'; ctx.fillStyle = '#5c6959';
-  ctx.fillText(chinese ? '来自我最近一次的人生说明书' : 'From my latest Life Manual', 74, Math.max(940, 625 + lines.length * size * 1.5 + 50));
-  ctx.drawImage(orb, 68, 1170, 100, 100);
-  ctx.fillStyle = '#263a30'; ctx.font = '48px Georgia, serif';
-  ctx.fillText(chinese ? '不二见己' : 'Buer Within', 192, 1170);
+  ctx.fillText(chinese ? '来自我最近一次的人生说明书' : 'From my latest Life Manual', 80, 817);
+  if (hero) ctx.drawImage(hero, 680, 790, 330, 330);
+  ctx.fillStyle = '#526649'; ctx.font = '26px Georgia, "Songti SC", serif';
+  ctx.fillText(chinese ? '一点点，回到自己。' : 'A little closer to yourself.', 80, 1015);
+  ctx.drawImage(orb, 80, 1190, 84, 84);
+  ctx.fillStyle = '#263a30'; ctx.font = '42px Georgia, serif';
+  ctx.fillText(chinese ? '不二见己' : 'Buer Within', 186, 1190);
   ctx.font = '21px sans-serif'; ctx.fillStyle = '#5c6959';
-  ctx.fillText((globalThis.PLUTO_CONFIG?.buerPublicUrl || 'https://human-design.wonderelian.com/').replace(/^https?:\/\//,'').replace(/\/$/,''), 194, 1240);
+  ctx.fillText((globalThis.PLUTO_CONFIG?.buerPublicUrl || 'https://buer.wonderelian.com/').replace(/^https?:\/\//,'').replace(/\/$/,''), 186, 1250);
   // Preserve the white quiet zone and hard edges for reliable scanning.
-  ctx.imageSmoothingEnabled = false; ctx.drawImage(qr, 800, 1150, 216, 216);
+  ctx.imageSmoothingEnabled = false; ctx.drawImage(qr, 810, 1164, 190, 190);
   ctx.font = '19px sans-serif'; ctx.textAlign = 'right';
-  ctx.fillText(chinese ? '与真实的自己·温柔相遇' : 'Meet your true self, with kindness', 1016, 1384);
+  ctx.fillText(chinese ? '扫码，认识自己' : 'Explore your Life Manual', 1000, 1370);
   return new Promise((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Image export failed.')), 'image/png'));
 }

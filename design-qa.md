@@ -87,3 +87,12 @@ Scope: website visual redesign; existing conversation, profile permissions and g
 - Website deployment/readback tracked separately in `docs/deployments/companion-2026-09-30.md`.
 
 Tablet follow-up: at 900 × 1000, reduced hero art to 80% height and composer to 52% width to keep the face clear, then blended the image top edge into the sage surface. No horizontal overflow.
+
+
+## Header extensions and alignment corrections — 2026-09-30
+- Fixed desktop language control: 44px container, 36px children, equal 58px columns; no overflowing selection background.
+- Set both composer context labels and checkboxes to center alignment with identical line-height and zero checkbox margins.
+- Growth now has a sage header with a new open-eyed writing pose. My Space uses the same structure in warm ivory with a waving pose; generated alpha preserved in optimized WebP assets.
+- Reviewed Chinese desktop at 1280 × 900 and Chinese/English mobile at 390 × 844; no horizontal overflow or text/mascot overlap. Removed duplicated vertical padding above profile hero.
+- 34 targeted public UI, growth and build security tests passed; diff check clean.
+- Evidence: docs/design/companion/growth-header-desktop.webp and profile-header-en.webp.

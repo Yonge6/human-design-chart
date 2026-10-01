@@ -3,6 +3,7 @@ import {renderAssistantText} from './buer-message-format.js';
 import {readGrowth,growthContext,answeredCount} from '../services/buer-growth.js';
 import {nextQuestionBatch} from './buer-suggestions.js';
 import {welcomeForVisit} from './buer-welcome.js';
+import {initUsage,trackUsage} from '../services/buer-analytics.js';
 import {readBuerEvents,anonymousReport,validChatHistory} from '../services/buer-conversation.js';
 
 const copy={
@@ -14,6 +15,7 @@ export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
   const visitWelcome=welcomeForVisit(welcomeStorage);
   const $=s=>document.querySelector(s),t=k=>copy[getLanguage()==='en'?'en':'zh'][k];
   initMembership();
+  initUsage();
   const form=$('#buerChatForm'), input=$('#buerQuestion'), messagesEl=$('#buerMessages'), status=$('#buerChatStatus');
   const growthPreferenceKey='buer-growth-context-enabled-v1';let growthPreference=true;
   try{const stored=localStorage.getItem(growthPreferenceKey);growthPreference=stored===null||stored==='true';}catch{}
@@ -147,6 +149,7 @@ export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
     const answer={role:'assistant',content:'',date:Date.now()};current.messages.push(answer);
     const active=new AbortController();controller=active;setBusy(true);setStatus('connecting');renderMessages();
     const timeout=setTimeout(()=>active.abort('timeout'),110000);
+    const started=performance.now();trackUsage('chat_request');
     try {
       if(globalThis.PLUTO_CONFIG?.buerChatEnabled===false)throw new Error('AI_NOT_CONFIGURED');
       const report=$('#buerUseReport').checked?currentReport():null;
@@ -155,7 +158,9 @@ export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
       if(!response.body)throw new Error('AI_UNAVAILABLE');
       await readBuerEvents(response.body,(type,data)=>{if(type==='delta'){answer.content+=data.text;setStatus('streaming');renderMessages();}});
       setStatus('');
+      trackUsage('chat_success');trackUsage('chat_latency',{value:(performance.now()-started)/1000});
     } catch(error) {
+      trackUsage(active.signal.aborted&&active.signal.reason!=='timeout'?'chat_cancel':'chat_error');
       if(error.message==='DAILY_LIMIT'){showMembership();}
       answer.failed=true;
       if(active.signal.aborted && active.signal.reason!=='timeout')setStatus('stopped');

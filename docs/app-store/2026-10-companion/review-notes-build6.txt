@@ -1,0 +1,24 @@
+Buer Within 1.0 (build 6) replaces build 5 with optional, consent-gated usage analytics. Doudoulong branding, screenshots, subscription prices and the core reflection workflow are unchanged.
+
+GUIDELINE 4.3 — PRIMARY EXPERIENCE AND DIFFERENTIATION
+The primary experience is AI growth companionship, structured reflection, user-authored context and action review. Unlike our earlier static Life Manual product, this app adds a persistent bilingual reflection workflow: a resumable 12-question, four-domain interview; a private story repository with per-entry AI permission; bounded relevant-context retrieval; action experiments, progress criteria, review dates and outcome reflection.
+
+Human Design remains an optional on-device self-reflection lens, transparently described in the listing. It does not predict events or determine abilities and is not the primary store positioning. This is one global product with its own bundle, brand and interface, not a regional duplicate. Doudoulong is a companion, not a clinical or professional coach.
+
+REVIEW STEPS — NO LOGIN REQUIRED
+1. Home: enter any question and accept the AI data-sharing notice. Messages go to our server and DeepSeek; birth details are not automatically attached.
+2. Growth > HUMAN 3.0: choose any domain, answer questions, leave and return to verify local resume. A complete 12-answer guide counts as one AI reply.
+3. Growth > My Story: add a synthetic experience and choose whether AI may reference it.
+4. Growth Path: add an action with a progress criterion and review date. Mark it complete and add a reflection.
+5. Optional: generate a Life Manual using synthetic birth information. This is local and does not require a subscription.
+6. Me > Privacy: find Share usage statistics. It is off by default, separate from AI consent and cloud saving, and can be disabled at any time without limiting features. No login or cross-device profile sync is required.
+
+PRIVACY AND ANALYTICS
+The growth profile remains on device and can be exported or cleared. AI receives only user-requested messages and permitted context after consent. The app does not automatically import phone data.
+New analytics use FirebaseAnalyticsCore without advertising support. SDK initialization requires explicit usage consent and a verified production App Store installation. Development, simulator and TestFlight environments are excluded consistently, not by a reviewer-specific switch; iOS 15 also excludes analytics. We disable IDFV and automatic screen reporting and do not set a user ID. Allowlisted events measure screen categories, foreground active time and feature outcomes; custom events never include messages, birth details, answers, stories or Apple transaction identifiers. Turning off consent stops collection and resets analytics data. Pseudonymous installation identifiers and product interactions are disclosed in our privacy policy and App Privacy information.
+
+SUBSCRIPTIONS
+Free users receive 3 completed AI replies per UTC day. Failed replies do not consume allowance. Monthly and annual Plus remove the daily reply cap while reasonable anti-abuse limits remain. Me > Privacy > Membership & subscriptions provides purchase and Restore Purchases. Local reflection, stories, actions and readings stay free. Prices and subscription products are unchanged.
+
+LANGUAGE AND SCREENSHOTS
+Use EN/中文 at the top. The screenshots show the current bundled UI with illustrative user-entered story/action text; no AI outcome is fabricated. Native system navigation sits outside the interface crop in the store artwork. The Doudoulong App icon is retained.

@@ -7,7 +7,7 @@ const source = await readFile(new URL("../analytics-frame.js", import.meta.url),
 const bootstrap = await readFile(new URL("../analytics.js", import.meta.url), "utf8");
 function run({ hostname = "human-design.wonderelian.com", protocol = "https:", search = "?name=PRIVATE&birth=PRIVATE", native = false } = {}) {
   const scripts = [];
-  const window = { location: { hostname, protocol, search, origin: `https://${hostname}` }, parent: { location: { origin: `https://${hostname}` } }, Capacitor: { isNativePlatform: () => native } };
+  const window = { addEventListener(){}, location: { hostname, protocol, search, origin: `https://${hostname}` }, parent: { location: { origin: `https://${hostname}` } }, Capacitor: { isNativePlatform: () => native } };
   const document = { currentScript: { src: `https://${hostname}/analytics.js` }, createElement: () => ({style:{},setAttribute(){},addEventListener(){}}), body: { style:{}, appendChild: (s) => scripts.push(s) }, head: { appendChild: (s) => scripts.push(s) } };
   vm.runInNewContext(bootstrap, { window, URL, URLSearchParams, document });
   if (scripts.length) { scripts.length = 0; delete window.gtag; vm.runInNewContext(source, {window,document}); }

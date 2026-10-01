@@ -1,3 +1,4 @@
+import { trackUsage } from './src/services/buer-analytics.js';
 import { initBuerManual } from './src/app/buer-manual.js';
 import { initBuerGrowth } from "./src/app/buer-growth.js";
 import { initBuerHome } from "./src/app/buer-home.js";
@@ -949,7 +950,12 @@ function updateRemoteServiceControls() {
     : "privacyNote";
 }
 
+function trackManualUsage(eventName) {
+  const usageName={chart_generate_started:'manual_request',chart_generate_succeeded:'manual_success',chart_generate_failed:'manual_error'}[eventName];
+  if(usageName)trackUsage(usageName);
+}
 function trackEvent(eventName, properties = {}) {
+  trackManualUsage(eventName);
   if (!remoteServicesAllowed) return;
   recordProductEvent(eventName, properties, currentConsent()).catch((error) => {
     console.warn("Anonymous product event was not sent.", error);
@@ -1509,6 +1515,7 @@ function clearPoster() {
   setMediaState(previewStage, "loading");
   chartResult.removeAttribute("aria-busy");
   downloadButton.disabled = true;
+  trackUsage('share_request');
   shareButton.disabled = true;
   privacyToggle.disabled = false;
   languageButtons.forEach((button) => { button.disabled = false; });
@@ -1524,6 +1531,7 @@ async function createPosterImage() {
   setMediaState(previewStage, "loading");
   chartResult.setAttribute("aria-busy", "true");
   downloadButton.disabled = true;
+  trackUsage('share_request');
   shareButton.disabled = true;
   privacyToggle.disabled = true;
   try {
@@ -2107,6 +2115,7 @@ downloadButton.addEventListener("click", async () => {
 
 shareButton.addEventListener("click", async () => {
   if (!lastData || !posterBlob || !posterUrl) return;
+  trackUsage('share_request');
   shareButton.disabled = true;
   shareLabel.textContent = t("openingShareShort");
   try {
@@ -2124,6 +2133,7 @@ shareButton.addEventListener("click", async () => {
           flashShareLabel(shareLabel, "cancelledShort", "share");
           return;
         }
+        trackUsage('share_success');
         setStatus("shared");
         flashShareLabel(shareLabel, "sharedShort", "share");
         return;
@@ -2138,6 +2148,7 @@ shareButton.addEventListener("click", async () => {
     if (canShareFile(file)) {
       try {
         await navigator.share({ files: [file], title: t("shareTitle"), text: t("shareText") });
+        trackUsage('share_success');
         setStatus("shared");
         flashShareLabel(shareLabel, "sharedShort", "share");
         return;
@@ -2283,6 +2294,7 @@ function showDailyImageHelp(save) {
 }
 async function shareDailyImage(save) {
   if (!dailyShareBlob || dailyShareBusy) return;
+  if (!save) trackUsage('share_request');
   dailyShareBusy = true;
   const status = document.querySelector('#dailyShareStatus');
   try {
@@ -2293,6 +2305,7 @@ async function shareDailyImage(save) {
         ? await nativePlugin.saveImage({ base64, fileName:dailyShareFileName })
         : await nativePlugin.shareImage({ base64, fileName:dailyShareFileName });
       if (result?.completed === false) return;
+      if (!save) trackUsage('share_success');
       status.textContent = save ? dailyShareText('已保存到相册。', 'Saved to Photos.') : dailyShareText('已分享。', 'Shared.');
     } else if (dailyImageNeedsLongPress()) {
       showDailyImageHelp(save);
@@ -2301,6 +2314,7 @@ async function shareDailyImage(save) {
         ? dailyShareText('请在系统面板中选择“存储图像”或保存到相册。', 'Choose Save Image or save to Photos in the system sheet.')
         : dailyShareText('请在系统面板中选择接收图片的应用或联系人。', 'Choose an app or contact to receive the image in the system sheet.');
       await navigator.share({ files:[file], title:dailyShareText('不二见己今日提示', 'Buer Within daily thought') });
+      if (!save) trackUsage('share_success');
     } else {
       const link = document.createElement('a');
       link.download = dailyShareFileName; link.href = dailyShareUrl;
@@ -2311,6 +2325,7 @@ async function shareDailyImage(save) {
     if (error?.name === 'AbortError') {
       status.textContent = dailyShareText('已取消操作，图片仍可长按保存。', 'Cancelled. You can still touch and hold the image to save it.');
     } else {
+      if (!save) trackUsage('share_error');
       status.textContent = dailyShareText('操作未完成，请长按图片保存后发送。', 'Could not finish. Touch and hold the image to save it, then send it.');
       showDailyImageHelp(save);
     }

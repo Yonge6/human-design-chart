@@ -5,6 +5,7 @@ import WebKit
 public class PlutoViewController: CAPBridgeViewController {
     public override func capacitorDidLoad() {
         bridge?.registerPluginInstance(PlutoNativePlugin())
+        bridge?.registerPluginInstance(BuerAnalyticsPlugin())
         webView?.scrollView.alwaysBounceHorizontal = false
         webView?.scrollView.showsHorizontalScrollIndicator = false
         webView?.scrollView.isDirectionalLockEnabled = true

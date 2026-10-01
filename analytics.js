@@ -11,7 +11,7 @@
   frame.tabIndex = -1;
   frame.title = "Basic website measurement";
   frame.setAttribute("aria-hidden", "true");
-  frame.src = new URL("analytics-frame.html", document.currentScript.src).href;
+  frame.src = new URL("analytics-frame.html?v=20261001-buer", document.currentScript.src).href;
   const pending = [];
   let ready = false;
   window.gtag = function (command, name, fields) {

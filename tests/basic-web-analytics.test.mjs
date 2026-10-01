@@ -7,8 +7,8 @@ const source = await readFile(new URL("../analytics-frame.js", import.meta.url),
 const bootstrap = await readFile(new URL("../analytics.js", import.meta.url), "utf8");
 function run({ hostname = "human-design.wonderelian.com", protocol = "https:", search = "?name=PRIVATE&birth=PRIVATE", native = false } = {}) {
   const scripts = [];
-  const window = { location: { hostname, protocol, search, origin: 'https://human-design.wonderelian.com' }, parent: { location: { origin: 'https://human-design.wonderelian.com' } }, Capacitor: { isNativePlatform: () => native } };
-  const document = { currentScript: { src: 'https://human-design.wonderelian.com/analytics.js' }, createElement: () => ({style:{},setAttribute(){},addEventListener(){}}), body: { style:{}, appendChild: (s) => scripts.push(s) }, head: { appendChild: (s) => scripts.push(s) } };
+  const window = { location: { hostname, protocol, search, origin: `https://${hostname}` }, parent: { location: { origin: `https://${hostname}` } }, Capacitor: { isNativePlatform: () => native } };
+  const document = { currentScript: { src: `https://${hostname}/analytics.js` }, createElement: () => ({style:{},setAttribute(){},addEventListener(){}}), body: { style:{}, appendChild: (s) => scripts.push(s) }, head: { appendChild: (s) => scripts.push(s) } };
   vm.runInNewContext(bootstrap, { window, URL, URLSearchParams, document });
   if (scripts.length) { scripts.length = 0; delete window.gtag; vm.runInNewContext(source, {window,document}); }
   return { calls: Array.from(window.dataLayer || [], (args) => Array.from(args)), scripts };
@@ -32,6 +32,20 @@ test("no basic web collection on native, preview, or insecure surfaces", () => {
     assert.equal(result.scripts.length, 0);
     assert.equal(result.calls.length, 0);
   }
+});
+test("Buer reports its own hostname without leaking birth or chat context", () => {
+  const {calls,scripts}=run({hostname:"buer.wonderelian.com"});
+  assert.equal(scripts.length,1);
+  const config=calls.find(([command])=>command==="config")[2];
+  assert.equal(config.page_location,"https://buer.wonderelian.com/");
+  assert.equal(config.cookie_domain,"buer.wonderelian.com");
+  assert.equal(config.page_title,"Buer Within | 不二见己");
+  assert.ok(!JSON.stringify(calls).includes("PRIVATE"));
+  assert.equal(config.page_referrer,"");
+  assert.equal(calls.filter(([command])=>command==="event").length,0);
+  assert.equal(run({hostname:"buer.wonderelian.com",native:true}).calls.length,0);
+  assert.equal(run({hostname:"buer.wonderelian.com",search:"?surface=ios"}).calls.length,0);
+  assert.equal(run({hostname:"unexpected.example"}).calls.length,0);
 });
 test("chart events still require explicit product analytics permission", async () => {
   const app = await readFile(new URL("../app.js", import.meta.url), "utf8");

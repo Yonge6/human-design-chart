@@ -1,6 +1,7 @@
 (function () {
   "use strict";
-  if (window.location.hostname !== "human-design.wonderelian.com" || window.location.protocol !== "https:") return;
+  const hostname = window.location.hostname;
+  if (!["human-design.wonderelian.com", "buer.wonderelian.com"].includes(hostname) || window.location.protocol !== "https:") return;
   if (window.parent === window || window.parent.location.origin !== window.location.origin) return;
   // A non-scrollable viewport must not look like a completed document scroll.
   document.body.style.minHeight = "1000px";
@@ -17,10 +18,10 @@
   window.gtag("config", measurementId, {
     allow_google_signals: false,
     allow_ad_personalization_signals: false,
-    cookie_domain: "human-design.wonderelian.com",
+    cookie_domain: hostname,
     cookie_expires: 2592000,
-    page_location: "https://human-design.wonderelian.com/",
-    page_title: "Pluto | Human Design",
+    page_location: `https://${hostname}/`,
+    page_title: hostname === "buer.wonderelian.com" ? "Buer Within | 不二见己" : "Pluto | Human Design",
     page_referrer: "",
   });
   const loader = document.createElement("script");

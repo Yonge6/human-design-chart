@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  if (window.location.hostname !== "human-design.wonderelian.com") return;
+  if (!["human-design.wonderelian.com", "buer.wonderelian.com"].includes(window.location.hostname)) return;
   if (window.location.protocol !== "https:" || window.Capacitor?.isNativePlatform?.()) return;
   if (new URLSearchParams(window.location.search).get("surface") === "ios") return;
 

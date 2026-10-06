@@ -38,6 +38,27 @@
 .journal-confirm{width:min(460px,calc(100% - 32px));box-sizing:border-box;border:1px solid #cbd3c1;border-radius:20px;background:#f5f2ea;padding:24px;color:#203b30;max-height:90dvh;overflow:auto}
 .journal-confirm p{line-height:1.8}
 .journal-confirm .journal-actions{justify-content:flex-end;margin-bottom:0}
+.relationship-entry{margin:8px 0 20px}
+.relationship-person{border:1px solid #ccd3c4;border-radius:18px;padding:24px;background:#fffdf7;min-width:0;overflow-wrap:anywhere}
+.relationship-avatar{display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;background:#e4eadb;color:#49613f;font-family:var(--font-serif,Georgia,serif);font-size:24px;margin-bottom:16px}
+.relationship-person>small,.relationship-summary>small{color:#65755b;font-size:12px}
+.relationship-summary dl{display:grid;grid-template-columns:auto 1fr;gap:8px 20px;font-size:14px;line-height:1.65}
+.relationship-summary dt{color:#65755b}.relationship-summary dd{margin:0;overflow-wrap:anywhere}
+.relationship-summary p,.relationship-notes{font-size:13px}
+.relationship-dialog .relationship-check{display:flex;align-items:flex-start;gap:12px;margin:18px 0;font-size:14px;line-height:1.7}
+.relationship-dialog .relationship-check input{appearance:auto;flex:0 0 18px;width:18px;height:18px;min-height:18px;margin:3px 0 0;accent-color:#49613f}
+.relationship-context{padding:18px 0;border-bottom:1px solid #d6dbcd;margin-bottom:14px}
+.relationship-context summary{cursor:pointer;min-height:32px;line-height:1.6;font-size:15px;color:#49613f}
+.relationship-excerpt{padding:12px;border:1px solid #d6dbcd;border-radius:12px;margin-top:12px}
+.relationship-excerpt p{font-size:14px;white-space:pre-wrap;max-height:180px;overflow-y:auto}
+.relationship-messages{display:flex;flex-direction:column;gap:18px;margin:24px 0}
+.relationship-message{border:1px solid #d6dbcd;border-radius:16px;padding:20px;background:#fffdf7;line-height:1.9;white-space:pre-wrap;overflow-wrap:anywhere}
+.relationship-message.user{background:#e4eadb;margin-left:24px}
+.relationship-message small{display:block;font-size:12px;color:#65755b;margin-bottom:10px}
+.relationship-compose textarea{min-height:130px}
+.relationship-dialog .relationship-history{display:block;text-align:left;width:100%;margin:8px 0}
+.relationship-dialog .journal-field textarea{min-height:130px}
+.relationship-dialog select{padding-right:24px}
 @media(max-width:760px){
  .journal-dialog{width:100%;height:var(--journal-viewport-height,100dvh);max-height:var(--journal-viewport-height,100dvh);top:var(--journal-viewport-top,0);bottom:auto;margin:0;border:0;border-radius:0}
  .journal-shell{height:100%;max-height:100%}

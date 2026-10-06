@@ -116,6 +116,17 @@ test('failed sign out restores only a freshly verified identity', async () => {
   assert.equal(account.user.id, 'A');
 });
 
+test('same-user tab-focus SIGNED_IN keeps editing state, but a different identity locks immediately', async () => {
+  const { account, event } = await fixture(); const notifications=[];
+  account.subscribe(user => notifications.push(user?.id || null));
+  event('SIGNED_IN', { user: { id: 'A' } }); await new Promise(r=>setTimeout(r,5));
+  assert.equal(account.user.id,'A'); notifications.length=0;
+  event('SIGNED_IN', { user: { id: 'A' } });
+  event('TOKEN_REFRESHED', { user: { id: 'A' } });
+  assert.deepEqual(notifications,[]); assert.equal(account.user.id,'A');
+  event('SIGNED_IN', { user: { id: 'B' } }); assert.equal(account.user,null);
+});
+
 test('Google account deletion uses the verified session and dedicated Buer API', async () => {
   const requests = [];
   const { account, event, calls } = await fixture({ auth: {

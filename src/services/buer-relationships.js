@@ -2,6 +2,18 @@ import { validateHumanDesignProfileSnapshot } from '../../shared/human-design-pr
 
 export const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 export const PERSON_SOURCES = ['self', 'permission', 'confirmed', 'guardian'];
+export function relationshipMessages(history, question) {
+  const latest = { role: 'user', content: question.trim() };
+  if (!latest.content || latest.content.length > 4000) throw Error('INVALID_INPUT');
+  const selected = []; let remaining = 16000 - latest.content.length;
+  for (const item of history.slice(-18).reverse()) {
+    const content = item.content.slice(0,4000);
+    if (content.length > remaining) break;
+    selected.unshift({ role: item.role, content }); remaining -= content.length;
+  }
+  if (selected[0]?.role === 'assistant') selected.shift();
+  return [...selected, latest];
+}
 export function cleanPerson(value) {
   if (!value || typeof value.nickname !== 'string' || !value.nickname.trim() || value.nickname.length > 60 ||
     typeof value.relationship !== 'string' || !value.relationship.trim() || value.relationship.length > 60 ||
@@ -10,7 +22,8 @@ export function cleanPerson(value) {
   const birth = value.birth || {};
   if (!['unknown', 'known'].includes(birth.certainty) || typeof birth.date !== 'string' || typeof birth.time !== 'string' ||
     typeof birth.timezone !== 'string' || birth.timezone.length > 80 || typeof birth.location !== 'string' || birth.location.length > 160) throw Error('INVALID_BIRTH');
-  if (birth.date && (!/^\d{4}-\d{2}-\d{2}$/.test(birth.date) || new Date(`${birth.date}T12:00:00Z`).toISOString().slice(0, 10) !== birth.date)) throw Error('INVALID_BIRTH');
+  const date = new Date(`${birth.date}T12:00:00Z`);
+  if (birth.date && (!/^\d{4}-\d{2}-\d{2}$/.test(birth.date) || !Number.isFinite(date.getTime()) || date.toISOString().slice(0, 10) !== birth.date || birth.date > new Date().toISOString().slice(0, 10))) throw Error('INVALID_BIRTH');
   if (birth.certainty === 'known') {
     if (!birth.date || !/^([01]\d|2[0-3]):[0-5]\d$/.test(birth.time)) throw Error('INVALID_BIRTH');
     try { new Intl.DateTimeFormat('en', { timeZone: birth.timezone }).format(); } catch { throw Error('INVALID_TIMEZONE'); }
@@ -27,7 +40,7 @@ export function cleanPerson(value) {
 export function anonymousPerson(person) {
   const core = person.chart?.core;
   return { source: person.source, revision: person.revision, certainty: person.birth?.certainty || 'unknown',
-    chart: core && person.birth?.certainty === 'known' ? {
+    chart: core && person.birth?.certainty === 'known' && validateHumanDesignProfileSnapshot(person.chart).valid ? {
       type: core.type, strategy: core.strategy, authority: core.authority, profile: core.profile,
     } : null };
 }

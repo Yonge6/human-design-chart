@@ -3,6 +3,7 @@ import { initBuerManual } from './src/app/buer-manual.js';
 import { initBuerGrowth } from "./src/app/buer-growth.js";
 import { initBuerHome } from "./src/app/buer-home.js";
 import { initBuerJournal } from "./src/app/buer-journal.js";
+import { initBuerRelationships } from "./src/app/buer-relationships.js";
 import {
   calculateHumanDesign,
   localToUtcCandidates,
@@ -2363,7 +2364,9 @@ initBuerHome({
   },
 });
 
-void initBuerJournal({ getLanguage: () => language });
+void initBuerJournal({ getLanguage: () => language }).then(journal =>
+  initBuerRelationships({ getLanguage: () => language, account: journal.account,
+    openAccount: () => journal.open('account') }));
 
 initBuerManual({
   getLanguage:()=>language,

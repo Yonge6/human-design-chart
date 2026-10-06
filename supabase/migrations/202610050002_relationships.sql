@@ -15,7 +15,9 @@ create table public.buer_people (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   deleted_at timestamptz,
-  unique (user_id, id)
+  unique (user_id, id),
+  check (is_self = (source = 'self')),
+  check (char_length(btrim(nickname)) > 0 and char_length(btrim(relationship)) > 0)
 );
 create unique index buer_one_self on public.buer_people(user_id) where is_self and deleted_at is null;
 create index buer_people_owner on public.buer_people(user_id, updated_at desc);
@@ -63,6 +65,34 @@ begin
     or ((person->>'is_self')::boolean and person->>'source' <> 'self')
     or (not (person->>'is_self')::boolean and person->>'source' = 'self')
     then raise exception 'invalid_person' using errcode = '22023'; end if;
+  if jsonb_typeof(person->'birth') is distinct from 'object'
+    or not ((person->'birth') ?& array['certainty','date','time','timezone','location'])
+    or ((person->'birth') - array['certainty','date','time','timezone','location']) <> '{}'::jsonb
+    or jsonb_typeof(person#>'{birth,certainty}') is distinct from 'string'
+    or jsonb_typeof(person#>'{birth,date}') is distinct from 'string'
+    or jsonb_typeof(person#>'{birth,time}') is distinct from 'string'
+    or jsonb_typeof(person#>'{birth,timezone}') is distinct from 'string'
+    or jsonb_typeof(person#>'{birth,location}') is distinct from 'string'
+    or person#>>'{birth,certainty}' not in ('known','unknown')
+    or char_length(person#>>'{birth,timezone}') > 80
+    or char_length(person#>>'{birth,location}') > 160
+    or (person#>>'{birth,certainty}' = 'unknown' and
+      (person->'chart' <> 'null'::jsonb or person#>>'{birth,time}' <> ''))
+    then raise exception 'invalid_birth' using errcode='22023'; end if;
+  if person#>>'{birth,date}' <> '' then
+    if person#>>'{birth,date}' !~ '^\d{4}-\d{2}-\d{2}$'
+      or to_char((person#>>'{birth,date}')::date,'YYYY-MM-DD') <> person#>>'{birth,date}'
+      or (person#>>'{birth,date}')::date > current_date then
+      raise exception 'invalid_birth_date' using errcode='22023'; end if;
+  end if;
+  if person#>>'{birth,certainty}' = 'known' and (
+    person#>>'{birth,date}' = '' or person#>>'{birth,time}' !~ '^([01]\d|2[0-3]):[0-5]\d$'
+    or not exists(select 1 from pg_timezone_names where name=person#>>'{birth,timezone}')
+    or jsonb_typeof(person->'chart') is distinct from 'object'
+    or person#>>'{chart,input,birthDate}' is distinct from person#>>'{birth,date}'
+    or person#>>'{chart,input,birthTime}' is distinct from person#>>'{birth,time}'
+    or person#>>'{chart,input,timezone}' is distinct from person#>>'{birth,timezone}')
+    then raise exception 'invalid_chart' using errcode='22023'; end if;
   -- Serialize per owner for the profile limit, single-self invariant and deletion.
   perform pg_advisory_xact_lock(hashtextextended(owner::text, 21));
   select * into saved from public.buer_people where id = person_id and user_id = owner;
@@ -98,7 +128,7 @@ begin
     is_self=false,deleted_at=clock_timestamp(),updated_at=clock_timestamp(),revision=revision+1,mutation_id=mutation
     where id=person_id and user_id=owner and revision=expected_revision and deleted_at is null returning * into saved;
   if saved.id is null then raise exception 'profile_conflict' using errcode='40001'; end if;
-  delete from public.buer_relationship_conversations c where c.user_id=owner and (c.self_id=person_id or c.person_id=person_id);
+  delete from public.buer_relationship_conversations c where c.user_id=owner and (c.self_id=$1 or c.person_id=$1);
   return true;
 end $$;
 

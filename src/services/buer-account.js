@@ -57,7 +57,9 @@ export async function createAccount({ config = accountConfig(), native = globalT
       appleProviderToken = null;
       globalThis.sessionStorage?.removeItem?.('buer-apple-provider-token');
     }
-    if (event === 'TOKEN_REFRESHED' && session?.user.id === user?.id) return;
+    // Supabase emits SIGNED_IN again when a tab regains focus. A verified,
+    // unchanged identity must not discard open forms on every focus event.
+    if (['TOKEN_REFRESHED', 'SIGNED_IN'].includes(event) && user && session?.user.id === user.id) return;
     const epoch = ++authEpoch;
     publish(null);
     if (!session) return;

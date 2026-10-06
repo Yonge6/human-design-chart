@@ -58,6 +58,7 @@ test('relationship SQL enforces two-owner isolation, CAS, identity, revisions, d
       grant usage on schema auth to anon,authenticated;
       insert into auth.users values('${A}'),('${B}');`);
     await db.exec(await readFile(new URL('../supabase/migrations/202610050002_relationships.sql',import.meta.url),'utf8'));
+    await db.exec(await readFile(new URL('../supabase/migrations/202610060001_relationship_self_delete.sql',import.meta.url),'utf8'));
     const as=async owner=>db.exec(`reset role;set role authenticated;select set_config('request.jwt.claim.sub','${owner}',false);`);
     const save=(id,data,revision=0,mutation=A)=>db.query('select * from public.buer_save_person($1,$2,$3,$4)',[id,revision,mutation,data]);
     const chat=(own=me,partner=wife,rev=1)=>db.query('select * from public.buer_save_relationship_conversation($1,0,$2,$3,$4,$5,1,$6)',[thread,A,own,partner,rev,[{role:'user',content:'An event'}]]);
@@ -89,6 +90,11 @@ test('relationship SQL enforces two-owner isolation, CAS, identity, revisions, d
     await db.query('select public.buer_delete_person($1,2,$2)',[wife,other]);
     assert.equal((await db.query('select * from public.buer_relationship_conversations')).rows.length,0);
     const deleted=(await db.query('select * from public.buer_people where id=$1',[wife])).rows[0];assert.equal(deleted.chart,null);assert.equal(deleted.notes,'');
+    await db.query('select public.buer_delete_person($1,1,$2)',[me,B]);
+    const deletedSelf=(await db.query('select * from public.buer_people where id=$1',[me])).rows[0];
+    assert.ok(deletedSelf.deleted_at);assert.deepEqual(deletedSelf.birth,{});assert.equal(deletedSelf.nickname,'deleted');
+    await db.query('select public.buer_delete_person($1,1,$2)',[me,B]);
+    await save('00000000-0000-4000-b000-000000000006',person(true));
     await db.exec('reset role;set role anon');await assert.rejects(db.query('select * from public.buer_people'),/permission denied/);
     await db.exec(`reset role;delete from auth.users where id='${A}'`);
     assert.equal((await db.query('select * from public.buer_people where user_id=$1',[A])).rows.length,0);

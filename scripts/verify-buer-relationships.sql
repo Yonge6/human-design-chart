@@ -27,5 +27,10 @@ do $$begin
  if exists(select 1 from public.buer_relationship_conversations)
  then raise exception 'CONVERSATION_DELETE_FAILED'; end if;
 end$$;
+select public.buer_delete_person('f6b50000-0000-4000-b000-000000000001',1,'f6b50000-0000-4000-c000-000000000006');
+do $$begin
+ if exists(select 1 from public.buer_people where deleted_at is null)
+ then raise exception 'SELF_DELETE_FAILED'; end if;
+end$$;
 rollback;
 select 'RELATIONSHIP_RLS_PASS_ROLLED_BACK' as result;

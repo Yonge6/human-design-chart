@@ -71,7 +71,9 @@ test("privacy policy discloses independent social accounts and synced private jo
   assert.match(policy, /Google 或 Apple 登录不二账号/);
   assert.match(policy, /不与三慢问道或其他产品共用用户数据库/);
   assert.match(policy, /日记不是端到端加密内容/);
-  assert.match(policy, /不会自动发送给 AI/);
+  assert.match(policy, /默认不发送给 AI/);
+  assert.match(policy, /首次明确授权后/);
+  assert.match(policy, /随时关闭/);
   assert.match(policy, /Authentication is handled by a dedicated Buer Within Supabase project/);
-  assert.match(policy, /journal data is not end-to-end encrypted/);
+  assert.match(policy, /not end-to-end encryption/);
 });

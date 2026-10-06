@@ -391,7 +391,7 @@ test("privacy copy distinguishes device-only defaults from account journal sync"
   assert.match(privacy, /本地历史开启不会导致任何云端上传/);
   assert.match(privacy, /Enabling local history never uploads data to the cloud/);
   assert.match(privacy, /私密日记会先缓存在当前设备，并同步到你的不二账号/);
-  assert.match(privacy, /Private journal entries are cached on the current device and synchronized to your Buer account/);
+  assert.match(privacy, /Private journals are cached on the device and synced to your Buer account/);
   assert.match(dataMap, /Local history[^\n]+Default on, device only[^\n]+Never unless separate cloud consent/);
 });
 

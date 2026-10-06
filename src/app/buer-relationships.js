@@ -4,6 +4,9 @@ import { createHumanDesignProfileSnapshot } from '../engine/profile-snapshot.js'
 import { readBuerEvents } from '../services/buer-conversation.js';
 import { ensureAIConsent, chatAccess, showMembership } from './buer-membership.js';
 import { renderAssistantText } from './buer-message-format.js';
+import { cleanPersonalContext, SCOPE_KEYS, RELATION_TYPES } from '../services/buer-personal-context.js';
+import { readGrowth, QUESTIONS } from '../services/buer-growth.js';
+import { validChatHistory } from '../services/buer-conversation.js';
 
 const el = (tag, text = '', attributes = {}) => {
   const node = document.createElement(tag); node.textContent = text;
@@ -16,12 +19,20 @@ const chartNames = { Generator:'生产者', 'Manifesting Generator':'显示生�
   'Self-Projected':'自我投射权威', Lunar:'月亮权威', 'Mental - Environment':'环境权威', 'No Definition':'无定义', 'Single Definition':'一分人', 'Split Definition':'二分人',
   'Triple Split Definition':'三分人', 'Quadruple Split Definition':'四分人', head:'头顶',ajna:'逻辑',throat:'喉咙',g:'G 中心',heart:'意志',sacral:'荐骨',spleen:'脾脏','solar plexus':'情绪',root:'根部' };
 
-export function initBuerRelationships({ getLanguage, account, openAccount }) {
+export function initBuerRelationships({ getLanguage, account, openAccount, getReadings = () => [] }) {
   const l = (zh, en) => getLanguage() === 'en' ? en : zh;
   const chartText = value => getLanguage() === 'en' ? value : chartNames[value] || value;
   const repo = account ? relationshipRepository(account) : null;
   let owner = null, epoch = 0, people = [], busy = false, dirty = false, controller = null, trigger = null;
   let activeThread = null, unsavedThread = null;
+  let personal=null,filter='';
+  const root=el('section','',{id:'buerPeople','aria-label':'People in your life'});
+  const hero=el('header','',{class:'people-hero companion-section-hero'}),listContent=el('div','',{class:'people-content'});
+  root.append(hero,listContent);document.querySelector('#buerHome').after(root);
+  const tab=el('button','',{type:'button',class:'rail-item','data-people':''});
+  tab.append(el('i','',{class:'ph ph-users','aria-hidden':'true'}),el('span'));
+  document.querySelector('.rail-item[data-profile]').before(tab);tab.onclick=()=>void open();
+  const scopeName=k=>({chart:l('我的人类图','My Human Design'),growth:l('成长访谈、经历与行动复盘','Growth, experiences and reflections'),journal:l('私密日记','Private journals'),history:l('历史对话','Previous conversations')})[k];
   const dialog = el('dialog', '', { class: 'journal-dialog relationship-dialog', 'aria-labelledby': 'relationshipHeading' });
   const shell = el('div', '', { class: 'journal-shell' });
   const toolbar = el('header', '', { class: 'journal-toolbar' });
@@ -71,20 +82,21 @@ export function initBuerRelationships({ getLanguage, account, openAccount }) {
   dialog.addEventListener('cancel', e => { e.preventDefault(); close.click(); });
   function reset(title) { content.replaceChildren(); heading.textContent = title; close.setAttribute('aria-label', l('关闭', 'Close')); status.textContent = ''; dirty = false; }
   function login() {
-    reset(l('关系档案', 'Relationships'));
-    content.append(el('h3', l('把在意的人，慢慢读懂。', 'Get to know the people who matter.')),
+    listContent.replaceChildren();
+    listContent.append(el('h3', l('把在意的人，慢慢读懂。', 'Get to know the people who matter.')),
       el('p', l('为家人、同事或伙伴保存独立档案。资料仅你可见，同一账号可在 H5 与 App 使用。', 'Keep private profiles for family, colleagues and partners, with the same account on web and App.')),
       button('登录并继续', 'Sign in to continue', () => { dialog.close(); openAccount(); }, 'journal-primary'));
   }
   async function list() {
     invalidate(); const ticket = epoch;
+    dialog.close();listContent.replaceChildren();
     if (!owner) { login(); return; }
-    reset(l('关系档案', 'Relationships')); busy = true; status.textContent = l('正在读取档案…', 'Loading profiles…');
-    try { const rows = await repo.people(owner); if (!valid(ticket)) return; people = rows; drawList(); }
-    catch (error) { if (valid(ticket)) { status.textContent = errorMessage(error); content.append(button('重新读取', 'Retry', list)); } }
+    busy = true;listContent.append(el('p',l('正在读取身边的人…','Loading people…'),{role:'status'}));
+    try { const [rows,context] = await Promise.all([repo.people(owner),repo.personal(owner)]); if (!valid(ticket)) return; people = rows;personal=context;drawList(); }
+    catch (error) { if (valid(ticket)) { listContent.replaceChildren(el('p',errorMessage(error)),button('重新读取', 'Retry', list)); } }
     finally { if (ticket === epoch) busy = false; }
   }
-  async function open() { trigger = document.activeElement; if (!dialog.open) dialog.showModal(); await list(); }
+  async function open() { if(dialog.open&&(busy||!await mayLeave()))return;trigger=document.activeElement;document.body.dataset.workspace='people';window.scrollTo({top:0,behavior:'instant'});await list(); }
   function sources(value) { return ({ self: l('本人资料', 'My profile'), permission: l('经本人允许', 'With permission'), confirmed: l('本人确认', 'Confirmed by them'), guardian: l('监护人管理', 'Managed by guardian') })[value] || ''; }
   function chartSummary(person) {
     const box = el('div', '', { class: 'relationship-summary' });
@@ -103,34 +115,37 @@ export function initBuerRelationships({ getLanguage, account, openAccount }) {
     box.append(details); return box;
   }
   function drawList() {
-    reset(l('关系档案', 'Relationships'));
-    content.append(el('span', l('人与人之间，留一点理解', 'ROOM TO UNDERSTAND EACH OTHER'), { class: 'journal-kicker' }),
-      el('h3', l('从「我」开始，认识我们。', 'Start with me. Understand us.')),
-      el('p', l('先确认哪份档案是你，再添加家人或伙伴。添加的资料仅你可见；每次对话只参考你选中的双方。', 'Identify your own profile, then add family or partners. Profiles stay private; each conversation uses only the selected pair.')));
+    const content=listContent;content.replaceChildren();
     const actions = el('div', '', { class: 'journal-actions' });
-    if (!people.some(p => p.is_self)) actions.append(button('建立我的主档案', 'Create my profile', () => edit(null, true), 'journal-primary'));
-    actions.append(button('添加人物', 'Add a person', () => edit(null, false)), button('刷新', 'Refresh', list)); content.append(actions);
+    actions.append(button('＋ 添加身边的人', '＋ Add someone', () => edit(null, false), 'journal-primary'),button('我的参考资料与授权','My context & permissions',settings),button('刷新', 'Refresh', list)); content.append(actions);
+    content.append(el('p',personal?l('自己的资料沿用已有记录，无需重复建档。可在「我的参考资料与授权」更新同步。','Your existing personal information is reused. Update it in My context & permissions.'):l('只需添加对方。聊之前可授权使用你已有的资料，无需再建立自己的档案。','Just add the other person. Authorize your existing information before chatting; no duplicate self profile.'),{class:'people-note'}));
+    const filters=el('div','',{class:'people-filters',role:'group','aria-label':l('按关系筛选','Filter relationships')});
+    for(const [zh,en] of [['',''],...RELATION_TYPES]){const b=button(zh||'全部',en||'All',()=>{filter=zh;drawList();});b.setAttribute('aria-pressed',String(filter===zh));filters.append(b);}content.append(filters);
     const cards = el('div', '', { class: 'journal-list relationship-people' });
-    for (const person of [...people].sort((a,b) => Number(b.is_self) - Number(a.is_self))) {
+    const visible=people.filter(p=>!p.is_self&&(!filter||p.relationship===filter||(filter==='其他'&&!RELATION_TYPES.some(([name])=>name===p.relationship))));
+    for (const person of visible) {
       const card = el('article', '', { class: 'relationship-person' });
       card.append(el('span', person.nickname.slice(0, 1), { class: 'relationship-avatar', 'aria-hidden': 'true' }),
-        el('small', person.is_self ? l('我的主档案', 'MY PROFILE') : person.relationship), el('h3', person.nickname), chartSummary(person));
-      if (person.notes) card.append(el('p', `${l('我的观察：', 'My observation: ')}${person.notes}`, { class: 'relationship-notes' }));
+        el('small', person.relationship), el('h3', person.nickname));
+      const core=person.chart?.core;card.append(el('p',core?`${chartText(core.type)} · ${core.profile} · ${chartText(core.authority)}`:l('出生时刻待确认 · 也可以先聊聊','Birth time unknown · You can still talk')));
       const controls = el('div', '', { class: 'journal-actions' });
-      controls.append(button('编辑档案', 'Edit profile', () => edit(person, person.is_self)));
+      controls.append(button('了解 TA', 'About them', () => detail(person)));
       if (!person.is_self) controls.append(button('聊聊我们的关系', 'Talk about us', () => conversation(person), 'journal-primary'));
       card.append(controls); cards.append(card);
     }
-    if (!people.length) cards.append(el('p', l('可以从已有说明书导入，也可以重新填写出生信息。', 'Import a saved reading or enter birth details.'), { class: 'journal-empty' }));
+    if (!visible.length) cards.append(el('p', l('从一个你在意的人开始。选择关系，填写 TA 的出生信息，就可以聊聊你们之间的事。', 'Start with someone who matters. Choose a relationship and add their birth information.'), { class: 'journal-empty' }));
     content.append(cards);
   }
+  function detail(person){invalidate();reset(person.nickname);if(!dialog.open)dialog.showModal();content.append(el('p',person.relationship),chartSummary(person));if(person.notes)content.append(el('p',person.notes));content.append(button('编辑 TA 的资料','Edit their profile',()=>edit(person,false)),button('聊聊我们的关系','Talk about us',()=>conversation(person),'journal-primary'));}
   function edit(person, isSelf) {
     invalidate(); const ticket = epoch, id = person?.id || crypto.randomUUID();
+    if(!dialog.open)dialog.showModal();
     reset(l(isSelf ? '我的主档案' : '人物档案', isSelf ? 'My profile' : 'Person profile'));
     content.append(button('← 返回档案', '← Back to profiles', async () => { if (await mayLeave()) await list(); }));
     const form = el('form'); content.append(form);
     const nickname = field(form, '称呼（建议使用昵称）', 'Preferred name', 'text', person?.nickname || '', { maxlength: '60', required: '', autocomplete: 'off' });
     const relationship = field(form, '与我的关系', 'Relationship to me', 'text', person?.relationship || (isSelf ? l('自己', 'Me') : ''), { maxlength: '60', required: '', placeholder: l('例如：夫人、女儿、同事、合伙人', 'Partner, daughter, colleague…') });
+    const options=el('div','',{class:'people-filters'});for(const [zh,en] of RELATION_TYPES)options.append(button(zh,en,()=>{relationship.value=zh;dirty=true;}));relationship.parentElement.after(options);
     if (isSelf) relationship.readOnly = true;
     const source = field(form, '资料来源', 'Source', 'select');
     for (const [value, zh, en] of (isSelf ? [['self','我自己的资料','My own information']] : [['permission','已获得本人允许','I have their permission'], ['confirmed','由本人确认的资料','Confirmed by this person'], ['guardian','我是其监护人','I am their guardian']])) option(source, value, zh, en);
@@ -196,32 +211,51 @@ export function initBuerRelationships({ getLanguage, account, openAccount }) {
       finally { if (ticket === epoch) busy = false; }
     }, 'journal-danger'));
   }
+  function settings(afterSave=null){
+    invalidate();const ticket=epoch;reset(l('我的参考资料与授权','My context & permissions'));if(!dialog.open)dialog.showModal();
+    const current=cleanPersonalContext(personal?.payload||{}),form=el('form');content.append(form);
+    form.append(el('p',l('不用重新填写自己的人类图。确认已有说明书属于你，再选择允许豆豆龙参考的资料。授权按账号保存，可随时关闭。','No need to enter your birth details again. Select your existing reading and the sources Doudoulong may use. These account permissions can be changed any time.')));
+    const controls={};for(const key of SCOPE_KEYS)controls[key]=consent(form,scopeName(key),scopeName(key),current.scopes[key]);
+    const readings=getReadings().slice(0,30).filter(x=>x.properties);
+    const legacy=people.find(p=>p.is_self&&p.chart?.core);if(legacy){const c=legacy.chart.core;readings.push({id:'legacy',label:l('之前确认的本人图谱','Previously confirmed personal chart'),properties:{Type:c.type,Strategy:c.strategy,'Inner Authority':c.authority,Profile:c.profile,Definition:c.definition,'Incarnation Cross':c.incarnationCross}});}
+    const select=field(form,'我的说明书（只选属于自己的）','My reading (select only your own)','select');
+    option(select,'keep',current.chart?'保留账号已确认的说明书':'暂不使用本人说明书',current.chart?'Keep my confirmed reading':'No personal reading yet');
+    readings.forEach((r,i)=>option(select,String(i),r.label||`说明书 ${i+1}`,r.label||`Reading ${i+1}`));option(select,'none','移除账号中的本人图谱摘要','Remove my saved chart summary');
+    const importLocal=consent(form,'我确认本机成长档案和普通对话属于我，同意更新到当前账号的参考资料','I confirm the local growth profile and general chats are mine. Update this account’s reference snapshot.');
+    form.append(el('p',l('本机资料不会因登录而自动归入账号。勾选后同步已允许 AI 使用的访谈、经历，以及行动复盘与普通对话；日记直接从本账号云端按问题检索。未勾选则保留上次同步的参考资料。','Local data is never assigned to an account merely by signing in. Confirm to import AI-enabled reflections, experiences, actions and general chats. Journals are retrieved from this account’s cloud library. Otherwise the previous snapshot is kept.')));
+    if(personal)form.append(el('small',`${l('参考资料更新于：','Snapshot updated: ')}${new Date(personal.updated_at).toLocaleString()} · ${current.answers.length+current.stories.length+current.actions.length} ${l('条成长记录','growth records')} · ${current.chats.length} ${l('段普通对话','general chats')}`));
+    form.append(el('p',l('开启后，相关摘录会发送至我们的服务器及 第三方 AI 服务 生成建议。每次只选择与问题相关的片段，不代表读取完整人生；对方人物资料不会公开或分享给对方。','Enabled relevant excerpts are sent to our server and a third-party AI service for advice, not an entire life history. People’s profiles are private and never shared with them.')));
+    const confirm=consent(form,'我已了解并确认以上资料范围与 AI 使用方式','I understand and confirm these data sources and AI processing.');confirm.required=true;
+    const save=el('button',l('保存授权与参考资料','Save permissions & context'),{type:'submit',class:'journal-primary'});form.append(save);form.oninput=()=>{dirty=true;};
+    form.onsubmit=async e=>{e.preventDefault();if(busy||!valid(ticket)||!form.reportValidity())return;busy=true;save.disabled=true;
+      try{
+        let next={...current,scopes:Object.fromEntries(SCOPE_KEYS.map(k=>[k,controls[k].checked]))};
+        if(select.value==='none')next.chart=null;else if(select.value!=='keep')next.chart=readings[Number(select.value)]?.properties||null;
+        if(importLocal.checked){
+          const g=readGrowth(localStorage);next.answers=g.shareAssessment?QUESTIONS.filter(q=>g.answers[q.id]?.trim()).map(q=>({id:q.id,title:l(q.zh,q.en),body:g.answers[q.id]})):[];
+          next.stories=g.stories.filter(s=>s.useAI);next.actions=g.actions.map(a=>({id:a.id,title:a.title,body:`${a.metric}\n${a.reflection}\n${a.done?'已完成':'进行中'}`,date:a.due}));
+          let chats=[];try{chats=validChatHistory(JSON.parse(localStorage.getItem('buer-conversations-v1')||'[]'));}catch{}
+          next.chats=chats.map(c=>({id:c.id,title:c.messages.find(m=>m.role==='user')?.content.slice(0,80)||'',body:c.messages.filter(m=>!m.failed).map(m=>`${m.role}: ${m.content}`).join('\n').slice(0,4000),date:new Date(c.date).toISOString()}));
+        }
+        const saved=await repo.savePersonal(owner,personal?.revision||0,next);if(!valid(ticket))return;personal=saved;dirty=false;
+        if(afterSave)await afterSave();else await list();
+      }catch(error){if(valid(ticket))status.textContent=errorMessage(error);}finally{if(ticket===epoch){busy=false;save.disabled=false;}}
+    };
+  }
   async function conversation(person, previous = null) {
-    const own = people.find(p => p.is_self);
-    if (!own) { status.textContent = l('请先建立并确认你的主档案。', 'Create and confirm your own profile first.'); return; }
     invalidate(); const ticket = epoch;
-    reset(`${own.nickname} × ${person.nickname}`);
+    reset(l('我与','Me & ') + person.nickname);if(!dialog.open)dialog.showModal();
     const controls = el('div', '', { class: 'journal-actions' });
     controls.append(button('← 返回档案', '← Back to profiles', async () => { if (await mayLeave()) await list(); }), button('开启新对话', 'New conversation', async () => { if (await mayLeave()) await conversation(person); })); content.append(controls);
-    const pair = el('details', '', { class: 'relationship-context' }); pair.append(el('summary', l('本次参考：我 + ', 'Using: me + ') + person.nickname));
-    const summaries = el('div', '', { class: 'journal-list' });
-    for (const p of [own, person]) { const section = el('section'); section.append(el('h3', p.nickname), chartSummary(p)); summaries.append(section); }
-    pair.append(summaries, el('p', l('只发送双方的类型、策略、权威与人生角色，以及你本次选择的摘录。不会自动发送姓名、出生信息、人物备注或其他人的资料。', 'Only the pair’s type, strategy, authority, profile and selected excerpts are sent. Names, birth details, profile notes and other people are not automatically included.'))); content.append(pair);
-    const journalBox = el('details', '', { class: 'relationship-context' }); journalBox.append(el('summary', l('选择日记摘录（可选，最多两篇）', 'Choose journal excerpts (optional, up to two)')));
-    const journalList = el('div'); journalBox.append(journalList); content.append(journalBox);
-    const selected = new Map();
-    const journalLoad = button('读取我的日记', 'Load my journal', async () => {
-      const rows = await repo.journals(owner); if (!valid(ticket)) return;
-      journalList.replaceChildren(); if (!rows.length) journalList.append(el('p', l('还没有已同步的日记。', 'No synced entries yet.')));
-      for (const row of rows) {
-        const item = el('div', '', { class: 'relationship-excerpt' });
-        const input = consent(item, `${row.entry_date} · ${row.title || row.body.slice(0,24)}`, `${row.entry_date} · ${row.title || row.body.slice(0,24)}`);
-        const excerpt = row.body.slice(0,1200); item.append(el('p', excerpt)); input.disabled = !excerpt.trim();
-        input.onchange = () => { if (input.checked && selected.size >= 2) { input.checked = false; return; } if (input.checked) selected.set(row.id, { id: row.id, excerpt }); else selected.delete(row.id); }; journalList.append(item);
-      }
-    }); journalList.append(journalLoad);
-    const outdated = previous && (previous.self_id !== own.id || previous.self_revision !== own.revision || previous.person_revision !== person.revision);
-    activeThread = previous ? { ...previous, messages: [...previous.messages] } : { id: crypto.randomUUID(), revision: 0, self_id: own.id, person_id: person.id, self_revision: own.revision, person_revision: person.revision, messages: [] };
+    const pair = el('details', '', { class: 'relationship-context' });pair.open=true;pair.append(el('summary', l('本次参考：TA 的人类图 + 我的授权资料','Using: their chart + my authorized context')));
+    pair.append(el('p',`${person.relationship} · ${person.chart?.core?`${chartText(person.chart.core.type)} / ${person.chart.core.profile}`:l('暂无精确人类图','No precise chart')}`));
+    const allowed=cleanPersonalContext(personal?.payload||{}).scopes,scopes={...allowed};
+    const scopeControls=[];for(const key of SCOPE_KEYS){const c=consent(pair,scopeName(key),scopeName(key),scopes[key]);c.disabled=!allowed[key]||Boolean(previous);scopeControls.push(c);c.onchange=()=>{scopes[key]=c.checked;thread.id=crypto.randomUUID();thread.revision=0;thread.messages=[];drawMessages();status.textContent=l('参考范围已更改，将开启新对话，不携带旧回复。','New context scope starts a fresh conversation without old replies.');};}
+    pair.append(button(personal?'调整授权 / 更新我的资料':'首次授权我的资料',personal?'Update permissions / my context':'Authorize my context',()=>settings(()=>conversation(person))));
+    pair.append(el('small',l('按问题选取相关片段；本机资料使用上次确认同步的版本。日记检索最近 1000 篇，对话检索本人与 TA 最近 30 段，不调用其他人物档案。','Relevant excerpts only. Local records use your confirmed snapshot. Searches the latest 1,000 journals and 30 conversations with this person, never other people’s profiles.')));content.append(pair);
+    const sources=el('details','',{class:'relationship-context'});sources.append(el('summary',l('本次实际参考的摘录来源','Sources retrieved for this reply')));const sourceList=el('ul');sources.append(sourceList);content.append(sources);
+    const outdated = Boolean(previous);
+    activeThread = previous ? { ...previous, messages: [...previous.messages] } : { id: crypto.randomUUID(), revision: 0, person_id: person.id, person_revision: person.revision, context_revision:personal?.revision||0, messages: [] };
     const thread = activeThread;
     const messages = el('div', '', { class: 'relationship-messages', 'aria-live': 'polite' }); content.append(messages);
     function drawMessages() {
@@ -241,11 +275,12 @@ export function initBuerRelationships({ getLanguage, account, openAccount }) {
       try { const saved = await repo.saveConversation(owner, thread, unsavedThread); if (!valid(ticket)) return; Object.assign(thread, saved); unsavedThread = null; dirty = Boolean(question.value.trim()); retrySave.hidden = true; send.disabled = false; status.textContent = l('对话已同步', 'Conversation synced'); }
       finally { if (ticket === epoch) busy = false; }
     }); retrySave.hidden = true; form.append(retrySave);
-    content.append(form, el('p', l('发送后由 DeepSeek 生成回应，对话保存到你的私密账号。建议会结合你的描述；人类图只是观察线索，不代表对方真实想法。', 'DeepSeek generates the reply; the conversation is saved privately to your account. Advice uses your account of events. Charts are reflection prompts, not evidence of the other person’s thoughts.')));
-    if (outdated) { form.hidden = true; journalBox.hidden = true; status.textContent = l('双方档案已更新。这是旧对话，可阅读；继续聊请开启新对话。', 'The profiles changed. This conversation is read-only; start a new one to continue.'); }
+    content.append(form, el('p', l('发送后由 第三方 AI 服务 生成回应，对话保存到你的私密账号。建议会结合你的描述；人类图只是观察线索，不代表对方真实想法。', 'AI generates the reply; the conversation is saved privately to your account. Advice uses your account of events. Charts are reflection prompts, not evidence of the other person’s thoughts.')));
+    if (outdated) { form.hidden = true; status.textContent = l('这是保存的对话。开启新对话将使用最新资料与授权，避免带入已关闭的内容。', 'Saved conversation. Start a new one to use current information and permissions.'); }
     form.onsubmit = async event => {
       event.preventDefault(); if (busy || unsavedThread || outdated || !valid(ticket) || !form.reportValidity()) return;
       busy = true; send.disabled = true; question.disabled = true;
+      scopeControls.forEach(c=>c.disabled=true);
       const value = question.value.trim(); const before = [...thread.messages];
       try {
         if (!await ensureAIConsent() || !valid(ticket)) return;
@@ -254,12 +289,12 @@ export function initBuerRelationships({ getLanguage, account, openAccount }) {
         if (!session.data?.session?.access_token) throw Error('SIGN_IN_REQUIRED');
         const access = await chatAccess(); if (!valid(ticket)) return;
         const response = await fetch(`${account.config.apiUrl}/v1/chat`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.data.session.access_token}` },
-          body: JSON.stringify({ mode: 'relationship', relationship: { selfId: own.id, personId: person.id, selfRevision: own.revision, personRevision: person.revision, journal: [...selected.values()] }, messages: relationshipMessages(thread.messages, value), ...access }), signal: controller.signal });
+          body: JSON.stringify({ mode: 'relationship', relationship: { version:2, personId: person.id, personRevision: person.revision, contextRevision:personal?.revision||0, scopes }, messages: relationshipMessages(thread.messages, value), ...access }), signal: controller.signal });
         if (!response.ok) { if (response.status === 402) showMembership(); throw Error((await response.json().catch(() => ({}))).error || 'AI_UNAVAILABLE'); }
         if (!valid(ticket)) return;
         const answer = { role: 'assistant', content: '' }; thread.messages.push({ role: 'user', content: value }, answer); drawMessages();
         let completeText = '';
-        await readBuerEvents(response.body, (type, data) => { if (valid(ticket) && type === 'delta') { completeText += data.text; answer.content = completeText.length <= 6000 ? completeText : completeText.slice(0,5920) + l('\n（回复较长，已保留前半部分。可以继续追问。）', '\n(Long reply shortened. Ask a follow-up to continue.)'); drawMessages(); } });
+        await readBuerEvents(response.body, (type, data) => { if(!valid(ticket))return;if(type==='context'){sourceList.replaceChildren(...(data.sources||[]).map(s=>el('li',`${s.kind} · ${s.title||s.date||s.id}`)));if(!data.sources?.length)sourceList.append(el('li',l('未检索到相关个人摘录，仅参考可用图谱与当前提问。','No personal excerpts retrieved; using available charts and your question.')));} if (type === 'delta') { completeText += data.text; answer.content = completeText.length <= 6000 ? completeText : completeText.slice(0,5920) + l('\n（回复较长，已保留前半部分。可以继续追问。）', '\n(Long reply shortened. Ask a follow-up to continue.)'); drawMessages(); } });
         if (!valid(ticket)) return;
         thread.messages = thread.messages.slice(-40); question.value = ''; unsavedThread = crypto.randomUUID(); dirty = true;
         const saved = await repo.saveConversation(owner, thread, unsavedThread);
@@ -268,7 +303,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount }) {
         if (!valid(ticket)) return;
         if (!unsavedThread) { thread.messages = before; drawMessages(); }
         retrySave.hidden = !unsavedThread; status.textContent = errorMessage(error);
-      } finally { if (ticket === epoch) { controller = null; busy = false; send.disabled = Boolean(unsavedThread); question.disabled = false; } }
+      } finally { if (ticket === epoch) { controller = null; busy = false; send.disabled = Boolean(unsavedThread); question.disabled = false;scopeControls.forEach((c,i)=>c.disabled=!allowed[SCOPE_KEYS[i]]||Boolean(unsavedThread)); } }
     };
     const history = el('details', '', { class: 'relationship-context' }); history.append(el('summary', l('过往关系对话', 'Previous conversations')));
     history.append(button('读取过往对话', 'Load conversations', async () => {
@@ -281,10 +316,12 @@ export function initBuerRelationships({ getLanguage, account, openAccount }) {
   const nav = document.querySelector('#drawerHome .drawer-nav');
   const entry = button('', '', open); const icon = el('span', '', { class: 'drawer-nav-icon' }); icon.append(el('i', '', { class: 'ph ph-users', 'aria-hidden': 'true' }));
   const label = el('span'); const title = el('strong'), hint = el('small'); label.append(title, hint); entry.append(icon, label, el('span','›',{class:'drawer-chevron','aria-hidden':'true'})); nav?.prepend(entry);
-  function language() { title.textContent = l('关系档案', 'Relationships'); hint.textContent = l('我与家人、同事和伙伴', 'Me, family, colleagues and partners'); if (dialog.open && !dirty && !busy) void list(); }
+  function language() { title.textContent = l('身边的人', 'People');hint.textContent=l('理解彼此，让相处多一点从容','Understand each other, with room to grow');tab.querySelector('span').textContent=l('身边的人','People');
+    hero.replaceChildren(el('p',l('BUER WITHIN / 身边的人','BUER WITHIN / PEOPLE'),{class:'growth-eyebrow'}),el('h1',l('理解彼此，让相处多一点从容。','Understand each other. Make room to grow.')),el('p',l('从你在意的人开始，聊聊你们之间的事。','Start with someone who matters. Talk about life together.')),el('img','',{class:'companion-section-art',src:'assets/companion-profile.webp',alt:'',width:'320',height:'320'}));
+    if(document.body.dataset.workspace==='people'&&!dialog.open&&!busy)void list(); }
   document.addEventListener('buer:language', language); language();
   document.addEventListener('buer:relationships', () => void open());
-  account?.subscribe(user => { const next = user?.id || null; if (owner === next) return; invalidate(); owner = next; people = []; content.replaceChildren(); status.textContent = ''; if (dialog.open) void list(); });
+  account?.subscribe(user => { const next = user?.id || null; if (owner === next) return; invalidate(); owner = next; people = [];personal=null; content.replaceChildren();listContent.replaceChildren(); status.textContent = '';dialog.close(); if (document.body.dataset.workspace==='people') void list(); });
   window.addEventListener('beforeunload', event => { if (dirty || busy) { event.preventDefault(); event.returnValue = ''; } });
   const viewport = () => { const v = window.visualViewport, follow = v && matchMedia('(max-width:760px)').matches && Math.abs(v.scale-1)<.01; dialog.style.setProperty('--journal-viewport-height', follow ? `${v.height}px` : '100dvh'); dialog.style.setProperty('--journal-viewport-top', follow ? `${v.offsetTop}px` : '0px'); };
   window.visualViewport?.addEventListener('resize', viewport); window.visualViewport?.addEventListener('scroll', viewport); viewport();

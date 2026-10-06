@@ -1,4 +1,5 @@
 import { validateHumanDesignProfileSnapshot } from '../../shared/human-design-profile-contract.js';
+import { cleanPersonalContext } from './buer-personal-context.js';
 
 export const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 export const PERSON_SOURCES = ['self', 'permission', 'confirmed', 'guardian'];
@@ -53,6 +54,11 @@ export function relationshipRepository(account) {
     if (error) throw error; return Array.isArray(data) ? data[0] : data;
   }
   return {
+    async personal(owner) {
+      check(owner);const {data,error}=await client.from('buer_personal_context').select('*').eq('user_id',owner).limit(1);
+      check(owner);if(error)throw error;return data[0]||null;
+    },
+    savePersonal(owner, revision, payload) {return rpc('buer_save_personal_context',{expected_revision:revision,mutation:crypto.randomUUID(),context_payload:cleanPersonalContext(payload)},owner);},
     async people(owner) {
       check(owner);
       const { data, error } = await client.from('buer_people').select('*').eq('user_id', owner).is('deleted_at', null).order('updated_at', { ascending: false }).limit(100);
@@ -70,6 +76,7 @@ export function relationshipRepository(account) {
       check(owner); if (error) throw error; return data;
     },
     saveConversation(owner, thread, mutation) {
+      if(thread.context_revision!=null)return rpc('buer_save_people_conversation',{conversation_id:thread.id,expected_revision:thread.revision||0,mutation,other_id:thread.person_id,other_revision:thread.person_revision,personal_revision:thread.context_revision,conversation_messages:thread.messages},owner);
       return rpc('buer_save_relationship_conversation', { conversation_id: thread.id, expected_revision: thread.revision || 0,
         mutation, own_id: thread.self_id, other_id: thread.person_id, own_revision: thread.self_revision,
         other_revision: thread.person_revision, conversation_messages: thread.messages }, owner);

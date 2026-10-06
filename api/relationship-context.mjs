@@ -1,6 +1,11 @@
 import { UUID, anonymousPerson } from '../src/services/buer-relationships.js';
+import { SCOPE_KEYS, cleanPersonalContext, selectPersonalContext, rankExcerpts } from '../src/services/buer-personal-context.js';
 
 export function validateRelationshipSelection(value) {
+  if(value?.version===2){
+    if(Object.keys(value).some(k=>!['version','personId','personRevision','contextRevision','scopes'].includes(k))||!UUID.test(value.personId)||!Number.isInteger(value.personRevision)||value.personRevision<1||!Number.isInteger(value.contextRevision)||value.contextRevision<0||!value.scopes||typeof value.scopes!=='object'||Array.isArray(value.scopes)||Object.keys(value.scopes).some(k=>!SCOPE_KEYS.includes(k))||SCOPE_KEYS.some(k=>typeof value.scopes[k]!=='boolean'))throw Error('INVALID_INPUT');
+    return value;
+  }
   if (!value || typeof value !== 'object' || Object.keys(value).some(k => !['selfId','personId','selfRevision','personRevision','journal'].includes(k)) ||
     !UUID.test(value.selfId) || !UUID.test(value.personId) || value.selfId === value.personId ||
     !Number.isInteger(value.selfRevision) || value.selfRevision < 1 || !Number.isInteger(value.personRevision) || value.personRevision < 1) throw Error('INVALID_INPUT');
@@ -11,7 +16,7 @@ export function validateRelationshipSelection(value) {
   return { ...value, journal };
 }
 
-export async function loadRelationshipContext(value, authorization, { environment = process.env, fetchImpl = fetch } = {}) {
+export async function loadRelationshipContext(value, authorization, { environment = process.env, fetchImpl = fetch, query = '' } = {}) {
   const selected = validateRelationshipSelection(value);
   if (typeof authorization !== 'string' || !/^Bearer [A-Za-z0-9_.-]+$/.test(authorization)) throw Error('SIGN_IN_REQUIRED');
   const url = environment.BUER_ACCOUNT_URL, key = environment.BUER_ACCOUNT_PUBLISHABLE_KEY;
@@ -24,6 +29,35 @@ export async function loadRelationshipContext(value, authorization, { environmen
   };
   const user = await get('/auth/v1/user');
   if (!UUID.test(user.id)) throw Error('SIGN_IN_REQUIRED');
+  if(selected.version===2){
+    const rows=await get(`/rest/v1/buer_people?select=id,user_id,is_self,source,birth,chart,revision,relationship&deleted_at=is.null&id=eq.${selected.personId}`);
+    const other=rows.find(x=>x.id===selected.personId&&x.user_id===user.id&&!x.is_self);
+    if(!other||other.revision!==selected.personRevision)throw Error('PROFILES_CHANGED');
+    const settings=await get(`/rest/v1/buer_personal_context?select=user_id,payload,revision&user_id=eq.${user.id}&limit=1`);
+    const own=settings.find(x=>x.user_id===user.id);
+    if((own?.revision||0)!==selected.contextRevision)throw Error('PROFILES_CHANGED');
+    const personal=selectPersonalContext(own?.payload||{},query,selected.scopes);
+    const references=[...personal.excerpts];
+    let journalScanned=0;
+    if(personal.scopes.journal){
+      let best=[];
+      for(let offset=0;offset<1000;offset+=100){
+        const page=await get(`/rest/v1/buer_journal_entries?select=id,user_id,title,body,entry_date&user_id=eq.${user.id}&deleted_at=is.null&order=entry_date.desc,id.asc&limit=100&offset=${offset}`);
+        const owned=page.filter(x=>x.user_id===user.id);journalScanned+=owned.length;
+        best=rankExcerpts([...best,...owned.map(x=>({id:x.id,title:x.title,body:x.body,date:x.entry_date,kind:'journal'}))],query,5,1800);
+        if(page.length<100)break;
+      }
+      references.push(...best);
+    }
+    if(personal.scopes.history&&SCOPE_KEYS.every(k=>personal.scopes[k]===cleanPersonalContext(own?.payload||{}).scopes[k])){
+      // Never pull another person's relationship conversation into this pair.
+      const rows=await get(`/rest/v1/buer_relationship_conversations?select=id,user_id,person_id,context_revision,messages,updated_at&user_id=eq.${user.id}&person_id=eq.${selected.personId}&context_revision=eq.${selected.contextRevision}&order=updated_at.desc&limit=30`);
+      references.push(...rankExcerpts(rows.filter(x=>x.user_id===user.id&&x.person_id===selected.personId&&x.context_revision===selected.contextRevision).map(x=>({id:x.id,title:'我们之前的对话',date:x.updated_at,body:x.messages.map(m=>`${m.role}: ${m.content}`).join('\n'),kind:'relationship-history'})),query,3,1800));
+    }
+    return {me:{chart:personal.chart},other:anonymousPerson(other),relationship:String(other.relationship||'').slice(0,60),personalReferences:references,
+      sources:references.map(({id,title,date,kind})=>({id,title,date,kind})),scopes:personal.scopes,journalScanned,
+      limitations:'Bounded relevant excerpts: imported personal snapshot; newest 1000 journals and 30 conversations with this person. Not a complete life history.'};
+  }
   // Forward the caller's token, never a service key: RLS also enforces this selection.
   const rows = await get(`/rest/v1/buer_people?select=id,user_id,is_self,source,birth,chart,revision&deleted_at=is.null&id=in.(${selected.selfId},${selected.personId})`);
   const own = rows.find(x => x.id === selected.selfId && x.user_id === user.id && x.is_self);

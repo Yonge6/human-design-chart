@@ -3,7 +3,7 @@ import { createJournalStore, indexedJournalCache, journalRepository, localDate }
 
 const copy = {
   zh: { journal: '见己日记', hint: '记录生活，慢慢认识自己', account: '我的账号', accountHint: 'H5 与 App，同一个你',
-    kicker: '只属于你的记录', title: '把今天，留给自己。', subtitle: '日记仅自己可见。登录同一账号，在 H5 和 App 接着写。日记不会自动发送给 AI。',
+    kicker: '只属于你的记录', title: '把今天，留给自己。', subtitle: '日记仅自己可见。登录同一账号，在 H5 和 App 接着写。默认不供 AI 使用；可在「身边的人」明确授权按需参考。',
     login: '登录，开始记录', loginHint: '首次登录会创建不二账号。请在 H5 和 App 使用同一种登录方式。',
     unconfigured: '账号同步服务正在准备中，暂时无法登录。', apple: '通过 Apple 登录', google: '通过 Google 登录',
     switch: '切换账号', logout: '退出登录', export: '导出日记', deleteAccount: '删除账号与云端资料',
@@ -24,7 +24,7 @@ const copy = {
     pendingLeave: '请先完成日记同步或处理冲突，再切换账号。', saving: '正在保存…',
   },
   en: { journal: 'Private journal', hint: 'Keep a moment. Get to know yourself.', account: 'My account', accountHint: 'One account on web and App',
-    kicker: 'A space of your own', title: 'Leave a little room for today.', subtitle: 'Only you can view your journal. Use the same account on web and App. Entries are not automatically sent to AI.',
+    kicker: 'A space of your own', title: 'Leave a little room for today.', subtitle: 'Only you can view your journal. Use the same account on web and App. AI access is off by default; authorize relevant excerpts in People if you wish.',
     login: 'Sign in to start writing', loginHint: 'Your first sign-in creates a Buer account. Use the same sign-in method on web and App.',
     unconfigured: 'Account sync is being prepared. Sign-in is not available yet.', apple: 'Sign in with Apple', google: 'Sign in with Google',
     switch: 'Switch account', logout: 'Sign out', export: 'Export journal', deleteAccount: 'Delete account and cloud data',
@@ -104,9 +104,6 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
   close.onclick = exit;
   dialog.addEventListener('cancel', event => { event.preventDefault(); exit(); });
 
-  const home = document.querySelector('.buer-welcome');
-  const homeEntry = button('', () => open('journal', homeEntry), 'journal-home-entry');
-  home?.append(homeEntry);
   const nav = document.querySelector('#drawerHome .drawer-nav');
   function navEntry(key, hint, next, icon) {
     const b = button('', () => open(next, b));
@@ -261,7 +258,7 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
   }
   async function languageChanged() {
     await pendingEdit.catch(() => {});
-    homeEntry.textContent = `${t('journal')} ↗`; refreshJournalEntry(); refreshAccountEntry();
+    refreshJournalEntry(); refreshAccountEntry();
     if (editing) { const row = state.entries.find(x => x.id === currentId); if (row) startEntry(row); }
     render();
   }

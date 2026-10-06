@@ -59,6 +59,7 @@ test('relationship SQL enforces two-owner isolation, CAS, identity, revisions, d
       insert into auth.users values('${A}'),('${B}');`);
     await db.exec(await readFile(new URL('../supabase/migrations/202610050002_relationships.sql',import.meta.url),'utf8'));
     await db.exec(await readFile(new URL('../supabase/migrations/202610060001_relationship_self_delete.sql',import.meta.url),'utf8'));
+    await db.exec(await readFile(new URL('../supabase/migrations/202610060002_people_context.sql',import.meta.url),'utf8'));
     const as=async owner=>db.exec(`reset role;set role authenticated;select set_config('request.jwt.claim.sub','${owner}',false);`);
     const save=(id,data,revision=0,mutation=A)=>db.query('select * from public.buer_save_person($1,$2,$3,$4)',[id,revision,mutation,data]);
     const chat=(own=me,partner=wife,rev=1)=>db.query('select * from public.buer_save_relationship_conversation($1,0,$2,$3,$4,$5,1,$6)',[thread,A,own,partner,rev,[{role:'user',content:'An event'}]]);
@@ -80,9 +81,15 @@ test('relationship SQL enforces two-owner isolation, CAS, identity, revisions, d
     await assert.rejects(save(me,person(true)),/profile_conflict/);
     await assert.rejects(chat(),/profiles_changed/);
     const outsider='00000000-0000-4000-b000-000000000004';await save(outsider,person());
+    const payload={version:2,scopes:{chart:true,growth:true,journal:true,history:true},chart:null,answers:[],stories:[],actions:[],chats:[]};
+    await db.query('select * from public.buer_save_personal_context(0,$1,$2)',[A,payload]);
+    await db.query('select * from public.buer_save_people_conversation($1,0,$2,$3,1,1,$4)',[B,A,outsider,[{role:'user',content:'No self profile needed'}]]);
+    await assert.rejects(db.query('select * from public.buer_save_personal_context(0,$1,$2)',[B,payload]),/context_conflict/);
+    await as(A);assert.equal((await db.query('select * from public.buer_personal_context')).rows.length,0);
+    await assert.rejects(db.query('select * from public.buer_save_people_conversation($1,0,$2,$3,1,0,$4)',[B,A,outsider,[{role:'user',content:'Other owner denied'}]]),/profiles_changed/);
     await as(A);await assert.rejects(chat(me,outsider),/profiles_changed/);
     await chat();assert.equal((await db.query('select * from public.buer_relationship_conversations')).rows.length,1);
-    await as(B);assert.equal((await db.query('select * from public.buer_relationship_conversations')).rows.length,0);
+    await as(B);const ownedThreads=(await db.query('select * from public.buer_relationship_conversations')).rows;assert.equal(ownedThreads.length,1);assert.ok(ownedThreads.every(x=>x.user_id===B&&x.self_id===null));
     await as(A);await save(wife,{...person(),notes:'changed'},1,B);
     await assert.rejects(save(wife,person(),1,other),/profile_conflict/);
     await assert.rejects(chat(wife,me,2),/profiles_changed/);
@@ -99,4 +106,15 @@ test('relationship SQL enforces two-owner isolation, CAS, identity, revisions, d
     await db.exec(`reset role;delete from auth.users where id='${A}'`);
     assert.equal((await db.query('select * from public.buer_people where user_id=$1',[A])).rows.length,0);
   }finally{await db.close();}
+});
+test('v2 context needs no self-person and enforces saved scopes and ownership',async()=>{
+ const scopes={chart:true,growth:true,journal:true,history:true};
+ const selected={version:2,personId:wife,personRevision:1,contextRevision:1,scopes};const calls=[];
+ const settings={environment:{BUER_ACCOUNT_URL:'https://example.test',BUER_ACCOUNT_PUBLISHABLE_KEY:'public'},query:'分工',fetchImpl:async(url)=>{calls.push(url);return Response.json(url.endsWith('/auth/v1/user')?{id:A}:url.includes('buer_people')?[{...person(),id:wife,user_id:A,revision:1}]:url.includes('buer_personal_context')?[{user_id:A,revision:1,payload:{scopes:{...scopes,history:false},stories:[{id:'s',title:'分工',body:'想说清楚职责'}]}}]:url.includes('journal')?[{id:other,user_id:A,title:'分工日记',body:'我们计划明确边界',entry_date:'2026-10-06'},{id:me,user_id:B,body:'other account secret'}]:[]);}};
+ const result=await loadRelationshipContext(selected,'Bearer token',settings);
+ assert.equal(result.me.chart,null);assert.equal(result.sources.length,2);assert.ok(!JSON.stringify(result).includes('other account secret'));
+ assert.ok(!calls.some(x=>x.includes('buer_relationship_conversations')));
+ await assert.rejects(loadRelationshipContext({...selected,contextRevision:2},'Bearer token',settings),/PROFILES_CHANGED/);
+ calls.length=0;await loadRelationshipContext({...selected,scopes:{chart:false,growth:false,journal:false,history:false}},'Bearer token',settings);
+ assert.ok(!calls.some(x=>x.includes('journal')));
 });

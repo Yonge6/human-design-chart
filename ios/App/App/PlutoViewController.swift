@@ -16,8 +16,8 @@ public class PlutoViewController: CAPBridgeViewController {
 @objc(BuerTabController)
 final class BuerTabController: UITabBarController, UITabBarControllerDelegate, WKScriptMessageHandler {
     private let workspace = PlutoViewController()
-    private let pages = [UIViewController(), UIViewController(), UIViewController()]
-    private let keys = ["home", "manual", "profile"]
+    private let pages = [UIViewController(), UIViewController(), UIViewController(), UIViewController()]
+    private let keys = ["home", "manual", "people", "profile"]
     private var webReady = false
 
     override func viewDidLoad() {
@@ -25,8 +25,8 @@ final class BuerTabController: UITabBarController, UITabBarControllerDelegate, W
         delegate = self
         overrideUserInterfaceStyle = .light
         view.backgroundColor = UIColor(red: 245 / 255, green: 242 / 255, blue: 234 / 255, alpha: 1)
-        let titles = ["见己", "成长档案", "我的"]
-        let symbols = ["house", "book", "person.crop.circle"]
+        let titles = ["见己", "成长档案", "身边的人", "我的"]
+        let symbols = ["house", "book", "person.2", "person.crop.circle"]
         for (index, page) in pages.enumerated() {
             page.tabBarItem = UITabBarItem(title: titles[index], image: UIImage(systemName: symbols[index]), selectedImage: UIImage(systemName: symbols[index] + ".fill"))
             page.view.backgroundColor = .clear
@@ -80,7 +80,7 @@ final class BuerTabController: UITabBarController, UITabBarControllerDelegate, W
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard let state = message.body as? [String: Any] else { return }
         webReady = true
-        let titles = state["english"] as? Bool == true ? ["Home", "Growth", "Me"] : ["见己", "成长档案", "我的"]
+        let titles = state["english"] as? Bool == true ? ["Home", "Growth", "People", "Me"] : ["见己", "成长档案", "身边的人", "我的"]
         for (index, page) in pages.enumerated() { page.tabBarItem.title = titles[index] }
         tabBar.isHidden = state["modal"] as? Bool == true
         if let key = state["workspace"] as? String, let index = keys.firstIndex(of: key), selectedIndex != index {

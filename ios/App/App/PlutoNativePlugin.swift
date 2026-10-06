@@ -4,15 +4,26 @@ import UIKit
 import WidgetKit
 import StoreKit
 import Security
+import AuthenticationServices
+import CryptoKit
 
 @objc(PlutoNativePlugin)
-public class PlutoNativePlugin: CAPPlugin, CAPBridgedPlugin {
+public class PlutoNativePlugin: CAPPlugin, CAPBridgedPlugin, ASWebAuthenticationPresentationContextProviding, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
     public let identifier = "PlutoNativePlugin"
     public let jsName = "PlutoNative"
     private let subscriptionIDs = ["com.yonge6.buerwithin.plus.monthly", "com.yonge6.buerwithin.plus.annual"]
     private var transactionListener: Task<Void, Never>?
     private let installationLock = NSLock()
+    private var accountWebSession: ASWebAuthenticationSession?
+    private var accountAppleCall: CAPPluginCall?
+    private var accountNonce: String?
+    private let accountStorageService = "com.yonge6.buerwithin.account"
     public let pluginMethods: [CAPPluginMethod] = [
+        CAPPluginMethod(name: "accountOAuth", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "accountAppleSignIn", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "accountStorageGet", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "accountStorageSet", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "accountStorageRemove", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "subscriptionStatus", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "purchaseSubscription", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "restoreSubscriptions", returnType: CAPPluginReturnPromise),
@@ -38,6 +49,105 @@ public class PlutoNativePlugin: CAPPlugin, CAPBridgedPlugin {
     }
 
     deinit { transactionListener?.cancel(); NotificationCenter.default.removeObserver(self) }
+
+    private func accountStorageQuery(_ call: CAPPluginCall) -> [String: Any]? {
+        guard let key = call.getString("key"), ["buer-auth-v1", "buer-auth-v1-code-verifier", "buer-auth-v1-user"].contains(key) else {
+            call.reject("INVALID_STORAGE_KEY"); return nil
+        }
+        return [kSecClass as String: kSecClassGenericPassword, kSecAttrService as String: accountStorageService, kSecAttrAccount as String: key]
+    }
+    @objc func accountStorageGet(_ call: CAPPluginCall) {
+        guard var query = accountStorageQuery(call) else { return }
+        query[kSecReturnData as String] = true
+        var result: CFTypeRef?
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        if status == errSecItemNotFound { call.resolve([:]); return }
+        guard status == errSecSuccess, let data = result as? Data, let value = String(data: data, encoding: .utf8) else { call.reject("KEYCHAIN_UNAVAILABLE"); return }
+        call.resolve(["value": value])
+    }
+    @objc func accountStorageSet(_ call: CAPPluginCall) {
+        guard let query = accountStorageQuery(call), let value = call.getString("value"), let data = value.data(using: .utf8), data.count <= 100_000 else { call.reject("INVALID_STORAGE_VALUE"); return }
+        let update = SecItemUpdate(query as CFDictionary, [kSecValueData as String: data] as CFDictionary)
+        if update == errSecSuccess { call.resolve(); return }
+        guard update == errSecItemNotFound else { call.reject("KEYCHAIN_UNAVAILABLE"); return }
+        var item = query
+        item[kSecValueData as String] = data
+        item[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
+        guard SecItemAdd(item as CFDictionary, nil) == errSecSuccess else { call.reject("KEYCHAIN_UNAVAILABLE"); return }
+        call.resolve()
+    }
+    @objc func accountStorageRemove(_ call: CAPPluginCall) {
+        guard let query = accountStorageQuery(call) else { return }
+        let status = SecItemDelete(query as CFDictionary)
+        guard status == errSecSuccess || status == errSecItemNotFound else { call.reject("KEYCHAIN_UNAVAILABLE"); return }
+        call.resolve()
+    }
+    public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        bridge?.viewController?.view.window ?? ASPresentationAnchor()
+    }
+    public func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        bridge?.viewController?.view.window ?? ASPresentationAnchor()
+    }
+    @objc func accountOAuth(_ call: CAPPluginCall) {
+        guard let raw = call.getString("url"), let url = URL(string: raw), url.scheme == "https",
+              url.host == "hiuphqtqqvejyjgoxfov.supabase.co", url.path == "/auth/v1/authorize",
+              url.user == nil, url.password == nil, url.port == nil, url.fragment == nil,
+              let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              components.queryItems?.filter({ $0.name == "provider" }).map({ $0.value }) == ["google"],
+              components.queryItems?.filter({ $0.name == "redirect_to" }).map({ $0.value }) == ["buerwithin://auth/callback"] else {
+            call.reject("INVALID_AUTH_URL"); return
+        }
+        DispatchQueue.main.async {
+            guard self.accountWebSession == nil else { call.reject("AUTH_IN_PROGRESS"); return }
+            let session = ASWebAuthenticationSession(url: url, callbackURLScheme: "buerwithin") { callback, error in
+                self.accountWebSession = nil
+                guard error == nil, let callback = callback, callback.scheme == "buerwithin", callback.host == "auth", callback.path == "/callback",
+                      callback.user == nil, callback.password == nil, callback.port == nil, callback.fragment == nil else {
+                    call.reject("AUTH_CANCELLED"); return
+                }
+                call.resolve(["url": callback.absoluteString])
+            }
+            session.presentationContextProvider = self
+            session.prefersEphemeralWebBrowserSession = true
+            self.accountWebSession = session
+            if !session.start() { self.accountWebSession = nil; call.reject("AUTH_UNAVAILABLE") }
+        }
+    }
+    @objc func accountAppleSignIn(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+            guard self.accountAppleCall == nil else { call.reject("AUTH_IN_PROGRESS"); return }
+            var bytes = [UInt8](repeating: 0, count: 32)
+            guard SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes) == errSecSuccess else { call.reject("AUTH_UNAVAILABLE"); return }
+            let nonce = bytes.map { String(format: "%02x", $0) }.joined()
+            let request = ASAuthorizationAppleIDProvider().createRequest()
+            request.requestedScopes = [.fullName, .email]
+            request.nonce = SHA256.hash(data: Data(nonce.utf8)).map { String(format: "%02x", $0) }.joined()
+            self.accountAppleCall = call; self.accountNonce = nonce
+            let controller = ASAuthorizationController(authorizationRequests: [request])
+            controller.delegate = self; controller.presentationContextProvider = self; controller.performRequests()
+        }
+    }
+    public func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        defer { accountAppleCall = nil; accountNonce = nil }
+        guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
+              let data = credential.identityToken, let token = String(data: data, encoding: .utf8), let nonce = accountNonce else {
+            accountAppleCall?.reject("AUTH_UNAVAILABLE"); return
+        }
+        var result: [String: Any] = ["identityToken": token, "nonce": nonce]
+        if let givenName = credential.fullName?.givenName?.trimmingCharacters(in: .whitespacesAndNewlines), !givenName.isEmpty {
+            result["givenName"] = givenName
+        }
+        if let familyName = credential.fullName?.familyName?.trimmingCharacters(in: .whitespacesAndNewlines), !familyName.isEmpty {
+            result["familyName"] = familyName
+        }
+        if let data = credential.authorizationCode, let code = String(data: data, encoding: .utf8), !code.isEmpty {
+            result["authorizationCode"] = code
+        }
+        accountAppleCall?.resolve(result)
+    }
+    public func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        accountAppleCall?.reject("AUTH_CANCELLED"); accountAppleCall = nil; accountNonce = nil
+    }
 
     private func installationID() -> String {
         installationLock.lock()

@@ -1,4 +1,5 @@
 import { createChatHandler } from "../api/chat.mjs";
+import { createAccountDeletionHandler } from "../api/account-deletion.mjs";
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { createServer } from "node:http";
@@ -20,6 +21,7 @@ const types = {
 };
 
 const chat = createChatHandler();
+const accountDeletion = createAccountDeletionHandler();
 createServer(async (request, response) => {
   try {
     const host = request.headers.host;
@@ -27,6 +29,7 @@ createServer(async (request, response) => {
       response.writeHead(403); response.end('Origin not allowed'); return;
     }
     if (await chat(request,response)) return;
+    if (await accountDeletion(request,response)) return;
     const pathname = decodeURIComponent(new URL(request.url || "/", `http://${request.headers.host}`).pathname);
     const relativePath = pathname === "/" ? "index.html" : pathname.replace(/^\/+/, "");
     const file = resolve(root, relativePath);

@@ -1,4 +1,5 @@
 import { createChatHandler } from "./chat.mjs";
+import { createAccountDeletionHandler } from "./account-deletion.mjs";
 import { randomUUID } from "node:crypto";
 import { createServer } from "node:http";
 
@@ -10,6 +11,7 @@ import { installNodeFileFetch } from "./node-file-fetch.mjs";
 const MAX_BODY_BYTES = 16 * 1024;
 export const DEFAULT_ORIGINS = Object.freeze([
   "https://human-design.wonderelian.com",
+  "https://buer.wonderelian.com",
   "http://127.0.0.1:8789",
   "http://localhost:8789",
   "capacitor://localhost",
@@ -180,6 +182,7 @@ export function createApiServer(options = {}) {
   const log = options.logger || ((entry) => console.info(JSON.stringify(entry)));
 
   const chat = createChatHandler(options.chat);
+  const accountDeletion = createAccountDeletionHandler(options.accountDeletion);
   const server = createServer(async (request, response) => {
     const requestId = randomUUID();
     const startedAt = performance.now();
@@ -204,7 +207,7 @@ export function createApiServer(options = {}) {
         response.writeHead(204, {
           ...corsHeaders,
           "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type",
+          "Access-Control-Allow-Headers": "Authorization, Content-Type",
           "Access-Control-Max-Age": "600",
         });
         response.end();
@@ -214,6 +217,12 @@ export function createApiServer(options = {}) {
         route = request.url;
         for (const [key,value] of Object.entries(corsHeaders)) response.setHeader(key,value);
         await chat(request,response);
+        return;
+      }
+      if (request.url === "/v1/account/delete") {
+        route = request.url;
+        for (const [key,value] of Object.entries(corsHeaders)) response.setHeader(key,value);
+        await accountDeletion(request,response);
         return;
       }
       if (request.method === "GET" && request.url === "/v1/health") {

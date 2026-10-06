@@ -378,7 +378,7 @@ test("cloud saving and anonymous analytics are explicit opt-ins", () => {
   assert.match(app, /匿名使用事件会移除用户标识，并最多保留180天/);
 });
 
-test("privacy copy matches the device-only defaults in both languages", () => {
+test("privacy copy distinguishes device-only defaults from account journal sync", () => {
   const app = read("app.js");
   const privacy = read("privacy.html");
   const dataMap = read("docs/privacy-data-map.md");
@@ -387,9 +387,11 @@ test("privacy copy matches the device-only defaults in both languages", () => {
   assert.match(app, /默认开启，仅保存在本设备/);
   assert.match(app, /Hide name, date, time, and location in generated images\. Off by default\./);
   assert.match(app, /On by default and stored only on this device\./);
-  assert.match(privacy, /Effective date: 2026-09-25/);
+  assert.match(privacy, /Effective date: 2026-10-05/);
   assert.match(privacy, /本地历史开启不会导致任何云端上传/);
   assert.match(privacy, /Enabling local history never uploads data to the cloud/);
+  assert.match(privacy, /私密日记会先缓存在当前设备，并同步到你的不二账号/);
+  assert.match(privacy, /Private journal entries are cached on the current device and synchronized to your Buer account/);
   assert.match(dataMap, /Local history[^\n]+Default on, device only[^\n]+Never unless separate cloud consent/);
 });
 

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import {
@@ -63,4 +64,14 @@ test("all write Edge Functions share JWT, CORS, size, and allowlist guards", asy
     assert.match(source, /limitedJson\(request,/);
     assert.doesNotMatch(source, /console\.(?:log|info|warn|error)|request\.text\(\)/);
   }
+});
+
+test("privacy policy discloses independent social accounts and synced private journals", () => {
+  const policy = readFileSync(new URL("../privacy.html", import.meta.url), "utf8");
+  assert.match(policy, /Google 或 Apple 登录不二账号/);
+  assert.match(policy, /不与三慢问道或其他产品共用用户数据库/);
+  assert.match(policy, /日记不是端到端加密内容/);
+  assert.match(policy, /不会自动发送给 AI/);
+  assert.match(policy, /Authentication is handled by a dedicated Buer Within Supabase project/);
+  assert.match(policy, /journal data is not end-to-end encrypted/);
 });

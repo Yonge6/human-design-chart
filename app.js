@@ -2,6 +2,7 @@ import { trackUsage } from './src/services/buer-analytics.js';
 import { initBuerManual } from './src/app/buer-manual.js';
 import { initBuerGrowth } from "./src/app/buer-growth.js";
 import { initBuerHome } from "./src/app/buer-home.js";
+import { initBuerJournal } from "./src/app/buer-journal.js";
 import {
   calculateHumanDesign,
   localToUtcCandidates,
@@ -2361,6 +2362,8 @@ initBuerHome({
     return data?.Properties || null;
   },
 });
+
+void initBuerJournal({ getLanguage: () => language });
 
 initBuerManual({
   getLanguage:()=>language,

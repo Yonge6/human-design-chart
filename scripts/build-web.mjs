@@ -17,6 +17,7 @@ const files = [
   "buer-growth.css",
   "buer-editorial.css",
   "buer-companion.css",
+  "buer-journal.css",
   "app.js",
   "analytics.js",
   "analytics-frame.html",
@@ -87,6 +88,9 @@ export async function buildWeb({
   const runtimeConfig = {
     supabaseUrl: environment.PLUTO_SUPABASE_URL || "",
     supabasePublishableKey: environment.PLUTO_SUPABASE_PUBLISHABLE_KEY || "",
+    buerAccountUrl: environment.BUER_ACCOUNT_URL || "",
+    buerAccountPublishableKey: environment.BUER_ACCOUNT_PUBLISHABLE_KEY || "",
+    buerAuthProviders: environment.BUER_AUTH_PROVIDERS || "",
     apiBaseUrl: environment.PLUTO_API_BASE_URL || "",
     buerChatEnabled: environment.BUER_CHAT_ENABLED !== "false",
     buerPublicUrl: environment.BUER_PUBLIC_URL || "",

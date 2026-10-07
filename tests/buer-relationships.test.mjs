@@ -60,6 +60,7 @@ test('relationship SQL enforces two-owner isolation, CAS, identity, revisions, d
     await db.exec(await readFile(new URL('../supabase/migrations/202610050002_relationships.sql',import.meta.url),'utf8'));
     await db.exec(await readFile(new URL('../supabase/migrations/202610060001_relationship_self_delete.sql',import.meta.url),'utf8'));
     await db.exec(await readFile(new URL('../supabase/migrations/202610060002_people_context.sql',import.meta.url),'utf8'));
+    await db.exec(await readFile(new URL('../supabase/migrations/202610070001_people_entered_source.sql',import.meta.url),'utf8'));
     const as=async owner=>db.exec(`reset role;set role authenticated;select set_config('request.jwt.claim.sub','${owner}',false);`);
     const save=(id,data,revision=0,mutation=A)=>db.query('select * from public.buer_save_person($1,$2,$3,$4)',[id,revision,mutation,data]);
     const chat=(own=me,partner=wife,rev=1)=>db.query('select * from public.buer_save_relationship_conversation($1,0,$2,$3,$4,$5,1,$6)',[thread,A,own,partner,rev,[{role:'user',content:'An event'}]]);
@@ -70,7 +71,10 @@ test('relationship SQL enforces two-owner isolation, CAS, identity, revisions, d
     const withChart={...person(),birth:{certainty:'known',date:input.birthDate,time:input.birthTime,timezone:input.timezone,location:input.locationLabel},chart};
     assert.equal(cleanPerson(withChart).chart.core.type,chart.core.type);
     assert.equal(anonymousPerson(withChart).chart.type,chart.core.type);
-    await save(other,withChart);
+    await save(other,{...withChart,source:'entered'});
+    assert.equal(cleanPerson({...withChart,source:'entered'}).source,'entered');
+    assert.throws(()=>cleanPerson({...person(),source:'entered'}),/INVALID_BIRTH/);
+    assert.throws(()=>cleanPerson({...withChart,source:'entered',birth:{...withChart.birth,location:' '}}),/INVALID_BIRTH/);
     await assert.rejects(save(other,{...withChart,birth:{...withChart.birth,date:'1990-01-02'}},1,B),/invalid_chart/);
     await db.query('select public.buer_delete_person($1,1,$2)',[other,B]);
     assert.equal((await save(me,person(true))).rows[0].revision,1);

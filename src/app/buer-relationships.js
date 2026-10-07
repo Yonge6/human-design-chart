@@ -7,6 +7,7 @@ import { renderAssistantText } from './buer-message-format.js';
 import { cleanPersonalContext, SCOPE_KEYS, RELATION_TYPES } from '../services/buer-personal-context.js';
 import { readGrowth, QUESTIONS } from '../services/buer-growth.js';
 import { validChatHistory } from '../services/buer-conversation.js';
+import { fetchPlaceCandidates, inferTimezoneFromAddress } from '../services/location-service.js';
 
 const el = (tag, text = '', attributes = {}) => {
   const node = document.createElement(tag); node.textContent = text;
@@ -46,7 +47,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
   function errorMessage(error) {
     const code = error?.message || '';
     if (error?.code === '40001' || /CHANGED|conflict/.test(code)) return l('资料已在另一处更新。请返回列表刷新后重试；当前文字仍保留。', 'A profile changed on another device. Refresh the list before retrying. Your text is kept.');
-    if (/INVALID|RangeError/.test(code) || error instanceof RangeError) return l('请检查出生日期、时间和时区。时间未知时可选择“出生时刻不确定”。', 'Check the birth date, time and time zone, or choose unknown birth time.');
+    if (/INVALID|RangeError/.test(code) || error instanceof RangeError) return l('请填写有效的出生日期、时间和出生地点。', 'Enter a valid birth date, time and place.');
     if (code === 'DAILY_LIMIT') return l('今天的免费对话已用完，可在会员页面查看详情。', 'Your daily free replies are used. See membership options.');
     return l('暂未完成，请检查网络后重试。未保存的内容仍留在当前页面。', 'Could not finish. Check your connection and retry. Unsaved text remains on this page.');
   }
@@ -97,7 +98,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     finally { if (ticket === epoch) busy = false; }
   }
   async function open() { if(dialog.open&&(busy||!await mayLeave()))return;trigger=document.activeElement;document.body.dataset.workspace='people';window.scrollTo({top:0,behavior:'instant'});await list(); }
-  function sources(value) { return ({ self: l('本人资料', 'My profile'), permission: l('经本人允许', 'With permission'), confirmed: l('本人确认', 'Confirmed by them'), guardian: l('监护人管理', 'Managed by guardian') })[value] || ''; }
+  function sources(value) { return ({ entered: l('手动填写', 'Manually entered'), self: l('本人资料', 'My profile'), permission: l('经本人允许', 'With permission'), confirmed: l('本人确认', 'Confirmed by them'), guardian: l('监护人管理', 'Managed by guardian') })[value] || ''; }
   function chartSummary(person) {
     const box = el('div', '', { class: 'relationship-summary' });
     box.append(el('small', `${sources(person.source)} · ${person.updated_at ? new Date(person.updated_at).toLocaleDateString(getLanguage() === 'en' ? 'en' : 'zh-CN') : l('待保存', 'Not saved')}`));
@@ -147,59 +148,63 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     const relationship = field(form, '与我的关系', 'Relationship to me', 'text', person?.relationship || (isSelf ? l('自己', 'Me') : ''), { maxlength: '60', required: '', placeholder: l('例如：夫人、女儿、同事、合伙人', 'Partner, daughter, colleague…') });
     const options=el('div','',{class:'people-filters'});for(const [zh,en] of RELATION_TYPES)options.append(button(zh,en,()=>{relationship.value=zh;dirty=true;}));relationship.parentElement.after(options);
     if (isSelf) relationship.readOnly = true;
-    const source = field(form, '资料来源', 'Source', 'select');
-    for (const [value, zh, en] of (isSelf ? [['self','我自己的资料','My own information']] : [['permission','已获得本人允许','I have their permission'], ['confirmed','由本人确认的资料','Confirmed by this person'], ['guardian','我是其监护人','I am their guardian']])) option(source, value, zh, en);
-    source.value = person?.source || (isSelf ? 'self' : 'permission');
-    const importer = field(form, '从本机已有说明书导入（可选）', 'Import a reading on this device (optional)', 'select');
-    option(importer, '', '手动填写 / 保持当前内容', 'Enter details / keep current');
-    let history = []; try { const saved = JSON.parse(localStorage.getItem('pluto-chart-history-v1') || '[]'); if (Array.isArray(saved)) history = saved.filter(x => x?.input?.place?.timezone).slice(0, 10); } catch {}
-    history.forEach((row, i) => option(importer, String(i), row.input.name || `说明书 ${i+1}`, row.input.name || `Reading ${i+1}`));
-    const certainty = field(form, '出生时刻', 'Birth time accuracy', 'select');
-    option(certainty, 'unknown', '出生时刻不确定（无需人类图也能对话）', 'Unknown time (you can still talk)'); option(certainty, 'known', '出生日期和时刻已知', 'Date and time are known');
-    certainty.value = person?.birth.certainty || 'unknown';
     const birth = el('div', '', { class: 'journal-metadata' }); form.append(birth);
-    const date = field(birth, '出生日期', 'Birth date', 'date', person?.birth.date || '', { max: new Date().toISOString().slice(0,10) });
-    const time = field(birth, '出生时间（24小时制）', 'Birth time (24 hour)', 'time', person?.birth.time || '');
-    const location = field(form, '出生地点（选填）', 'Birth place (optional)', 'text', person?.birth.location || '', { maxlength: '160' });
-    const timezone = field(form, '出生地时区', 'Birth place time zone', 'select');
-    const zones = [...new Set(['Asia/Shanghai', person?.birth.timezone, Intl.DateTimeFormat().resolvedOptions().timeZone, ...(Intl.supportedValuesOf?.('timeZone') || ['UTC'])].filter(Boolean))];
-    zones.forEach(zone => option(timezone, zone, zone === 'Asia/Shanghai' ? '中国标准时间 · Asia/Shanghai' : zone, zone)); timezone.value = person?.birth.timezone || 'Asia/Shanghai';
+    const date = field(birth, '出生日期', 'Birth date', 'date', person?.birth.date || '', { required: '', max: new Date().toISOString().slice(0,10) });
+    const time = field(birth, '出生时间（24小时制）', 'Birth time (24 hour)', 'time', person?.birth.time || '', { required: '' });
+    const location = field(form, '出生地点', 'Birth place', 'text', person?.birth.location || '', { required: '', maxlength: '160', autocomplete: 'off', placeholder: l('城市、区县或地区', 'City, district or region') });
+    let selectedPlace = person?.birth.location && person?.birth.timezone ? {label:person.birth.location,timezone:person.birth.timezone} : null;
+    const matches = el('div', '', {class:'relationship-place-results'}); location.parentElement.after(matches);
     const occurrence = field(form, '夏令时回拨时刻', 'Repeated time during clock change', 'select');
     option(occurrence, '', '如遇重复时刻，请选择', 'Choose if this time occurs twice'); option(occurrence, 'earlier', '第一次出现', 'Earlier occurrence'); option(occurrence, 'later', '第二次出现', 'Later occurrence');
     occurrence.parentElement.hidden = true;
-    const accuracy = () => { const known = certainty.value === 'known'; date.required = time.required = known; time.disabled = timezone.disabled = !known; occurrence.parentElement.hidden = true; occurrence.value = ''; };
-    certainty.onchange = accuracy; accuracy();
-    importer.onchange = () => {
-      const row = history[Number(importer.value)]; if (importer.value === '' || !row) return;
-      const input = row.input; if (!nickname.value) nickname.value = input.name || '';
-      date.value = `${input.year}-${String(input.month).padStart(2,'0')}-${String(input.day).padStart(2,'0')}`;
-      const hour = input.ampm ? Number(input.hour) % 12 + (String(input.ampm).toLowerCase() === 'pm' ? 12 : 0) : Number(input.hour);
-      time.value = `${String(hour).padStart(2,'0')}:${String(input.minute).padStart(2,'0')}`;
-      if (!zones.includes(input.place.timezone)) option(timezone, input.place.timezone, input.place.timezone, input.place.timezone);
-      timezone.value = input.place.timezone; location.value = input.location || input.place.label || ''; certainty.value = 'known'; accuracy(); dirty = true;
-    };
+    const resetOccurrence = () => { occurrence.value=''; occurrence.parentElement.hidden=true; };
+    date.oninput=time.oninput=resetOccurrence;
+    location.oninput=()=>{selectedPlace=null;matches.replaceChildren();resetOccurrence();};
     const notes = field(form, '我的观察（选填，仅保存，不自动发送给 AI）', 'My observations (saved privately, not automatically sent to AI)', 'textarea', person?.notes || '', { maxlength: '2000', rows: '3' });
-    const permission = consent(form, isSelf ? '我确认这是我的主档案，并同意保存到当前账号。' : '我已取得允许或具有监护权限，同意将这些资料保存到我的私密账号。', isSelf ? 'This is my own profile. Save it to this account.' : 'I have permission or guardianship to save these details to my private account.'); permission.required = true;
-    form.append(el('p', l('保存后会同步到你的账号。人类图在本机计算；未知出生时刻不会生成精确图谱。', 'Saved profiles sync to your account. Charts are calculated on this device; unknown birth times do not generate precise charts.')));
     const save = el('button', l('保存档案', 'Save profile'), { type: 'submit', class: 'journal-primary' }); form.append(save);
     form.addEventListener('input', () => { dirty = true; });
     form.onsubmit = async event => {
       event.preventDefault(); if (busy || !valid(ticket) || !form.reportValidity()) return;
       busy = true; save.disabled = true; status.textContent = l('正在计算并保存…', 'Calculating and saving…');
       try {
+        const query=location.value.trim();
+        if(!query) throw Error('INVALID_BIRTH');
+        if(!selectedPlace) {
+          const inferred=inferTimezoneFromAddress(query);
+          if(inferred) selectedPlace={label:query,timezone:inferred};
+          else {
+            controller=new AbortController(); const request=controller;
+            const timeout=setTimeout(()=>request.abort(),12000);
+            let features;try {features=await fetchPlaceCandidates(query,{language:getLanguage(),signal:request.signal});} finally {clearTimeout(timeout);}
+            if(!valid(ticket))return;
+            if(location.value.trim()!==query){status.textContent=l('地点已修改，请重新保存。','Place changed. Save again.');return;}
+            matches.replaceChildren();
+            const seenPlaces=new Set();
+            for(const feature of features){
+              const [lon,lat]=feature.geometry?.coordinates||[];if(!Number.isFinite(lon)||!Number.isFinite(lat))continue;
+              const props=feature.properties||{},label=[...new Set([props.name,props.city,props.state,props.country].filter(Boolean))].join(', ');
+              const zone=props.countrycode?.toUpperCase()==='CN'?'Asia/Shanghai':globalThis.tzlookup?.(lat,lon);if(!label||!zone)continue;
+              const key=`${label}|${zone}`;if(seenPlaces.has(key))continue;seenPlaces.add(key);
+              matches.append(button(label,label,()=>{selectedPlace={label,timezone:zone};location.value=label;matches.replaceChildren();resetOccurrence();dirty=true;status.textContent=l('地点已确认，请保存档案。','Place selected. Save the profile to continue.');}));
+            }
+            status.textContent=matches.childElementCount?l('请选择匹配的出生地点，再保存档案。','Select the matching birth place, then save.'):l('未找到出生地点，请补充城市和国家后重试。','Place not found. Add the city and country and try again.');
+            return;
+          }
+        }
+        const timezone=selectedPlace.timezone;
         let chart = null;
-        if (certainty.value === 'known') {
+        {
           const [year, month, day] = date.value.split('-').map(Number), [hour, minute] = time.value.split(':').map(Number);
-          const candidates = localToUtcCandidates(year, month, day, hour, minute, timezone.value);
+          const candidates = localToUtcCandidates(year, month, day, hour, minute, timezone);
           if (!candidates.length) throw Error('INVALID_BIRTH');
           if (candidates.length > 1 && !occurrence.value) { occurrence.parentElement.hidden = false; status.textContent = l('这个时刻在夏令时回拨中出现两次，请确认第一次或第二次。', 'This time occurs twice during a clock change. Choose earlier or later.'); return; }
           if (candidates[occurrence.value === 'later' ? candidates.length-1 : 0] > Date.now()) throw Error('INVALID_BIRTH');
-          const result = await calculateHumanDesign({ name: nickname.value, location: location.value, year, month, day, hour, minute, timezone: timezone.value, timeDisambiguation: occurrence.value || 'earlier' });
-          chart = await createHumanDesignProfileSnapshot({ input: { birthDate: date.value, birthTime: time.value, timezone: timezone.value, locationLabel: location.value }, result });
+          const result = await calculateHumanDesign({ name: nickname.value, location: location.value, year, month, day, hour, minute, timezone, timeDisambiguation: occurrence.value || 'earlier' });
+          chart = await createHumanDesignProfileSnapshot({ input: { birthDate: date.value, birthTime: time.value, timezone, locationLabel: location.value }, result });
         }
         if (!valid(ticket)) return;
-        await repo.save(owner, id, person?.revision || 0, crypto.randomUUID(), cleanPerson({ nickname: nickname.value, relationship: relationship.value, is_self: isSelf, source: source.value,
-          birth: { date: date.value, time: time.value, timezone: timezone.value, location: location.value, certainty: certainty.value }, chart, notes: notes.value }));
+        await repo.save(owner, id, person?.revision || 0, crypto.randomUUID(), cleanPerson({ nickname: nickname.value, relationship: relationship.value, is_self: isSelf, source: person?.source || (isSelf?'self':'entered'),
+          birth: { date: date.value, time: time.value, timezone, location: location.value.trim(), certainty: 'known' }, chart, notes: notes.value }));
         if (!valid(ticket)) return; dirty = false; await list();
       } catch (error) { if (valid(ticket)) status.textContent = errorMessage(error); }
       finally { if (ticket === epoch) { busy = false; save.disabled = false; } }

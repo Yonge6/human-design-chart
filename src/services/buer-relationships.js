@@ -2,7 +2,7 @@ import { validateHumanDesignProfileSnapshot } from '../../shared/human-design-pr
 import { cleanPersonalContext } from './buer-personal-context.js';
 
 export const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-export const PERSON_SOURCES = ['self', 'permission', 'confirmed', 'guardian'];
+export const PERSON_SOURCES = ['self', 'permission', 'confirmed', 'guardian', 'entered'];
 export function relationshipMessages(history, question) {
   const latest = { role: 'user', content: question.trim() };
   if (!latest.content || latest.content.length > 4000) throw Error('INVALID_INPUT');
@@ -30,6 +30,7 @@ export function cleanPerson(value) {
     try { new Intl.DateTimeFormat('en', { timeZone: birth.timezone }).format(); } catch { throw Error('INVALID_TIMEZONE'); }
   }
   const chart = value.chart || null;
+  if (value.source === 'entered' && (birth.certainty !== 'known' || !birth.location.trim() || !chart)) throw Error('INVALID_BIRTH');
   if (chart && (birth.certainty !== 'known' || !validateHumanDesignProfileSnapshot(chart).valid ||
     chart.input.birthDate !== birth.date || chart.input.birthTime !== birth.time || chart.input.timezone !== birth.timezone)) throw Error('INVALID_CHART');
   return { nickname: value.nickname.trim(), relationship: value.relationship.trim(), is_self: value.is_self, source: value.source,

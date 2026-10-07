@@ -14,6 +14,8 @@
 .journal-content p{line-height:1.8;color:#5b6956}
 .journal-description{max-width:620px}
 .journal-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:20px 0}
+.relationship-detail-actions{display:grid;gap:12px;margin-top:20px}
+.relationship-detail-actions>button{width:100%;margin:0}
 .journal-dialog .journal-primary,.journal-confirm .journal-primary{color:#fffdf6;background:#49613f;border-color:#49613f}
 .journal-dialog .journal-danger{color:#935239;background:transparent;margin-top:16px}
 .journal-field{display:flex;flex-direction:column;gap:8px;min-width:0;margin:14px 0}

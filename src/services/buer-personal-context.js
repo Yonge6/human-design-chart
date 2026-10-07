@@ -1,4 +1,9 @@
 export const SCOPE_KEYS = ['chart','growth','journal','history'];
+// A new relationship chat offers all account-owned sources. Persist only on send;
+// never override an existing user's explicit scope choices or import local data.
+export function relationshipScopeDefaults(personal) {
+ return personal ? cleanPersonalContext(personal.payload).scopes : Object.fromEntries(SCOPE_KEYS.map(k=>[k,true]));
+}
 export const RELATION_TYPES = [['父母','Parents'],['恋人','Partner'],['夫妻','Spouse'],['子女','Children'],['同事','Colleagues'],['合作伙伴','Collaborators'],['朋友','Friends'],['其他','Other']];
 const str=(v,n)=>{if(v==null)return '';if(typeof v!=='string')throw Error('INVALID_CONTEXT');return v.slice(0,n);};
 export function cleanPersonalContext(value={}) {

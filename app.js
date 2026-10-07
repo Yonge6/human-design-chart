@@ -602,7 +602,7 @@ function interpretation(data) {
   return `你的优势｜先看重点\n1. 核心能量优势：${typeStrength}。\n2. 别人容易看见的优势：${gateThemesZh[consciousSun]}，并能通过${gateThemesZh[consciousEarth]}把它落到现实。\n3. 做决定时的优势：${authorityStrength}。\n\n工作场景：${practical.work}\n\n生活场景：${practical.life}\n\n做决定时可以这样试：${decision} 这是一种自我观察练习，不是必须遵守的规则或科学定论；只保留那些确实让日常生活更清楚、更可持续的部分。`;
 }
 
-function detailedReadingSections(data) {
+export function detailedReadingSections(data) {
   const properties = data.Properties;
   const [firstLine, secondLine] = (properties.Profile.match(/^(\d)\/(\d)/) || []).slice(1).map(Number);
   const consciousSun = data.Personality.Sun.Gate;
@@ -2366,6 +2366,7 @@ initBuerHome({
 
 void initBuerJournal({ getLanguage: () => language }).then(journal =>
   initBuerRelationships({ getLanguage: () => language, account: journal.account,
+    getManualSections: data => [...detailedReadingSections(data),{title:language==='zh'?'相似基础配置的人物':'People with similar core configurations',text:getCelebrityMatches(data).map(person=>`${language==='zh'?person.nameZh:person.name}\n${celebrityDetailedReason(data.Properties,person)}`).join('\n\n')}],
     getReadings: () => historyEntries.map((entry,index)=>({id:entry.id||String(index),label:entry.input?.name||`说明书 ${index+1}`,properties:entry.data?.Properties})),
     openAccount: () => journal.open('account') }));
 

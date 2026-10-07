@@ -1,7 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { cleanPersonalContext, selectPersonalContext, rankExcerpts, SCOPE_KEYS } from '../src/services/buer-personal-context.js';
+import { cleanPersonalContext, selectPersonalContext, rankExcerpts, SCOPE_KEYS, relationshipScopeDefaults } from '../src/services/buer-personal-context.js';
+test('chat offers defaults only for a new context and preserves saved opt-outs',()=>{
+ assert.ok(Object.values(relationshipScopeDefaults(null)).every(Boolean));
+ const saved={payload:{scopes:{chart:true,journal:false,growth:false,history:true}}};
+ assert.deepEqual(relationshipScopeDefaults(saved),saved.payload.scopes);
+ assert.equal(cleanPersonalContext({scopes:relationshipScopeDefaults(null)}).chart,null);
+});
 test('journal lives in Me and product copy does not expose a model brand',()=>{
  const journal=readFileSync(new URL('../src/app/buer-journal.js',import.meta.url),'utf8');assert.doesNotMatch(journal,/homeEntry|home\?\.append/);assert.match(journal,/navEntry\('journal'/);
  for(const f of ['buer-home','buer-growth','buer-membership','buer-relationships'])assert.doesNotMatch(readFileSync(new URL(`../src/app/${f}.js`,import.meta.url),'utf8'),/DeepSeek/i);

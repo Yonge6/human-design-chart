@@ -4,10 +4,12 @@ import { createHumanDesignProfileSnapshot } from '../engine/profile-snapshot.js'
 import { readBuerEvents } from '../services/buer-conversation.js';
 import { ensureAIConsent, chatAccess, showMembership } from './buer-membership.js';
 import { renderAssistantText } from './buer-message-format.js';
-import { cleanPersonalContext, SCOPE_KEYS, RELATION_TYPES } from '../services/buer-personal-context.js';
+import { cleanPersonalContext, SCOPE_KEYS, RELATION_TYPES, relationshipScopeDefaults } from '../services/buer-personal-context.js';
 import { readGrowth, QUESTIONS } from '../services/buer-growth.js';
 import { validChatHistory } from '../services/buer-conversation.js';
 import { fetchPlaceCandidates, inferTimezoneFromAddress } from '../services/location-service.js';
+import { personManualData } from '../services/buer-person-manual.js';
+import { createBodygraphRenderer } from '../renderer/bodygraph-renderer.js';
 
 const el = (tag, text = '', attributes = {}) => {
   const node = document.createElement(tag); node.textContent = text;
@@ -20,7 +22,7 @@ const chartNames = { Generator:'生产者', 'Manifesting Generator':'显示生�
   'Self-Projected':'自我投射权威', Lunar:'月亮权威', 'Mental - Environment':'环境权威', 'No Definition':'无定义', 'Single Definition':'一分人', 'Split Definition':'二分人',
   'Triple Split Definition':'三分人', 'Quadruple Split Definition':'四分人', head:'头顶',ajna:'逻辑',throat:'喉咙',g:'G 中心',heart:'意志',sacral:'荐骨',spleen:'脾脏','solar plexus':'情绪',root:'根部' };
 
-export function initBuerRelationships({ getLanguage, account, openAccount, getReadings = () => [] }) {
+export function initBuerRelationships({ getLanguage, account, openAccount, getReadings = () => [], getManualSections = () => [] }) {
   const l = (zh, en) => getLanguage() === 'en' ? en : zh;
   const chartText = value => getLanguage() === 'en' ? value : chartNames[value] || value;
   const repo = account ? relationshipRepository(account) : null;
@@ -46,6 +48,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
   function invalidate() { ++epoch; controller?.abort(); controller = null; busy = false; dirty = false; activeThread = null; unsavedThread = null; }
   function errorMessage(error) {
     const code = error?.message || '';
+    if(code==='MANUAL_VERSION_CHANGED')return l('图谱计算版本已更新，请编辑并重新保存 TA 的资料后查看说明书。','The chart engine changed. Edit and save their details before opening the manual.');
     if (error?.code === '40001' || /CHANGED|conflict/.test(code)) return l('资料已在另一处更新。请返回列表刷新后重试；当前文字仍保留。', 'A profile changed on another device. Refresh the list before retrying. Your text is kept.');
     if (/INVALID|RangeError/.test(code) || error instanceof RangeError) return l('请填写有效的出生日期、时间和出生地点。', 'Enter a valid birth date, time and place.');
     if (code === 'DAILY_LIMIT') return l('今天的免费对话已用完，可在会员页面查看详情。', 'Your daily free replies are used. See membership options.');
@@ -137,7 +140,39 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     if (!visible.length) cards.append(el('p', l('从一个你在意的人开始。选择关系，填写 TA 的出生信息，就可以聊聊你们之间的事。', 'Start with someone who matters. Choose a relationship and add their birth information.'), { class: 'journal-empty' }));
     content.append(cards);
   }
-  function detail(person){invalidate();reset(person.nickname);if(!dialog.open)dialog.showModal();content.append(el('p',person.relationship),chartSummary(person));if(person.notes)content.append(el('p',person.notes));const actions=el('div','',{class:'relationship-detail-actions'});actions.append(button('编辑 TA 的资料','Edit their profile',()=>edit(person,false)),button('聊聊我们的关系','Talk about us',()=>conversation(person),'journal-primary'));content.append(actions);}
+  function detail(person){invalidate();reset(person.nickname);if(!dialog.open)dialog.showModal();content.append(el('p',person.relationship),chartSummary(person));if(person.notes)content.append(el('p',person.notes));const actions=el('div','',{class:'relationship-detail-actions'});if(person.chart)actions.append(button('查看 TA 的说明书','View their Life Manual',()=>manual(person)));actions.append(button('编辑 TA 的资料','Edit their profile',()=>edit(person,false)),button('聊聊我们的关系','Talk about us',()=>conversation(person),'journal-primary'));content.append(actions);}
+  async function manual(person){
+    invalidate();const ticket=epoch;reset(l(`${person.nickname}的说明书`,`${person.nickname}’s Life Manual`));
+    content.append(button('← 返回人物档案','← Back to profile',()=>detail(person)));
+    status.textContent=l('正在整理 TA 的说明书…','Preparing their manual…');
+    try{
+      const data=await personManualData(person);if(!valid(ticket))return;
+      const root=el('section','',{class:'relationship-manual'});
+      root.append(el('p',l('以下“你”指这份说明书的主人。请结合 TA 的实际经历理解，不用图谱替 TA 下结论。','“You” refers to the owner of this manual. Use their real experiences, not the chart alone, to understand them.'),{class:'relationship-chat-note'}));
+      const nav=el('div','',{class:'relationship-manual-tabs',role:'tablist','aria-label':l('说明书内容','Manual sections')});root.append(nav);
+      const panels=[],tabs=[];
+      for(const [key,zh,en] of [['overview','概览','Overview'],['reading','深入解读','In depth'],['chart','人类图','Human Design']]){
+        const panel=el('section','',{id:`person-manual-${key}`,role:'tabpanel','aria-labelledby':`person-tab-${key}`});panels.push(panel);
+        const tab=button(zh,en,()=>select(key));tab.id=`person-tab-${key}`;tab.setAttribute('role','tab');tab.setAttribute('aria-controls',panel.id);tabs.push(tab);nav.append(tab);root.append(panel);
+      }
+      function select(key){panels.forEach((p,i)=>{const active=p.id===`person-manual-${key}`;p.hidden=!active;tabs[i].setAttribute('aria-selected',String(active));tabs[i].tabIndex=active?0:-1;});}
+      tabs.forEach((tab,i)=>tab.onkeydown=e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();const next=e.key==='Home'?0:e.key==='End'?2:(i+(e.key==='ArrowRight'?1:2))%3;tabs[next].click();tabs[next].focus();});
+      panels[0].append(chartSummary(person));
+      const sections=getManualSections(data);
+      if(!sections.length)throw Error('MANUAL_UNAVAILABLE');
+      const lead=el('article','',{class:'relationship-manual-lead'});lead.append(el('h3',sections[0].title),el('p',sections[0].text));panels[0].append(lead);
+      sections.forEach(({title,text},i)=>{const chapter=el('details','',{class:'buer-chapter'});chapter.open=i===0;const summary=el('summary');summary.append(el('span',String(i+1).padStart(2,'0'),{class:'buer-chapter-number'}),el('h3',title));const body=el('div','',{class:'buer-chapter-body'});body.append(el('p',text));chapter.append(summary,body);panels[1].append(chapter);});
+      const graph=el('div','',{class:'relationship-bodygraph'});panels[2].append(graph);
+      const planets=el('div','',{class:'relationship-planet-columns'});
+      const planetNames={'Sun':'太阳','Earth':'地球','North Node':'北交点','South Node':'南交点','Moon':'月亮','Mercury':'水星','Venus':'金星','Mars':'火星','Jupiter':'木星','Saturn':'土星','Uranus':'天王星','Neptune':'海王星','Pluto':'冥王星'};
+      for(const [key,zh,en] of [['Design','设计','Design'],['Personality','人格','Personality']]){const column=el('div');column.append(el('h3',l(zh,en)));for(const [name,a] of Object.entries(data[key]))column.append(el('p',`${l(planetNames[name]||name,name)} · ${a.Gate}.${a.Line}`));planets.append(column);}panels[2].append(planets);
+      select('overview');content.append(root);
+      const colors=Object.fromEntries(['head','ajna','throat','g','heart','sacral','splenic','solar-plexus','root'].map(k=>[`${k}-center`,'#718565']));
+      await createBodygraphRenderer({container:graph,templateUrl:new URL('../../assets/bodygraph-template.svg',import.meta.url).href,centerColors:colors,label:l(`${person.nickname}的人类图`,`${person.nickname}’s Human Design`)})(data);
+      if(!valid(ticket))return;
+      content.append(button('聊聊我们的关系','Talk about us',()=>conversation(person),'journal-primary'));status.textContent='';
+    }catch(error){if(valid(ticket))status.textContent=errorMessage(error);}
+  }
   function edit(person, isSelf) {
     invalidate(); const ticket = epoch, id = person?.id || crypto.randomUUID();
     if(!dialog.open)dialog.showModal();
@@ -250,15 +285,15 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
   async function conversation(person, previous = null) {
     invalidate(); const ticket = epoch;
     reset(l('我与','Me & ') + person.nickname);if(!dialog.open)dialog.showModal();
-    const controls = el('div', '', { class: 'journal-actions' });
-    controls.append(button('← 返回档案', '← Back to profiles', async () => { if (await mayLeave()) await list(); }), button('开启新对话', 'New conversation', async () => { if (await mayLeave()) await conversation(person); })); content.append(controls);
-    const pair = el('details', '', { class: 'relationship-context' });pair.open=true;pair.append(el('summary', l('本次参考：TA 的人类图 + 我的授权资料','Using: their chart + my authorized context')));
+    const controls = el('div', '', { class: 'relationship-chat-toolbar' });
+    controls.append(button('← 返回', '← Back', async () => { if (await mayLeave()) detail(person); }), button('新对话', 'New chat', async () => { if (await mayLeave()) await conversation(person); })); content.append(controls);
+    const pair = el('details', '', { class: 'relationship-context' });pair.append(el('summary', l('对话设置','Chat settings')));
     pair.append(el('p',`${person.relationship} · ${person.chart?.core?`${chartText(person.chart.core.type)} / ${person.chart.core.profile}`:l('暂无精确人类图','No precise chart')}`));
-    const allowed=cleanPersonalContext(personal?.payload||{}).scopes,scopes={...allowed};
+    const allowed=relationshipScopeDefaults(personal),scopes={...allowed};
     const scopeControls=[];for(const key of SCOPE_KEYS){const c=consent(pair,scopeName(key),scopeName(key),scopes[key]);c.disabled=!allowed[key]||Boolean(previous);scopeControls.push(c);c.onchange=()=>{scopes[key]=c.checked;thread.id=crypto.randomUUID();thread.revision=0;thread.messages=[];drawMessages();status.textContent=l('参考范围已更改，将开启新对话，不携带旧回复。','New context scope starts a fresh conversation without old replies.');};}
-    pair.append(button(personal?'调整授权 / 更新我的资料':'首次授权我的资料',personal?'Update permissions / my context':'Authorize my context',()=>settings(()=>conversation(person))));
-    pair.append(el('small',l('按问题选取相关片段；本机资料使用上次确认同步的版本。日记检索最近 1000 篇，对话检索本人与 TA 最近 30 段，不调用其他人物档案。','Relevant excerpts only. Local records use your confirmed snapshot. Searches the latest 1,000 journals and 30 conversations with this person, never other people’s profiles.')));content.append(pair);
-    const sources=el('details','',{class:'relationship-context'});sources.append(el('summary',l('本次实际参考的摘录来源','Sources retrieved for this reply')));const sourceList=el('ul');sources.append(sourceList);content.append(sources);
+    pair.append(button('管理我的参考资料','Manage my context',async()=>{if(await mayLeave())settings(()=>conversation(person));}));
+    pair.append(el('small',l('按问题选取相关片段；本机资料使用上次确认同步的版本。日记检索最近 1000 篇，对话检索本人与 TA 最近 30 段，不调用其他人物档案。','Relevant excerpts only. Local records use your confirmed snapshot. Searches the latest 1,000 journals and 30 conversations with this person, never other people’s profiles.')));
+    const sources=el('details','',{class:'relationship-context'});sources.hidden=true;sources.append(el('summary',l('本次参考','Reply sources')));const sourceList=el('ul');sources.append(sourceList);pair.append(sources);
     const outdated = Boolean(previous);
     activeThread = previous ? { ...previous, messages: [...previous.messages] } : { id: crypto.randomUUID(), revision: 0, person_id: person.id, person_revision: person.revision, context_revision:personal?.revision||0, messages: [] };
     const thread = activeThread;
@@ -272,7 +307,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     }
     drawMessages();
     const form = el('form', '', { class: 'relationship-compose' });
-    const question = field(form, '发生了什么？你希望有什么改变？', 'What happened, and what would you like to change?', 'textarea', '', { maxlength: '3000', rows: '4', required: '', placeholder: l('从一件具体的事说起，也说说你的感受和需要…', 'Describe a specific event and how you feel…') });
+    const question = field(form, '想聊聊你们之间的什么事？', 'What would you like to talk about?', 'textarea', '', { maxlength: '3000', rows: '4', required: '', placeholder: l('说说刚刚发生的事，或你心里的困惑…', 'Tell me what happened, or what is on your mind…') });
     question.oninput = () => { dirty = Boolean(question.value.trim()) || Boolean(unsavedThread); };
     const send = el('button', l('和豆豆龙聊聊', 'Talk to Doudoulong'), { type: 'submit', class: 'journal-primary' }); form.append(send);
     const retrySave = button('重新保存这段对话', 'Retry saving this conversation', async () => {
@@ -280,7 +315,9 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       try { const saved = await repo.saveConversation(owner, thread, unsavedThread); if (!valid(ticket)) return; Object.assign(thread, saved); unsavedThread = null; dirty = Boolean(question.value.trim()); retrySave.hidden = true; send.disabled = false; status.textContent = l('对话已同步', 'Conversation synced'); }
       finally { if (ticket === epoch) busy = false; }
     }); retrySave.hidden = true; form.append(retrySave);
-    content.append(form, el('p', l('发送后由 第三方 AI 服务 生成回应，对话保存到你的私密账号。建议会结合你的描述；人类图只是观察线索，不代表对方真实想法。', 'AI generates the reply; the conversation is saved privately to your account. Advice uses your account of events. Charts are reflection prompts, not evidence of the other person’s thoughts.')));
+    const notice=el('p',personal?l('结合你已开启的个人资料与 TA 的人类图，陪你一起梳理。','Using your enabled context and their chart to think it through together.'):l('发送即同意豆豆龙参考本账号的人类图、成长记录、日记、历史对话及 TA 的图谱；相关片段由第三方 AI 处理。可在对话设置调整。','Sending allows relevant excerpts from this account’s chart, growth, journals, conversations and their chart to be processed by a third-party AI service. Adjust in Chat settings.'),{class:'relationship-chat-note'});
+    if(personal)notice.append(el('span',l(' 相关片段由第三方 AI 处理，对话仅你可见。',' Relevant excerpts use a third-party AI service; conversations remain private.')));
+    content.append(form,notice,pair);
     if (outdated) { form.hidden = true; status.textContent = l('这是保存的对话。开启新对话将使用最新资料与授权，避免带入已关闭的内容。', 'Saved conversation. Start a new one to use current information and permissions.'); }
     form.onsubmit = async event => {
       event.preventDefault(); if (busy || unsavedThread || outdated || !valid(ticket) || !form.reportValidity()) return;
@@ -289,6 +326,10 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       const value = question.value.trim(); const before = [...thread.messages];
       try {
         if (!await ensureAIConsent() || !valid(ticket)) return;
+        if(!personal){
+          const saved=await repo.savePersonal(owner,0,cleanPersonalContext({scopes}));
+          if(!valid(ticket))return;personal=saved;thread.context_revision=saved.revision;Object.assign(allowed,relationshipScopeDefaults(saved));
+        }
         controller = new AbortController(); status.textContent = l('正在认真读你们的故事…', 'Reading your story…');
         const session = await account.client.auth.getSession(); if (!valid(ticket)) return;
         if (!session.data?.session?.access_token) throw Error('SIGN_IN_REQUIRED');
@@ -299,7 +340,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
         if (!valid(ticket)) return;
         const answer = { role: 'assistant', content: '' }; thread.messages.push({ role: 'user', content: value }, answer); drawMessages();
         let completeText = '';
-        await readBuerEvents(response.body, (type, data) => { if(!valid(ticket))return;if(type==='context'){sourceList.replaceChildren(...(data.sources||[]).map(s=>el('li',`${s.kind} · ${s.title||s.date||s.id}`)));if(!data.sources?.length)sourceList.append(el('li',l('未检索到相关个人摘录，仅参考可用图谱与当前提问。','No personal excerpts retrieved; using available charts and your question.')));} if (type === 'delta') { completeText += data.text; answer.content = completeText.length <= 6000 ? completeText : completeText.slice(0,5920) + l('\n（回复较长，已保留前半部分。可以继续追问。）', '\n(Long reply shortened. Ask a follow-up to continue.)'); drawMessages(); } });
+        await readBuerEvents(response.body, (type, data) => { if(!valid(ticket))return;if(type==='context'){sources.hidden=false;sourceList.replaceChildren(...(data.sources||[]).map(s=>el('li',`${s.kind} · ${s.title||s.date||s.id}`)));if(!data.sources?.length)sourceList.append(el('li',l('未检索到相关个人摘录，仅参考可用图谱与当前提问。','No personal excerpts retrieved; using available charts and your question.')));} if (type === 'delta') { completeText += data.text; answer.content = completeText.length <= 6000 ? completeText : completeText.slice(0,5920) + l('\n（回复较长，已保留前半部分。可以继续追问。）', '\n(Long reply shortened. Ask a follow-up to continue.)'); drawMessages(); } });
         if (!valid(ticket)) return;
         thread.messages = thread.messages.slice(-40); question.value = ''; unsavedThread = crypto.randomUUID(); dirty = true;
         const saved = await repo.saveConversation(owner, thread, unsavedThread);

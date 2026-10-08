@@ -1,5 +1,6 @@
 import { validateHumanDesignProfileSnapshot } from '../../shared/human-design-profile-contract.js';
 import { cleanPersonalContext } from './buer-personal-context.js';
+import { ageContext } from './buer-age.js';
 
 export const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 export const PERSON_SOURCES = ['self', 'permission', 'confirmed', 'guardian', 'entered'];
@@ -39,9 +40,10 @@ export function cleanPerson(value) {
 }
 
 // No nickname, full birth data, observations, or unrelated chart fields in AI context.
-export function anonymousPerson(person) {
+export function anonymousPerson(person, now = new Date()) {
   const core = person.chart?.core;
   return { source: person.source, revision: person.revision, certainty: person.birth?.certainty || 'unknown',
+    age: ageContext(person.birth?.date || person.chart?.input?.birthDate, now),
     chart: core && person.birth?.certainty === 'known' && validateHumanDesignProfileSnapshot(person.chart).valid ? {
       type: core.type, strategy: core.strategy, authority: core.authority, profile: core.profile,
     } : null };

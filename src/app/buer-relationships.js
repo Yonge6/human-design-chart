@@ -164,8 +164,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       if(saved)content.append(el('small',l(`解读保存于 ${new Date(saved.updated_at).toLocaleString()}`,`Reading saved ${new Date(saved.updated_at).toLocaleString()}`)));
       const nav=el('div','',{class:'relationship-manual-tabs pair-manual-tabs','aria-label':l('相处说明书分类','Reading categories')});
       for(const [key,zh,en] of PAIR_SECTIONS){const b=button(zh,en,()=>{selected=key;draw();});b.setAttribute('aria-pressed',String(selected===key));nav.append(b);}content.append(nav);
-      const pane=el('section','',{class:'pair-manual-reading'});content.append(pane);
-      pane.append(el('h3',PAIR_SECTIONS.find(s=>s[0]===selected)[getLanguage()==='en'?2:1]));
+      const pane=el('section','',{class:'pair-manual-reading','aria-label':PAIR_SECTIONS.find(s=>s[0]===selected)[getLanguage()==='en'?2:1]});content.append(pane);
       if(selected==='overview'){
         const options={language:getLanguage(),otherName:person.nickname};
         const groups=pairComparisonGroups(snapshot.chart,person.chart,{...options,otherProperties,translate:(key,value)=>chartText(translateValue(key,value))});

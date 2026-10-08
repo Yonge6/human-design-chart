@@ -96,7 +96,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
   async function mayLeave() { return !dirty || await askConfirm('有未保存的内容。离开将丢弃这些编辑，确定离开？', 'You have unsaved changes. Discard them and leave?'); }
   close.onclick = async () => { if (busy || !await mayLeave()) return; invalidate(); content.replaceChildren(); dialog.close(); trigger?.focus({ preventScroll: true }); };
   dialog.addEventListener('cancel', e => { e.preventDefault(); close.click(); });
-  function reset(title) { content.replaceChildren(); heading.textContent = title; close.setAttribute('aria-label', l('关闭', 'Close')); status.textContent = ''; dirty = false; }
+  function reset(title) { content.replaceChildren();content.classList.remove('pair-manual-content');content.scrollTop=0; heading.textContent = title; close.setAttribute('aria-label', l('关闭', 'Close')); status.textContent = ''; dirty = false; }
   function login() {
     listContent.replaceChildren();
     listContent.append(el('h3', l('把在意的人，慢慢读懂。', 'Get to know the people who matter.')),
@@ -158,26 +158,40 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
   async function pairManual(person,force=false){
     if(force)readingCache.clear();
     invalidate();const ticket=epoch;reset(l(`我与${person.nickname} · 相处说明书`,`Me & ${person.nickname} · Relationship manual`));if(!dialog.open)dialog.showModal();
+    content.classList.add('pair-manual-content');
     let source=null,saved=null,selected='overview',pending=null,otherProperties=null,chartError=null;
+    const expanded=new Map();
+    const tabLabels={overview:['概览','Overview'],communication:['沟通','Talk'],friction:['决策','Decide'],rhythm:['节奏','Rhythm'],repair:['修复','Repair'],practice:['行动','Practice']};
+    function selectSection(key){
+      expanded.set(selected,[...content.querySelectorAll('.pair-manual-reading details')].map(d=>d.open));
+      selected=key;draw();
+      content.scrollTop=content.querySelector('.pair-reading-anchor').offsetTop;
+      content.querySelector('[role="tab"][aria-selected="true"]').focus({preventScroll:true});
+    }
     const remember=()=>{if(valid(ticket)&&!chartError)readingCache.set(owner,person,{source,saved,otherProperties});};
     const localSource=()=>makeGuideSource(getGrowthReport(),readGrowth(workspaceStorage()));
     function draw(){
       content.replaceChildren();
-      const actions=el('div','',{class:'journal-actions'});actions.append(button('← 返回人物列表','← Back to people',list),button('聊聊我们的关系','Talk about us',()=>conversation(person),'journal-primary'));content.append(actions);
-      content.append(el('p',l('基础资料直接阅读；个性化解读生成后保存到账号，再次打开不调用 AI。人类图是反思线索，不是关系定论。','Read facts directly. Personalized sections are saved to your account; reopening does not call AI. Chart ideas are reflection prompts, not relationship verdicts.'),{class:'relationship-chat-note'}));
-      content.append(button('重新读取最新版本','Reload latest version',()=>pairManual(person,true)));
+      const actions=el('div','',{class:'pair-reading-actions'});actions.append(button('← 人物列表','← People',list),button('聊聊我们的关系','Talk about us',()=>conversation(person),'journal-primary'));content.append(actions);
       const local=localSource(),snapshot=source?cleanGuideSource(source.payload):local;
-      if(source)content.append(el('small',l(`参考成长档案同步于 ${new Date(source.updated_at).toLocaleString()}。`,`Source synced ${new Date(source.updated_at).toLocaleString()}.`)));
-      else content.append(el('p',l('下方“我”的信息来自当前成长档案，尚未保存为本次相处指南的参考快照。','Your information previews the current growth profile, not yet saved as this guide’s reference snapshot.')));
-      if(source&&!guideSourceEqual(local,source.payload))content.append(el('p',l('本机成长档案与账号快照不同。确认属于你后，可同步并更新；不会自动替换。','This device’s growth profile differs from the account snapshot. Confirm ownership before syncing; it will not replace it automatically.'),{class:'pair-manual-warning'}));
-      if(pairManualStale(saved,source,person))content.append(el('p',l('资料已有变化，以下为旧版解读，可继续阅读或更新。','Sources changed. The previous reading remains available; update when ready.'),{class:'pair-manual-warning'}));
       const roleWarning=pairManualRoleWarning(person,saved?.sections);
-      if(roleWarning)content.append(el('p',l(`当前人物是你的${roleWarning}，旧解读中出现了另一种父母称谓。请更新解读核对称谓，不要将旧文中的称谓当作事实。`,`This profile is your ${roleWarning==='母亲'?'mother':'father'}, but the saved reading uses the other parental title. Update the reading to check these references.`),{class:'pair-manual-warning',role:'status'}));
-      if(saved)content.append(el('small',l(`解读保存于 ${new Date(saved.updated_at).toLocaleString()}`,`Reading saved ${new Date(saved.updated_at).toLocaleString()}`)));
-      if(saved&&!guideV2(saved.sections))content.append(el('p',l('栏目已重新整理。旧解读仍保留在下方，点击“更新解读”才会按新结构生成，不会自动扣除额度。','The categories have been redesigned. Your previous reading is preserved below. Choose Update reading to generate the new structure; no automatic charge.'),{class:'pair-manual-warning'}));
-      const nav=el('div','',{class:'relationship-manual-tabs pair-manual-tabs','aria-label':l('相处说明书分类','Reading categories')});
-      for(const [key,zh,en] of PAIR_SECTIONS){const b=button(zh,en,()=>{selected=key;draw();});b.setAttribute('aria-pressed',String(selected===key));nav.append(b);}content.append(nav);
-      const pane=el('section','',{class:'pair-manual-reading','aria-label':PAIR_SECTIONS.find(s=>s[0]===selected)[getLanguage()==='en'?2:1]});content.append(pane);
+      const changed=pairManualStale(saved,source,person)||Boolean(source&&!guideSourceEqual(local,source.payload));
+      const note=roleWarning?l(`称谓需核对：对方是你的${roleWarning}，请更新旧解读。`,`Check the old reading: this person is your ${roleWarning==='母亲'?'mother':'father'}.`):changed?l('资料有变化，原解读仍可阅读。','Sources changed. Your saved reading remains available.'):saved&&!guideV2(saved.sections)?l('可更新为新版，原解读已保留。','A new format is available; your previous reading is kept.'):saved?l('已保存 · 随时阅读','Saved · Read any time'):l('先阅读基础建议，需要时再生成解读。','Read the basics, then generate a personal reading when ready.');
+      const meta=el('div','',{class:'pair-reading-meta'}),more=el('details','',{class:'pair-reading-more'});
+      meta.append(el('p',note,{class:'pair-reading-note',role:'status'}));
+      more.append(el('summary',l('更多','More')));
+      if(source)more.append(el('p',l(`资料更新：${new Date(source.updated_at).toLocaleString()}`,`Source updated: ${new Date(source.updated_at).toLocaleString()}`)));
+      if(saved)more.append(el('p',l(`解读保存：${new Date(saved.updated_at).toLocaleString()}`,`Reading saved: ${new Date(saved.updated_at).toLocaleString()}`)));
+      more.append(el('p',l('已保存的解读可直接阅读。人类图仅作观察参考。','Saved readings open directly. Human Design is a reflection tool.')),button('从账号刷新','Refresh from account',()=>pairManual(person,true)));
+      meta.append(more);content.append(meta,el('div','',{class:'pair-reading-anchor','aria-hidden':'true'}));
+      const nav=el('div','',{class:'relationship-manual-tabs pair-manual-tabs',role:'tablist','aria-label':l('相处说明书分类','Reading categories')});
+      for(const [key,zh,en] of PAIR_SECTIONS){
+        const labels=tabLabels[key],b=button(labels[0],labels[1],()=>selectSection(key));
+        for(const [attr,value] of Object.entries({role:'tab',id:`pair-tab-${key}`,'aria-selected':String(selected===key),'aria-controls':'pair-reading-panel',tabindex:selected===key?'0':'-1',title:l(zh,en)}))b.setAttribute(attr,value);
+        b.onkeydown=e=>{const keys=PAIR_SECTIONS.map(s=>s[0]),i=keys.indexOf(key);const next=e.key==='ArrowRight'?(i+1)%keys.length:e.key==='ArrowLeft'?(i+keys.length-1)%keys.length:e.key==='Home'?0:e.key==='End'?keys.length-1:null;if(next!==null){e.preventDefault();if(!busy)selectSection(keys[next]);}};
+        nav.append(b);
+      }content.append(nav);
+      const pane=el('section','',{class:'pair-manual-reading',id:'pair-reading-panel',role:'tabpanel',tabindex:'0','aria-labelledby':`pair-tab-${selected}`});content.append(pane);
       const composite=pairComposite(snapshot.chart,person.chart);
       const card=(item)=>{
         const block=el('article','',{class:'pair-guidance-card'});block.append(el('h4',item.title),el('p',item.question),el('p',item.action));
@@ -210,6 +224,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
         }else{const legacy=el('details');legacy.append(el('summary',l('阅读保留的旧版解读','Read the preserved previous version')));renderReadingText(reading,text);legacy.append(reading);pane.append(legacy);}
       }
       else pane.append(el('p',l('这一分类的个性化解读尚未生成。生成一次后，即可随时回来阅读。','This personalized section has not been generated. Generate once, then return to read any time.')));
+      pane.querySelectorAll('details').forEach((d,i)=>{d.open=expanded.get(selected)?.[i]||false;});
       const generateActions=el('div','',{class:'journal-actions pair-manual-generate'});
       if(pending)generateActions.append(button('重试保存解读（不重新生成）','Retry saving (no regeneration)',b=>generate(false,true,b),'journal-primary'));
       else {
@@ -251,7 +266,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       finally{if(valid(ticket)){controller=null;busy=false;draw();}}
     }
     const cached=force?null:readingCache.get(owner,person);
-    if(cached&&valid(ticket)){({source,saved,otherProperties}=cached);draw();status.textContent=l('已直接显示本机保存的说明书；需要同步其他设备的更新时，可重新读取最新版本。','Showing the reading saved on this device. Reload to sync updates from another device.');return;}
+    if(cached&&valid(ticket)){({source,saved,otherProperties}=cached);draw();status.textContent='';return;}
     busy=true;status.textContent=l('正在读取已保存的说明书…','Loading saved reading…');
     const preview=loadingPreview(l('正在连接账号，读取已保存的内容…','Connecting to your account and loading saved content…'),PAIR_SECTIONS.map(s=>s[getLanguage()==='en'?2:1]));
     content.append(chartSummary(person),preview);

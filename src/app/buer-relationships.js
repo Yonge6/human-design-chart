@@ -10,6 +10,7 @@ import { validChatHistory } from '../services/buer-conversation.js';
 import { fetchPlaceCandidates, inferTimezoneFromAddress } from '../services/location-service.js';
 import { personManualData } from '../services/buer-person-manual.js';
 import { createBodygraphRenderer } from '../renderer/bodygraph-renderer.js';
+import { orderedPeople, movePerson, relationshipGuidePrompt } from '../services/buer-people-tools.js';
 
 const el = (tag, text = '', attributes = {}) => {
   const node = document.createElement(tag); node.textContent = text;
@@ -28,7 +29,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
   const repo = account ? relationshipRepository(account) : null;
   let owner = null, epoch = 0, people = [], busy = false, dirty = false, controller = null, trigger = null;
   let activeThread = null, unsavedThread = null;
-  let personal=null,filter='';
+  let personal=null,filter='',peopleOrder=null;
   const root=el('section','',{id:'buerPeople','aria-label':'People in your life'});
   const hero=el('header','',{class:'people-hero companion-section-hero'}),listContent=el('div','',{class:'people-content'});
   root.append(hero,listContent);document.querySelector('#buerHome').after(root);
@@ -96,7 +97,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     dialog.close();listContent.replaceChildren();
     if (!owner) { login(); return; }
     busy = true;listContent.append(el('p',l('正在读取身边的人…','Loading people…'),{role:'status'}));
-    try { const [rows,context] = await Promise.all([repo.people(owner),repo.personal(owner)]); if (!valid(ticket)) return; people = rows;personal=context;drawList(); }
+    try { const [rows,context,order] = await Promise.all([repo.people(owner),repo.personal(owner),repo.order(owner)]); if (!valid(ticket)) return; people = rows;personal=context;peopleOrder=order;drawList(); }
     catch (error) { if (valid(ticket)) { listContent.replaceChildren(el('p',errorMessage(error)),button('重新读取', 'Retry', list)); } }
     finally { if (ticket === epoch) busy = false; }
   }
@@ -121,12 +122,12 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
   function drawList() {
     const content=listContent;content.replaceChildren();
     const actions = el('div', '', { class: 'journal-actions' });
-    actions.append(button('＋ 添加身边的人', '＋ Add someone', () => edit(null, false), 'journal-primary'),button('我的参考资料与授权','My context & permissions',settings),button('刷新', 'Refresh', list)); content.append(actions);
+    actions.append(button('＋ 添加身边的人', '＋ Add someone', () => edit(null, false), 'journal-primary'),button('我的参考资料与授权','My context & permissions',settings),button('调整顺序','Adjust order',sortPeople),button('刷新', 'Refresh', list)); content.append(actions);
     content.append(el('p',personal?l('自己的资料沿用已有记录，无需重复建档。可在「我的参考资料与授权」更新同步。','Your existing personal information is reused. Update it in My context & permissions.'):l('只需添加对方。聊之前可授权使用你已有的资料，无需再建立自己的档案。','Just add the other person. Authorize your existing information before chatting; no duplicate self profile.'),{class:'people-note'}));
     const filters=el('div','',{class:'people-filters',role:'group','aria-label':l('按关系筛选','Filter relationships')});
     for(const [zh,en] of [['',''],...RELATION_TYPES]){const b=button(zh||'全部',en||'All',()=>{filter=zh;drawList();});b.setAttribute('aria-pressed',String(filter===zh));filters.append(b);}content.append(filters);
     const cards = el('div', '', { class: 'journal-list relationship-people' });
-    const visible=people.filter(p=>!p.is_self&&(!filter||p.relationship===filter||(filter==='其他'&&!RELATION_TYPES.some(([name])=>name===p.relationship))));
+    const visible=orderedPeople(people,peopleOrder?.person_ids).filter(p=>!filter||p.relationship===filter||(filter==='其他'&&!RELATION_TYPES.some(([name])=>name===p.relationship)));
     for (const person of visible) {
       const card = el('article', '', { class: 'relationship-person' });
       card.append(el('span', person.nickname.slice(0, 1), { class: 'relationship-avatar', 'aria-hidden': 'true' }),
@@ -134,11 +135,38 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       const core=person.chart?.core;card.append(el('p',core?`${chartText(core.type)} · ${core.profile} · ${chartText(core.authority)}`:l('出生时刻待确认 · 也可以先聊聊','Birth time unknown · You can still talk')));
       const controls = el('div', '', { class: 'journal-actions' });
       controls.append(button('了解 TA', 'About them', () => detail(person)));
+      controls.append(button('相处指南', 'Relationship guide', () => conversation(person,null,true)));
       if (!person.is_self) controls.append(button('聊聊我们的关系', 'Talk about us', () => conversation(person), 'journal-primary'));
       card.append(controls); cards.append(card);
     }
     if (!visible.length) cards.append(el('p', l('从一个你在意的人开始。选择关系，填写 TA 的出生信息，就可以聊聊你们之间的事。', 'Start with someone who matters. Choose a relationship and add their birth information.'), { class: 'journal-empty' }));
     content.append(cards);
+  }
+  function sortPeople(){
+    invalidate();const ticket=epoch;reset(l('调整顺序','Adjust order'));if(!dialog.open)dialog.showModal();
+    const initial=orderedPeople(people,peopleOrder?.person_ids).map(p=>p.id);let ids=[...initial],dragged=null,mutation=crypto.randomUUID();
+    const byId=new Map(people.map(p=>[p.id,p]));
+    content.append(el('p',l('把常联系的人放在前面。电脑可拖动，也可使用上移、下移或置顶；保存后同步到账号。','Keep the people you contact most at the top. Drag on desktop or use the move buttons, then save to your account.')));
+    const rows=el('ol','',{class:'people-sort-list'}),live=el('p','',{role:'status','aria-live':'polite',class:'people-sort-status'});content.append(rows,live);
+    const controls=el('div','',{class:'journal-actions'});
+    const save=button('保存顺序','Save order',async()=>{
+      busy=true;save.disabled=true;
+      try{const saved=await repo.saveOrder(owner,peopleOrder?.revision||0,mutation,ids);if(!valid(ticket))return;peopleOrder=saved;dirty=false;dialog.close();drawList();}
+      catch(error){if(valid(ticket))status.textContent=error?.code==='40001'?l('列表已在其他设备改变。当前顺序已保留，请重新读取后再调整。','The list changed on another device. Your draft is kept; reload before reordering.'):errorMessage(error);}
+      finally{if(ticket===epoch){busy=false;save.disabled=!dirty;}}
+    },'journal-primary');
+    controls.append(save,button('取消','Cancel',async()=>{if(await mayLeave()){invalidate();dialog.close();drawList();}}),button('重新读取','Reload',async()=>{if(await mayLeave())await list();}));content.append(controls);
+    function move(id,target){if(busy||!valid(ticket))return;ids=movePerson(ids,id,target);mutation=crypto.randomUUID();dirty=ids.some((value,index)=>initial[index]!==value);draw();live.textContent=l(`已移到第 ${ids.indexOf(id)+1} 位`, `Moved to position ${ids.indexOf(id)+1}`);rows.querySelector(`[data-sort-id="${id}"] button`)?.focus();}
+    function draw(){rows.replaceChildren();save.disabled=!dirty;ids.forEach((id,index)=>{
+      const person=byId.get(id),row=el('li','',{'data-sort-id':id,draggable:String(matchMedia('(pointer:fine)').matches)});
+      row.append(el('span',`${index+1}. ${person.nickname}`,{class:'people-sort-name'}));
+      const actions=el('div','',{class:'people-sort-controls'});
+      for(const [zh,en,target,disabled] of [['上移','Up',index-1,index===0],['下移','Down',index+1,index===ids.length-1],['置顶','Top',0,index===0]]){const b=button(zh,en,()=>move(id,target));b.disabled=disabled;b.setAttribute('aria-label',l(`${person.nickname}：${zh}`,`${person.nickname}: ${en}`));actions.append(b);}row.append(actions);
+      row.ondragstart=e=>{if(busy){e.preventDefault();return;}dragged=id;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',id);};
+      row.ondragover=e=>{if(!busy&&dragged&&dragged!==id){e.preventDefault();e.dataTransfer.dropEffect='move';}};
+      row.ondrop=e=>{e.preventDefault();if(dragged)move(dragged,index);dragged=null;};row.ondragend=()=>dragged=null;rows.append(row);
+    });}
+    draw();if(!ids.length)live.textContent=l('先添加身边的人，再来调整顺序。','Add someone first, then adjust the order.');
   }
   function detail(person){invalidate();reset(person.nickname);if(!dialog.open)dialog.showModal();content.append(el('p',person.relationship),chartSummary(person));if(person.notes)content.append(el('p',person.notes));const actions=el('div','',{class:'relationship-detail-actions'});if(person.chart)actions.append(button('查看 TA 的说明书','View their Life Manual',()=>manual(person)));actions.append(button('编辑 TA 的资料','Edit their profile',()=>edit(person,false)),button('聊聊我们的关系','Talk about us',()=>conversation(person),'journal-primary'));content.append(actions);}
   async function manual(person){
@@ -290,7 +318,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       }catch(error){if(valid(ticket))status.textContent=errorMessage(error);}finally{if(ticket===epoch){busy=false;save.disabled=false;}}
     };
   }
-  async function conversation(person, previous = null) {
+  async function conversation(person, previous = null, guide = false) {
     invalidate(); const ticket = epoch;
     reset(l('我与','Me & ') + person.nickname);if(!dialog.open)dialog.showModal();
     const controls = el('div', '', { class: 'relationship-chat-toolbar' });
@@ -310,7 +338,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       messages.replaceChildren();
       for (const message of thread.messages) {
         const box = el('article', '', { class: `relationship-message ${message.role}` }); box.append(el('small', message.role === 'user' ? l('我', 'Me') : l('豆豆龙', 'Doudoulong')));
-        const text = el('div'); if (message.role === 'assistant') renderAssistantText(text, message.content); else text.textContent = message.content; box.append(text); messages.append(box);
+        const text = el('div'); if (message.role === 'assistant') renderAssistantText(text, message.content); else text.textContent = ['zh','en'].some(lang=>message.content===relationshipGuidePrompt(lang))?l('请给我和 TA 一份相处指南。','Please create a relationship guide for us.'):message.content; box.append(text); messages.append(box);
       }
     }
     drawMessages();
@@ -366,6 +394,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       if (!rows.length) history.append(el('p', l('还没有保存的关系对话。', 'No saved conversations yet.')));
       for (const row of rows) history.append(button(row.messages[0]?.content.slice(0,60) || '对话', row.messages[0]?.content.slice(0,60) || 'Conversation', async () => { if (await mayLeave()) await conversation(person, row); }, 'relationship-history'));
     })); content.append(history);
+    if(guide){question.value=relationshipGuidePrompt(getLanguage());dirty=true;form.hidden=true;await form.onsubmit({preventDefault(){}});if(valid(ticket))form.hidden=false;}
   }
   const nav = document.querySelector('#drawerHome .drawer-nav');
   const entry = button('', '', open); const icon = el('span', '', { class: 'drawer-nav-icon' }); icon.append(el('i', '', { class: 'ph ph-users', 'aria-hidden': 'true' }));
@@ -375,7 +404,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     if(document.body.dataset.workspace==='people'&&!dialog.open&&!busy)void list(); }
   document.addEventListener('buer:language', language); language();
   document.addEventListener('buer:relationships', () => void open());
-  account?.subscribe(user => { const next = user?.id || null; if (owner === next) return; invalidate(); owner = next; people = [];personal=null; content.replaceChildren();listContent.replaceChildren(); status.textContent = '';dialog.close(); if (document.body.dataset.workspace==='people') void list(); });
+  account?.subscribe(user => { const next = user?.id || null; if (owner === next) return; invalidate(); owner = next; people = [];personal=null;peopleOrder=null; content.replaceChildren();listContent.replaceChildren(); status.textContent = '';dialog.close(); if (document.body.dataset.workspace==='people') void list(); });
   window.addEventListener('beforeunload', event => { if (dirty || busy) { event.preventDefault(); event.returnValue = ''; } });
   const viewport = () => { const v = window.visualViewport, follow = v && matchMedia('(max-width:760px)').matches && Math.abs(v.scale-1)<.01; dialog.style.setProperty('--journal-viewport-height', follow ? `${v.height}px` : '100dvh'); dialog.style.setProperty('--journal-viewport-top', follow ? `${v.offsetTop}px` : '0px'); };
   window.visualViewport?.addEventListener('resize', viewport); window.visualViewport?.addEventListener('scroll', viewport); viewport();

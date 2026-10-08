@@ -57,6 +57,11 @@ export function relationshipRepository(account) {
     if (error) throw error; return Array.isArray(data) ? data[0] : data;
   }
   return {
+    async order(owner) {
+      check(owner);const {data,error}=await client.from('buer_people_order').select('*').eq('user_id',owner).limit(1);
+      check(owner);if(error)throw error;return data[0]||null;
+    },
+    saveOrder(owner,revision,mutation,ids) {return rpc('buer_save_people_order',{expected_revision:revision,mutation,ordered_ids:ids},owner);},
     async personal(owner) {
       check(owner);const {data,error}=await client.from('buer_personal_context').select('*').eq('user_id',owner).limit(1);
       check(owner);if(error)throw error;return data[0]||null;

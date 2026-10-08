@@ -1,0 +1,11 @@
+# Relationship guides and people ordering
+
+- Source: `6e6ce338778dcb8dce581471f4f67533ae09b80e` on `codex/buer-private-journal`.
+- H5 artifact: `39f68a278cddff19181e30ec50cb7396d559bd14`; fingerprint `fd8d4277dad7b6ea`. Pages run `37717386305` succeeded.
+- Each person now has a Relationship guide action. It submits a practical guide request through the existing relationship conversation, consent, quota and account-history path. Existing enabled scopes remain respected. The visible request is compact, and the composer is available for follow-up. The prompt separates recorded facts from tentative chart reflections and excludes compatibility scoring.
+- Adjust order offers desktop drag/drop and accessible up/down/top controls. Save persists to the account; Cancel discards the draft after confirmation. New people append, removed people are ignored, filters preserve the global order. Conflict errors retain the draft and require reloading.
+- Applied `202610080001_people_order.sql` to production Supabase. Independent metadata readback confirmed forced RLS, one owner-read policy, authenticated RPC execution, no anonymous execution and no authenticated direct update. Production transaction verified owner save/read and cross-owner invisibility, then rolled back all synthetic rows/users: `ORDER_RLS_PASS_ROLLED_BACK`.
+- 207 Node tests passed, zero failures; `git diff --check` clean. PGlite tests exercise owner isolation, invalid/foreign/deleted IDs, duplicate IDs, revision conflicts, idempotency and unchanged profile revisions. Repository test covers late response after account switch.
+- Browser fixture at desktop and 390x844 verified dragging, mobile move controls, save/reload, conflict preservation, cancel without saving, guide request scope, continued composition and account-state clearing. Fixture used synthetic records and mocked AI/account transport, not a real-user provider conversation.
+- Fresh production browser loaded the new fingerprint and runtime source; public module readback includes guide and order logic. At 390px, document scroll width was 390px. Production navigation initially reached interactive before a load timeout; subsequent fresh state/readback succeeded.
+- Shared database and H5 released. No native rebuild, device install or App Store submission in this release. Existing API deployment unchanged.

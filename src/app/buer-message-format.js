@@ -23,5 +23,16 @@ export function readingParagraphs(content) {
 }
 export function renderReadingText(element,content){
   element.replaceChildren();
-  for(const text of readingParagraphs(content)){const p=element.ownerDocument.createElement('p');renderAssistantText(p,text);element.append(p);}
+  for(const text of readingParagraphs(content)){
+    const p=element.ownerDocument.createElement('p');
+    for(const part of readingSegments(text)){
+      if(part.bold){const strong=element.ownerDocument.createElement('strong');strong.textContent=part.text;p.append(strong);}
+      else p.append(element.ownerDocument.createTextNode(part.text));
+    }
+    element.append(p);
+  }
+}
+export function readingSegments(text){
+  const label=String(text).match(/^([^*\n：:。！？!?，,；;]{2,24}[：:])/u)?.[1];
+  return label?[{text:label,bold:true},...messageSegments(String(text).slice(label.length))]:messageSegments(text);
 }

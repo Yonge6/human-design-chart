@@ -15,6 +15,7 @@ import {PAIR_SECTIONS,makeGuideSource,cleanGuideSource,parsePairSections,pairMan
 import { loadingPreview } from './buer-loading.js';
 import { pairComparisonGroups, comparisonTable } from './buer-pair-comparison.js';
 import { createReadingCache } from '../services/buer-reading-cache.js';
+import { pairComposite, compositeSummaryLines } from '../services/buer-pair-composite.js';
 
 const el = (tag, text = '', attributes = {}) => {
   const node = document.createElement(tag); node.textContent = text;
@@ -182,6 +183,10 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
         const charts=el('details');charts.append(el('summary',l('双方图谱基础信息 · 中心、通道与行星','Chart details · centers, channels & planets')));
         for(const group of groups.slice(1))charts.append(comparisonTable(group,options));
         pane.append(charts);
+        const connection=el('section','',{class:'pair-manual-prose','aria-label':l('两张图放在一起','Your charts together')});
+        connection.append(el('h4',l('两张图放在一起','Your charts together')));
+        const summary=el('div');renderReadingText(summary,compositeSummaryLines(pairComposite(snapshot.chart,person.chart),getLanguage()).join('\n\n'));connection.append(summary);
+        pane.append(connection);
       }
       if(saved?.sections?.[selected]){const reading=el('div','',{class:'pair-manual-prose'});renderReadingText(reading,saved.sections[selected]);pane.append(reading);}
       else pane.append(el('p',l('这一分类的个性化解读尚未生成。生成一次后，即可随时回来阅读。','This personalized section has not been generated. Generate once, then return to read any time.')));
@@ -213,7 +218,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
           controller=new AbortController();
           phase('生成中…','Generating…');
           status.textContent=l('正在生成六个分类的解读，已有内容可继续阅读…','Generating six sections. Your existing reading remains available…');
-          const response=await fetch(`${account.config.apiUrl}/v1/chat`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${session.data.session.access_token}`},body:JSON.stringify({mode:'relationship-guide',relationship:{personId:person.id,personRevision:person.revision,sourceRevision:source.revision},messages:[{role:'user',content:pairManualPrompt(getLanguage(),person)}],...access}),signal:controller.signal});
+          const response=await fetch(`${account.config.apiUrl}/v1/chat`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${session.data.session.access_token}`},body:JSON.stringify({mode:'relationship-guide',relationship:{personId:person.id,personRevision:person.revision,sourceRevision:source.revision},messages:[{role:'user',content:pairManualPrompt(getLanguage(),person,pairComposite(source.payload.chart,person.chart))}],...access}),signal:controller.signal});
           if(!response.ok){if(response.status===402)showMembership();throw Error((await response.json().catch(()=>({}))).error||'AI_UNAVAILABLE');}
           let raw='';await readBuerEvents(response.body,(type,data)=>{if(type==='delta'){raw+=data.text;if(raw.length>50000)throw Error('INVALID_GUIDE_SECTIONS');}});
           if(!valid(ticket))return;pending={sections:parsePairSections(raw),mutation:crypto.randomUUID(),language:getLanguage()==='en'?'en':'zh'};dirty=true;

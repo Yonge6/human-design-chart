@@ -105,10 +105,7 @@
 #buerPeople{display:none;max-width:1200px;margin:0 auto;padding:32px 36px 100px;color:var(--ui-ink)}
 body[data-workspace="people"] #buerPeople{display:block}
 body[data-workspace="people"] #buerHome,body[data-workspace="people"] .shell,body[data-workspace="people"] #appDrawer,body[data-workspace="people"] .buer-back-home{display:none!important}
-.people-hero{position:relative;display:block;overflow:hidden;min-height:240px;padding:36px 32% 36px 40px;border-radius:28px;background:#e4e9da url('assets/companion-landscape.svg') center/cover}
-.people-hero h1{font:600 clamp(28px,3vw,42px)/1.4 var(--editorial-serif,Georgia,serif);color:#213a2d;margin:20px 0}
-.people-hero>p{color:#3d5746;line-height:1.8;font-size:15px}
-.people-hero .companion-section-art{position:absolute;right:24px;bottom:8px;width:240px;height:240px;object-fit:contain}
+/* Hero geometry, typography and motion are shared in buer-companion.css. */
 .people-content{padding-top:16px}.people-note{font-size:13px;color:var(--ui-muted);line-height:1.8}
 .people-content button{font:inherit;min-height:44px;padding:10px 16px;border:1px solid var(--ui-line);border-radius:12px;background:#faf9f3;color:var(--ui-ink);cursor:pointer}
 .people-content button.journal-primary{background:var(--ui-accent);color:#fffdf6;border-color:var(--ui-accent)}
@@ -117,12 +114,12 @@ body[data-workspace="people"] #buerHome,body[data-workspace="people"] .shell,bod
 .people-filters{display:flex;gap:8px;overflow-x:auto;scrollbar-width:thin;padding:8px 0 16px;max-width:100%}
 .people-filters button{flex:0 0 auto;width:auto;white-space:nowrap;font-size:13px}.people-filters button[aria-pressed="true"]{background:#e4e9db;border-color:#607556}
 .people-content .journal-actions button{width:auto}.people-content>.journal-actions{align-items:center}.people-content>.journal-actions button:last-child{border:0;background:none;margin-left:auto;padding:8px}
-.people-hero .growth-eyebrow{font-size:11px;letter-spacing:.14em}.people-content>.journal-actions button{font-size:14px}
+.people-content>.journal-actions button{font-size:14px}
 .people-content .journal-empty{line-height:1.9;text-align:left;padding:36px}.relationship-context small{display:block;color:#65755b;line-height:1.8;font-size:12px}
 .relationship-context li{font-size:13px;line-height:1.8;overflow-wrap:anywhere}
 @media(prefers-reduced-motion:no-preference){body[data-workspace="people"] .people-content{animation:people-appear .25s ease-out}@keyframes people-appear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}}
 @media(max-width:760px){
- #buerPeople{padding:12px 20px 100px}.people-hero{min-height:216px;padding:22px 24px;border-radius:24px}.people-hero h1{font-size:28px;max-width:85%;position:relative;z-index:1}.people-hero>p:last-of-type{width:67%;font-size:13px}.people-hero .companion-section-art{width:120px;height:120px;right:12px;bottom:8px;opacity:.95}.people-content>.journal-actions{gap:8px}.people-content>.journal-actions button{font-size:13px;padding:10px 12px}.buer-rail{gap:4px}.buer-rail .rail-item{min-width:0;white-space:nowrap;font-size:10px}.people-content .relationship-person{padding:22px}
+ #buerPeople{padding:12px 20px 100px}.people-content>.journal-actions{gap:8px}.people-content>.journal-actions button{font-size:13px;padding:10px 12px}.buer-rail{gap:4px}.buer-rail .rail-item{min-width:0;white-space:nowrap;font-size:10px}.people-content .relationship-person{padding:22px}
  .journal-dialog{width:100%;height:var(--journal-viewport-height,100dvh);max-height:var(--journal-viewport-height,100dvh);top:var(--journal-viewport-top,0);bottom:auto;margin:0;border:0;border-radius:0}
  .journal-shell{height:100%;max-height:100%}
  .journal-toolbar{padding:calc(12px + env(safe-area-inset-top)) 20px 12px}

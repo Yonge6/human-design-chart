@@ -12,7 +12,7 @@
 
 ## Design choices and release gates
 
-Checkpoint 1: Tasks 1 and 2 foundation implemented and tested locally (246 full-suite tests pass). Tasks 3 and 4 are pending. No production migration applied and no H5 release made. The record engine intentionally rejects a stale same-browser cache sequence; UI draft retention/reload handling and serialized multi-tab writes must be verified before enabling it. New guest-workspace routing after the initial legacy migration belongs to Task 3, not to the one-time legacy importer.
+Checkpoint 2: Tasks 1–3 implemented; 254 full-suite tests pass. Browser synthetic account switching, offline editing/retry and 390px layout verified. Production additive migration and authenticated-role isolation/CAS checks passed; anonymous HTTP access denied. Source/artifact publication and public readback remain Task 4's final gate; see `docs/releases/2026-10-08-full-account-sync.md`. Immutable local transactions plus Web Locks serialize same-browser writers. New guest-workspace routing is separate from the one-time legacy importer.
 
 - Selected: per-record sync with offline persistence; no initial confirmation dialog.
 - Rejected: cloud-only reads (slow/offline unavailable); whole-device last-write-wins backup (empty devices and concurrent edits can overwrite data).

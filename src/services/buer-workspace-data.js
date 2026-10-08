@@ -33,7 +33,7 @@ export function workspaceValues(records){
   else if(row.kind==='answer')Object.defineProperty(growth.answers,row.id,{value:value.value,enumerable:true,writable:true,configurable:true});
   else if(row.kind==='growth_meta'){
    if(row.id==='report'){growth.report=value.report;growth.reportDate=value.reportDate;}
-   else Object.defineProperty(growth,row.id,{value:value.value,enumerable:true,writable:true,configurable:true});
+   else if(!['answers','stories','actions','reportDate','__proto__','constructor','prototype'].includes(row.id))Object.defineProperty(growth,row.id,{value:value.value,enumerable:true,writable:true,configurable:true});
   }else if(row.kind==='conflict')conflicts.push({...value,recordId:value.id,id:row.id});
  }
  chats.sort((a,b)=>Number(b.date)-Number(a.date));manuals.sort((a,b)=>Number(b.createdAt)-Number(a.createdAt));

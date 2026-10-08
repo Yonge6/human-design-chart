@@ -396,21 +396,21 @@ test("cloud saving and anonymous analytics are explicit opt-ins", () => {
   assert.match(app, /匿名使用事件会移除用户标识，并最多保留180天/);
 });
 
-test("privacy copy distinguishes device-only defaults from account journal sync", () => {
+test("privacy copy distinguishes anonymous chart consent from full account sync", () => {
   const app = read("app.js");
   const privacy = read("privacy.html");
   const dataMap = read("docs/privacy-data-map.md");
 
   assert.match(app, /生成图片时隐藏姓名、日期、时间和地点；默认关闭。/);
-  assert.match(app, /默认开启，仅保存在本设备/);
+  assert.match(app, /默认开启；登录后同步到账号/);
   assert.match(app, /Hide name, date, time, and location in generated images\. Off by default\./);
-  assert.match(app, /On by default and stored only on this device\./);
-  assert.match(privacy, /Effective date: 2026-10-05/);
-  assert.match(privacy, /本地历史开启不会导致任何云端上传/);
-  assert.match(privacy, /Enabling local history never uploads data to the cloud/);
+  assert.match(app, /On by default and synced after sign-in\./);
+  assert.match(privacy, /Effective date: 2026-10-08/);
+  assert.match(privacy, /登录后已保存内容会自动账号同步/);
+  assert.match(privacy, /signed-in saved records automatically sync to the account/);
   assert.match(privacy, /私密日记会先缓存在当前设备，并同步到你的不二账号/);
   assert.match(privacy, /Private journals are cached on the device and synced to your Buer account/);
-  assert.match(dataMap, /Local history[^\n]+Default on, device only[^\n]+Never unless separate cloud consent/);
+  assert.match(dataMap, /Account workspace[^\n]+buer_workspace_records/);
 });
 
 test("dialog controls use consistent fixed dimensions", () => {

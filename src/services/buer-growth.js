@@ -20,8 +20,8 @@ export function cleanGrowth(value={}) {
  const shareAssessment=v.shareAssessment===true||v.version===1||(v.version==null&&v.shareAssessment==null);
  return {version:2,answers:Object.fromEntries(QUESTIONS.map(q=>[q.id,text(v.answers?.[q.id],1200)])),cursor:Math.max(0,Math.min(11,Number.isInteger(v.cursor)?v.cursor:0)),skipped:v.skipped===true,shareAssessment,
  report:text(v.report,16000),reportDate:text(v.reportDate,40),
- stories:(Array.isArray(v.stories)?v.stories:[]).filter(x=>x&&typeof x.id==='string').slice(0,100).map(x=>({id:text(x.id,80),title:text(x.title,100),body:text(x.body,4000),useAI:x.useAI===true,date:text(x.date,40)})),
- actions:(Array.isArray(v.actions)?v.actions:[]).filter(x=>x&&typeof x.id==='string').slice(0,100).map(x=>({id:text(x.id,80),title:text(x.title,200),metric:text(x.metric,300),due:/^\d{4}-\d{2}-\d{2}$/.test(x.due)?x.due:'',done:x.done===true,reflection:text(x.reflection,1200)}))};
+ stories:(Array.isArray(v.stories)?v.stories:[]).filter(x=>x&&typeof x.id==='string').map(x=>({id:text(x.id,80),title:text(x.title,100),body:text(x.body,4000),useAI:x.useAI===true,date:text(x.date,40)})),
+ actions:(Array.isArray(v.actions)?v.actions:[]).filter(x=>x&&typeof x.id==='string').map(x=>({id:text(x.id,80),title:text(x.title,200),metric:text(x.metric,300),due:/^\d{4}-\d{2}-\d{2}$/.test(x.due)?x.due:'',done:x.done===true,reflection:text(x.reflection,1200)}))};
 }
 export function readGrowth(storage){try{return cleanGrowth(JSON.parse(storage.getItem(GROWTH_KEY)||'{}'));}catch{return cleanGrowth();}}
 export function saveGrowth(storage,value){const clean=cleanGrowth(value);storage.setItem(GROWTH_KEY,JSON.stringify(clean));return clean;}

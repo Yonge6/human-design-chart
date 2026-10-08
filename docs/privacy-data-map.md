@@ -1,5 +1,13 @@
 # Privacy data map
 
+## Account workspace update (2026-10-08)
+
+| Scope | Storage and transfer | AI boundary | Deletion |
+|---|---|---|---|
+| Account workspace: ordinary chats, complete growth answers/stories/actions/report, saved manuals including full chart and birth input | Account-owned `buer_workspace_records`, local offline cache and durable operation queue; automatic import of unowned legacy records on first verified sign-in | Sync alone does not authorize AI or analytics. No credentials, quota or anonymous identity keys are imported | Tombstones sync per record; account deletion cascades, current-device owner cache removed |
+
+The legacy anonymous-chart table below describes the separate opt-in anonymous backend, not the new authenticated account workspace. Device-only content statements in the historical growth-coach section are superseded by this update. Account sync is not end-to-end encryption; users may export pending edits and preserved conflicts. Records beyond former 10-manual / 20-chat retention caps are not silently deleted.
+
 | Data field | Source | Personal data | Local save | Upload | Upload condition | Database table | Retention | User deletion | Admin access |
 |---|---|---:|---|---|---|---|---|---|---|
 | Name | Form | Yes | Optional local history | Optional | Secure context/native runtime and cloud-save switch explicitly enabled | `chart_records` | Until cloud deletion/account deletion | Delete cloud charts and personal data | RLS-authorized admins only |

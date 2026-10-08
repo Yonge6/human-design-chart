@@ -1,8 +1,9 @@
 // Content-only sync foundation. UI integration is gated separately.
+import {stableJson} from './buer-workspace-json.js';
 export const WORKSPACE_KINDS=['chat','manual','answer','story','action','growth_meta','conflict'];
 const keyOf=(kind,id)=>JSON.stringify([kind,id]);
 const clone=value=>structuredClone(value);
-const equivalent=(a,b)=>a.deleted===b.deleted&&JSON.stringify(a.payload)===JSON.stringify(b.payload);
+const equivalent=(a,b)=>Boolean(a.deleted)===Boolean(b.deleted)&&stableJson(a.payload)===stableJson(b.payload);
 const validId=id=>typeof id==='string'&&id.length>0&&id.length<=512;
 export function validateWorkspaceValue(kind,id,payload,deleted=false){
  if(!WORKSPACE_KINDS.includes(kind)||!validId(id)||typeof deleted!=='boolean'
@@ -85,6 +86,20 @@ export function createWorkspaceSync({storage,repository,uuid=()=>crypto.randomUU
   get owner(){return owner;},
   get status(){return status;},
   records(){return clone(Object.values(rows));},
+  applyChanges(changes){
+   const next=clone(rows);
+   for(const value of changes){
+    validateWorkspaceValue(value.kind,value.id,value.payload,value.deleted);
+    const recordKey=keyOf(value.kind,value.id),current=next[recordKey];
+    if(current&&equivalent(current,value))continue;
+    const base=current&&!current.deleted?current.payload:null;
+    if(stableJson(base)!==stableJson(value.base)){
+     const duplicate=Object.values(next).some(x=>x.kind==='conflict'&&!x.deleted&&x.payload.kind===value.kind&&x.payload.id===value.id&&x.payload.deleted===value.deleted&&stableJson(x.payload.payload)===stableJson(value.payload));
+     if(!duplicate)preserve(next,value,current?.revision||0,'concurrent-tab-edit');
+    }else next[recordKey]=fresh(value.kind,value.id,value.payload,value.deleted,current?.revision||0);
+   }
+   commit(next);status='pending';publish();
+  },
   set(kind,id,payload,deleted=false){
    validateWorkspaceValue(kind,id,payload,deleted);const key=keyOf(kind,id),before=rows[key];
    if(before&&equivalent(before,{payload,deleted}))return;
@@ -96,7 +111,7 @@ export function createWorkspaceSync({storage,repository,uuid=()=>crypto.randomUU
     validateWorkspaceValue(value.kind,value.id,value.payload,false);const key=keyOf(value.kind,value.id),before=next[key];
     if(!before)next[key]=fresh(value.kind,value.id,value.payload);
     else if(!equivalent(before,{payload:value.payload,deleted:false})){
-     const duplicate=Object.values(next).some(x=>x.kind==='conflict'&&!x.deleted&&x.payload.kind===value.kind&&x.payload.id===value.id&&JSON.stringify(x.payload.payload)===JSON.stringify(value.payload));
+     const duplicate=Object.values(next).some(x=>x.kind==='conflict'&&!x.deleted&&x.payload.kind===value.kind&&x.payload.id===value.id&&stableJson(x.payload.payload)===stableJson(value.payload));
      if(!duplicate)preserve(next,{...value,deleted:false},before.revision,'legacy-import');
     }
    }

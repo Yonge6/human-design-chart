@@ -16,6 +16,9 @@ function repository(){
  };
 }
 function client(repo,disk=storage()){const sync=createWorkspaceSync({storage:disk,repository:repo});sync.activate('account-a');return sync;}
+test('JSONB object-key reordering does not create conflicts or reject acknowledgements',async()=>{
+ const repo=repository(),save=repo.save;repo.save=async(...args)=>{const row=await save(...args);row.payload={body:row.payload.body,id:row.payload.id};return row;};const a=client(repo);a.set('story','s',{id:'s',body:'same'});await a.sync();assert.equal(a.status,'synced');assert.equal(workspaceValues(a.records()).conflicts.length,0);
+});
 test('separate devices merge inserts, keep offline edits across restarts and propagate tombstones',async()=>{
  const repo=repository(),disk=storage(),a=client(repo,disk),b=client(repo);
  a.set('story','one',{body:'one'});await a.sync();await b.sync();

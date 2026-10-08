@@ -1,4 +1,5 @@
 import { createAccount } from '../services/buer-account.js';
+import {workspace,onWorkspaceChange} from '../services/buer-workspace.js';
 import { loadingPreview } from './buer-loading.js';
 import { createJournalStore, indexedJournalCache, journalRepository, localDate } from '../services/buer-journal.js';
 
@@ -17,11 +18,11 @@ const copy = {
     local: '已保存在本机，等待同步', offline: '尚未同步，请检查网络后重试', 'storage-error': '本机保存失败，请先复制正文，勿关闭页面',
     conflict: '另一台设备修改了这篇日记。你的编辑已保留，可另存一篇后继续。', keepCopy: '将我的编辑另存一篇',
     cancel: '取消', confirm: '确认', deleteTitle: '删除这篇日记？', deleteNote: '同步后，这篇日记会从你的所有设备移除，无法恢复。',
-    deleteAccountTitle: '删除不二账号与云端资料？', deleteAccountNote: '此操作无法恢复，将删除云端日记、人物档案和关系对话。请先导出需要保留的日记。Apple 登录用户确认后需要再次验证身份，以撤销 Apple 授权。App Store 订阅不会自动取消；本机原有对话和说明书仍保留。输入 DELETE 确认。',
-    leaveNote: '同步后退出当前账号。本机会清除该账号的日记缓存，云端日记仍然保留。',
+    deleteAccountTitle: '删除不二账号与云端资料？', deleteAccountNote: '此操作无法恢复，将删除云端普通对话、成长档案、说明书、日记、人物档案、关系对话和相处指南。请先导出需要保留的内容。Apple 登录用户确认后需要再次验证身份，以撤销 Apple 授权。App Store 订阅不会自动取消；此设备上该账号的缓存也会移除；其他离线设备需联网同步删除结果。输入 DELETE 确认。',
+    leaveNote: '完成同步后退出，账号内容立即隐藏；云端内容保留。普通对话、档案与说明书的缓存仅在重新登录同一账号后显示。',
     error: '操作暂未完成，请检查网络后重试。输入内容仍保留。', providerError: '登录没有完成，请重试或选择另一种登录方式。',
     appleReauthError: '需要重新通过 Apple 登录后才能撤销授权并删除账号。请使用 Apple 登录后立即重试。',
-    storageBoundary: '账号同步范围：私密日记、人物档案与关系对话。原有普通对话、成长档案与说明书仍保存在当前设备。',
+    storageBoundary: '账号同步范围：普通对话、完整成长档案、人生说明书、私密日记、人物档案、关系对话与相处指南。登录后自动合并本机旧内容；离线先存本机，联网后同步。同步不等于授权 AI 使用。',
     pendingLeave: '请先完成日记同步或处理冲突，再切换账号。', saving: '正在保存…',
   },
   en: { journal: 'Private journal', hint: 'Keep a moment. Get to know yourself.', account: 'My account', accountHint: 'One account on web and App',
@@ -36,9 +37,9 @@ const copy = {
     local: 'Saved on this device, awaiting sync', offline: 'Not synced yet. Check your connection and retry.', 'storage-error': 'Local save failed. Copy your text before closing.',
     conflict: 'Another device changed this entry. Your edits are safe. Save them as a separate entry to continue.', keepCopy: 'Save my edits as a new entry',
     cancel: 'Cancel', confirm: 'Confirm', deleteTitle: 'Delete this entry?', deleteNote: 'After syncing, this entry will be removed from all your devices. This cannot be undone.',
-    deleteAccountTitle: 'Delete your Buer account and cloud data?', deleteAccountNote: 'This removes cloud journals, people and relationship conversations permanently. Export anything you want to keep first. Apple users will be asked to authenticate again so that Apple authorization can be revoked. App Store subscriptions are not automatically cancelled; existing local chats and manuals remain. Type DELETE to confirm.',
-    leaveNote: 'Sync and sign out on this device. Its journal cache will be removed; cloud entries remain.', error: 'Could not complete this action. Check your connection and try again. Your text is kept.',
-    providerError: 'Sign-in did not complete. Try again or choose another method.', appleReauthError: 'Sign in with Apple again before deleting the account so that Apple authorization can be revoked, then retry immediately.', storageBoundary: 'Private journals, people and relationship conversations sync with this account. Existing general chats, growth profiles and manuals remain on this device.',
+    deleteAccountTitle: 'Delete your Buer account and cloud data?', deleteAccountNote: 'This permanently removes all cloud chats, growth profiles, manuals, journals, people and relationship guides. Export anything you want to keep first. Apple users will be asked to authenticate again so that Apple authorization can be revoked. App Store subscriptions are not automatically cancelled; this account’s cache on this device is removed; other offline devices must reconnect to receive deletion. Type DELETE to confirm.',
+    leaveNote: 'Sync and sign out. Account content is hidden immediately; cloud records remain. Cached chats, profiles and manuals reappear only after signing in to the same account.', error: 'Could not complete this action. Check your connection and try again. Your text is kept.',
+    providerError: 'Sign-in did not complete. Try again or choose another method.', appleReauthError: 'Sign in with Apple again before deleting the account so that Apple authorization can be revoked, then retry immediately.', storageBoundary: 'Chats, complete growth profiles, Life Manuals, journals, people, relationship conversations and guides sync with this account. Existing device content merges automatically after sign-in. Offline changes sync later. Sync does not grant AI access.',
     pendingLeave: 'Sync your journal and resolve conflicts before switching accounts.', saving: 'Saving…',
   },
 };
@@ -168,22 +169,40 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
       element('p', {}, t('storageBoundary')));
     const actions = element('div', { className: 'journal-account-actions' });
     for (const action of ['switch', 'logout']) actions.append(button(t(action), () => confirmAction(t(action), t('leaveNote'), async () => {
-      try { await flush(); await store.clearForSignOut(); await account.signOut(); }
+      try { await flush(); await workspace().sync();if(workspace().state.pending)throw Error('PENDING_WORKSPACE');await store.clearForSignOut(); await account.signOut(); }
       catch (error) { if (account.user?.id === userId) await store.setUser(userId); throw error; }
       editing = false; currentId = null; render();
       if (action === 'logout') exit();
     })));
     actions.append(button(t('export'), exportJournal));
+    const zh=getLanguage()!=='en';
+    actions.append(button(zh?'同步全部内容':'Sync all content',async()=>{await workspace().sync();await flush();render();}));
+    actions.append(button(zh?'导出普通对话、成长档案和说明书（含待同步及冲突版本）':'Export chats, growth & manuals (including pending edits and conflicts)',async()=>{
+      const json=JSON.stringify({version:1,owner:workspace().owner,exportedAt:new Date().toISOString(),...workspace().values()},null,2);
+      const native=globalThis.Capacitor?.Plugins?.PlutoNative;
+      if(globalThis.Capacitor?.isNativePlatform?.()&&native){await native.exportGrowthProfile({json,filename:'buer-workspace.json'});return;}
+      const url=URL.createObjectURL(new Blob([json],{type:'application/json'}));element('a',{href:url,download:'buer-workspace.json'}).click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    }));
+    const syncState=element('p',{className:'workspace-sync-status',role:'status'});content.append(syncState);updateWorkspaceStatus();
+    const conflicts=workspace().values().conflicts;
+    for(const row of conflicts){const details=element('details');details.append(element('summary',{},(zh?'保留的冲突版本：':'Preserved version: ')+row.kind+' · '+row.recordId));details.append(element('pre',{},JSON.stringify(row.payload,null,2)));details.append(button(zh?'恢复这个版本':'Restore this version',()=>confirmAction(zh?'恢复这个版本？':'Restore this version?',zh?'当前版本也会保留为可恢复副本。':'The current version will also be preserved.',async()=>{await workspace().restore(row.id);render();})));content.append(details);}
     actions.append(button(t('deleteAccount'), () => confirmAction(t('deleteAccountTitle'), t('deleteAccountNote'), async () => {
       await flush();
       // Hold store reference while Auth deletion fires the signed-out callback.
       const previous = store;
-      try { await previous.clearForSignOut(); await account.deleteAccount(); }
+      const deletedOwner=userId;
+      try { await previous.clearForSignOut(); await account.deleteAccount(); await workspace().removeAccount(deletedOwner);localStorage.removeItem(`buer:growth-drafts:${deletedOwner}`);localStorage.removeItem(`buer:chat-draft:${deletedOwner}`); }
       catch (error) { if (account.user?.id === userId) await previous.setUser(userId); throw error; }
       editing = false; currentId = null; render();
     }, true), 'journal-danger'));
     content.append(actions);
   }
+  function updateWorkspaceStatus(){
+    const node=content.querySelector('.workspace-sync-status');if(!node)return;
+    const s=workspace().state,zh=getLanguage()!=='en';
+    node.textContent=(zh?'对话／成长档案／说明书：':'Chats / growth / manuals: ')+(s.status==='synced'&&!s.pending?(zh?'已同步':'Synced'):s.status==='syncing'?(zh?'同步中…':'Syncing…'):(zh?'已存本机，等待同步':'Saved locally, awaiting sync'))+(s.conflicts?(zh?` · ${s.conflicts} 个冲突版本已保留，请重新打开账号页查看。`:` · ${s.conflicts} preserved conflicts. Reopen Account to review.`):'');
+  }
+  onWorkspaceChange(updateWorkspaceStatus);
   function startEntry(row) {
     editing = true; currentId = row?.id || crypto.randomUUID();
     const value = row || { title: '', body: '', mood: '', entry_date: localDate() };
@@ -267,6 +286,7 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
   try {
     account = await accountFactory();
     if (account) {
+      workspace().bind(account);
       store = createJournalStore({ repository: journalRepository(account), cache, onChange: drawState });
       account.subscribe(user => {
         if (userId === (user?.id || null)) return;

@@ -28,8 +28,8 @@ export function anonymousReport(properties) {
 const safeDate=value=>Number.isFinite(Number(value)) && Math.abs(Number(value))<8640000000000000 ? Number(value) : Date.now();
 export function validChatHistory(value) {
   if(!Array.isArray(value))return [];
-  return value.filter(item=>item && typeof item.id==='string' && Array.isArray(item.messages)).slice(0,20).map(item=>({
+  return value.filter(item=>item && typeof item.id==='string' && Array.isArray(item.messages)).map(item=>({
     id:item.id.slice(0,80),date:safeDate(item.date),
-    messages:item.messages.filter(m=>m && ['user','assistant'].includes(m.role) && typeof m.content==='string').slice(-40).map(m=>({role:m.role,content:m.content.slice(0,6000),date:safeDate(m.date),...(m.failed?{failed:true,errorKey:['failed','unconfigured','rate','stopped'].includes(m.errorKey)?m.errorKey:'failed'}:{})})),
+    messages:item.messages.filter(m=>m && ['user','assistant'].includes(m.role) && typeof m.content==='string').map(m=>({role:m.role,content:m.content,date:safeDate(m.date),...(m.failed?{failed:true,errorKey:['failed','unconfigured','rate','stopped'].includes(m.errorKey)?m.errorKey:'failed'}:{})})),
   }));
 }

@@ -131,6 +131,12 @@ body[data-workspace="people"] #buerHome,body[data-workspace="people"] .shell,bod
  .journal-home-entry{margin-top:6px;font-size:13px}
 }
 .pair-manual-tabs{flex-wrap:wrap;margin:24px 0 16px}
+.pair-guidance-card{padding:18px 20px;margin:16px 0;background:var(--ui-surface,#eeefe5);border:1px solid var(--ui-line,#d0d8c6);border-radius:14px}
+.pair-guidance-card h4{margin:0 0 10px;font-size:17px;line-height:1.5}
+.pair-guidance-card p{margin:10px 0;line-height:1.85}
+.pair-guidance-card details{font-size:13px;margin-top:14px}
+.workspace-sync-status{padding:12px;background:var(--ui-surface,#eeefe5);border-radius:10px;overflow-wrap:anywhere}
+.journal-content details pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:300px;overflow:auto}
 .pair-comparison-table{width:100%;table-layout:fixed;border-collapse:collapse;margin:16px 0 24px;font-size:14px;line-height:1.7;color:var(--ui-ink,#203b30)}
 .pair-comparison-table caption{text-align:left;font-weight:600;padding:8px 0 12px}
 .pair-comparison-table th,.pair-comparison-table td{padding:12px 14px;text-align:left;vertical-align:top;border:1px solid var(--ui-line,#c9cebf);overflow-wrap:anywhere}

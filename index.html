@@ -84,7 +84,7 @@
           <button id="buerHistoryButton" type="button"><span class="drawer-nav-icon" aria-hidden="true"><img src="assets/companion-icon-chat.svg" alt="" width="48" height="48"></span><span><strong data-buer="history">对话记录</strong><small data-buer="chatHistoryHint">继续上次的探索</small></span><span class="drawer-chevron" aria-hidden="true">›</span></button>
           <button id="openHistory" type="button">
             <span class="drawer-nav-icon" aria-hidden="true"><img src="assets/companion-icon-history.svg" alt="" width="48" height="48"></span>
-            <span><strong data-buer="manualHistory">说明书历史</strong><small data-i18n="drawerHistoryHint">重新打开保存在本机的人生说明书</small></span>
+            <span><strong data-buer="manualHistory">说明书历史</strong><small data-i18n="drawerHistoryHint">重新打开已保存的人生说明书</small></span>
             <span class="drawer-chevron" aria-hidden="true">›</span>
           </button>
           <button id="openSettings" type="button">
@@ -185,7 +185,7 @@
         <section id="historyDialog" class="drawer-subview drawer-history" hidden>
           <span class="drawer-kicker" data-i18n="localOnly">仅保存在此设备</span>
           <h3 class="sr-only" data-i18n="history">历史记录</h3>
-          <p data-i18n="drawerHistoryHint">重新打开保存在本机的人生说明书</p>
+          <p data-i18n="drawerHistoryHint">重新打开已保存的人生说明书</p>
           <div id="historyList" class="history-list"></div>
           <p id="historyEmpty" class="dialog-empty" data-i18n="historyEmpty">还没有保存的人生使用说明书。</p>
         </section>
@@ -286,7 +286,7 @@
       <section class="buer-manual-entry"><h2><span data-buer="myManual">我的人生说明书</span></h2><p data-buer="manualIntro">一份专属于你的说明书，帮你更了解自己的倾向、节奏与选择。</p><button id="dailyTipAction" type="button"></button><i class="ph ph-arrow-right manual-arrow" aria-hidden="true"></i></section>
     </aside>
   </section>
-  <dialog id="buerHistory" class="buer-history-dialog"><header><h2 data-buer="history">对话记录</h2><button id="buerCloseHistory" type="button" aria-label="关闭对话记录"><i class="ph ph-x" aria-hidden="true"></i></button></header><p data-buer="localHistory">只保存在当前设备，不会同步到其他设备。</p><div id="buerHistoryList"></div><button type="button" id="buerClearChats" data-buer="clearChats">清空本机对话</button><form method="dialog" id="buerClearConfirm" hidden><p data-buer="clearConfirm">清空后无法恢复这些对话。确定清空吗？</p><button type="button" id="buerCancelClear" data-buer="cancel">取消</button><button type="button" id="buerConfirmClear" data-buer="confirmClear">确认清空</button></form></dialog>
+  <dialog id="buerHistory" class="buer-history-dialog"><header><h2 data-buer="history">对话记录</h2><button id="buerCloseHistory" type="button" aria-label="关闭对话记录"><i class="ph ph-x" aria-hidden="true"></i></button></header><p data-buer="localHistory">登录后自动同步到同一账号；离线时先保存在本机。</p><div id="buerHistoryList"></div><button type="button" id="buerClearChats" data-buer="clearChats">清空对话</button><form method="dialog" id="buerClearConfirm" hidden><p data-buer="clearConfirm">清空会同步到同一账号的所有设备。确定清空吗？</p><button type="button" id="buerCancelClear" data-buer="cancel">取消</button><button type="button" id="buerConfirmClear" data-buer="confirmClear">确认清空</button></form></dialog>
   <button id="buerBackPrevious" class="buer-back-home" type="button"><i class="ph ph-arrow-left" aria-hidden="true"></i><span data-buer="backPrevious">返回上一页</span></button>
 
   <main class="shell form-view">

@@ -15,6 +15,7 @@ import { createHumanDesignProfileSnapshot } from "./src/engine/profile-snapshot.
 import { DEFAULT_CONSENT, deleteCloudData, recordProductEvent, saveChartToCloud, updateConsent } from "./src/services/backend-service.js";
 import { canUseSystemShare, isEmbeddedBrowser, isMobileDevice, sharePageLink } from "./src/services/sharing-service.js";
 import { readStoredJson, writeStoredJson } from "./src/services/storage-service.js";
+import {workspace,workspaceStorage,onWorkspaceChange} from './src/services/buer-workspace.js';
 import { createBodygraphRenderer } from "./src/renderer/bodygraph-renderer.js";
 import { renderPosterElement } from "./src/renderer/poster-renderer.js";
 import { validateBirthSelection } from "./src/app/form-validation.js";
@@ -186,11 +187,11 @@ const copy = {
     futureTime: "出生日期和时间不能晚于现在。", calculating: "正在计算行星位置…", calculated: "已使用 Swiss Ephemeris 在本地完成计算。",
     failed: "计算失败：{message}", preparing: "正在生成图片…", downloaded: "图片已保存。", chooseSaveImage: "请在系统菜单中选择“存储图像”保存到相册。", shared: "分享已完成。", linkCopied: "当前设备不支持分享图片，网站链接已复制。", exportFailed: "图片导出失败：{message}",
     shareTitle: "我的人生使用说明书", shareText: "这是我的人生使用说明书。", shareReading: "分享", shareReadingText: "免费生成你的人生使用说明书与详细解读。", openingShareShort: "正在打开…", linkCopiedShort: "已复制", sharedShort: "已分享", cancelledShort: "已取消", downloadedShort: "已下载", selectAmPm: "请选择上午或下午。", detailReading: "详细解读", close: "关闭",
-    openMenu: "打开更多功能", closeMenu: "关闭菜单", drawerBack: "返回", drawerTitle: "我的空间", drawerIntroKicker: "真实自己，流动人生", drawerIntroTitle: "你的成长资料，由你掌握", drawerIntroText: "管理成长档案、经历、行动与隐私。内容默认保存在本机，只有你允许的部分才会供 AI 参考。", drawerActions: "你的空间", drawerHistoryHint: "重新打开保存在本机的人生说明书", drawerSettingsHint: "管理隐私模式、本地历史与数据", language: "语言", drawerLanguageHint: "切换界面与解读语言", aboutUs: "关于我们", drawerAboutHint: "认识不二见己 与我们相信的生命观", contactUs: "联系我们", drawerContactHint: "网站、邮箱与社交媒体", drawerLinksTitle: "帮助与说明", drawerFooter: "认识自己，不是为了证明自己。",
+    openMenu: "打开更多功能", closeMenu: "关闭菜单", drawerBack: "返回", drawerTitle: "我的空间", drawerIntroKicker: "真实自己，流动人生", drawerIntroTitle: "你的成长资料，由你掌握", drawerIntroText: "管理成长档案、经历、行动与隐私。登录后内容自动同步到账号，只有你允许的部分才会供 AI 参考。", drawerActions: "你的空间", drawerHistoryHint: "重新打开已保存的人生说明书", drawerSettingsHint: "管理隐私模式、本地历史与数据", language: "语言", drawerLanguageHint: "切换界面与解读语言", aboutUs: "关于我们", drawerAboutHint: "认识不二见己 与我们相信的生命观", contactUs: "联系我们", drawerContactHint: "网站、邮箱与社交媒体", drawerLinksTitle: "帮助与说明", drawerFooter: "认识自己，不是为了证明自己。",
     worksTitle: "沿途所作", worksIntro: "观世界，识自己，也学习看见美。", workWonderElian: "WonderElian", workWonderElianTagline: "让复杂的想法变得清晰、好看而有人情味", workWonderElianDescription: "WonderElian 是永歌 Elian 的个人创作空间。这里记录作品，也记录关于设计、AI、产品，以及如何慢慢成为自己的思考与探索。", workYixiu: "一休冥想", workYixiuTagline: "让声音带你回到当下", workYixiuDescription: "一休冥想，用自然声音陪你放慢脚步，在忙碌间隙歇一歇，也为专注与独处留一点安静。", workXiazi: "虾子曰", workXiaziTagline: "昨日世界", workXiaziDescription: "每天用全球热点与双语海报，把复杂世界讲清楚。", workWendao: "三慢问道", workWendaoTagline: "慢读原典", workWendaoDescription: "在古老文字与当下生活之间，留一处慢慢阅读的空间。", workStyleAtlas: "艺术风格图鉴", workStyleAtlasTagline: "学习看懂一种美", workStyleAtlasDescription: "沿着艺术与设计的脉络，找到自己的观看方式。",
     aboutKicker: "真实自己，流动人生", aboutHeading: "生命不是用来证明自己的。", aboutParagraphOne: "豆豆龙是不二见己里的专属 AI 成长伙伴。从人类图自我观察，到 HUMAN 3.0 四领域访谈，再到持续补充的个人经历，我们帮助你把认识自己变成下一步行动，并从复盘中调整方向。", aboutParagraphTwo: "我们相信，认识自己、接纳自己、成为自己、活出自己，是一条持续展开的路。真实面对自己与世界，善待自己、他人与生命，并在创造和欣赏中活出生命之美。", aboutDisclaimer: "人类图仅作为自我观察与对话的视角，不是科学结论，也不替你作决定。", lifePhilosophyKicker: "我们的生命观", lifePhilosophyTitle: "生命不是用来证明自己的，而是用来认识、接纳、成为并活出自己。", lifePhilosophyIntro: "真正的成长，不是把自己改造成某个标准答案，而是在变化中越来越诚实地看见自己，越来越从容地选择自己的活法。", lifePathLabel: "核心路径", lifePathKnow: "认识自己", lifePathAccept: "接纳自己", lifePathBecome: "成为自己", lifePathLive: "活出自己", lifePrinciplePause: "一休", lifePrinciplePauseText: "先照顾身体，安顿情绪，再继续前行。", lifePrincipleWhole: "不二", lifePrincipleWholeText: "不评判，没有好坏对错，接纳高峰与低谷，拥抱完整而非完美。", lifePrincipleSlow: "三慢", lifePrincipleSlowText: "慢下来、慢慢来、慢慢成为，尊重生命的节奏。", lifePrincipleWater: "如水", lifePrincipleWaterText: "向内扎根，向外流动；顺应变化，不失本心。", lifePhilosophyQuote: "向内认识自己，向外如水而行。", lifePhilosophyVision: "我们愿陪伴彼此走过低谷与高峰，探索身心健康的工作与生活方式；真实面对自己与世界，善待自己、他人与生命，并在创造和欣赏中活出生命之美。", contactKicker: "保持联系", contactHeading: "一起把作品做得更好。", contactIntro: "欢迎分享你的使用感受、问题与建议。", emailLabel: "邮箱", redLabel: "小红书", douyinLabel: "抖音", openProfile: "打开主页",
     history: "历史记录", settings: "隐私设置", localOnly: "仅保存在此设备", historyEmpty: "还没有保存的人生使用说明书。", openHistory: "打开", deleteHistory: "删除", confirmDeleteTitle: "删除这条记录？", confirmDeleteHint: "删除后无法恢复。", cancel: "取消", confirmDelete: "确认删除", openSource: "源代码",
-    defaultPrivacy: "隐私模式", defaultPrivacyHint: "生成图片时隐藏姓名、日期、时间和地点；默认关闭。", saveHistory: "保存本地历史记录", saveHistoryHint: "默认开启，仅保存在本设备；关闭时可选择保留或删除已有记录。", cloudSave: "将新生成的说明书保存到云端", cloudSaveHint: "关闭时不上传姓名、出生资料或图谱；默认关闭。", productAnalytics: "帮助我们改进不二见己", productAnalyticsHint: "仅发送允许的匿名操作事件，不包含出生资料或完整图谱；默认关闭。", deleteCloudData: "删除云端图谱与个人资料", deleteCloudConfirm: "这会删除当前匿名身份保存的姓名、出生资料和人类图记录。本地历史不会删除。已经记录的匿名使用事件会移除用户标识，并最多保留180天用于汇总统计。", deleteCloudTitle: "删除云端资料？", cloudDeleted: "云端图谱与个人资料已删除；匿名事件已去标识，本地历史保留。", clearHistory: "清空历史记录", clearHistoryTitle: "清空全部本地历史？", clearHistoryConfirm: "本设备保存的人生使用说明书会被永久删除，且无法恢复。", disableHistoryTitle: "关闭本地历史记录？", disableHistoryConfirm: "关闭后，今后生成的说明书不会加入本地历史。你可以保留已有记录，也可以同时全部删除。", keepHistoryRecords: "关闭但保留记录", deleteHistoryRecords: "关闭并删除全部记录", pleaseConfirm: "请确认", confirmAction: "确认", privacyPolicy: "隐私政策", support: "帮助与支持", legalNotice: "法律声明", privacyNote: "隐私模式、云端保存和匿名统计默认关闭；本地历史默认开启并仅保存在本设备。关闭本地历史时可选择保留或删除已有记录；删除云端资料不会删除本地历史。", nativeLocalOnlyPrivacyNote: "说明书和每日提示仅保存在此设备。关闭本地历史后，首页与小组件不再使用已保存的结果。", historyCleared: "历史记录已清空。", selectDate: "请选择完整的出生日期。", invalidDate: "请输入有效的出生日期。", selectTime: "请选择完整的出生时间。", invalidTime: "请输入有效的出生时间。", enterLocation: "请输入出生地点。",
+    defaultPrivacy: "隐私模式", defaultPrivacyHint: "生成图片时隐藏姓名、日期、时间和地点；默认关闭。", saveHistory: "保存说明书记录", saveHistoryHint: "默认开启；登录后同步到账号。关闭时可保留旧记录，或删除并同步到所有设备。", cloudSave: "将新生成的说明书保存到云端", cloudSaveHint: "仅管理旧的匿名云端图谱库，不影响登录后的账号同步；默认关闭。", productAnalytics: "帮助我们改进不二见己", productAnalyticsHint: "仅发送允许的匿名操作事件，不包含出生资料或完整图谱；默认关闭。", deleteCloudData: "删除云端图谱与个人资料", deleteCloudConfirm: "这会删除当前匿名身份保存的姓名、出生资料和人类图记录。本地历史不会删除。已经记录的匿名使用事件会移除用户标识，并最多保留180天用于汇总统计。", deleteCloudTitle: "删除云端资料？", cloudDeleted: "云端图谱与个人资料已删除；匿名事件已去标识，本地历史保留。", clearHistory: "清空历史记录", clearHistoryTitle: "清空全部说明书记录？", clearHistoryConfirm: "已保存的人生说明书将被删除；登录状态下删除会同步到同一账号的所有设备。", disableHistoryTitle: "关闭本地历史记录？", disableHistoryConfirm: "关闭后，今后生成的说明书不会加入本地历史。你可以保留已有记录，也可以同时全部删除。", keepHistoryRecords: "关闭但保留记录", deleteHistoryRecords: "关闭并删除全部记录", pleaseConfirm: "请确认", confirmAction: "确认", privacyPolicy: "隐私政策", support: "帮助与支持", legalNotice: "法律声明", privacyNote: "隐私模式与匿名统计默认关闭。说明书记录默认开启，登录后自动同步到账号；未登录时仅保存在本机。删除记录会同步到同一账号的所有设备。匿名云端图谱另行管理。", nativeLocalOnlyPrivacyNote: "说明书和每日提示仅保存在此设备。关闭本地历史后，首页与小组件不再使用已保存的结果。", historyCleared: "历史记录已清空。", selectDate: "请选择完整的出生日期。", invalidDate: "请输入有效的出生日期。", selectTime: "请选择完整的出生时间。", invalidTime: "请输入有效的出生时间。", enterLocation: "请输入出生地点。",
   },
   en: {
     brand: "Buer Within",
@@ -209,11 +210,11 @@ const copy = {
     futureTime: "Birth date and time cannot be in the future.", calculating: "Calculating planetary positions…", calculated: "Chart calculated locally with Swiss Ephemeris.",
     failed: "Failed: {message}", preparing: "Preparing image…", downloaded: "Image saved.", chooseSaveImage: "Choose Save Image in the system menu to add it to Photos.", shared: "Shared.", linkCopied: "Image sharing is unavailable on this device. The site link was copied.", exportFailed: "Image export failed: {message}",
     shareTitle: "My Life Manual", shareText: "Here is my personal life manual.", shareReading: "Share", shareReadingText: "Create your free Life Manual and detailed reading.", openingShareShort: "Opening…", linkCopiedShort: "Copied", sharedShort: "Shared", cancelledShort: "Cancelled", downloadedShort: "Downloaded", selectAmPm: "Choose AM or PM.", detailReading: "Detailed Reading", close: "Close",
-    openMenu: "Open more", closeMenu: "Close menu", drawerBack: "Back", drawerTitle: "My Space", drawerIntroKicker: "True to yourself. Flow with life.", drawerIntroTitle: "Your growth data stays in your hands", drawerIntroText: "Manage your profile, stories, actions and privacy. Content stays on this device by default; AI only sees what you allow.", drawerActions: "Your space", drawerHistoryHint: "Reopen Life Manuals saved on this device", drawerSettingsHint: "Manage privacy mode, local history, and data", language: "Language", drawerLanguageHint: "Switch the interface and reading language", aboutUs: "About us", drawerAboutHint: "Meet Buer Within and the philosophy behind it", contactUs: "Contact", drawerContactHint: "Website, email, and social channels", drawerLinksTitle: "Help and information", drawerFooter: "Knowing yourself is not about proving yourself.",
+    openMenu: "Open more", closeMenu: "Close menu", drawerBack: "Back", drawerTitle: "My Space", drawerIntroKicker: "True to yourself. Flow with life.", drawerIntroTitle: "Your growth data stays in your hands", drawerIntroText: "Manage your profile, stories, actions and privacy. Content syncs after sign-in; AI only sees what you allow.", drawerActions: "Your space", drawerHistoryHint: "Reopen saved Life Manuals", drawerSettingsHint: "Manage privacy mode, local history, and data", language: "Language", drawerLanguageHint: "Switch the interface and reading language", aboutUs: "About us", drawerAboutHint: "Meet Buer Within and the philosophy behind it", contactUs: "Contact", drawerContactHint: "Website, email, and social channels", drawerLinksTitle: "Help and information", drawerFooter: "Knowing yourself is not about proving yourself.",
     worksTitle: "Works along the way", worksIntro: "See the world, know yourself, and learn to see beauty.", workWonderElian: "WonderElian", workWonderElianTagline: "Make complex ideas clear, beautiful, and human", workWonderElianDescription: "An independent creative world from Wuhan, connecting visual culture, wellbeing, and real life through design, AI, and digital products.", workYixiu: "Yixiu Meditation", workYixiuTagline: "Let sound return you to now", workYixiuDescription: "Slow down with the sounds of nature. Yixiu makes room for a pause in a busy day, quiet focus, or a little time to yourself.", workXiazi: "Xiazi Says", workXiaziTagline: "Yesterday's World", workXiaziDescription: "Global stories and bilingual posters make a complex world easier to see.", workWendao: "Wendao", workWendaoTagline: "Read the classics slowly", workWendaoDescription: "A quiet space between ancient words and life as it is lived today.", workStyleAtlas: "Style Atlas", workStyleAtlasTagline: "Learn to see a style", workStyleAtlasDescription: "Follow the lineages of art and design and discover your own way of looking.",
     aboutKicker: "True to yourself. Flow with life.", aboutHeading: "Life is not for proving yourself.", aboutParagraphOne: "Meet Doudoulong, your personal AI growth companion in Buer Within. Start with Human Design as a reflection lens, explore four life domains through HUMAN 3.0, and add your own experiences over time. Turn understanding into a next step, then learn from what happens.", aboutParagraphTwo: "We believe knowing, accepting, becoming, and living as yourself is an unfolding path: face yourself and the world truthfully, treat self, others, and life with kindness, and live the beauty of life through creation and appreciation.", aboutDisclaimer: "Human Design is offered as a lens for reflection and conversation, not a scientific conclusion or a substitute for your decisions.", lifePhilosophyKicker: "Our philosophy of life", lifePhilosophyTitle: "Life is not for proving yourself. It is for knowing, accepting, becoming, and living as yourself.", lifePhilosophyIntro: "Growth is not the work of turning yourself into a standard answer. It is learning to see yourself more honestly through change, and to choose your way of living with greater ease.", lifePathLabel: "Core path", lifePathKnow: "Know yourself", lifePathAccept: "Accept yourself", lifePathBecome: "Become yourself", lifePathLive: "Live as yourself", lifePrinciplePause: "Pause", lifePrinciplePauseText: "Care for the body, settle emotion, then continue.", lifePrincipleWhole: "Wholeness", lifePrincipleWholeText: "Without judgment or labels of good or bad, right or wrong, accept peaks and valleys; embrace wholeness rather than perfection.", lifePrincipleSlow: "Go slowly", lifePrincipleSlowText: "Slow down, take your time, and respect the rhythm of becoming.", lifePrincipleWater: "Be Water", lifePrincipleWaterText: "Root inwardly, move outwardly; adapt without losing your center.", lifePhilosophyQuote: "Know yourself within; move through the world like water.", lifePhilosophyVision: "We hope to accompany one another through valleys and peaks, exploring healthier ways to work and live: facing self and world truthfully, treating life with kindness, and creating and appreciating beauty.", contactKicker: "Stay in touch", contactHeading: "Help us make the work better.", contactIntro: "Share your experience, questions, and suggestions with us.", emailLabel: "Email", redLabel: "RED", douyinLabel: "Douyin", openProfile: "Open profile",
-    history: "History", settings: "Privacy", localOnly: "Stored only on this device", historyEmpty: "No saved Life Manuals yet.", openHistory: "Open", deleteHistory: "Delete", confirmDeleteTitle: "Delete this record?", confirmDeleteHint: "This action cannot be undone.", cancel: "Cancel", confirmDelete: "Delete", openSource: "Open Source",
-    defaultPrivacy: "Privacy mode", defaultPrivacyHint: "Hide name, date, time, and location in generated images. Off by default.", saveHistory: "Save local history", saveHistoryHint: "On by default and stored only on this device. When turning it off, choose whether to keep or delete existing records.", cloudSave: "Save new Life Manuals to the cloud", cloudSaveHint: "When off, names, birth details, and charts are not uploaded. Off by default.", productAnalytics: "Help us improve Buer Within", productAnalyticsHint: "Send only allowlisted anonymous actions, never birth details or a full chart. Off by default.", deleteCloudData: "Delete Cloud Charts and Personal Data", deleteCloudConfirm: "This deletes the name, birth details, and Human Design records saved for the current anonymous identity. Local history is not deleted. Previously recorded anonymous usage events are deidentified and retained for no more than 180 days for aggregate statistics.", deleteCloudTitle: "Delete cloud data?", cloudDeleted: "Cloud charts and personal data deleted. Events were deidentified; local history remains.", clearHistory: "Clear history", clearHistoryTitle: "Clear all local history?", clearHistoryConfirm: "Every Life Manual saved on this device will be permanently deleted. This cannot be undone.", disableHistoryTitle: "Turn off local history?", disableHistoryConfirm: "New Life Manuals will no longer be added to local history. You can keep existing records or delete them all.", keepHistoryRecords: "Turn Off & Keep Records", deleteHistoryRecords: "Turn Off & Delete All", pleaseConfirm: "Please confirm", confirmAction: "Confirm", privacyPolicy: "Privacy Policy", support: "Help & Support", legalNotice: "Legal Notice", privacyNote: "Privacy mode, cloud saving, and anonymous analytics are off by default. Local history is on by default and stored only on this device. When turning local history off, choose whether to keep or delete existing records; deleting cloud data does not delete local history.", nativeLocalOnlyPrivacyNote: "Life Manuals and daily tips stay on this device. Turning off local history stops saved results appearing on home and widgets.", historyCleared: "History cleared.", selectDate: "Choose a complete birth date.", invalidDate: "Enter a valid birth date.", selectTime: "Choose a complete birth time.", invalidTime: "Enter a valid birth time.", enterLocation: "Enter a birth location.",
+    history: "History", settings: "Privacy", localOnly: "Saved locally; synced after sign-in", historyEmpty: "No saved Life Manuals yet.", openHistory: "Open", deleteHistory: "Delete", confirmDeleteTitle: "Delete this record?", confirmDeleteHint: "Deletion syncs to all devices on this account.", cancel: "Cancel", confirmDelete: "Delete", openSource: "Open Source",
+    defaultPrivacy: "Privacy mode", defaultPrivacyHint: "Hide name, date, time, and location in generated images. Off by default.", saveHistory: "Save manual history", saveHistoryHint: "On by default and synced after sign-in. Turning it off can keep old records or delete them across devices.", cloudSave: "Save new Life Manuals to the cloud", cloudSaveHint: "Controls the separate anonymous chart store, not signed-in account sync. Off by default.", productAnalytics: "Help us improve Buer Within", productAnalyticsHint: "Send only allowlisted anonymous actions, never birth details or a full chart. Off by default.", deleteCloudData: "Delete Cloud Charts and Personal Data", deleteCloudConfirm: "This deletes the name, birth details, and Human Design records saved for the current anonymous identity. Local history is not deleted. Previously recorded anonymous usage events are deidentified and retained for no more than 180 days for aggregate statistics.", deleteCloudTitle: "Delete cloud data?", cloudDeleted: "Cloud charts and personal data deleted. Events were deidentified; local history remains.", clearHistory: "Clear history", clearHistoryTitle: "Clear all saved manuals?", clearHistoryConfirm: "Saved Life Manuals will be deleted. While signed in, deletion syncs to all devices on this account.", disableHistoryTitle: "Turn off local history?", disableHistoryConfirm: "New Life Manuals will no longer be added to local history. You can keep existing records or delete them all.", keepHistoryRecords: "Turn Off & Keep Records", deleteHistoryRecords: "Turn Off & Delete All", pleaseConfirm: "Please confirm", confirmAction: "Confirm", privacyPolicy: "Privacy Policy", support: "Help & Support", legalNotice: "Legal Notice", privacyNote: "Privacy mode and anonymous analytics are off by default. Saved manuals sync after sign-in, with an offline copy. Deletions sync across devices. Anonymous cloud charts are managed separately.", nativeLocalOnlyPrivacyNote: "Life Manuals and daily tips stay on this device. Turning off local history stops saved results appearing on home and widgets.", historyCleared: "History cleared.", selectDate: "Choose a complete birth date.", invalidDate: "Enter a valid birth date.", selectTime: "Choose a complete birth time.", invalidTime: "Enter a valid birth time.", enterLocation: "Enter a birth location.",
   },
 };
 
@@ -518,7 +519,8 @@ const defaultSettings = { privacyByDefault: false, keepHistory: true, ...DEFAULT
 const storedSettings = readStoredJson(settingsStorageKey, {});
 const hasStoredKeepHistory = Object.prototype.hasOwnProperty.call(storedSettings, "keepHistory");
 let appSettings = { ...defaultSettings, ...storedSettings };
-let historyEntries = readStoredJson(historyStorageKey, []);
+const historyStorage=workspaceStorage();
+let historyEntries = readStoredJson(historyStorageKey, [],historyStorage);
 if (!Array.isArray(historyEntries)) historyEntries = [];
 historyEntries = historyEntries.filter((entry) => (
   typeof entry?.id === "string"
@@ -837,7 +839,7 @@ function persistSettings() {
 }
 
 function persistHistory() {
-  writeStoredJson(historyStorageKey, historyEntries);
+  if(!writeStoredJson(historyStorageKey, historyEntries,historyStorage))throw Error('LOCAL_STORAGE_UNAVAILABLE');
   refreshDailyTip();
 }
 
@@ -974,7 +976,7 @@ function saveChartHistory(data, input) {
   historyEntries = [
     { id, createdAt: Date.now(), data, input },
     ...historyEntries.filter((entry) => entry.id !== id),
-  ].slice(0, 10);
+  ];
   persistHistory();
   renderHistory();
 }
@@ -1108,6 +1110,7 @@ function hydrateForm(input) {
 
 async function openHistoryEntry(entry) {
   if (!entry?.data) return;
+  const ticket=workspace().epoch;
   closeDrawer({ restoreFocus: false });
   clearPoster();
   hydrateForm(entry.input);
@@ -1116,8 +1119,10 @@ async function openHistoryEntry(entry) {
   setStatus("preparing");
   showChartView();
   await render(lastData);
+  if(ticket!==workspace().epoch)return;
   try {
     await createPosterImage();
+    if(ticket!==workspace().epoch)return;
     setStatus("calculated");
   } catch (error) {
     console.error(error);
@@ -1433,10 +1438,11 @@ async function loadExportAssets() {
   await Promise.all([decodeImage(background), decodeImage(chartQr)]);
 }
 
+const safeHtml=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function row(name, item) {
   const iconClass = `wb-${name.replaceAll(" ", "-")}`;
   const label = language === "zh" ? planetNames[name] : name;
-  return `<li><span><i class="${iconClass}" aria-hidden="true"></i><em>${label}</em></span><b>${item.Gate}.${item.Line}</b></li>`;
+  return `<li><span><i class="${iconClass}" aria-hidden="true"></i><em>${label}</em></span><b>${safeHtml(item?.Gate)}.${safeHtml(item?.Line)}</b></li>`;
 }
 
 function updateAccessibleResultSummary(data) {
@@ -1491,7 +1497,7 @@ async function render(data) {
   const keys = ["Type", "Strategy", "Inner Authority", "Profile", "Definition", "Incarnation Cross", "Not Self Theme", "Digestion", "Sense", "Environment"];
   document.querySelector("#properties").innerHTML = keys.map((key) => {
     const label = language === "zh" ? propertyNames[key] : (key === "Sense" ? "Cognition" : key);
-    return `<div class="property"><b>${label}</b><span>${translatedValue(key, data.Properties[key])}</span></div>`;
+    return `<div class="property"><b>${label}</b><span>${safeHtml(translatedValue(key, data.Properties[key]))}</span></div>`;
   }).join("");
   document.querySelector("#interpretationText").textContent = interpretation(data);
   document.querySelector("#definedCenterLegend").textContent = language === "zh" ? "已定义中心" : "Defined center";
@@ -1964,10 +1970,12 @@ chartForm.addEventListener("submit", async (event) => {
   }
   setFieldError("location", null);
   setGenerationBusy(true);
+  const workspaceTicket=workspace().epoch;
   let resultShown = false;
   trackEvent("chart_generate_started");
   try {
     const place = selectedPlace?.label === locationQuery ? selectedPlace : await resolveTypedPlace(locationQuery);
+    if(workspaceTicket!==workspace().epoch)return;
     if (!place) return;
     selectedPlace = place;
     const candidates = localToUtcCandidates(
@@ -1997,11 +2005,13 @@ chartForm.addEventListener("submit", async (event) => {
       timeDisambiguation: fields.clockOccurrence.value,
     });
     const birthDate = `${fields.year.value}-${fields.month.value}-${fields.day.value}`;
+    if(workspaceTicket!==workspace().epoch)return;
     const birthTime = `${String(time.hour).padStart(2, "0")}:${String(time.minute).padStart(2, "0")}`;
     const snapshot = await createHumanDesignProfileSnapshot({
       input: { birthDate, birthTime, timezone: place.timezone, locationLabel: place.label },
       result: data,
     });
+    if(workspaceTicket!==workspace().epoch)return;
     if (remoteServicesAllowed) {
       saveChartToCloud(snapshot, {
         name,
@@ -2014,6 +2024,7 @@ chartForm.addEventListener("submit", async (event) => {
       });
     }
     await render(data);
+    if(workspaceTicket!==workspace().epoch){invalidateChart();return;}
     lastData = data;
     saveChartHistory(data, {
       name,
@@ -2031,6 +2042,7 @@ chartForm.addEventListener("submit", async (event) => {
     showChartView();
     resultShown = true;
     await createPosterImage();
+    if(workspaceTicket!==workspace().epoch){invalidateChart();return;}
     setStatus("calculated");
     trackEvent("chart_generate_succeeded", {
       schemaVersion: snapshot.schemaVersion,
@@ -2364,6 +2376,24 @@ initBuerHome({
     const data = lastData || latestSavedResult(historyEntries, appSettings.keepHistory)?.data;
     return data?.Properties || null;
   },
+});
+
+onWorkspaceChange(({reason})=>{
+  if(reason==='write')return;
+  const displayed=historyEntries.find(entry=>entry.data===lastData);
+  if(reason==='identity'){
+    invalidateChart();clearPoster();selectedPlace=null;chartForm.reset();
+    document.querySelectorAll('dialog').forEach(d=>d.close());
+    document.body.dataset.workspace='home';
+  }
+  historyEntries=readStoredJson(historyStorageKey,[],historyStorage);
+  if(reason!=='identity'&&displayed){
+    const updated=historyEntries.find(entry=>entry.id===displayed.id);
+    if(!updated){invalidateChart();document.body.dataset.workspace='home';}
+    else if(JSON.stringify(updated.data)!==JSON.stringify(lastData)){lastData=updated.data;clearPoster();void render(lastData);}
+  }
+  renderHistory();refreshDailyTip();
+  document.dispatchEvent(new Event('buer:growth-updated'));
 });
 
 void initBuerJournal({ getLanguage: () => language }).then(journal =>

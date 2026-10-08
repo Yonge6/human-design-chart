@@ -1,3 +1,5 @@
+import {workspaceStorage} from '../services/buer-workspace.js';
+import {compositeGuidance,sectionFoundation,guideV2,guideText,stampGuide} from '../services/buer-pair-guidance.js';
 import { relationshipRepository, cleanPerson, relationshipMessages } from '../services/buer-relationships.js';
 import { calculateHumanDesign, localToUtcCandidates } from '../../human-design-engine.js';
 import { createHumanDesignProfileSnapshot } from '../engine/profile-snapshot.js';
@@ -158,7 +160,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     invalidate();const ticket=epoch;reset(l(`我与${person.nickname} · 相处说明书`,`Me & ${person.nickname} · Relationship manual`));if(!dialog.open)dialog.showModal();
     let source=null,saved=null,selected='overview',pending=null,otherProperties=null,chartError=null;
     const remember=()=>{if(valid(ticket)&&!chartError)readingCache.set(owner,person,{source,saved,otherProperties});};
-    const localSource=()=>makeGuideSource(getGrowthReport(),readGrowth(localStorage));
+    const localSource=()=>makeGuideSource(getGrowthReport(),readGrowth(workspaceStorage()));
     function draw(){
       content.replaceChildren();
       const actions=el('div','',{class:'journal-actions'});actions.append(button('← 返回人物列表','← Back to people',list),button('聊聊我们的关系','Talk about us',()=>conversation(person),'journal-primary'));content.append(actions);
@@ -166,29 +168,47 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       content.append(button('重新读取最新版本','Reload latest version',()=>pairManual(person,true)));
       const local=localSource(),snapshot=source?cleanGuideSource(source.payload):local;
       if(source)content.append(el('small',l(`参考成长档案同步于 ${new Date(source.updated_at).toLocaleString()}。`,`Source synced ${new Date(source.updated_at).toLocaleString()}.`)));
-      else content.append(el('p',l('下方“我”的信息是本机成长档案预览，尚未同步到当前账号。','Your information below previews this device’s growth profile; it is not yet synced to this account.')));
+      else content.append(el('p',l('下方“我”的信息来自当前成长档案，尚未保存为本次相处指南的参考快照。','Your information previews the current growth profile, not yet saved as this guide’s reference snapshot.')));
       if(source&&!guideSourceEqual(local,source.payload))content.append(el('p',l('本机成长档案与账号快照不同。确认属于你后，可同步并更新；不会自动替换。','This device’s growth profile differs from the account snapshot. Confirm ownership before syncing; it will not replace it automatically.'),{class:'pair-manual-warning'}));
       if(pairManualStale(saved,source,person))content.append(el('p',l('资料已有变化，以下为旧版解读，可继续阅读或更新。','Sources changed. The previous reading remains available; update when ready.'),{class:'pair-manual-warning'}));
       const roleWarning=pairManualRoleWarning(person,saved?.sections);
       if(roleWarning)content.append(el('p',l(`当前人物是你的${roleWarning}，旧解读中出现了另一种父母称谓。请更新解读核对称谓，不要将旧文中的称谓当作事实。`,`This profile is your ${roleWarning==='母亲'?'mother':'father'}, but the saved reading uses the other parental title. Update the reading to check these references.`),{class:'pair-manual-warning',role:'status'}));
       if(saved)content.append(el('small',l(`解读保存于 ${new Date(saved.updated_at).toLocaleString()}`,`Reading saved ${new Date(saved.updated_at).toLocaleString()}`)));
+      if(saved&&!guideV2(saved.sections))content.append(el('p',l('栏目已重新整理。旧解读仍保留在下方，点击“更新解读”才会按新结构生成，不会自动扣除额度。','The categories have been redesigned. Your previous reading is preserved below. Choose Update reading to generate the new structure; no automatic charge.'),{class:'pair-manual-warning'}));
       const nav=el('div','',{class:'relationship-manual-tabs pair-manual-tabs','aria-label':l('相处说明书分类','Reading categories')});
       for(const [key,zh,en] of PAIR_SECTIONS){const b=button(zh,en,()=>{selected=key;draw();});b.setAttribute('aria-pressed',String(selected===key));nav.append(b);}content.append(nav);
       const pane=el('section','',{class:'pair-manual-reading','aria-label':PAIR_SECTIONS.find(s=>s[0]===selected)[getLanguage()==='en'?2:1]});content.append(pane);
+      const composite=pairComposite(snapshot.chart,person.chart);
+      const card=(item)=>{
+        const block=el('article','',{class:'pair-guidance-card'});block.append(el('h4',item.title),el('p',item.question),el('p',item.action));
+        const evidence=el('details');evidence.append(el('summary',l('为什么这样建议','Why this suggestion')),el('p',item.basis));block.append(evidence);return block;
+      };
+      const foundation=sectionFoundation(selected,{core:{...snapshot.chart?.core,'Inner Authority':chartText(translateValue('Inner Authority',snapshot.chart?.core?.['Inner Authority']||''))}},{...otherProperties,'Inner Authority':chartText(translateValue('Inner Authority',otherProperties?.['Inner Authority']||person.chart?.core?.authority||''))},getLanguage());
+      pane.append(card(foundation));
+      const ideas=compositeGuidance(composite,getLanguage());
+      const relevant=selected==='overview'?ideas.slice(0,3):ideas.filter(c=>c.section===selected||(selected==='repair'&&c.kind.startsWith('compromise'))||(selected==='practice'&&c.kind==='electromagnetic')).slice(0,2);
+      for(const idea of relevant)pane.append(card(idea));
+      if(!composite.available)pane.append(el('p',l('双方完整闸门资料尚未齐备，暂不解读合盘连接；上面仍可阅读通用练习。','Complete gates are not yet available. Connection interpretation is withheld; general practices remain available.')));
       if(selected==='overview'){
         const options={language:getLanguage(),otherName:person.nickname};
         const groups=pairComparisonGroups(snapshot.chart,person.chart,{...options,otherProperties,translate:(key,value)=>chartText(translateValue(key,value))});
         if(chartError)pane.append(el('p',l('TA 的完整图谱暂未加载，请重新读取；下方缺失项不代表没有出生资料。','Their full chart could not load. Retry; missing fields do not mean missing birth details.')) ,button('重新读取图谱','Retry chart',()=>pairManual(person)));
-        pane.append(comparisonTable(groups[0],options));
-        const charts=el('details');charts.append(el('summary',l('双方图谱基础信息 · 中心、通道与行星','Chart details · centers, channels & planets')));
+        const charts=el('details');charts.append(el('summary',l('查看合盘资料 · 双方基础信息、中心、通道与行星','View chart evidence · core information, centers, channels & planets')));
+        charts.append(comparisonTable(groups[0],options));
         for(const group of groups.slice(1))charts.append(comparisonTable(group,options));
         pane.append(charts);
         const connection=el('section','',{class:'pair-manual-prose','aria-label':l('两张图放在一起','Your charts together')});
         connection.append(el('h4',l('两张图放在一起','Your charts together')));
         const summary=el('div');renderReadingText(summary,compositeSummaryLines(pairComposite(snapshot.chart,person.chart),getLanguage()).join('\n\n'));connection.append(summary);
-        pane.append(connection);
+        charts.append(connection);
       }
-      if(saved?.sections?.[selected]){const reading=el('div','',{class:'pair-manual-prose'});renderReadingText(reading,saved.sections[selected]);pane.append(reading);}
+      if(saved?.sections?.[selected]){
+        const reading=el('div','',{class:'pair-manual-prose'}),text=guideText(saved.sections[selected]);
+        if(guideV2(saved.sections)){
+          const parts=text.split(/\*\*(?:为什么这样建议|Why this suggestion|Why these suggestions)[:：]?\*\*\s*[:：]?/i);renderReadingText(reading,parts[0]);pane.append(reading);
+          if(parts.length>1){const why=el('details');why.append(el('summary',l('为什么这样建议 · 个性化解读依据','Why these suggestions · personalized sources')));const body=el('div','',{class:'pair-manual-prose'});renderReadingText(body,parts.slice(1).join('\n\n'));why.append(body);pane.append(why);}
+        }else{const legacy=el('details');legacy.append(el('summary',l('阅读保留的旧版解读','Read the preserved previous version')));renderReadingText(reading,text);legacy.append(reading);pane.append(legacy);}
+      }
       else pane.append(el('p',l('这一分类的个性化解读尚未生成。生成一次后，即可随时回来阅读。','This personalized section has not been generated. Generate once, then return to read any time.')));
       const generateActions=el('div','',{class:'journal-actions pair-manual-generate'});
       if(pending)generateActions.append(button('重试保存解读（不重新生成）','Retry saving (no regeneration)',b=>generate(false,true,b),'journal-primary'));
@@ -221,7 +241,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
           const response=await fetch(`${account.config.apiUrl}/v1/chat`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${session.data.session.access_token}`},body:JSON.stringify({mode:'relationship-guide',relationship:{personId:person.id,personRevision:person.revision,sourceRevision:source.revision},messages:[{role:'user',content:pairManualPrompt(getLanguage(),person,pairComposite(source.payload.chart,person.chart))}],...access}),signal:controller.signal});
           if(!response.ok){if(response.status===402)showMembership();throw Error((await response.json().catch(()=>({}))).error||'AI_UNAVAILABLE');}
           let raw='';await readBuerEvents(response.body,(type,data)=>{if(type==='delta'){raw+=data.text;if(raw.length>50000)throw Error('INVALID_GUIDE_SECTIONS');}});
-          if(!valid(ticket))return;pending={sections:parsePairSections(raw),mutation:crypto.randomUUID(),language:getLanguage()==='en'?'en':'zh'};dirty=true;
+          if(!valid(ticket))return;pending={sections:stampGuide(parsePairSections(raw)),mutation:crypto.randomUUID(),language:getLanguage()==='en'?'en':'zh'};dirty=true;
         }
         status.textContent=l('解读已生成，正在保存到账号…','Reading generated. Saving to your account…');
         phase('保存中…','Saving…');
@@ -397,7 +417,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     option(select,'keep',current.chart?'保留账号已确认的说明书':'暂不使用本人说明书',current.chart?'Keep my confirmed reading':'No personal reading yet');
     readings.forEach((r,i)=>option(select,String(i),r.label||`说明书 ${i+1}`,r.label||`Reading ${i+1}`));option(select,'none','移除账号中的本人图谱摘要','Remove my saved chart summary');
     const importLocal=consent(form,'我确认本机成长档案和普通对话属于我，同意更新到当前账号的参考资料','I confirm the local growth profile and general chats are mine. Update this account’s reference snapshot.');
-    form.append(el('p',l('本机资料不会因登录而自动归入账号。勾选后同步已允许 AI 使用的访谈、经历，以及行动复盘与普通对话；日记直接从本账号云端按问题检索。未勾选则保留上次同步的参考资料。','Local data is never assigned to an account merely by signing in. Confirm to import AI-enabled reflections, experiences, actions and general chats. Journals are retrieved from this account’s cloud library. Otherwise the previous snapshot is kept.')));
+    form.append(el('p',l('档案与对话在登录后自动账号同步；这里单独管理提供给 AI 的参考快照。勾选后更新已允许 AI 使用的访谈、经历，以及行动复盘与普通对话；日记直接从本账号云端按问题检索。未勾选则保留上次同步的参考资料。','Profiles and chats sync after sign-in; this separately manages the AI reference snapshot. Confirm to update AI-enabled reflections, experiences, actions and general chats. Journals are retrieved from this account’s cloud library. Otherwise the previous snapshot is kept.')));
     if(personal)form.append(el('small',`${l('参考资料更新于：','Snapshot updated: ')}${new Date(personal.updated_at).toLocaleString()} · ${current.answers.length+current.stories.length+current.actions.length} ${l('条成长记录','growth records')} · ${current.chats.length} ${l('段普通对话','general chats')}`));
     form.append(el('p',l('开启后，相关摘录会发送至我们的服务器及 第三方 AI 服务 生成建议。每次只选择与问题相关的片段，不代表读取完整人生；对方人物资料不会公开或分享给对方。','Enabled relevant excerpts are sent to our server and a third-party AI service for advice, not an entire life history. People’s profiles are private and never shared with them.')));
     const confirm=consent(form,'我已了解并确认以上资料范围与 AI 使用方式','I understand and confirm these data sources and AI processing.');confirm.required=true;
@@ -407,9 +427,9 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
         let next={...current,scopes:Object.fromEntries(SCOPE_KEYS.map(k=>[k,controls[k].checked]))};
         if(select.value==='none')next.chart=null;else if(select.value!=='keep')next.chart=readings[Number(select.value)]?.properties||null;
         if(importLocal.checked){
-          const g=readGrowth(localStorage);next.answers=g.shareAssessment?QUESTIONS.filter(q=>g.answers[q.id]?.trim()).map(q=>({id:q.id,title:l(q.zh,q.en),body:g.answers[q.id]})):[];
+          const g=readGrowth(workspaceStorage());next.answers=g.shareAssessment?QUESTIONS.filter(q=>g.answers[q.id]?.trim()).map(q=>({id:q.id,title:l(q.zh,q.en),body:g.answers[q.id]})):[];
           next.stories=g.stories.filter(s=>s.useAI);next.actions=g.actions.map(a=>({id:a.id,title:a.title,body:`${a.metric}\n${a.reflection}\n${a.done?'已完成':'进行中'}`,date:a.due}));
-          let chats=[];try{chats=validChatHistory(JSON.parse(localStorage.getItem('buer-conversations-v1')||'[]'));}catch{}
+          let chats=[];try{chats=validChatHistory(JSON.parse(workspaceStorage().getItem('buer-conversations-v1')||'[]'));}catch{}
           next.chats=chats.map(c=>({id:c.id,title:c.messages.find(m=>m.role==='user')?.content.slice(0,80)||'',body:c.messages.filter(m=>!m.failed).map(m=>`${m.role}: ${m.content}`).join('\n').slice(0,4000),date:new Date(c.date).toISOString()}));
         }
         const saved=await repo.savePersonal(owner,personal?.revision||0,next);if(!valid(ticket))return;personal=saved;dirty=false;

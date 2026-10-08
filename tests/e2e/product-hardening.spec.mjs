@@ -660,7 +660,7 @@ test("language switch updates local notice, disclaimer, summary, and history dia
   await switchLanguage(page, "zh");
   await openDrawerItem(page, "#openSettings");
   await expect(page.locator('[data-i18n="defaultPrivacyHint"]')).toHaveText("生成图片时隐藏姓名、日期、时间和地点；默认关闭。");
-  await expect(page.locator('[data-i18n="saveHistoryHint"]')).toHaveText("默认开启，仅保存在本设备；关闭时可选择保留或删除已有记录。");
+  await expect(page.locator('[data-i18n="saveHistoryHint"]')).toHaveText("默认开启；登录后同步到账号。关闭时可保留旧记录，或删除并同步到所有设备。");
   await page.locator("#closeMenu").click();
   await switchLanguage(page, "en");
   await expect(page.locator("#localModeNotice")).toContainText("temporary HTTP connection");

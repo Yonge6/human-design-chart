@@ -60,9 +60,9 @@ test('invalid messages do not reach provider and rate limits bound paid requests
   for(let i=0;i<8;i++) await post(base);
   assert.equal((await post(base)).status,429);assert.equal(calls,8);
 });
-test('stored history treats content as data and caps untrusted message sizes',()=>{
+test('stored history treats content as data without truncating persisted synced messages',()=>{
   const cleaned=validChatHistory([{id:'one',messages:[{role:'system',content:'bad'},{role:'user',content:'<img src=x onerror=alert(1)>'},{role:'assistant',content:'x'.repeat(8000)}]}]);
-  assert.equal(cleaned[0].messages.length,2);assert.equal(cleaned[0].messages[1].content.length,6000);
+  assert.equal(cleaned[0].messages.length,2);assert.equal(cleaned[0].messages[1].content.length,8000);
 });
 
 test('parallel requests cannot exceed the active provider limit',async t=>{

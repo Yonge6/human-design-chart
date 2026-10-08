@@ -136,7 +136,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     const visible=orderedPeople(people,peopleOrder?.person_ids).filter(p=>!filter||p.relationship===filter||(filter==='其他'&&!RELATION_TYPES.some(([name])=>name===p.relationship)));
     for (const person of visible) {
       const card = el('article', '', { class: 'relationship-person' });
-      card.append(el('span', person.nickname.slice(0, 1), { class: 'relationship-avatar', 'aria-hidden': 'true' }),
+      card.append(
         el('small', person.relationship), el('h3', person.nickname));
       const core=person.chart?.core;card.append(el('p',core?`${chartText(core.type)} · ${core.profile} · ${chartText(core.authority)}`:l('出生时刻待确认 · 也可以先聊聊','Birth time unknown · You can still talk')));
       const controls = el('div', '', { class: 'journal-actions' });

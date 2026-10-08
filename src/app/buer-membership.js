@@ -13,12 +13,12 @@ export function showMembership(){
   if(!dialog){dialog=document.createElement('dialog');dialog.id='buerMembership';dialog.className='buer-membership';document.body.append(dialog);}
   dialog.replaceChildren();
   const add=(tag,text,cls)=>{const el=document.createElement(tag);el.textContent=text;if(cls)el.className=cls;dialog.append(el);return el;};
-  const close=add('button',zh()?'关闭':'Close','membership-close');close.onclick=()=>dialog.close();
+  const close=document.createElement('button');close.type='button';close.textContent=zh()?'关闭':'Close';close.className='membership-close';close.onclick=()=>dialog.close();
   add('h2',zh()?'给自己多一点空间':'More room to reflect');
   add('p',zh()?'每日免费对话 3 条。会员不限每日条数，保留合理的使用频率限制。':'3 free conversations daily. Members have no daily message limit; reasonable rate limits apply.');
   add('p',zh()?'成功完成的回复才计数，每日 UTC 00:00 重置。免费功能不需要订阅。':'Only completed replies count. Free messages reset at 00:00 UTC. A subscription is optional.','membership-note');
   const status=add('p',zh()?'正在读取订阅…':'Loading subscriptions…','membership-status');status.role='status';
-  if(!native()){status.textContent=zh()?'请在 iPhone App 内查看会员。':'Subscriptions are available in the iPhone app.';dialog.showModal();return;}
+  if(!native()){status.textContent=zh()?'请在 iPhone App 内查看会员。':'Subscriptions are available in the iPhone app.';dialog.append(close);dialog.showModal();return;}
   const render=async()=>{
     try{state=await plugin().subscriptionStatus();status.textContent=state.member?(zh()?'会员已生效':'Membership active'):'';
       if(!state.products?.length)status.textContent=zh()?'订阅暂不可用，请稍后重试。':'Subscriptions are temporarily unavailable. Please try again later.';
@@ -34,7 +34,7 @@ export function showMembership(){
   const restore=add('button',zh()?'恢复购买':'Restore purchases','membership-restore');restore.onclick=async()=>{restore.disabled=true;try{const result=await plugin().restoreSubscriptions();trackUsage('restore_result',{outcome:result.member?'active':'inactive'});status.textContent=result.member?(zh()?'已恢复会员。':'Membership restored.'):(zh()?'没有找到有效订阅。':'No active subscription found.');}catch{trackUsage('restore_result',{outcome:'error'});status.textContent=zh()?'恢复失败，请稍后重试。':'Restore failed. Please try again.';}finally{restore.disabled=false;}};
   add('p',zh()?'订阅自动续订，费用由 Apple 账户收取。你可随时在系统订阅设置中管理或取消，下一个周期开始前至少 24 小时取消可避免续费。':'Payment is charged to your Apple Account. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel in Apple subscription settings.','membership-note');
   const links=add('div','', 'membership-links');for(const [title,url]of [[zh()?'隐私政策':'Privacy policy','https://buer.wonderelian.com/privacy.html'],[zh()?'使用条款':'Terms of use','https://www.apple.com/legal/internet-services/itunes/dev/stdeula/'],[zh()?'管理订阅':'Manage subscriptions','https://apps.apple.com/account/subscriptions']]){const a=document.createElement('a');a.textContent=title;a.href=url;a.target='_blank';a.rel='noopener';links.append(a);}
-  dialog.showModal();
+  dialog.append(close);dialog.showModal();
 }
 export function initMembership(){
   const b=document.createElement('button');b.type='button';b.className='membership-entry';const render=()=>b.textContent=zh()?'会员与订阅':'Membership & subscriptions';render();document.addEventListener('buer:language',render);b.onclick=showMembership;document.querySelector('#settingsDialog .settings-list')?.before(b);

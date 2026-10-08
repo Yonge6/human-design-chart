@@ -162,6 +162,10 @@ body dialog :is(.eyebrow,small,.membership-note,.dialog-empty){color:var(--ui-mu
 body dialog::backdrop{background:rgba(36,40,35,.48);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
 body dialog :is(button,.secondary-button){min-height:44px;border-radius:var(--ui-radius);background:var(--ui-surface);color:var(--ui-ink);border-color:var(--ui-line);box-shadow:none;text-shadow:none}
 body dialog :is(.dialog-close,.membership-close),#buerHistory header button{color:var(--ui-muted);background:transparent;border:0;min-width:44px;min-height:44px}
+#buerMembership>h2{margin-top:0}
+#buerMembership>.membership-close{display:block;float:none;width:100%;margin-top:24px;min-height:48px;border:1px solid var(--ui-line);background:var(--ui-surface);color:var(--ui-ink)}
+#buerMembership>.membership-close:hover{border-color:var(--ui-accent)}
+#buerMembership>.membership-close:focus-visible{outline:2px solid var(--ui-accent);outline-offset:3px}
 #buerHistory>p,#buerHistory #buerHistoryList small{color:var(--ui-muted);font-size:13px;line-height:1.7}
 #buerHistory #buerHistoryList>button{color:var(--ui-ink);background:transparent;border:0;border-bottom:1px solid var(--ui-line);border-radius:0;padding:18px 0;font-size:15px;line-height:1.6;overflow-wrap:anywhere}
 #buerHistory #buerHistoryList>button:hover{background:#e6e9dd}

@@ -13,6 +13,7 @@ import { createBodygraphRenderer } from '../renderer/bodygraph-renderer.js';
 import { orderedPeople, movePerson, relationshipGuidePrompt } from '../services/buer-people-tools.js';
 import {PAIR_SECTIONS,makeGuideSource,cleanGuideSource,parsePairSections,pairManualStale,guideSourceEqual,pairManualPrompt} from '../services/buer-pair-manual.js';
 import { loadingPreview } from './buer-loading.js';
+import { pairComparisonGroups, comparisonTable } from './buer-pair-comparison.js';
 
 const el = (tag, text = '', attributes = {}) => {
   const node = document.createElement(tag); node.textContent = text;
@@ -152,8 +153,6 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     invalidate();const ticket=epoch;reset(l(`我与${person.nickname} · 相处说明书`,`Me & ${person.nickname} · Relationship manual`));if(!dialog.open)dialog.showModal();
     let source=null,saved=null,selected='overview',pending=null;
     const localSource=()=>makeGuideSource(getGrowthReport(),readGrowth(localStorage));
-    const labels={Type:'类型',Strategy:'策略','Inner Authority':'内在权威',Profile:'人生角色',Definition:'定义','Incarnation Cross':'轮回交叉',Sign:'标志','Not Self Theme':'非自己主题',Digestion:'消化',Sense:'感知',Environment:'环境'};
-    const fmt=c=>c?Object.entries(c).filter(([,v])=>v).map(([k,v])=>`${l(labels[k]||k,k)} · ${chartText(translateValue(k,v))}`).join('\n'):l('尚未建立人类图','No chart yet');
     function draw(){
       content.replaceChildren();
       const actions=el('div','',{class:'journal-actions'});actions.append(button('← 返回人物档案','← Back to profile',()=>detail(person)),button('聊聊我们的关系','Talk about us',()=>conversation(person),'journal-primary'));content.append(actions);
@@ -169,14 +168,11 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       const pane=el('section','',{class:'pair-manual-reading'});content.append(pane);
       pane.append(el('h3',PAIR_SECTIONS.find(s=>s[0]===selected)[getLanguage()==='en'?2:1]));
       if(selected==='overview'){
-        const cards=el('div','',{class:'pair-manual-facts'});
-        const me=el('article');me.append(el('h4',l('我 · 成长档案','Me · Growth profile')),el('p',fmt(snapshot.chart?.core)));
-        const other=el('article');other.append(el('h4',person.nickname),el('p',person.relationship),el('p',fmt(person.chart?.core?{'Type':person.chart.core.type,'Strategy':person.chart.core.strategy,'Inner Authority':person.chart.core.authority,'Profile':person.chart.core.profile,'Definition':person.chart.core.definition,'Incarnation Cross':person.chart.core.incarnationCross}:null)));cards.append(me,other);pane.append(cards);
+        const options={language:getLanguage(),otherName:person.nickname};
+        const groups=pairComparisonGroups(snapshot.chart,person.chart,{...options,translate:(key,value)=>chartText(translateValue(key,value))});
+        pane.append(comparisonTable(groups[0],options));
         const charts=el('details');charts.append(el('summary',l('双方图谱基础信息 · 中心、通道与行星','Chart details · centers, channels & planets')));
-        charts.append(el('h4',l('我的图谱','My chart')),el('p',l('已定义中心：','Defined centers: ')+(snapshot.chart?.centers||[]).map(chartText).join(' · ')),el('p',l('通道：','Channels: ')+(snapshot.chart?.channels||[]).map(c=>c.join('–')).join(' · ')));
-        for(const [key,zh,en] of [['design','设计','Design'],['personality','人格','Personality']])charts.append(el('p',l(zh,en)+'\n'+Object.entries(snapshot.chart?.[key]||{}).map(([k,v])=>`${k} · ${v.Gate}.${v.Line}`).join(' · ')));
-        charts.append(el('h4',person.nickname),el('p',l('已定义中心：','Defined centers: ')+(person.chart?.structure?.definedCenters||[]).map(chartText).join(' · ')),el('p',l('通道：','Channels: ')+(person.chart?.structure?.channels||[]).map(c=>c.join('–')).join(' · ')));
-        for(const [key,zh,en] of [['design','设计','Design'],['personality','人格','Personality']])charts.append(el('p',l(zh,en)+'\n'+Object.entries(person.chart?.activations?.[key]||{}).map(([k,v])=>`${k} · ${v.gate}.${v.line}`).join(' · ')));
+        for(const group of groups.slice(1))charts.append(comparisonTable(group,options));
         pane.append(charts);
       }
       if(saved?.sections?.[selected]){const reading=el('div','',{class:'pair-manual-prose'});renderAssistantText(reading,saved.sections[selected]);pane.append(reading);}

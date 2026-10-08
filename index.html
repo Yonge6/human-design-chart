@@ -23,6 +23,9 @@
   <meta name="twitter:image" content="https://human-design.wonderelian.com/assets/pluto-og-1200x630.png">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://buer-api.wonderelian.com https://photon.komoot.io https://geocode.arcgis.com https://api-human-design.wonderelian.com https://*.supabase.co https://www.google-analytics.com https://region1.google-analytics.com; img-src 'self' data: blob: https://wendao.wonderelian.com; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://www.googletagmanager.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
   <title>不二见己 | 你的专属 AI 成长伙伴 豆豆龙</title>
+  <style>
+    #homeBootPreview{display:none}body[data-home-pending] #homeBootPreview{display:block;background:#e4e9da;color:#203b30;border-radius:28px;padding:clamp(24px,5vw,64px);min-height:360px;box-sizing:border-box}body[data-home-pending] #buerHome>.buer-conversation-column,body[data-home-pending] #buerHome>.buer-context{display:none}body[data-home-pending] #buerHome{display:block;max-width:1200px;margin:24px auto;padding:0 20px}#homeBootPreview h1{font-size:clamp(28px,4vw,48px);line-height:1.4;max-width:700px}#homeBootPreview p{line-height:1.8}#homeBootPreview .home-preview-input{margin-top:32px;padding:24px;border-radius:20px;background:#faf8f1;max-width:560px}#homeBootPreview .home-preview-bars{height:54px;margin-top:22px;background:linear-gradient(#d8dfcc 0 12px,transparent 12px 22px,#d8dfcc 22px 34px,transparent 34px 44px,#d8dfcc 44px);width:78%;border-radius:6px}#homeBootPreview a{color:inherit}#homeBootPreview [hidden]{display:none}
+  </style>
   <link rel="canonical" href="https://human-design.wonderelian.com/">
   <link rel="icon" type="image/png" href="assets/buer-companion-favicon.png">
   <link rel="apple-touch-icon" href="assets/buer-companion-touch.png">
@@ -36,8 +39,9 @@
   <link rel="stylesheet" href="buer-companion.css">
   <link rel="stylesheet" href="buer-journal.css">
   <script src="analytics.js" defer></script>
+  <script src="src/app/buer-home-loading.js" defer></script>
 </head>
-<body data-workspace="home">
+<body data-workspace="home" data-home-pending>
   <header class="topbar">
     <div class="brand"><img class="brand-symbol" src="assets/buer-companion-logo.png" alt=""><span data-i18n="brand">不二见己</span><small data-buer="tagline">与真实的自己 · 温柔相遇</small></div>
     <div class="topbar-actions">
@@ -248,6 +252,15 @@
   </nav>
   <img class="buer-hero-art" src="assets/buer-aurora-hero.webp" alt="" aria-hidden="true">
   <section id="buerHome" class="buer-home" aria-label="与不二见己聊聊">
+    <section id="homeBootPreview" aria-label="首页加载预览" aria-busy="true">
+      <small>不二见己 · 与真实的自己温柔相遇</small>
+      <h1>今天，想从哪里聊起？</h1>
+      <p>你的 AI 成长伙伴豆豆龙</p>
+      <div class="home-preview-input"><span>从一件最近让你在意的小事开始。</span><div class="home-preview-bars" aria-hidden="true"></div></div>
+      <p id="homeBootStatus" role="status">正在准备对话与成长档案，内容即将就绪…</p>
+      <a id="homeBootRetry" href="" hidden>重新加载</a>
+      <noscript><p>请启用 JavaScript 后使用对话与成长档案。</p></noscript>
+    </section>
     <div class="buer-conversation-column">
       <header class="buer-welcome"><h1 data-buer="headline">从一个问题，靠近自己</h1><p data-buer="intro">在这里，任何关于你的问题，都值得被认真对待</p></header>
 

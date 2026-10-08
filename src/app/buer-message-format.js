@@ -9,3 +9,19 @@ export function renderAssistantText(element, content) {
     else element.append(element.ownerDocument.createTextNode(part.text));
   }
 }
+
+// Display-only paragraphing: keep saved wording and never interpret model HTML.
+export function readingParagraphs(content) {
+  const text=String(content).replace(/\r\n?/g,'\n').replace(/\*\*([^*\n]+)\*\*/g,(whole,label,offset)=>(offset>0&&label.length<=45?'\n\n':'')+whole);
+  return text.split(/\n+/).flatMap(block=>{
+    if(block.trim().length<220)return block.trim()?[block.trim()]:[];
+    const sentences=block.match(/[^。！？.!?]+(?:[。！？.!?]+[”’"']?|$)/g)||[block];
+    const paragraphs=[];let current='';
+    for(const sentence of sentences){current+=sentence;if(current.length>=140){paragraphs.push(current.trim());current='';}}
+    if(current.trim())paragraphs.push(current.trim());return paragraphs;
+  });
+}
+export function renderReadingText(element,content){
+  element.replaceChildren();
+  for(const text of readingParagraphs(content)){const p=element.ownerDocument.createElement('p');renderAssistantText(p,text);element.append(p);}
+}

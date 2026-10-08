@@ -3,7 +3,7 @@ import { calculateHumanDesign, localToUtcCandidates } from '../../human-design-e
 import { createHumanDesignProfileSnapshot } from '../engine/profile-snapshot.js';
 import { readBuerEvents } from '../services/buer-conversation.js';
 import { ensureAIConsent, chatAccess, showMembership } from './buer-membership.js';
-import { renderAssistantText } from './buer-message-format.js';
+import { renderAssistantText, renderReadingText } from './buer-message-format.js';
 import { cleanPersonalContext, SCOPE_KEYS, RELATION_TYPES, relationshipScopeDefaults } from '../services/buer-personal-context.js';
 import { readGrowth, QUESTIONS } from '../services/buer-growth.js';
 import { validChatHistory } from '../services/buer-conversation.js';
@@ -62,7 +62,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
   }
   function button(zh, en, action, cls = '') {
     const b = el('button', l(zh, en), { type: 'button', class: cls });
-    b.onclick = async () => { if (busy) return; const ticket = epoch; try { await action(); } catch (error) { if (ticket === epoch) status.textContent = errorMessage(error); } };
+    b.onclick = async () => { if (busy) return; const ticket = epoch; try { await action(b); } catch (error) { if (ticket === epoch) status.textContent = errorMessage(error); } };
     return b;
   }
   function field(parent, zh, en, type = 'text', value = '', attrs = {}) {
@@ -151,7 +151,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
   }
   async function pairManual(person){
     invalidate();const ticket=epoch;reset(l(`我与${person.nickname} · 相处说明书`,`Me & ${person.nickname} · Relationship manual`));if(!dialog.open)dialog.showModal();
-    let source=null,saved=null,selected='overview',pending=null;
+    let source=null,saved=null,selected='overview',pending=null,otherProperties=null,chartError=null;
     const localSource=()=>makeGuideSource(getGrowthReport(),readGrowth(localStorage));
     function draw(){
       content.replaceChildren();
@@ -169,27 +169,31 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       pane.append(el('h3',PAIR_SECTIONS.find(s=>s[0]===selected)[getLanguage()==='en'?2:1]));
       if(selected==='overview'){
         const options={language:getLanguage(),otherName:person.nickname};
-        const groups=pairComparisonGroups(snapshot.chart,person.chart,{...options,translate:(key,value)=>chartText(translateValue(key,value))});
+        const groups=pairComparisonGroups(snapshot.chart,person.chart,{...options,otherProperties,translate:(key,value)=>chartText(translateValue(key,value))});
+        if(chartError)pane.append(el('p',l('TA 的完整图谱暂未加载，请重新读取；下方缺失项不代表没有出生资料。','Their full chart could not load. Retry; missing fields do not mean missing birth details.')) ,button('重新读取图谱','Retry chart',()=>pairManual(person)));
         pane.append(comparisonTable(groups[0],options));
         const charts=el('details');charts.append(el('summary',l('双方图谱基础信息 · 中心、通道与行星','Chart details · centers, channels & planets')));
         for(const group of groups.slice(1))charts.append(comparisonTable(group,options));
         pane.append(charts);
       }
-      if(saved?.sections?.[selected]){const reading=el('div','',{class:'pair-manual-prose'});renderAssistantText(reading,saved.sections[selected]);pane.append(reading);}
+      if(saved?.sections?.[selected]){const reading=el('div','',{class:'pair-manual-prose'});renderReadingText(reading,saved.sections[selected]);pane.append(reading);}
       else pane.append(el('p',l('这一分类的个性化解读尚未生成。生成一次后，即可随时回来阅读。','This personalized section has not been generated. Generate once, then return to read any time.')));
       const generateActions=el('div','',{class:'journal-actions pair-manual-generate'});
-      if(pending)generateActions.append(button('重试保存解读（不重新生成）','Retry saving (no regeneration)',()=>generate(false,true),'journal-primary'));
+      if(pending)generateActions.append(button('重试保存解读（不重新生成）','Retry saving (no regeneration)',b=>generate(false,true,b),'journal-primary'));
       else {
-        if(source)generateActions.append(button(saved?'更新解读':'生成分类解读',saved?'Update reading':'Generate reading',()=>generate(false),'journal-primary'));
-        generateActions.append(button(source?'同步当前成长档案并更新':'使用当前成长档案生成',source?'Sync current growth profile & update':'Generate from current growth profile',()=>generate(true),source?'':'journal-primary'));
+        if(source)generateActions.append(button(saved?'更新解读':'生成分类解读',saved?'Update reading':'Generate reading',b=>generate(false,false,b),'journal-primary'));
+        generateActions.append(button(source?'同步当前成长档案并更新':'使用当前成长档案生成',source?'Sync current growth profile & update':'Generate from current growth profile',b=>generate(true,false,b),source?'':'journal-primary'));
       }
       content.append(generateActions,el('small',l('仅生成或更新时调用 AI，并按现有额度计次；阅读已保存内容不计次。','Only generation or updates call AI and use the existing allowance. Reading saved content is free.')));
     }
-    async function generate(sync,retry=false){
-      if(sync&&!await askConfirm('确认当前成长档案属于你？将把其中的人类图、全部访谈回答、经历、行动复盘及已有成长指南同步到当前账号，并交由 AI 生成相处说明书（包括此前未勾选单独参考的成长记录）。不包含日记和历史聊天。','Confirm this device’s growth profile is yours. Sync its chart and all answers, experiences, actions, reflections and growth report for AI processing, including growth records not individually enabled before. Journals and chats are excluded.'))return;
-      if(!valid(ticket))return;
+    async function generate(sync,retry=false,activeButton){
+      if(busy||!valid(ticket))return;
       busy=true;status.textContent=l('正在准备相处说明书…','Preparing your relationship manual…');
+      const phase=(zh,en)=>{for(const b of content.querySelectorAll('.pair-manual-generate button'))b.disabled=true;if(activeButton){activeButton.textContent=l(zh,en);activeButton.setAttribute('aria-busy','true');}};
+      phase(retry?'保存中…':'准备中…',retry?'Saving…':'Preparing…');
       try{
+        if(sync&&!await askConfirm('确认当前成长档案属于你？将把其中的人类图、全部访谈回答、经历、行动复盘及已有成长指南同步到当前账号，并交由 AI 生成相处说明书（包括此前未勾选单独参考的成长记录）。不包含日记和历史聊天。','Confirm this device’s growth profile is yours. Sync its chart and all answers, experiences, actions, reflections and growth report for AI processing, including growth records not individually enabled before. Journals and chats are excluded.')){status.textContent='';return;}
+        if(!valid(ticket))return;
         if(!retry){
           const next=sync?localSource():source?.payload;
           if(!next?.chart||!person.chart)throw Error('GUIDE_CHART_REQUIRED');
@@ -199,6 +203,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
           if(!session.data?.session?.access_token)throw Error('SIGN_IN_REQUIRED');
           const access=await chatAccess();if(!valid(ticket))return;
           controller=new AbortController();
+          phase('生成中…','Generating…');
           status.textContent=l('正在生成六个分类的解读，已有内容可继续阅读…','Generating six sections. Your existing reading remains available…');
           const response=await fetch(`${account.config.apiUrl}/v1/chat`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${session.data.session.access_token}`},body:JSON.stringify({mode:'relationship-guide',relationship:{personId:person.id,personRevision:person.revision,sourceRevision:source.revision},messages:[{role:'user',content:pairManualPrompt(getLanguage())}],...access}),signal:controller.signal});
           if(!response.ok){if(response.status===402)showMembership();throw Error((await response.json().catch(()=>({}))).error||'AI_UNAVAILABLE');}
@@ -206,6 +211,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
           if(!valid(ticket))return;pending={sections:parsePairSections(raw),mutation:crypto.randomUUID(),language:getLanguage()==='en'?'en':'zh'};dirty=true;
         }
         status.textContent=l('解读已生成，正在保存到账号…','Reading generated. Saving to your account…');
+        phase('保存中…','Saving…');
         const row=await repo.savePairManual(owner,person,source,saved,pending.sections,pending.language,pending.mutation);if(!valid(ticket))return;
         saved=row;pending=null;dirty=false;status.textContent=l('说明书已保存，下次打开直接阅读。','Saved. Open it next time without generating again.');
       }catch(error){if(valid(ticket))status.textContent=errorMessage(error)+(saved?l(' 旧版说明书仍保留。',' Your previous reading is preserved.'):'');}
@@ -214,7 +220,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     busy=true;status.textContent=l('正在读取已保存的说明书…','Loading saved reading…');
     const preview=loadingPreview(l('正在连接账号，读取已保存的内容…','Connecting to your account and loading saved content…'),PAIR_SECTIONS.map(s=>s[getLanguage()==='en'?2:1]));
     content.append(chartSummary(person),preview);
-    try{const rows=await Promise.all([repo.guideSource(owner),repo.pairManual(owner,person.id)]);if(!valid(ticket))return;[source,saved]=rows;status.textContent='';draw();}
+    try{const rows=await Promise.all([repo.guideSource(owner),repo.pairManual(owner,person.id),personManualData(person).catch(error=>{chartError=error;return null;})]);if(!valid(ticket))return;[source,saved]=rows;otherProperties=rows[2]?.Properties||null;status.textContent='';draw();}
     catch(error){if(valid(ticket)){preview.remove();status.textContent=errorMessage(error);content.append(button('重新读取','Retry',()=>pairManual(person)));}}
     finally{if(ticket===epoch)busy=false;}
   }

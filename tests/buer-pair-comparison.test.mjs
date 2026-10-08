@@ -27,3 +27,8 @@ test('English labels and shared translation hook remain available',()=>{
  assert.deepEqual(groups[0].rows[3],['Profile','Profile:5/1','Profile:3/5']);
  assert.deepEqual(groups[1].rows[6],['spleen','Defined','Defined']);
 });
+test('verified recalculated properties fill the extended person fields',()=>{
+ const properties={Sign:'Satisfaction','Not Self Theme':'Frustration',Digestion:'Calm Touch',Sense:'Outer Vision',Environment:'Artificial Shores'};
+ const group=pairComparisonGroups(me,other,{otherProperties:properties})[0];
+ assert.deepEqual(group.rows.slice(6).map(r=>r[2]),Object.values(properties));
+});

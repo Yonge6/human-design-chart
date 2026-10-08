@@ -177,4 +177,7 @@ export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
   $('#buerCancelClear').addEventListener('click',()=>{$('#buerClearConfirm').hidden=true;});
   $('#buerConfirmClear').addEventListener('click',()=>{threads=[];current={id:crypto.randomUUID(),date:Date.now(),messages:[]};try{localStorage.removeItem(key);}catch{}$('#buerClearConfirm').hidden=true;renderHistory();renderMessages();});
   refresh();
+  document.body.removeAttribute('data-home-pending');
+  document.querySelector('#homeBootPreview')?.setAttribute('aria-busy','false');
+  document.dispatchEvent(new Event('buer:home-ready'));
 }

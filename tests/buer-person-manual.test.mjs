@@ -13,6 +13,7 @@ test('person manual reproduces their saved chart without mutating it, including 
   const person={nickname:'Test person',chart},before=JSON.stringify(person);
   const manual=await personManualData(person);
   assert.equal(manual.Meta.BirthIso,result.Meta.BirthIso);assert.deepEqual(manual.Properties,result.Properties);
+  for(const key of ['Sign','Not Self Theme','Digestion','Sense','Environment'])assert.ok(manual.Properties[key],`recalculated ${key} must be available`);
   assert.equal(JSON.stringify(person),before);
  }
  await assert.rejects(personManualData({chart:null}),/INVALID_CHART/);

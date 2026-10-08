@@ -11,10 +11,10 @@ const activation=(side,name)=>{
 };
 
 // Adapt the existing growth snapshot and person snapshot without mutating either.
-export function pairComparisonGroups(me,other,{language='zh',translate=(_k,v)=>v}={}){
+export function pairComparisonGroups(me,other,{language='zh',translate=(_k,v)=>v,otherProperties=null}={}){
   const l=(zh,en)=>language==='en'?en:zh,missing=l('暂无资料','Not recorded');
   const value=(key,v)=>v?translate(key,key==='Profile'?String(v).split(':')[0]:v):missing;
-  const basic=fields.map(([key,zh,alias])=>[l(zh,key),value(key,me?.core?.[key]),value(key,other?.core?.[alias])]);
+  const basic=fields.map(([key,zh,alias])=>[l(zh,key),value(key,me?.core?.[key]),value(key,otherProperties?.[key]||other?.core?.[alias])]);
   const mine=Array.isArray(me?.centers)?new Set(me.centers.map(centerKey)):null;
   const theirs=Array.isArray(other?.structure?.definedCenters)?new Set(other.structure.definedCenters.map(centerKey)):null;
   const state=(set,key,yes,no)=>set?(set.has(key)?yes:no):missing;
@@ -37,5 +37,8 @@ export function comparisonTable(group,{language='zh',otherName='TA'}={}){
   const head=document.createElement('thead'),header=document.createElement('tr');
   for(const text of [language==='en'?'Item':'项目',language==='en'?'Me':'我',otherName]){const th=document.createElement('th');th.scope='col';th.textContent=text;header.append(th);}head.append(header);table.append(head);
   const body=document.createElement('tbody');
-  for(const row of group.rows){const tr=document.createElement('tr');row.forEach((text,i)=>{const cell=document.createElement(i?'td':'th');if(!i)cell.scope='row';cell.textContent=text;tr.append(cell);});body.append(tr);}table.append(body);return table;
+  for(const row of group.rows){const tr=document.createElement('tr');row.forEach((text,i)=>{const cell=document.createElement(i?'td':'th');if(!i)cell.scope='row';
+    if(i&&['centers','channels'].includes(group.key)&&['已定义','有','Defined','Present','未定义','无','Undefined','Absent','None'].includes(text)){
+      const badge=document.createElement('span');badge.className='pair-state '+(['已定义','有','Defined','Present'].includes(text)?'pair-state-present':'pair-state-absent');badge.textContent=text;cell.append(badge);
+    }else cell.textContent=text;tr.append(cell);});body.append(tr);}table.append(body);return table;
 }

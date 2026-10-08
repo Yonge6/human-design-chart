@@ -12,7 +12,7 @@
 
 ## Design choices and release gates
 
-Checkpoint 2: Tasks 1–3 implemented; 254 full-suite tests pass. Browser synthetic account switching, offline editing/retry and 390px layout verified. Production additive migration and authenticated-role isolation/CAS checks passed; anonymous HTTP access denied. Source/artifact publication and public readback remain Task 4's final gate; see `docs/releases/2026-10-08-full-account-sync.md`. Immutable local transactions plus Web Locks serialize same-browser writers. New guest-workspace routing is separate from the one-time legacy importer.
+Complete for H5: Tasks 1–4 implemented; 254 full-suite tests and 36 post-copy focused tests pass. Browser synthetic account switching, offline editing/retry and 390px layout verified. Production additive migration and authenticated-role isolation/CAS checks passed; anonymous HTTP access denied. Pages run 37755886721 succeeded; public runtime/modules match feature source 5841999 and asset cb403477cef1f12c. See `docs/releases/2026-10-08-full-account-sync.md` for exact boundaries, including no native release or real-user OAuth end-to-end claim. Immutable local transactions plus Web Locks serialize same-browser writers. New guest-workspace routing is separate from the one-time legacy importer.
 
 - Selected: per-record sync with offline persistence; no initial confirmation dialog.
 - Rejected: cloud-only reads (slow/offline unavailable); whole-device last-write-wins backup (empty devices and concurrent edits can overwrite data).

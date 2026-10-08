@@ -22,6 +22,14 @@ The user explicitly approved H5 deployment and automatic first-login merging wit
 - Production Buer Supabase `hiuphqtqqvejyjgoxfov`: additive migration `202610080003_workspace_sync.sql` applied. SQL authenticated-role contract verified owner access, cross-user isolation and stale revision rejection. RLS enabled/forced, direct and anonymous writes denied, auth-user deletion cascade present. Synthetic SQL users/records rolled back.
 - Production anonymous HTTP REST select and RPC each returned `401 / 42501`. These are not claimed as a real OAuth user end-to-end test.
 
+## Published and read back
+
+- Feature source: `58419995640ba3baf0a686a60c20d413f6e1436c` on `codex/buer-private-journal`, pushed to the source repository.
+- Static artifact: `49fc468a896587be48e54e2a21c711c38e5574ad` on preview `main`.
+- GitHub Pages run `37755886721` succeeded; Pages API reports `built`, no error, updated `2026-10-08T09:20:20Z`.
+- Fresh public browser reload of `https://buer.wonderelian.com/` reports the feature source hash and asset fingerprint `cb403477cef1f12c`. Workspace, sync, guide-v2 and account UI modules all return HTTP 200 with their expected feature markers. Public mobile homepage is ready and document width equals the 390px viewport.
+- Focused post-copy regression: 36/36 pass. Latest local build additionally verified that an unsent A-account chat draft is hidden for B and restored for A.
+
 ## Publish procedure / evidence boundary
 
 Commit source, run `scripts/build-buer-preview.mjs` with the already-live Buer public account configuration, copy the dedicated artifact to `Yonge6/buer-life-manual-preview`, and publish GitHub Pages. The public runtime commit and newly added modules must be read back before reporting live completion. Do not use the generic test build as the release artifact.

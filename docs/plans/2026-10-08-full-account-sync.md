@@ -12,6 +12,8 @@
 
 ## Design choices and release gates
 
+Checkpoint 1: Tasks 1 and 2 foundation implemented and tested locally (246 full-suite tests pass). Tasks 3 and 4 are pending. No production migration applied and no H5 release made. The record engine intentionally rejects a stale same-browser cache sequence; UI draft retention/reload handling and serialized multi-tab writes must be verified before enabling it. New guest-workspace routing after the initial legacy migration belongs to Task 3, not to the one-time legacy importer.
+
 - Selected: per-record sync with offline persistence; no initial confirmation dialog.
 - Rejected: cloud-only reads (slow/offline unavailable); whole-device last-write-wins backup (empty devices and concurrent edits can overwrite data).
 - Existing unowned data moves to the first verified account only. New signed-out records remain a separate guest workspace until a verified login imports them. Account data is hidden immediately on sign-out; an old asynchronous operation must not write into the new account.

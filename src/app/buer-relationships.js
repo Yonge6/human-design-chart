@@ -140,7 +140,8 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
         el('small', person.relationship), el('h3', person.nickname));
       const core=person.chart?.core;card.append(el('p',core?`${chartText(core.type)} · ${core.profile} · ${chartText(core.authority)}`:l('出生时刻待确认 · 也可以先聊聊','Birth time unknown · You can still talk')));
       const controls = el('div', '', { class: 'journal-actions' });
-      controls.append(button('了解 TA', 'About them', () => detail(person)));
+      if(person.chart)controls.append(button('查看说明书', 'View manual', () => manual(person)));
+      controls.append(button('编辑资料', 'Edit profile', () => edit(person,false)));
       controls.append(button('相处指南', 'Relationship guide', () => pairManual(person)));
       if (!person.is_self) controls.append(button('聊聊我们的关系', 'Talk about us', () => conversation(person), 'journal-primary'));
       card.append(controls); cards.append(card);
@@ -154,7 +155,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     const localSource=()=>makeGuideSource(getGrowthReport(),readGrowth(localStorage));
     function draw(){
       content.replaceChildren();
-      const actions=el('div','',{class:'journal-actions'});actions.append(button('← 返回人物档案','← Back to profile',()=>detail(person)),button('聊聊我们的关系','Talk about us',()=>conversation(person),'journal-primary'));content.append(actions);
+      const actions=el('div','',{class:'journal-actions'});actions.append(button('← 返回人物列表','← Back to people',list),button('聊聊我们的关系','Talk about us',()=>conversation(person),'journal-primary'));content.append(actions);
       content.append(el('p',l('基础资料直接阅读；个性化解读生成后保存到账号，再次打开不调用 AI。人类图是反思线索，不是关系定论。','Read facts directly. Personalized sections are saved to your account; reopening does not call AI. Chart ideas are reflection prompts, not relationship verdicts.'),{class:'relationship-chat-note'}));
       const local=localSource(),snapshot=source?cleanGuideSource(source.payload):local;
       if(source)content.append(el('small',l(`参考成长档案同步于 ${new Date(source.updated_at).toLocaleString()}。`,`Source synced ${new Date(source.updated_at).toLocaleString()}.`)));
@@ -248,10 +249,10 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     });}
     draw();if(!ids.length)live.textContent=l('先添加身边的人，再来调整顺序。','Add someone first, then adjust the order.');
   }
-  function detail(person){invalidate();reset(person.nickname);if(!dialog.open)dialog.showModal();content.append(el('p',person.relationship),chartSummary(person));if(person.notes)content.append(el('p',person.notes));const actions=el('div','',{class:'relationship-detail-actions'});if(person.chart)actions.append(button('查看 TA 的说明书','View their Life Manual',()=>manual(person)));actions.append(button('编辑 TA 的资料','Edit their profile',()=>edit(person,false)),button('聊聊我们的关系','Talk about us',()=>conversation(person),'journal-primary'));content.append(actions);}
   async function manual(person){
     invalidate();const ticket=epoch;reset(l(`${person.nickname}的说明书`,`${person.nickname}’s Life Manual`));
-    content.append(button('← 返回人物档案','← Back to profile',()=>detail(person)));
+    if(!dialog.open)dialog.showModal();
+    content.append(button('← 返回人物列表','← Back to people',list));
     status.textContent=l('正在整理 TA 的说明书…','Preparing their manual…');
     const preview=loadingPreview(l('正在整理图谱与阅读内容…','Preparing chart and reading…'),[l('概览','Overview'),l('深入解读','In depth'),l('人类图','Human Design')]);content.append(preview);
     try{
@@ -403,7 +404,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     invalidate(); const ticket = epoch;
     reset(l('我与','Me & ') + person.nickname);if(!dialog.open)dialog.showModal();
     const controls = el('div', '', { class: 'relationship-chat-toolbar' });
-    controls.append(button('← 返回', '← Back', async () => { if (await mayLeave()) detail(person); }), button('新对话', 'New chat', async () => { if (await mayLeave()) await conversation(person); })); content.append(controls);
+    controls.append(button('← 返回人物列表', '← Back to people', async () => { if (await mayLeave()) await list(); }), button('新对话', 'New chat', async () => { if (await mayLeave()) await conversation(person); })); content.append(controls);
     const pair = el('details', '', { class: 'relationship-context' });pair.append(el('summary', l('对话设置','Chat settings')));
     pair.append(el('p',`${person.relationship} · ${person.chart?.core?`${chartText(person.chart.core.type)} / ${person.chart.core.profile}`:l('暂无精确人类图','No precise chart')}`));
     const allowed=relationshipScopeDefaults(personal),scopes={...allowed};

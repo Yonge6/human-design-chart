@@ -129,8 +129,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
   function drawList() {
     const content=listContent;content.replaceChildren();
     const actions = el('div', '', { class: 'journal-actions' });
-    actions.append(button('＋ 添加身边的人', '＋ Add someone', () => edit(null, false), 'journal-primary'),button('我的参考资料与授权','My context & permissions',settings),button('调整顺序','Adjust order',sortPeople),button('刷新', 'Refresh', list)); content.append(actions);
-    content.append(el('p',personal?l('自己的资料沿用已有记录，无需重复建档。可在「我的参考资料与授权」更新同步。','Your existing personal information is reused. Update it in My context & permissions.'):l('只需添加对方。聊之前可授权使用你已有的资料，无需再建立自己的档案。','Just add the other person. Authorize your existing information before chatting; no duplicate self profile.'),{class:'people-note'}));
+    actions.append(button('＋ 添加身边的人', '＋ Add someone', () => edit(null, false), 'journal-primary'),button('调整顺序','Adjust order',sortPeople),button('刷新', 'Refresh', list)); content.append(actions);
     const filters=el('div','',{class:'people-filters',role:'group','aria-label':l('按关系筛选','Filter relationships')});
     for(const [zh,en] of [['',''],...RELATION_TYPES]){const b=button(zh||'全部',en||'All',()=>{filter=zh;drawList();});b.setAttribute('aria-pressed',String(filter===zh));filters.append(b);}content.append(filters);
     const cards = el('div', '', { class: 'journal-list relationship-people' });

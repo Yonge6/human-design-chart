@@ -4,6 +4,7 @@ import { initBuerGrowth } from "./src/app/buer-growth.js";
 import { initBuerHome } from "./src/app/buer-home.js";
 import { initBuerJournal } from "./src/app/buer-journal.js";
 import { initBuerRelationships } from "./src/app/buer-relationships.js";
+import { chineseCross } from "./src/services/buer-cross-labels.js";
 import {
   calculateHumanDesign,
   localToUtcCandidates,
@@ -576,10 +577,7 @@ function translatedValue(key, value) {
     return value.replace(/(Investigator|Martyr|Opportunist|Hermit|Heretic|Role Model)/g, (role) => profileRoles[role]);
   }
   if (key === "Incarnation Cross") {
-    return value
-      .replace(/^Right Angle Cross of /, "右角度交叉 · ")
-      .replace(/^Left Angle Cross of /, "左角度交叉 · ")
-      .replace(/^Juxtaposition Cross of /, "并列交叉 · ");
+    return chineseCross(value);
   }
   return valueNames[value] || value;
 }
@@ -2370,6 +2368,7 @@ initBuerHome({
 
 void initBuerJournal({ getLanguage: () => language }).then(journal =>
   initBuerRelationships({ getLanguage: () => language, account: journal.account,
+    translateValue: translatedValue,
     getGrowthReport: () => lastData || latestSavedResult(historyEntries, appSettings.keepHistory)?.data,
     getManualSections: data => [...detailedReadingSections(data),{title:language==='zh'?'相似基础配置的人物':'People with similar core configurations',text:getCelebrityMatches(data).map(person=>`${language==='zh'?person.nameZh:person.name}\n${celebrityDetailedReason(data.Properties,person)}`).join('\n\n')}],
     getReadings: () => historyEntries.map((entry,index)=>({id:entry.id||String(index),label:entry.input?.name||`说明书 ${index+1}`,properties:entry.data?.Properties})),

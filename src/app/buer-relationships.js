@@ -25,7 +25,7 @@ const chartNames = { Generator:'生产者', 'Manifesting Generator':'显示生�
   'Self-Projected':'自我投射权威', Lunar:'月亮权威', 'Mental - Environment':'环境权威', 'No Definition':'无定义', 'Single Definition':'一分人', 'Split Definition':'二分人',
   'Triple Split Definition':'三分人', 'Quadruple Split Definition':'四分人', head:'头顶',ajna:'逻辑',throat:'喉咙',g:'G 中心',heart:'意志',sacral:'荐骨',spleen:'脾脏','solar plexus':'情绪',root:'根部' };
 
-export function initBuerRelationships({ getLanguage, account, openAccount, getReadings = () => [], getManualSections = () => [], getGrowthReport = () => null }) {
+export function initBuerRelationships({ getLanguage, account, openAccount, getReadings = () => [], getManualSections = () => [], getGrowthReport = () => null, translateValue = (_key,value) => value }) {
   const l = (zh, en) => getLanguage() === 'en' ? en : zh;
   const chartText = value => getLanguage() === 'en' ? value : chartNames[value] || value;
   const repo = account ? relationshipRepository(account) : null;
@@ -153,7 +153,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     let source=null,saved=null,selected='overview',pending=null;
     const localSource=()=>makeGuideSource(getGrowthReport(),readGrowth(localStorage));
     const labels={Type:'类型',Strategy:'策略','Inner Authority':'内在权威',Profile:'人生角色',Definition:'定义','Incarnation Cross':'轮回交叉',Sign:'标志','Not Self Theme':'非自己主题',Digestion:'消化',Sense:'感知',Environment:'环境'};
-    const fmt=c=>c?Object.entries(c).filter(([,v])=>v).map(([k,v])=>`${l(labels[k]||k,k)} · ${chartText(v)}`).join('\n'):l('尚未建立人类图','No chart yet');
+    const fmt=c=>c?Object.entries(c).filter(([,v])=>v).map(([k,v])=>`${l(labels[k]||k,k)} · ${chartText(translateValue(k,v))}`).join('\n'):l('尚未建立人类图','No chart yet');
     function draw(){
       content.replaceChildren();
       const actions=el('div','',{class:'journal-actions'});actions.append(button('← 返回人物档案','← Back to profile',()=>detail(person)),button('聊聊我们的关系','Talk about us',()=>conversation(person),'journal-primary'));content.append(actions);

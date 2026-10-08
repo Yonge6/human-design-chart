@@ -162,10 +162,18 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       if(!sections.length)throw Error('MANUAL_UNAVAILABLE');
       const lead=el('article','',{class:'relationship-manual-lead'});lead.append(el('h3',sections[0].title),el('p',sections[0].text));panels[0].append(lead);
       sections.forEach(({title,text},i)=>{const chapter=el('details','',{class:'buer-chapter'});chapter.open=i===0;const summary=el('summary');summary.append(el('span',String(i+1).padStart(2,'0'),{class:'buer-chapter-number'}),el('h3',title));const body=el('div','',{class:'buer-chapter-body'});body.append(el('p',text));chapter.append(summary,body);panels[1].append(chapter);});
-      const graph=el('div','',{class:'relationship-bodygraph'});panels[2].append(graph);
-      const planets=el('div','',{class:'relationship-planet-columns'});
+      const chartLayout=el('div','',{class:'chart-layout relationship-chart-layout'});
+      const graphColumn=el('div','',{class:'chart-graph'});
+      const graph=el('div','',{class:'relationship-bodygraph'});graphColumn.append(graph);
       const planetNames={'Sun':'太阳','Earth':'地球','North Node':'北交点','South Node':'南交点','Moon':'月亮','Mercury':'水星','Venus':'金星','Mars':'火星','Jupiter':'木星','Saturn':'土星','Uranus':'天王星','Neptune':'海王星','Pluto':'冥王星'};
-      for(const [key,zh,en] of [['Design','设计','Design'],['Personality','人格','Personality']]){const column=el('div');column.append(el('h3',l(zh,en)));for(const [name,a] of Object.entries(data[key]))column.append(el('p',`${l(planetNames[name]||name,name)} · ${a.Gate}.${a.Line}`));planets.append(column);}panels[2].append(planets);
+      for(const [key,zh,en] of [['Design','设计','Design'],['Personality','人格','Personality']]){
+        const column=el('div','',{class:`side-column${key==='Personality'?' right':''}`});column.append(el('p',l(zh,en)));
+        const list=el('ol','',{class:'planet-list','aria-label':l(`${zh}行星位置`,`${en} planetary activations`)});
+        for(const [name,a] of Object.entries(data[key])){const row=el('li');const label=el('span');label.append(el('i','',{class:`wb-${name.replaceAll(' ','-')}`,'aria-hidden':'true'}),el('em',l(planetNames[name]||name,name)));row.append(label,el('b',`${a.Gate}.${a.Line}`));list.append(row);}column.append(list);chartLayout.append(column);
+        if(key==='Design')chartLayout.append(graphColumn);
+      }
+      const legend=el('div','',{class:'poster-center-legend'});for(const [cls,zh,en] of [['defined-swatch','已定义中心','Defined center'],['undefined-swatch','未定义中心','Undefined center']]){const item=el('span');item.append(el('i','',{class:cls}),el('span',l(zh,en)));legend.append(item);}graphColumn.append(legend);
+      panels[2].append(chartLayout);
       select('overview');content.append(root);
       const colors=Object.fromEntries(['head','ajna','throat','g','heart','sacral','splenic','solar-plexus','root'].map(k=>[`${k}-center`,'#718565']));
       await createBodygraphRenderer({container:graph,templateUrl:new URL('../../assets/bodygraph-template.svg',import.meta.url).href,centerColors:colors,label:l(`${person.nickname}的人类图`,`${person.nickname}’s Human Design`)})(data);

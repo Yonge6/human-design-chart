@@ -1,5 +1,25 @@
 import { UUID, anonymousPerson } from '../src/services/buer-relationships.js';
 import { SCOPE_KEYS, cleanPersonalContext, selectPersonalContext, rankExcerpts } from '../src/services/buer-personal-context.js';
+import { cleanGuideSource } from '../src/services/buer-pair-manual.js';
+
+export async function loadPairManualContext(selected,authorization,{environment=process.env,fetchImpl=fetch}={}){
+ if(!selected||Object.keys(selected).some(k=>!['personId','personRevision','sourceRevision'].includes(k))||!UUID.test(selected.personId)||!Number.isInteger(selected.personRevision)||selected.personRevision<1||!Number.isInteger(selected.sourceRevision)||selected.sourceRevision<1)throw Error('INVALID_INPUT');
+ if(typeof authorization!=='string'||!/^Bearer [A-Za-z0-9_.-]+$/.test(authorization))throw Error('SIGN_IN_REQUIRED');
+ const url=environment.BUER_ACCOUNT_URL,key=environment.BUER_ACCOUNT_PUBLISHABLE_KEY;
+ if(!url||!key||new URL(url).protocol!=='https:')throw Error('ACCOUNT_NOT_CONFIGURED');
+ const get=async path=>{const r=await fetchImpl(`${url.replace(/\/$/,'')}${path}`,{headers:{apikey:key,Authorization:authorization},signal:AbortSignal.timeout(12000)});if(!r.ok)throw Error(r.status===401||r.status===403?'SIGN_IN_REQUIRED':'ACCOUNT_UNAVAILABLE');return r.json();};
+ const user=await get('/auth/v1/user');if(!UUID.test(user.id))throw Error('SIGN_IN_REQUIRED');
+ const people=await get(`/rest/v1/buer_people?select=id,user_id,is_self,birth,chart,relationship,revision&deleted_at=is.null&id=eq.${selected.personId}`);
+ const person=people.find(p=>p.id===selected.personId&&p.user_id===user.id&&!p.is_self);
+ const rows=await get(`/rest/v1/buer_guide_sources?select=user_id,payload,revision&user_id=eq.${user.id}&limit=1`);
+ const source=rows.find(s=>s.user_id===user.id);
+ if(!person||person.revision!==selected.personRevision||!source||source.revision!==selected.sourceRevision)throw Error('PROFILES_CHANGED');
+ const clean=cleanGuideSource(source.payload),other=anonymousPerson(person);
+ if(other.chart){other.chart={...other.chart,activations:person.chart.activations,structure:person.chart.structure};}
+ const context={me:clean,other,relationship:String(person.relationship||'').slice(0,60),coverage:'All canonical growth answers, experiences, actions/reflections and growth report in the explicitly confirmed source snapshot. No journals or chat histories.',sources:[{kind:'growth-snapshot',title:'成长档案全部记录',id:String(source.revision)}]};
+ if(JSON.stringify(context).length>160000)throw Error('GUIDE_SOURCE_TOO_LARGE');
+ return context;
+}
 
 export function validateRelationshipSelection(value) {
   if(value?.version===2){

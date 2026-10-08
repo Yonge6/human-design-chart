@@ -11,6 +11,7 @@ import { fetchPlaceCandidates, inferTimezoneFromAddress } from '../services/loca
 import { personManualData } from '../services/buer-person-manual.js';
 import { createBodygraphRenderer } from '../renderer/bodygraph-renderer.js';
 import { orderedPeople, movePerson, relationshipGuidePrompt } from '../services/buer-people-tools.js';
+import {PAIR_SECTIONS,makeGuideSource,cleanGuideSource,parsePairSections,pairManualStale,guideSourceEqual,pairManualPrompt} from '../services/buer-pair-manual.js';
 
 const el = (tag, text = '', attributes = {}) => {
   const node = document.createElement(tag); node.textContent = text;
@@ -23,7 +24,7 @@ const chartNames = { Generator:'生产者', 'Manifesting Generator':'显示生�
   'Self-Projected':'自我投射权威', Lunar:'月亮权威', 'Mental - Environment':'环境权威', 'No Definition':'无定义', 'Single Definition':'一分人', 'Split Definition':'二分人',
   'Triple Split Definition':'三分人', 'Quadruple Split Definition':'四分人', head:'头顶',ajna:'逻辑',throat:'喉咙',g:'G 中心',heart:'意志',sacral:'荐骨',spleen:'脾脏','solar plexus':'情绪',root:'根部' };
 
-export function initBuerRelationships({ getLanguage, account, openAccount, getReadings = () => [], getManualSections = () => [] }) {
+export function initBuerRelationships({ getLanguage, account, openAccount, getReadings = () => [], getManualSections = () => [], getGrowthReport = () => null }) {
   const l = (zh, en) => getLanguage() === 'en' ? en : zh;
   const chartText = value => getLanguage() === 'en' ? value : chartNames[value] || value;
   const repo = account ? relationshipRepository(account) : null;
@@ -49,6 +50,8 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
   function invalidate() { ++epoch; controller?.abort(); controller = null; busy = false; dirty = false; activeThread = null; unsavedThread = null; }
   function errorMessage(error) {
     const code = error?.message || '';
+    if(code==='GUIDE_SOURCE_TOO_LARGE')return l('成长档案超过当前单次完整解读容量，暂不支持该规模的完整生成。本次没有删减资料或覆盖旧版。','The complete source exceeds the current reading capacity. This size is not yet supported; nothing was omitted or overwritten.');
+    if(code==='GUIDE_CHART_REQUIRED')return l('请先在成长档案建立你的人类图，并补全 TA 的人类图，再生成双人解读。','Complete your growth-tab chart and their chart before generating a pair reading.');
     if(code==='MANUAL_VERSION_CHANGED')return l('图谱计算版本已更新，请编辑并重新保存 TA 的资料后查看说明书。','The chart engine changed. Edit and save their details before opening the manual.');
     if (error?.code === '40001' || /CHANGED|conflict/.test(code)) return l('资料已在另一处更新。请返回列表刷新后重试；当前文字仍保留。', 'A profile changed on another device. Refresh the list before retrying. Your text is kept.');
     if (/INVALID|RangeError/.test(code) || error instanceof RangeError) return l('请填写有效的出生日期、时间和出生地点。', 'Enter a valid birth date, time and place.');
@@ -135,12 +138,88 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       const core=person.chart?.core;card.append(el('p',core?`${chartText(core.type)} · ${core.profile} · ${chartText(core.authority)}`:l('出生时刻待确认 · 也可以先聊聊','Birth time unknown · You can still talk')));
       const controls = el('div', '', { class: 'journal-actions' });
       controls.append(button('了解 TA', 'About them', () => detail(person)));
-      controls.append(button('相处指南', 'Relationship guide', () => conversation(person,null,true)));
+      controls.append(button('相处指南', 'Relationship guide', () => pairManual(person)));
       if (!person.is_self) controls.append(button('聊聊我们的关系', 'Talk about us', () => conversation(person), 'journal-primary'));
       card.append(controls); cards.append(card);
     }
     if (!visible.length) cards.append(el('p', l('从一个你在意的人开始。选择关系，填写 TA 的出生信息，就可以聊聊你们之间的事。', 'Start with someone who matters. Choose a relationship and add their birth information.'), { class: 'journal-empty' }));
     content.append(cards);
+  }
+  async function pairManual(person){
+    invalidate();const ticket=epoch;reset(l(`我与${person.nickname} · 相处说明书`,`Me & ${person.nickname} · Relationship manual`));if(!dialog.open)dialog.showModal();
+    let source=null,saved=null,selected='overview',pending=null;
+    const localSource=()=>makeGuideSource(getGrowthReport(),readGrowth(localStorage));
+    const labels={Type:'类型',Strategy:'策略','Inner Authority':'内在权威',Profile:'人生角色',Definition:'定义','Incarnation Cross':'轮回交叉',Sign:'标志','Not Self Theme':'非自己主题',Digestion:'消化',Sense:'感知',Environment:'环境'};
+    const fmt=c=>c?Object.entries(c).filter(([,v])=>v).map(([k,v])=>`${l(labels[k]||k,k)} · ${chartText(v)}`).join('\n'):l('尚未建立人类图','No chart yet');
+    function draw(){
+      content.replaceChildren();
+      const actions=el('div','',{class:'journal-actions'});actions.append(button('← 返回人物档案','← Back to profile',()=>detail(person)),button('聊聊我们的关系','Talk about us',()=>conversation(person),'journal-primary'));content.append(actions);
+      content.append(el('p',l('基础资料直接阅读；个性化解读生成后保存到账号，再次打开不调用 AI。人类图是反思线索，不是关系定论。','Read facts directly. Personalized sections are saved to your account; reopening does not call AI. Chart ideas are reflection prompts, not relationship verdicts.'),{class:'relationship-chat-note'}));
+      const local=localSource(),snapshot=source?cleanGuideSource(source.payload):local;
+      if(source)content.append(el('small',l(`参考成长档案同步于 ${new Date(source.updated_at).toLocaleString()}。`,`Source synced ${new Date(source.updated_at).toLocaleString()}.`)));
+      else content.append(el('p',l('下方“我”的信息是本机成长档案预览，尚未同步到当前账号。','Your information below previews this device’s growth profile; it is not yet synced to this account.')));
+      if(source&&!guideSourceEqual(local,source.payload))content.append(el('p',l('本机成长档案与账号快照不同。确认属于你后，可同步并更新；不会自动替换。','This device’s growth profile differs from the account snapshot. Confirm ownership before syncing; it will not replace it automatically.'),{class:'pair-manual-warning'}));
+      if(pairManualStale(saved,source,person))content.append(el('p',l('资料已有变化，以下为旧版解读，可继续阅读或更新。','Sources changed. The previous reading remains available; update when ready.'),{class:'pair-manual-warning'}));
+      if(saved)content.append(el('small',l(`解读保存于 ${new Date(saved.updated_at).toLocaleString()}`,`Reading saved ${new Date(saved.updated_at).toLocaleString()}`)));
+      const nav=el('div','',{class:'relationship-manual-tabs pair-manual-tabs','aria-label':l('相处说明书分类','Reading categories')});
+      for(const [key,zh,en] of PAIR_SECTIONS){const b=button(zh,en,()=>{selected=key;draw();});b.setAttribute('aria-pressed',String(selected===key));nav.append(b);}content.append(nav);
+      const pane=el('section','',{class:'pair-manual-reading'});content.append(pane);
+      pane.append(el('h3',PAIR_SECTIONS.find(s=>s[0]===selected)[getLanguage()==='en'?2:1]));
+      if(selected==='overview'){
+        const cards=el('div','',{class:'pair-manual-facts'});
+        const me=el('article');me.append(el('h4',l('我 · 成长档案','Me · Growth profile')),el('p',fmt(snapshot.chart?.core)));
+        const other=el('article');other.append(el('h4',person.nickname),el('p',person.relationship),el('p',fmt(person.chart?.core?{'Type':person.chart.core.type,'Strategy':person.chart.core.strategy,'Inner Authority':person.chart.core.authority,'Profile':person.chart.core.profile,'Definition':person.chart.core.definition,'Incarnation Cross':person.chart.core.incarnationCross}:null)));cards.append(me,other);pane.append(cards);
+        const charts=el('details');charts.append(el('summary',l('双方图谱基础信息 · 中心、通道与行星','Chart details · centers, channels & planets')));
+        charts.append(el('h4',l('我的图谱','My chart')),el('p',l('已定义中心：','Defined centers: ')+(snapshot.chart?.centers||[]).map(chartText).join(' · ')),el('p',l('通道：','Channels: ')+(snapshot.chart?.channels||[]).map(c=>c.join('–')).join(' · ')));
+        for(const [key,zh,en] of [['design','设计','Design'],['personality','人格','Personality']])charts.append(el('p',l(zh,en)+'\n'+Object.entries(snapshot.chart?.[key]||{}).map(([k,v])=>`${k} · ${v.Gate}.${v.Line}`).join(' · ')));
+        charts.append(el('h4',person.nickname),el('p',l('已定义中心：','Defined centers: ')+(person.chart?.structure?.definedCenters||[]).map(chartText).join(' · ')),el('p',l('通道：','Channels: ')+(person.chart?.structure?.channels||[]).map(c=>c.join('–')).join(' · ')));
+        for(const [key,zh,en] of [['design','设计','Design'],['personality','人格','Personality']])charts.append(el('p',l(zh,en)+'\n'+Object.entries(person.chart?.activations?.[key]||{}).map(([k,v])=>`${k} · ${v.gate}.${v.line}`).join(' · ')));
+        pane.append(charts);
+        const g=snapshot.growth,records=el('details');records.append(el('summary',l(`成长档案参考 · ${Object.values(g.answers).filter(Boolean).length} 项回答 / ${g.stories.length} 段经历 / ${g.actions.length} 项行动`,`Growth sources · ${Object.values(g.answers).filter(Boolean).length} answers / ${g.stories.length} experiences / ${g.actions.length} actions`)));
+        for(const q of QUESTIONS)if(g.answers[q.id])records.append(el('h4',l(q.zh,q.en)),el('p',g.answers[q.id]));
+        if(g.report)records.append(el('h4',l('已有成长行动指南（AI 生成）','Existing growth guide (AI-generated)')),el('p',g.report));
+        for(const s of g.stories)records.append(el('h4',s.title),el('p',s.body));
+        for(const a of g.actions)records.append(el('h4',a.title),el('p',`${a.metric}\n${a.due} · ${a.done?l('已完成','Done'):l('进行中','In progress')}\n${a.reflection}`));
+        pane.append(records);
+      }
+      if(saved?.sections?.[selected]){const reading=el('div','',{class:'pair-manual-prose'});renderAssistantText(reading,saved.sections[selected]);pane.append(reading);}
+      else pane.append(el('p',l('这一分类的个性化解读尚未生成。生成一次后，即可随时回来阅读。','This personalized section has not been generated. Generate once, then return to read any time.')));
+      const generateActions=el('div','',{class:'journal-actions pair-manual-generate'});
+      if(pending)generateActions.append(button('重试保存解读（不重新生成）','Retry saving (no regeneration)',()=>generate(false,true),'journal-primary'));
+      else {
+        if(source)generateActions.append(button(saved?'更新解读':'生成分类解读',saved?'Update reading':'Generate reading',()=>generate(false),'journal-primary'));
+        generateActions.append(button(source?'同步当前成长档案并更新':'使用当前成长档案生成',source?'Sync current growth profile & update':'Generate from current growth profile',()=>generate(true),source?'':'journal-primary'));
+      }
+      content.append(generateActions,el('small',l('仅生成或更新时调用 AI，并按现有额度计次；阅读已保存内容不计次。','Only generation or updates call AI and use the existing allowance. Reading saved content is free.')));
+    }
+    async function generate(sync,retry=false){
+      if(sync&&!await askConfirm('确认当前成长档案属于你？将把其中的人类图、全部访谈回答、经历、行动复盘及已有成长指南同步到当前账号，并交由 AI 生成相处说明书（包括此前未勾选单独参考的成长记录）。不包含日记和历史聊天。','Confirm this device’s growth profile is yours. Sync its chart and all answers, experiences, actions, reflections and growth report for AI processing, including growth records not individually enabled before. Journals and chats are excluded.'))return;
+      if(!valid(ticket))return;
+      busy=true;status.textContent=l('正在准备相处说明书…','Preparing your relationship manual…');
+      try{
+        if(!retry){
+          const next=sync?localSource():source?.payload;
+          if(!next?.chart||!person.chart)throw Error('GUIDE_CHART_REQUIRED');
+          if(!await ensureAIConsent()||!valid(ticket))return;
+          if(sync&&(!source||!guideSourceEqual(next,source.payload))){const row=await repo.saveGuideSource(owner,source?.revision||0,crypto.randomUUID(),next);if(!valid(ticket))return;source=row;}
+          const session=await account.client.auth.getSession();if(!valid(ticket))return;
+          if(!session.data?.session?.access_token)throw Error('SIGN_IN_REQUIRED');
+          const access=await chatAccess();if(!valid(ticket))return;
+          controller=new AbortController();
+          const response=await fetch(`${account.config.apiUrl}/v1/chat`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${session.data.session.access_token}`},body:JSON.stringify({mode:'relationship-guide',relationship:{personId:person.id,personRevision:person.revision,sourceRevision:source.revision},messages:[{role:'user',content:pairManualPrompt(getLanguage())}],...access}),signal:controller.signal});
+          if(!response.ok){if(response.status===402)showMembership();throw Error((await response.json().catch(()=>({}))).error||'AI_UNAVAILABLE');}
+          let raw='';await readBuerEvents(response.body,(type,data)=>{if(type==='delta'){raw+=data.text;if(raw.length>50000)throw Error('INVALID_GUIDE_SECTIONS');}});
+          if(!valid(ticket))return;pending={sections:parsePairSections(raw),mutation:crypto.randomUUID(),language:getLanguage()==='en'?'en':'zh'};dirty=true;
+        }
+        const row=await repo.savePairManual(owner,person,source,saved,pending.sections,pending.language,pending.mutation);if(!valid(ticket))return;
+        saved=row;pending=null;dirty=false;status.textContent=l('说明书已保存，下次打开直接阅读。','Saved. Open it next time without generating again.');
+      }catch(error){if(valid(ticket))status.textContent=errorMessage(error)+(saved?l(' 旧版说明书仍保留。',' Your previous reading is preserved.'):'');}
+      finally{if(valid(ticket)){controller=null;busy=false;draw();}}
+    }
+    busy=true;status.textContent=l('正在读取已保存的说明书…','Loading saved reading…');
+    try{const rows=await Promise.all([repo.guideSource(owner),repo.pairManual(owner,person.id)]);if(!valid(ticket))return;[source,saved]=rows;status.textContent='';draw();}
+    catch(error){if(valid(ticket)){status.textContent=errorMessage(error);content.append(button('重新读取','Retry',()=>pairManual(person)));}}
+    finally{if(ticket===epoch)busy=false;}
   }
   function sortPeople(){
     invalidate();const ticket=epoch;reset(l('调整顺序','Adjust order'));if(!dialog.open)dialog.showModal();

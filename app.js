@@ -2366,6 +2366,7 @@ initBuerHome({
 
 void initBuerJournal({ getLanguage: () => language }).then(journal =>
   initBuerRelationships({ getLanguage: () => language, account: journal.account,
+    getGrowthReport: () => lastData || latestSavedResult(historyEntries, appSettings.keepHistory)?.data,
     getManualSections: data => [...detailedReadingSections(data),{title:language==='zh'?'相似基础配置的人物':'People with similar core configurations',text:getCelebrityMatches(data).map(person=>`${language==='zh'?person.nameZh:person.name}\n${celebrityDetailedReason(data.Properties,person)}`).join('\n\n')}],
     getReadings: () => historyEntries.map((entry,index)=>({id:entry.id||String(index),label:entry.input?.name||`说明书 ${index+1}`,properties:entry.data?.Properties})),
     openAccount: () => journal.open('account') }));

@@ -57,6 +57,14 @@ export function relationshipRepository(account) {
     if (error) throw error; return Array.isArray(data) ? data[0] : data;
   }
   return {
+    async guideSource(owner) {
+      check(owner);const {data,error}=await client.from('buer_guide_sources').select('*').eq('user_id',owner).limit(1);check(owner);if(error)throw error;return data[0]||null;
+    },
+    saveGuideSource(owner,revision,mutation,payload){return rpc('buer_save_guide_source',{expected_revision:revision,mutation,source_payload:payload},owner);},
+    async pairManual(owner,personId){
+      check(owner);const {data,error}=await client.from('buer_pair_manuals').select('*').eq('user_id',owner).eq('person_id',personId).limit(1);check(owner);if(error)throw error;return data[0]||null;
+    },
+    savePairManual(owner,person,source,previous,sections,language,mutation){return rpc('buer_save_pair_manual',{other_id:person.id,other_revision:person.revision,personal_revision:source.revision,expected_revision:previous?.revision||0,mutation,reading_sections:sections,reading_language:language},owner);},
     async order(owner) {
       check(owner);const {data,error}=await client.from('buer_people_order').select('*').eq('user_id',owner).limit(1);
       check(owner);if(error)throw error;return data[0]||null;

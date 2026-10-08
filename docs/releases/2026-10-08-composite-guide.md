@@ -1,5 +1,7 @@
 # Plain-language composite relationship guide
 
+Released source `804dc34f47d2c22d6193081b77e1e0e3f533a37a`, static `9e9ad6e2e94ab9bcd16323fb2eeb11ec693300ce`. Pages run `37748188112` succeeded. Public browser runtime reports source `804dc34`; the new prompt returns HTTP 200. Initial online navigation and independent remote curl timed out, then the committed browser navigation finished and readback succeeded.
+
 ## Scope
 
 H5 guide rendering and generation prompt only. No API, database or native release is required. Existing saved readings are preserved; the user can explicitly update them once to use the new structure. Reading the structural summary does not call AI or consume quota.

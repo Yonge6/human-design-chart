@@ -4,6 +4,7 @@ import { dirname } from 'node:path';
 import { SignedDataVerifier, Environment } from '@apple/app-store-server-library';
 
 export const SUBSCRIPTIONS = ['com.yonge6.buerwithin.plus.monthly', 'com.yonge6.buerwithin.plus.annual'];
+export const DAILY_FREE_LIMIT = 100;
 export function appleMembershipVerifier(environment=process.env) {
   const roots=[readFileSync(new URL('./apple-roots/AppleRootCA-G3.der',import.meta.url))];
   const verifiers=[Environment.PRODUCTION,Environment.SANDBOX].map(env=>new SignedDataVerifier(roots,true,env,'com.yonge6.buerwithin',Number(environment.BUER_APP_APPLE_ID || 6814764726)));
@@ -28,7 +29,7 @@ export function createChatAccess({file,verify=async()=>false,now=()=>Date.now()}
     const key=createHash('sha256').update(body.installationId).digest('hex');
     const reservationKey=key+day;
     const used=usage[key]?.day===day?usage[key].count:0;
-    if(used+(pending.get(reservationKey)||0)>=3)throw new Error('DAILY_LIMIT');
+    if(used+(pending.get(reservationKey)||0)>=DAILY_FREE_LIMIT)throw new Error('DAILY_LIMIT');
     pending.set(reservationKey,(pending.get(reservationKey)||0)+1);
     let settled=false;
     return {member:false,finish(success){

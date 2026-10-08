@@ -15,7 +15,7 @@ export function showMembership(){
   const add=(tag,text,cls)=>{const el=document.createElement(tag);el.textContent=text;if(cls)el.className=cls;dialog.append(el);return el;};
   const close=document.createElement('button');close.type='button';close.textContent=zh()?'关闭':'Close';close.className='membership-close';close.onclick=()=>dialog.close();
   add('h2',zh()?'给自己多一点空间':'More room to reflect');
-  add('p',zh()?'每日免费对话 3 条。会员不限每日条数，保留合理的使用频率限制。':'3 free conversations daily. Members have no daily message limit; reasonable rate limits apply.');
+  add('p',zh()?'每日免费对话 100 条。会员不限每日条数，保留合理的使用频率限制。':'100 free conversations daily. Members have no daily message limit; reasonable rate limits apply.');
   add('p',zh()?'成功完成的回复才计数，每日 UTC 00:00 重置。免费功能不需要订阅。':'Only completed replies count. Free messages reset at 00:00 UTC. A subscription is optional.','membership-note');
   const status=add('p',zh()?'正在读取订阅…':'Loading subscriptions…','membership-status');status.role='status';
   if(!native()){status.textContent=zh()?'请在 iPhone App 内查看会员。':'Subscriptions are available in the iPhone app.';dialog.append(close);dialog.showModal();return;}

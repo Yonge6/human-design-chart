@@ -60,11 +60,8 @@ export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
   let current={id:crypto.randomUUID(),date:Date.now(),messages:[]},controller=null,activeStatus='',reportOverride=null,reportPreference=null;
   const currentReport=()=>reportOverride||anonymousReport(getReport());
   function syncReportSelection(){
-    const available=Boolean(currentReport());
-    $('#buerContextLabel').hidden=!available;
-    $('#buerUseReport').checked=available && reportPreference!==false;
+    $('#buerUseGrowth').title=getLanguage()==='zh'?'包含我的说明书及已允许参考的成长记录':'Includes my Life Manual and enabled growth records';
   }
-  $('#buerUseReport').addEventListener('change',()=>{reportPreference=$('#buerUseReport').checked;});
   const endpoint=()=>`${(globalThis.PLUTO_CONFIG?.apiBaseUrl||'').replace(/\/$/,'')}/v1/chat`;
   function setStatus(key){activeStatus=key;status.textContent=key?t(key):'';}
   function persist(){
@@ -107,7 +104,7 @@ export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
     document.querySelectorAll('[data-buer]').forEach(el=>{el.textContent=t(el.dataset.buer);});
     $('[data-buer="headline"]').textContent=visitWelcome[getLanguage()==='en'?'en':'zh'];
     input.placeholder=t('questionLabel');$('#buerSend').ariaLabel=t('send');$('#buerStop').ariaLabel=t('stop');$('#buerCloseHistory').ariaLabel=t('closeHistory');
-    syncReportSelection();$('#buerContextLabel').title=t('contextHint');
+    syncReportSelection();
     const date=new Date();$('#dailyTipDate').textContent=`${String(date.getMonth()+1).padStart(2,'0')}.${String(date.getDate()).padStart(2,'0')}`;
     $('#dailyTipDateSecondary').textContent=new Intl.DateTimeFormat(getLanguage()==='zh'?'zh-CN':'en',{weekday:'long'}).format(date);
     const growth=readGrowth(localStorage),count=answeredCount(growth),hasManual=Boolean(getReport()),action=growth.actions.find(x=>!x.done),isZh=getLanguage()==='zh';
@@ -137,7 +134,7 @@ export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
   input.addEventListener('focus',syncReportSelection);
   input.addEventListener('keydown',event=>{if(event.key==='Enter' && !event.shiftKey && !event.isComposing){event.preventDefault();form.requestSubmit();}});
   input.addEventListener('input',()=>{input.style.height='auto';input.style.height=`${Math.min(input.scrollHeight,160)}px`;});
-  function setBusy(busy){$('#buerSend').hidden=busy;$('#buerStop').hidden=!busy;$('#buerNewChat').disabled=busy;input.disabled=busy;document.querySelectorAll('[data-question]').forEach(b=>b.disabled=busy);$('#buerUseReport').disabled=busy;$('#buerUseGrowth').disabled=busy;}
+  function setBusy(busy){$('#buerSend').hidden=busy;$('#buerStop').hidden=!busy;$('#buerNewChat').disabled=busy;input.disabled=busy;document.querySelectorAll('[data-question]').forEach(b=>b.disabled=busy);$('#buerUseGrowth').disabled=busy;}
   async function ask(question,retry=false){
     if(controller)return;
     if(!await ensureAIConsent())return;
@@ -152,7 +149,7 @@ export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
     const started=performance.now();trackUsage('chat_request');
     try {
       if(globalThis.PLUTO_CONFIG?.buerChatEnabled===false)throw new Error('AI_NOT_CONFIGURED');
-      const report=$('#buerUseReport').checked?currentReport():null;
+      const report=$('#buerUseGrowth').checked?currentReport():null;
       const response=await fetch(endpoint(),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history,...(report?{report}:{}),...($('#buerUseGrowth').checked?{growth:growthContext(readGrowth(localStorage),value)}:{}),...await chatAccess()}),signal:active.signal});
       if(!response.ok){const data=await response.json().catch(()=>({}));throw new Error(data.error || 'AI_UNAVAILABLE');}
       if(!response.body)throw new Error('AI_UNAVAILABLE');

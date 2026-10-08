@@ -72,7 +72,25 @@ test("drawer actions use distinct accessible companion icons", () => {
     assert.ok(button.includes(`src="assets/companion-icon-${icon}.svg" alt=""`));
     assert.match(read(`assets/companion-icon-${icon}.svg`), /viewBox="0 0 64 64"/);
   }
-  assert.match(html, /src="assets\/companion-icon-growth.svg" alt=""/);
+  const drawer=html.split('class="drawer-nav"')[1].split('</nav>')[0];
+  assert.doesNotMatch(drawer, /data-growth|data-people/);
+});
+
+test('simplified home combines chart and growth context and removes source captions',()=>{
+  const html=read('index.html'),home=read('src/app/buer-home.js');
+  assert.doesNotMatch(html,/id="buerUseReport"|id="dailyTipSource"|class="buer-context-foot"/);
+  assert.match(home,/const report=\$\('#buerUseGrowth'\)\.checked\?currentReport\(\):null/);
+  assert.doesNotMatch(read('src/renderer/daily-tip-poster.js'),/来自我最近一次的人生说明书/);
+});
+
+test('loading previews use known labels and accessible real stages',()=>{
+  const helper=read('src/app/buer-loading.js'),app=read('app.js'),css=read('buer-journal.css');
+  assert.match(helper,/status.textContent = title/);
+  assert.match(helper,/aria-busy/);
+  assert.match(helper,/aria-hidden/);
+  assert.match(css,/prefers-reduced-motion:no-preference/);
+  assert.ok(app.indexOf('await preview.decode()')<app.indexOf('preview.hidden=false;textPreview.hidden=true'));
+  assert.match(read('src/app/buer-relationships.js'),/解读已生成，正在保存到账号/);
 });
 
 test("about drawer carries the bilingual life philosophy module", () => {

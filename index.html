@@ -76,7 +76,7 @@
           <img class="companion-section-art" src="assets/companion-profile.webp" alt="" aria-hidden="true" width="320" height="320">
         </section>
 
-        <nav class="drawer-nav" data-i18n-aria-label="drawerActions" aria-label="你的空间"><button type="button" data-growth><span class="drawer-nav-icon"><img src="assets/companion-icon-growth.svg" alt="" width="48" height="48"></span><span><strong data-buer="myGrowth">成长档案</strong><small data-buer="myGrowthHint">认识 · 行动 · 复盘</small></span><span class="drawer-chevron" aria-hidden="true">›</span></button>
+        <nav class="drawer-nav" data-i18n-aria-label="drawerActions" aria-label="你的空间">
           <button id="buerHistoryButton" type="button"><span class="drawer-nav-icon" aria-hidden="true"><img src="assets/companion-icon-chat.svg" alt="" width="48" height="48"></span><span><strong data-buer="history">对话记录</strong><small data-buer="chatHistoryHint">继续上次的探索</small></span><span class="drawer-chevron" aria-hidden="true">›</span></button>
           <button id="openHistory" type="button">
             <span class="drawer-nav-icon" aria-hidden="true"><img src="assets/companion-icon-history.svg" alt="" width="48" height="48"></span>
@@ -258,7 +258,7 @@
           <textarea id="buerQuestion" maxlength="2000" rows="2" placeholder="此刻，你想更了解自己的哪一面？"></textarea>
           <div class="buer-compose-bottom"><div class="buer-suggestions"><button type="button" data-question="work" data-buer="workQuestion">我适合怎样的工作节奏？</button><button type="button" data-question="relationship" data-buer="relationshipQuestion">为什么我总在关系里内耗？</button><button type="button" data-question="decision" data-buer="decisionQuestion">做决定时，怎样听见自己？</button><button type="button" data-question="energy" data-buer="energyQuestion">总觉得累，该怎样找回能量？</button><button type="button" data-question="strength" data-buer="strengthQuestion">怎样发现自己的优势？</button><button type="button" data-question="boundary" data-buer="boundaryQuestion">如何温柔地建立边界？</button></div><span data-buer="aiLabel">AI 陪你探索</span><button type="submit" class="buer-send" id="buerSend" aria-label="发送问题"><i class="ph ph-arrow-right" aria-hidden="true"></i></button><button type="button" class="buer-send" id="buerStop" aria-label="停止回答" hidden><i class="ph ph-stop" aria-hidden="true"></i></button></div>
         </form>
-        <label class="buer-context-option buer-growth-context"><input id="buerUseGrowth" type="checkbox"><span data-buer="useGrowth">结合成长档案</span></label><div class="buer-compose-meta"><label id="buerContextLabel" class="buer-context-option buer-report-context" hidden><input id="buerUseReport" type="checkbox"><span data-buer="useReport">结合我的说明书</span></label><p id="buerChatStatus" role="status" aria-live="polite"></p><button type="button" id="buerNewChat" data-buer="newChat">新对话</button></div>
+        <label class="buer-context-option buer-growth-context"><input id="buerUseGrowth" type="checkbox"><span data-buer="useGrowth">结合成长档案</span></label><div class="buer-compose-meta"><p id="buerChatStatus" role="status" aria-live="polite"></p><button type="button" id="buerNewChat" data-buer="newChat">新对话</button></div>
       </div>
     </div>
     <aside class="buer-context"><div class="growth-next-action" id="growthHomeAction"></div>
@@ -266,13 +266,11 @@
         <div class="daily-date-row"><div class="daily-date-copy"><time id="dailyTipDate"></time><small id="dailyTipDateSecondary" aria-hidden="true"></small></div><img class="daily-moon" src="assets/pluto-daily-moon.webp" width="92" height="92" alt="" aria-hidden="true"></div>
         <div class="daily-tip-heading"><h2 id="dailyTipTitle">今日提示</h2><button id="shareDailyTip" class="daily-share-link" type="button" hidden>分享图片</button></div>
         <p id="dailyTipText"></p>
-        <p id="dailyTipSource" class="daily-tip-source"></p>
 
       </aside>
 
       <button type="button" class="growth-home-path" data-growth><i class="ph ph-path" aria-hidden="true"></i><span><strong id="growthHomeTitle" data-buer="growthHeadline">建立我的成长档案</strong><small id="growthHomeSteps" data-buer="growthSteps">01 认识自己　02 明确行动　03 补充经历</small></span><i class="ph ph-arrow-up-right" aria-hidden="true"></i></button>
       <section class="buer-manual-entry"><h2><span data-buer="myManual">我的人生说明书</span></h2><p data-buer="manualIntro">一份专属于你的说明书，帮你更了解自己的倾向、节奏与选择。</p><button id="dailyTipAction" type="button"></button><i class="ph ph-arrow-right manual-arrow" aria-hidden="true"></i></section>
-      <p class="buer-context-foot" data-buer="contextFoot">不是找到一个标准答案，<br>而是更清楚地，做自己。</p>
     </aside>
   </section>
   <dialog id="buerHistory" class="buer-history-dialog"><header><h2 data-buer="history">对话记录</h2><button id="buerCloseHistory" type="button" aria-label="关闭对话记录"><i class="ph ph-x" aria-hidden="true"></i></button></header><p data-buer="localHistory">只保存在当前设备，不会同步到其他设备。</p><div id="buerHistoryList"></div><button type="button" id="buerClearChats" data-buer="clearChats">清空本机对话</button><form method="dialog" id="buerClearConfirm" hidden><p data-buer="clearConfirm">清空后无法恢复这些对话。确定清空吗？</p><button type="button" id="buerCancelClear" data-buer="cancel">取消</button><button type="button" id="buerConfirmClear" data-buer="confirmClear">确认清空</button></form></dialog>
@@ -537,6 +535,7 @@
   <dialog id="dailyShareDialog" class="daily-share-dialog" aria-labelledby="dailyShareTitle">
     <div class="daily-share-header"><h2 id="dailyShareTitle">分享今日提示</h2><button id="closeDailyShare" type="button">关闭</button></div>
     <p id="dailyShareHelp" class="daily-share-help" role="status" aria-live="polite" tabindex="-1" hidden></p>
+    <div id="dailyShareTextPreview" class="daily-share-text-preview" hidden><small>BUER WITHIN / DAILY NOTE</small><p></p><div class="loading-color-block" aria-hidden="true"></div></div>
     <img id="dailySharePreview" alt="今日提示分享卡片，右下角带有 不二见己首页二维码">
     <p id="dailyShareStatus" role="status" aria-live="polite"></p>
     <div class="daily-share-actions"><button id="saveDailyImage" type="button">保存图片</button><button id="sendDailyImage" type="button">分享图片</button></div>

@@ -12,6 +12,7 @@ import { personManualData } from '../services/buer-person-manual.js';
 import { createBodygraphRenderer } from '../renderer/bodygraph-renderer.js';
 import { orderedPeople, movePerson, relationshipGuidePrompt } from '../services/buer-people-tools.js';
 import {PAIR_SECTIONS,makeGuideSource,cleanGuideSource,parsePairSections,pairManualStale,guideSourceEqual,pairManualPrompt} from '../services/buer-pair-manual.js';
+import { loadingPreview } from './buer-loading.js';
 
 const el = (tag, text = '', attributes = {}) => {
   const node = document.createElement(tag); node.textContent = text;
@@ -99,9 +100,11 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     invalidate(); const ticket = epoch;
     dialog.close();listContent.replaceChildren();
     if (!owner) { login(); return; }
-    busy = true;listContent.append(el('p',l('正在读取身边的人…','Loading people…'),{role:'status'}));
+    busy = true;
+    if(people.length)drawList();
+    const loading=loadingPreview(l('正在读取身边的人…','Loading people…'),people.length?[]:[l('人物档案','People'),l('相处指南','Relationship guides')]);listContent.prepend(loading);
     try { const [rows,context,order] = await Promise.all([repo.people(owner),repo.personal(owner),repo.order(owner)]); if (!valid(ticket)) return; people = rows;personal=context;peopleOrder=order;drawList(); }
-    catch (error) { if (valid(ticket)) { listContent.replaceChildren(el('p',errorMessage(error)),button('重新读取', 'Retry', list)); } }
+    catch (error) { if (valid(ticket)) { loading.remove();listContent.prepend(el('p',errorMessage(error)),button('重新读取', 'Retry', list)); } }
     finally { if (ticket === epoch) busy = false; }
   }
   async function open() { if(dialog.open&&(busy||!await mayLeave()))return;trigger=document.activeElement;document.body.dataset.workspace='people';window.scrollTo({top:0,behavior:'instant'});await list(); }
@@ -206,19 +209,23 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
           if(!session.data?.session?.access_token)throw Error('SIGN_IN_REQUIRED');
           const access=await chatAccess();if(!valid(ticket))return;
           controller=new AbortController();
+          status.textContent=l('正在生成六个分类的解读，已有内容可继续阅读…','Generating six sections. Your existing reading remains available…');
           const response=await fetch(`${account.config.apiUrl}/v1/chat`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${session.data.session.access_token}`},body:JSON.stringify({mode:'relationship-guide',relationship:{personId:person.id,personRevision:person.revision,sourceRevision:source.revision},messages:[{role:'user',content:pairManualPrompt(getLanguage())}],...access}),signal:controller.signal});
           if(!response.ok){if(response.status===402)showMembership();throw Error((await response.json().catch(()=>({}))).error||'AI_UNAVAILABLE');}
           let raw='';await readBuerEvents(response.body,(type,data)=>{if(type==='delta'){raw+=data.text;if(raw.length>50000)throw Error('INVALID_GUIDE_SECTIONS');}});
           if(!valid(ticket))return;pending={sections:parsePairSections(raw),mutation:crypto.randomUUID(),language:getLanguage()==='en'?'en':'zh'};dirty=true;
         }
+        status.textContent=l('解读已生成，正在保存到账号…','Reading generated. Saving to your account…');
         const row=await repo.savePairManual(owner,person,source,saved,pending.sections,pending.language,pending.mutation);if(!valid(ticket))return;
         saved=row;pending=null;dirty=false;status.textContent=l('说明书已保存，下次打开直接阅读。','Saved. Open it next time without generating again.');
       }catch(error){if(valid(ticket))status.textContent=errorMessage(error)+(saved?l(' 旧版说明书仍保留。',' Your previous reading is preserved.'):'');}
       finally{if(valid(ticket)){controller=null;busy=false;draw();}}
     }
     busy=true;status.textContent=l('正在读取已保存的说明书…','Loading saved reading…');
+    const preview=loadingPreview(l('正在连接账号，读取已保存的内容…','Connecting to your account and loading saved content…'),PAIR_SECTIONS.map(s=>s[getLanguage()==='en'?2:1]));
+    content.append(chartSummary(person),preview);
     try{const rows=await Promise.all([repo.guideSource(owner),repo.pairManual(owner,person.id)]);if(!valid(ticket))return;[source,saved]=rows;status.textContent='';draw();}
-    catch(error){if(valid(ticket)){status.textContent=errorMessage(error);content.append(button('重新读取','Retry',()=>pairManual(person)));}}
+    catch(error){if(valid(ticket)){preview.remove();status.textContent=errorMessage(error);content.append(button('重新读取','Retry',()=>pairManual(person)));}}
     finally{if(ticket===epoch)busy=false;}
   }
   function sortPeople(){
@@ -252,8 +259,9 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     invalidate();const ticket=epoch;reset(l(`${person.nickname}的说明书`,`${person.nickname}’s Life Manual`));
     content.append(button('← 返回人物档案','← Back to profile',()=>detail(person)));
     status.textContent=l('正在整理 TA 的说明书…','Preparing their manual…');
+    const preview=loadingPreview(l('正在整理图谱与阅读内容…','Preparing chart and reading…'),[l('概览','Overview'),l('深入解读','In depth'),l('人类图','Human Design')]);content.append(preview);
     try{
-      const data=await personManualData(person);if(!valid(ticket))return;
+      const data=await personManualData(person);if(!valid(ticket))return;preview.remove();
       const root=el('section','',{class:'relationship-manual'});
       root.append(el('p',l('以下“你”指这份说明书的主人。请结合 TA 的实际经历理解，不用图谱替 TA 下结论。','“You” refers to the owner of this manual. Use their real experiences, not the chart alone, to understand them.'),{class:'relationship-chat-note'}));
       const nav=el('div','',{class:'relationship-manual-tabs',role:'tablist','aria-label':l('说明书内容','Manual sections')});root.append(nav);
@@ -286,7 +294,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       await createBodygraphRenderer({container:graph,templateUrl:new URL('../../assets/bodygraph-template.svg',import.meta.url).href,centerColors:colors,label:l(`${person.nickname}的人类图`,`${person.nickname}’s Human Design`)})(data);
       if(!valid(ticket))return;
       content.append(button('聊聊我们的关系','Talk about us',()=>conversation(person),'journal-primary'));status.textContent='';
-    }catch(error){if(valid(ticket))status.textContent=errorMessage(error);}
+    }catch(error){if(valid(ticket)){preview.remove();status.textContent=errorMessage(error);}}
   }
   function edit(person, isSelf) {
     invalidate(); const ticket = epoch, id = person?.id || crypto.randomUUID();
@@ -475,10 +483,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     })); content.append(history);
     if(guide){question.value=relationshipGuidePrompt(getLanguage());dirty=true;form.hidden=true;await form.onsubmit({preventDefault(){}});if(valid(ticket))form.hidden=false;}
   }
-  const nav = document.querySelector('#drawerHome .drawer-nav');
-  const entry = button('', '', open); const icon = el('span', '', { class: 'drawer-nav-icon' }); icon.append(el('i', '', { class: 'ph ph-users', 'aria-hidden': 'true' }));
-  const label = el('span'); const title = el('strong'), hint = el('small'); label.append(title, hint); entry.append(icon, label, el('span','›',{class:'drawer-chevron','aria-hidden':'true'})); nav?.prepend(entry);
-  function language() { title.textContent = l('身边的人', 'People');hint.textContent=l('理解彼此，让相处多一点从容','Understand each other, with room to grow');tab.querySelector('span').textContent=l('身边的人','People');
+  function language() { tab.querySelector('span').textContent=l('身边的人','People');
     hero.replaceChildren(el('p',l('BUER WITHIN / 身边的人','BUER WITHIN / PEOPLE'),{class:'growth-eyebrow'}),el('h1',l('理解彼此，让相处多一点从容。','Understand each other. Make room to grow.')),el('p',l('从你在意的人开始，聊聊你们之间的事。','Start with someone who matters. Talk about life together.')),el('img','',{class:'companion-section-art',src:'assets/companion-profile.webp',alt:'',width:'320',height:'320'}));
     if(document.body.dataset.workspace==='people'&&!dialog.open&&!busy)void list(); }
   document.addEventListener('buer:language', language); language();

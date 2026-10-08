@@ -114,7 +114,9 @@ dialog::backdrop{background:#24282370;backdrop-filter:blur(5px)}
 .buer-welcome h1,.buer-welcome p,.buer-manual-heading h1,.buer-form-intro h1{text-shadow:none}
 .buer-context #dailyTipText{white-space:pre-line}
 .buer-context .growth-home-path{margin-top:10px;max-width:75%}
-.buer-context .growth-home-path strong{font-size:13px}
+.buer-context .growth-home-path strong{font-size:13px;margin:0;line-height:1.5}
+.buer-context .growth-home-path{align-items:center;justify-content:flex-start;padding:12px 16px;max-width:none;width:fit-content;gap:8px}
+.buer-context .growth-home-path>.ph:first-child{display:none}
 .buer-context .growth-home-path>span{flex:0 1 auto}
 .buer-context .growth-home-path>.ph:last-child{margin-left:4px}
 .ai-consent-actions .consent-primary{background:#74826b;color:#fff;border-color:#74826b}

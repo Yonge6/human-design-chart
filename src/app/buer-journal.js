@@ -1,4 +1,5 @@
 import { createAccount } from '../services/buer-account.js';
+import { loadingPreview } from './buer-loading.js';
 import { createJournalStore, indexedJournalCache, journalRepository, localDate } from '../services/buer-journal.js';
 
 const copy = {
@@ -253,7 +254,7 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
     if (editing && signedIn() && mode === 'journal') return;
     content.replaceChildren();
     if (!signedIn()) renderLogin();
-    else if (state.status === 'loading') content.append(element('p', {}, t('loading')));
+    else if (state.status === 'loading') content.append(loadingPreview(t('loading'),[t('journal'),t('hint')]));
     else if (mode === 'account') renderAccount(); else renderList();
   }
   async function languageChanged() {

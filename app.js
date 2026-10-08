@@ -862,9 +862,6 @@ function refreshDailyTip() {
   document.querySelector("#dailyTipText").textContent = (tip ? formatDailyTipText(tip, language) : tip) || (language === "zh"
     ? "先听见自己，\n再决定下一步。"
     : "Listen to yourself.\nThen take the next step.");
-  document.querySelector("#dailyTipSource").textContent = tip
-    ? (language === "zh" ? "来自你最近一次的解读" : "From your latest Life Manual")
-    : (language === "zh" ? "给自己一点从容。" : "Leave a little room for yourself.");
   document.querySelector("#dailyTipAction").textContent = tip
     ? (language === "zh" ? "查看我的解读" : "Read my Life Manual")
     : (language === "zh" ? "开始认识自己" : "Get to know yourself");
@@ -2228,6 +2225,8 @@ function clearDailyShare() {
   dailyShareBlob = undefined;
   dailyShareUrl = undefined;
   document.querySelector('#dailySharePreview').removeAttribute('src');
+  document.querySelector('#dailySharePreview').hidden=true;
+  document.querySelector('#dailyShareTextPreview').hidden=true;
 }
 dailyShareDialog.addEventListener('close', clearDailyShare);
 document.querySelector('#closeDailyShare').addEventListener('click', () => dailyShareDialog.close());
@@ -2252,6 +2251,7 @@ document.querySelector('#shareDailyTip').addEventListener('click', async event =
   document.querySelector('#saveDailyImage').disabled = true;
   document.querySelector('#sendDailyImage').disabled = true;
   dailyShareDialog.showModal();
+  const textPreview=document.querySelector('#dailyShareTextPreview');textPreview.hidden=false;textPreview.querySelector('p').textContent=formatDailyTipText(tip,language);
   try {
     const blob = await createDailyTipPoster({ tip, language, date });
     // A real PNG data URL keeps the preview available to embedded-browser image menus.
@@ -2263,6 +2263,9 @@ document.querySelector('#shareDailyTip').addEventListener('click', async event =
     const preview = document.querySelector('#dailySharePreview');
     preview.alt = dailyShareText(`${tip} 右下角二维码可打开 不二见己首页。`, `${tip} The QR code opens Buer Within.`);
     preview.src = dailyShareUrl;
+    await preview.decode();
+    if (!dailyShareDialog.open || generation !== dailyShareGeneration) return;
+    preview.hidden=false;textPreview.hidden=true;
     if (dailyImageNeedsLongPress()) {
       document.querySelector('#saveDailyImage').textContent = dailyShareText('长按保存图片', 'Save with a long press');
       document.querySelector('#sendDailyImage').textContent = dailyShareText('长按发送图片', 'Send with a long press');
@@ -2272,6 +2275,7 @@ document.querySelector('#shareDailyTip').addEventListener('click', async event =
     document.querySelector('#saveDailyImage').disabled = false;
     document.querySelector('#sendDailyImage').disabled = false;
   } catch (error) {
+    if (!dailyShareDialog.open || generation !== dailyShareGeneration) return;
     status.textContent = dailyShareText('图片生成失败，请关闭后重试。', 'Image creation failed. Close and try again.');
     console.warn('Daily share image failed', error);
   } finally { button.disabled = false; }

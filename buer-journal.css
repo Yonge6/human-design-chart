@@ -190,6 +190,9 @@ body[data-workspace="people"] #buerHome,body[data-workspace="people"] .shell,bod
 .pair-manual-reading details[open]>summary::after{transform:rotate(225deg);margin-bottom:-5px}
 .pair-manual-reading summary:focus-visible{outline:2px solid var(--ui-accent,#56674b);outline-offset:4px;border-radius:4px}
 .pair-manual-prose{padding-top:20px;line-height:1.9}
+.pair-personal-reading{padding:12px 0 8px;font-size:16px}
+.pair-personal-reading strong{color:var(--ui-ink,#203b30)}
+.pair-personal-reading+details{margin-top:16px}
 .pair-manual-prose>p{margin:0 0 1.4em;line-height:1.95;white-space:pre-wrap}
 .pair-manual-prose>p:last-child{margin-bottom:0}
 .pair-manual-generate button[aria-busy="true"]{opacity:.78;cursor:wait}

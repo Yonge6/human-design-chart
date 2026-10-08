@@ -1,4 +1,4 @@
-import {compositeGuidance} from './buer-pair-guidance.js';
+import {compositeGuidance,guideV2} from './buer-pair-guidance.js';
 import { cleanGrowth } from './buer-growth.js';
 
 export const PAIR_SECTIONS = [
@@ -6,6 +6,8 @@ export const PAIR_SECTIONS = [
  ['friction','怎样一起做决定','Decide together'],['rhythm','怎样相处不累','A sustainable rhythm'],
  ['repair','有分歧，怎样修复','Repair disagreements'],['practice','让关系越来越好','Grow together'],
 ];
+export const LEGACY_PAIR_SECTIONS=[['overview','双方概览','At a glance'],['communication','沟通与决策','Communication & decisions'],['rhythm','情绪与节奏','Emotions & rhythm'],['friction','互补与摩擦','Support & friction'],['repair','修复与边界','Repair & boundaries'],['practice','日常相处','Everyday practice']];
+export const readingSections=sections=>sections&&!guideV2(sections)?LEGACY_PAIR_SECTIONS:PAIR_SECTIONS;
 const CORE=['Type','Strategy','Inner Authority','Profile','Definition','Incarnation Cross','Sign','Not Self Theme','Digestion','Sense','Environment'];
 const PLANETS=['Sun','Earth','North Node','South Node','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
 const text=(v,n=500)=>typeof v==='string'?v.slice(0,n):'';
@@ -51,7 +53,7 @@ export function pairManualPrompt(language='zh',person,composite={available:false
  const role=pairRelationshipRole(person);
  const hints=compositeGuidance(composite,'zh').slice(0,6).map(c=>({连接:c.id,类别:c.kind,讨论主题:c.title,对应栏目:c.section,练习:c.action}));
  return (language==='en'?'Write in English.':'用中文撰写，术语也用中文。')+(role?`所选人物与用户的明确关系是：${role}。称谓和代词保持一致，绝不能把母亲写成父亲或反过来。`:'未提供明确性别时使用“TA／对方”，不得从父母／子女分类、年龄或图谱猜性别。')+`
-重做一份帮助双方更舒服地相处的长期指南。不是合不合适的评判，也不是通道科普堆砌。仅输出 JSON 六个字符串键 overview、communication、friction、rhythm、repair、practice。每段用简短加粗小标题（**标题：**），段落间两个换行，一段一事。正文先说场景、感受与做法，不直接罗列数字。每节末尾独立一段“**为什么这样建议：**”，具体列出本节依据：来自哪条本人记录、双方哪一处图谱差异、哪条已计算连接；无依据的通用建议明确标为通用练习。
+写一份贴近这两个人、连贯可读的长期相处指南，不是模板练习清单。先把双方的差异与真实处境讲清楚，再自然带出具体做法；各栏不重复同一套“各说需要、做小调整”的话术。不评判合不合适，不堆砌术语。仅输出 JSON 六个字符串键 overview、communication、friction、rhythm、repair、practice。每段用简短加粗小标题（**标题：**）和短段落，一段一事。正文说场景、感受与做法，不罗列数字。每节末尾独立一段“**为什么这样建议：**”，列明本人记录、图谱差异或已计算连接；通用建议如实标明。
 overview 我们怎样相处：550–750 中文字，五个短段。①先认识你：白话说表达、行动、决定、休息的需要，关联一两条自述，不复述整段传记。②再认识对方：同样介绍节奏和需要，无对方经历则仅作为图谱反思假设。③放在一起：选实际合盘最有价值的两三处，解释成生活场景、可观察问题，不写数字串。④可以借力与需要商量：各一个具体例子，不把假设写成已发生的事。⑤这周先试一件事：双方各能做什么、怎样判断是否有效。
 communication 怎样说，彼此听得见：只讨论表达与倾听，不与决策栏重复。根据类型策略、表达相关的中心/连接与真实记录，给“提出需要、给建议、意见不同”场景，分别给双方可直接使用的一句话。
 friction 怎样一起做决定：依据各自权威与实际限制，安排提议、各自确认、约时再谈、共同同意四步。分别说明双方需要什么，不把合图当第三个人的权威。钱、时间、分工选贴合关系的一件事示范。

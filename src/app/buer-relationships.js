@@ -11,7 +11,7 @@ import { fetchPlaceCandidates, inferTimezoneFromAddress } from '../services/loca
 import { personManualData } from '../services/buer-person-manual.js';
 import { createBodygraphRenderer } from '../renderer/bodygraph-renderer.js';
 import { orderedPeople, movePerson, relationshipGuidePrompt } from '../services/buer-people-tools.js';
-import {PAIR_SECTIONS,makeGuideSource,cleanGuideSource,parsePairSections,pairManualStale,guideSourceEqual,pairManualPrompt} from '../services/buer-pair-manual.js';
+import {PAIR_SECTIONS,makeGuideSource,cleanGuideSource,parsePairSections,pairManualRoleWarning,pairManualStale,guideSourceEqual,pairManualPrompt} from '../services/buer-pair-manual.js';
 import { loadingPreview } from './buer-loading.js';
 import { pairComparisonGroups, comparisonTable } from './buer-pair-comparison.js';
 import { createReadingCache } from '../services/buer-reading-cache.js';
@@ -34,7 +34,8 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
   let owner = null, epoch = 0, people = [], busy = false, dirty = false, controller = null, trigger = null;
   let activeThread = null, unsavedThread = null;
   let personal=null,filter='',peopleOrder=null;
-  const readingCache=createReadingCache();
+  let readingStorage=null;try{readingStorage=window.localStorage;}catch{}
+  const readingCache=createReadingCache({storage:readingStorage});
   const root=el('section','',{id:'buerPeople','aria-label':'People in your life'});
   const hero=el('header','',{class:'people-hero companion-section-hero'}),listContent=el('div','',{class:'people-content'});
   root.append(hero,listContent);document.querySelector('#buerHome').after(root);
@@ -167,6 +168,8 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       else content.append(el('p',l('下方“我”的信息是本机成长档案预览，尚未同步到当前账号。','Your information below previews this device’s growth profile; it is not yet synced to this account.')));
       if(source&&!guideSourceEqual(local,source.payload))content.append(el('p',l('本机成长档案与账号快照不同。确认属于你后，可同步并更新；不会自动替换。','This device’s growth profile differs from the account snapshot. Confirm ownership before syncing; it will not replace it automatically.'),{class:'pair-manual-warning'}));
       if(pairManualStale(saved,source,person))content.append(el('p',l('资料已有变化，以下为旧版解读，可继续阅读或更新。','Sources changed. The previous reading remains available; update when ready.'),{class:'pair-manual-warning'}));
+      const roleWarning=pairManualRoleWarning(person,saved?.sections);
+      if(roleWarning)content.append(el('p',l(`当前人物是你的${roleWarning}，旧解读中出现了另一种父母称谓。请更新解读核对称谓，不要将旧文中的称谓当作事实。`,`This profile is your ${roleWarning==='母亲'?'mother':'father'}, but the saved reading uses the other parental title. Update the reading to check these references.`),{class:'pair-manual-warning',role:'status'}));
       if(saved)content.append(el('small',l(`解读保存于 ${new Date(saved.updated_at).toLocaleString()}`,`Reading saved ${new Date(saved.updated_at).toLocaleString()}`)));
       const nav=el('div','',{class:'relationship-manual-tabs pair-manual-tabs','aria-label':l('相处说明书分类','Reading categories')});
       for(const [key,zh,en] of PAIR_SECTIONS){const b=button(zh,en,()=>{selected=key;draw();});b.setAttribute('aria-pressed',String(selected===key));nav.append(b);}content.append(nav);
@@ -210,7 +213,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
           controller=new AbortController();
           phase('生成中…','Generating…');
           status.textContent=l('正在生成六个分类的解读，已有内容可继续阅读…','Generating six sections. Your existing reading remains available…');
-          const response=await fetch(`${account.config.apiUrl}/v1/chat`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${session.data.session.access_token}`},body:JSON.stringify({mode:'relationship-guide',relationship:{personId:person.id,personRevision:person.revision,sourceRevision:source.revision},messages:[{role:'user',content:pairManualPrompt(getLanguage())}],...access}),signal:controller.signal});
+          const response=await fetch(`${account.config.apiUrl}/v1/chat`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${session.data.session.access_token}`},body:JSON.stringify({mode:'relationship-guide',relationship:{personId:person.id,personRevision:person.revision,sourceRevision:source.revision},messages:[{role:'user',content:pairManualPrompt(getLanguage(),person)}],...access}),signal:controller.signal});
           if(!response.ok){if(response.status===402)showMembership();throw Error((await response.json().catch(()=>({}))).error||'AI_UNAVAILABLE');}
           let raw='';await readBuerEvents(response.body,(type,data)=>{if(type==='delta'){raw+=data.text;if(raw.length>50000)throw Error('INVALID_GUIDE_SECTIONS');}});
           if(!valid(ticket))return;pending={sections:parsePairSections(raw),mutation:crypto.randomUUID(),language:getLanguage()==='en'?'en':'zh'};dirty=true;
@@ -223,7 +226,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       finally{if(valid(ticket)){controller=null;busy=false;draw();}}
     }
     const cached=force?null:readingCache.get(owner,person);
-    if(cached&&valid(ticket)){({source,saved,otherProperties}=cached);draw();status.textContent=l('已直接显示本次浏览缓存（5 分钟内有效）；可重新读取最新版本。','Showing this session’s cached reading (valid for 5 minutes). Reload for the latest version.');return;}
+    if(cached&&valid(ticket)){({source,saved,otherProperties}=cached);draw();status.textContent=l('已直接显示本机保存的说明书；需要同步其他设备的更新时，可重新读取最新版本。','Showing the reading saved on this device. Reload to sync updates from another device.');return;}
     busy=true;status.textContent=l('正在读取已保存的说明书…','Loading saved reading…');
     const preview=loadingPreview(l('正在连接账号，读取已保存的内容…','Connecting to your account and loading saved content…'),PAIR_SECTIONS.map(s=>s[getLanguage()==='en'?2:1]));
     content.append(chartSummary(person),preview);
@@ -492,7 +495,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     if(document.body.dataset.workspace==='people'&&!dialog.open&&!busy)void list(); }
   document.addEventListener('buer:language', language); language();
   document.addEventListener('buer:relationships', () => void open());
-  account?.subscribe(user => { const next = user?.id || null; if (owner === next) return; readingCache.clear();invalidate(); owner = next; people = [];personal=null;peopleOrder=null; content.replaceChildren();listContent.replaceChildren(); status.textContent = '';dialog.close(); if (document.body.dataset.workspace==='people') void list(); });
+  account?.subscribe(user => { const next = user?.id || null; if (owner === next) return; if(owner)readingCache.clear();invalidate(); owner = next; people = [];personal=null;peopleOrder=null; content.replaceChildren();listContent.replaceChildren(); status.textContent = '';dialog.close(); if (document.body.dataset.workspace==='people') void list(); });
   window.addEventListener('beforeunload', event => { if (dirty || busy) { event.preventDefault(); event.returnValue = ''; } });
   const viewport = () => { const v = window.visualViewport, follow = v && matchMedia('(max-width:760px)').matches && Math.abs(v.scale-1)<.01; dialog.style.setProperty('--journal-viewport-height', follow ? `${v.height}px` : '100dvh'); dialog.style.setProperty('--journal-viewport-top', follow ? `${v.offsetTop}px` : '0px'); };
   window.visualViewport?.addEventListener('resize', viewport); window.visualViewport?.addEventListener('scroll', viewport); viewport();

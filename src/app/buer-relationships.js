@@ -178,12 +178,6 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
         charts.append(el('h4',person.nickname),el('p',l('已定义中心：','Defined centers: ')+(person.chart?.structure?.definedCenters||[]).map(chartText).join(' · ')),el('p',l('通道：','Channels: ')+(person.chart?.structure?.channels||[]).map(c=>c.join('–')).join(' · ')));
         for(const [key,zh,en] of [['design','设计','Design'],['personality','人格','Personality']])charts.append(el('p',l(zh,en)+'\n'+Object.entries(person.chart?.activations?.[key]||{}).map(([k,v])=>`${k} · ${v.gate}.${v.line}`).join(' · ')));
         pane.append(charts);
-        const g=snapshot.growth,records=el('details');records.append(el('summary',l(`成长档案参考 · ${Object.values(g.answers).filter(Boolean).length} 项回答 / ${g.stories.length} 段经历 / ${g.actions.length} 项行动`,`Growth sources · ${Object.values(g.answers).filter(Boolean).length} answers / ${g.stories.length} experiences / ${g.actions.length} actions`)));
-        for(const q of QUESTIONS)if(g.answers[q.id])records.append(el('h4',l(q.zh,q.en)),el('p',g.answers[q.id]));
-        if(g.report)records.append(el('h4',l('已有成长行动指南（AI 生成）','Existing growth guide (AI-generated)')),el('p',g.report));
-        for(const s of g.stories)records.append(el('h4',s.title),el('p',s.body));
-        for(const a of g.actions)records.append(el('h4',a.title),el('p',`${a.metric}\n${a.due} · ${a.done?l('已完成','Done'):l('进行中','In progress')}\n${a.reflection}`));
-        pane.append(records);
       }
       if(saved?.sections?.[selected]){const reading=el('div','',{class:'pair-manual-prose'});renderAssistantText(reading,saved.sections[selected]);pane.append(reading);}
       else pane.append(el('p',l('这一分类的个性化解读尚未生成。生成一次后，即可随时回来阅读。','This personalized section has not been generated. Generate once, then return to read any time.')));

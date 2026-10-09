@@ -9,16 +9,27 @@ export async function loadPairManualContext(selected,authorization,{environment=
  if(!url||!key||new URL(url).protocol!=='https:')throw Error('ACCOUNT_NOT_CONFIGURED');
  const get=async path=>{const r=await fetchImpl(`${url.replace(/\/$/,'')}${path}`,{headers:{apikey:key,Authorization:authorization},signal:AbortSignal.timeout(12000)});if(!r.ok)throw Error(r.status===401||r.status===403?'SIGN_IN_REQUIRED':'ACCOUNT_UNAVAILABLE');return r.json();};
  const user=await get('/auth/v1/user');if(!UUID.test(user.id))throw Error('SIGN_IN_REQUIRED');
- const people=await get(`/rest/v1/buer_people?select=id,user_id,is_self,birth,chart,relationship,revision&deleted_at=is.null&id=eq.${selected.personId}`);
+ const people=await get(`/rest/v1/buer_people?select=id,user_id,is_self,birth,chart,relationship,notes,revision&deleted_at=is.null&id=eq.${selected.personId}`);
  const person=people.find(p=>p.id===selected.personId&&p.user_id===user.id&&!p.is_self);
  const rows=await get(`/rest/v1/buer_guide_sources?select=user_id,payload,revision&user_id=eq.${user.id}&limit=1`);
  const source=rows.find(s=>s.user_id===user.id);
  if(!person||person.revision!==selected.personRevision||!source||source.revision!==selected.sourceRevision)throw Error('PROFILES_CHANGED');
  const clean=cleanGuideSource(source.payload),other=anonymousPerson(person);
  if(other.chart){other.chart={...other.chart,activations:person.chart.activations,structure:person.chart.structure};}
+ other.observations=String(person.notes||'').slice(0,2000);
  const historyRows=await get(`/rest/v1/buer_relationship_conversations?select=id,user_id,person_id,messages,updated_at&user_id=eq.${user.id}&person_id=eq.${selected.personId}&order=updated_at.desc&limit=30`);
  const relationshipHistory=rankExcerpts(historyRows.filter(x=>x.user_id===user.id&&x.person_id===selected.personId).map(row=>({id:row.id,title:'与这个人的过往关系对话',date:row.updated_at,kind:'relationship-history',body:(Array.isArray(row.messages)?row.messages:[]).filter(message=>message&&['user','assistant'].includes(message.role)&&typeof message.content==='string').map(message=>`${message.role}: ${message.content}`).join('\n')})),'沟通 决策 节奏 分歧 修复 相处 支持',8,2400);
- const context={me:clean,other,relationship:String(person.relationship||'').slice(0,60),relationshipHistory,coverage:'All canonical growth answers, experiences, actions/reflections and growth report in the explicitly confirmed source snapshot, plus bounded prior relationship conversations with this person. No journals or private person notes.',sources:[{kind:'growth-snapshot',title:'成长档案全部记录',id:String(source.revision)},...relationshipHistory.map(({id,title,date,kind})=>({id,title,date,kind}))]};
+ const personalRows=await get(`/rest/v1/buer_personal_context?select=user_id,payload,revision&user_id=eq.${user.id}&limit=1`);
+ const personal=cleanPersonalContext(personalRows.find(row=>row.user_id===user.id)?.payload||{});
+ const generalHistory=rankExcerpts(personal.chats.map(row=>({...row,kind:'general-history'})),'关系 相处 沟通 决定 节奏 分歧 修复 支持',8,2000);
+ let journals=[];
+ for(let offset=0;offset<1000;offset+=100){
+  const page=await get(`/rest/v1/buer_journal_entries?select=id,user_id,title,body,entry_date&user_id=eq.${user.id}&deleted_at=is.null&order=entry_date.desc,id.asc&limit=100&offset=${offset}`);
+  const owned=page.filter(row=>row.user_id===user.id).map(row=>({id:row.id,title:row.title,body:row.body,date:row.entry_date,kind:'journal'}));
+  journals=rankExcerpts([...journals,...owned],`关系 ${person.relationship||''} ${person.notes||''} 沟通 决定 节奏 分歧 修复 支持`,10,1800);
+  if(page.length<100)break;
+ }
+ const context={me:clean,other,relationship:String(person.relationship||'').slice(0,60),relationshipHistory,generalHistory,journals,coverage:'All canonical growth answers, experiences, actions/reflections and growth report, the person observation, plus bounded relevant journals, general chats and prior relationship conversations owned by this account.',sources:[{kind:'growth-snapshot',title:'成长档案全部记录',id:String(source.revision)},...(other.observations?[{kind:'person-observation',title:'人物观察',id:selected.personId}]:[]),...journals.map(({id,title,date,kind})=>({id,title,date,kind})),...generalHistory.map(({id,title,date,kind})=>({id,title,date,kind})),...relationshipHistory.map(({id,title,date,kind})=>({id,title,date,kind}))]};
  if(JSON.stringify(context).length>160000)throw Error('GUIDE_SOURCE_TOO_LARGE');
  return context;
 }

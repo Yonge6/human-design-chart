@@ -1,9 +1,10 @@
 import {CHANNELS} from '../engine/human-design-engine.js';
 
-export const GUIDE_VERSION='[BUER_GUIDE_V2]';
-export const guideV2=sections=>Object.values(sections||{}).length===6&&Object.values(sections).every(v=>v.startsWith(GUIDE_VERSION));
+export const GUIDE_VERSION='[BUER_GUIDE_V3]';
+export const guideV2=sections=>Object.values(sections||{}).length===6&&Object.values(sections).every(v=>/^\[BUER_GUIDE_V[23]\]/.test(v));
+export const guideCurrent=sections=>Object.values(sections||{}).length===6&&Object.values(sections).every(v=>v.startsWith(GUIDE_VERSION));
 export const stampGuide=sections=>Object.fromEntries(Object.entries(sections).map(([key,value])=>[key,GUIDE_VERSION+'\n'+value]));
-export const guideText=value=>String(value||'').replace(/^\[BUER_GUIDE_V2\]\s*/, '');
+export const guideText=value=>String(value||'').replace(/^\[BUER_GUIDE_V[23]\]\s*/, '');
 const centerTopics={head:['疑问','questions'],ajna:['理解方式','understanding'],throat:['表达','expression'],g:['方向','direction'],heart:['承诺','commitments'],sacral:['投入与休息','effort and rest'],spleen:['安全感','feeling safe'],solar:['情绪','emotions'],root:['压力与节奏','pressure and pace']};
 const canonical=id=>String(id).split(/[–-]/).map(Number).sort((a,b)=>a-b).join('–');
 // These are reflection questions, not behavioral predictions. The two specific

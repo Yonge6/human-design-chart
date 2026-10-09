@@ -1,5 +1,5 @@
 import {workspaceStorage} from '../services/buer-workspace.js';
-import {channelGuidance,compositeGuidance,sectionFoundation,guideV2,guideText,stampGuide} from '../services/buer-pair-guidance.js';
+import {channelGuidance,compositeGuidance,sectionFoundation,guideV2,guideCurrent,guideText,stampGuide} from '../services/buer-pair-guidance.js';
 import { relationshipRepository, cleanPerson, relationshipMessages } from '../services/buer-relationships.js';
 import { calculateHumanDesign, localToUtcCandidates } from '../../human-design-engine.js';
 import { createHumanDesignProfileSnapshot } from '../engine/profile-snapshot.js';
@@ -135,7 +135,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
   function drawList() {
     const content=listContent;content.replaceChildren();
     const actions = el('div', '', { class: 'journal-actions' });
-    actions.append(button('＋ 添加身边的人', '＋ Add someone', () => edit(null, false), 'journal-primary'),button('调整顺序','Adjust order',sortPeople),button('刷新', 'Refresh', ()=>{readingCache.clear();return list();})); content.append(actions);
+    actions.append(button('＋ 添加身边的人', '＋ Add someone', () => edit(null, false), 'journal-primary'),button('调整顺序','Adjust order',sortPeople)); content.append(actions);
     const filters=el('div','',{class:'people-filters',role:'group','aria-label':l('按关系筛选','Filter relationships')});
     for(const [zh,en] of [['',''],...RELATION_TYPES]){const b=button(zh||'全部',en||'All',()=>{filter=zh;drawList();});b.setAttribute('aria-pressed',String(filter===zh));filters.append(b);}content.append(filters);
     const cards = el('div', '', { class: 'journal-list relationship-people' });
@@ -179,7 +179,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       const actions=el('div','',{class:'pair-reading-actions'});actions.append(button('← 人物列表','← People',list),button('聊聊我们的关系','Talk about us',()=>conversation(person),'journal-primary'));content.append(actions);
       const local=localSource(),snapshot=source?cleanGuideSource(source.payload):local;
       const roleWarning=pairManualRoleWarning(person,saved?.sections);
-      const changed=pairManualStale(saved,source,person)||Boolean(source&&!guideSourceEqual(local,source.payload));
+      const changed=pairManualStale(saved,source,person)||Boolean(source&&!guideSourceEqual(local,source.payload))||Boolean(saved&&!guideCurrent(saved.sections));
       const note=roleWarning?l(`称谓需核对：对方是你的${roleWarning}，请更新旧解读。`,`Check the old reading: this person is your ${roleWarning==='母亲'?'mother':'father'}.`):changed?l('资料有变化，原解读仍可阅读。','Sources changed. Your saved reading remains available.'):saved?l('已保存 · 随时阅读','Saved · Read any time'):l('先阅读基础建议，需要时再生成解读。','Read the basics, then generate a personal reading when ready.');
       const meta=el('div','',{class:'pair-reading-meta'}),more=el('details','',{class:'pair-reading-more'});
       meta.append(el('p',note,{class:'pair-reading-note',role:'status'}));
@@ -219,14 +219,14 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       if(!composite.available)pane.append(el('p',l('双方完整闸门资料尚未齐备，暂不解读合盘连接；可先阅读已有内容。','Complete gates are not yet available. Connection interpretation is withheld; saved content remains readable.')));
       if(selected==='overview'){
         if(chartError)pane.append(el('p',l('TA 的完整图谱暂未加载，请重新读取；下方缺失项不代表没有出生资料。','Their full chart could not load. Retry; missing fields do not mean missing birth details.')) ,button('重新读取图谱','Retry chart',()=>pairManual(person)));
-        const charts=el('details');charts.append(el('summary',l('查看合盘资料 · 双方基础信息、中心、通道与行星','View chart evidence · core information, centers, channels & planets')));
+        const charts=el('details');charts.append(el('summary',l('合盘资料','Chart details')));
         charts.append(comparisonTable(groups[0],options));
         for(const group of groups.slice(1))charts.append(comparisonTable(group,options));
         pane.append(charts);
         const connection=el('section','',{class:'pair-manual-prose','aria-label':l('两张图放在一起','Your charts together')});
         connection.append(el('h4',l('两张图放在一起','Your charts together')));
         const summary=el('div');renderReadingText(summary,compositeSummaryLines(pairComposite(snapshot.chart,person.chart),getLanguage(),id=>channelGuidance(id,getLanguage())).join('\n\n'));connection.append(summary);
-        charts.append(connection);
+        pane.append(connection);
       }
       pane.querySelectorAll('details').forEach((d,i)=>{d.open=expanded.get(selected)?.[i]||false;});
       const generateActions=el('div','',{class:'journal-actions pair-manual-generate'});
@@ -235,7 +235,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
         if(source)generateActions.append(button(saved?'更新解读':'生成分类解读',saved?'Update reading':'Generate reading',b=>generate(false,false,b),'journal-primary'));
         generateActions.append(button(source?'同步当前成长档案并更新':'使用当前成长档案生成',source?'Sync current growth profile & update':'Generate from current growth profile',b=>generate(true,false,b),source?'':'journal-primary'));
       }
-      content.append(generateActions,el('small',l('生成或更新会结合双方人类图、你的成长档案，以及与这个人的过往关系对话；人物观察备注和日记不会自动发送。仅生成时调用 AI 并按现有额度计次，阅读已保存内容不计次。','Generation uses both charts, your growth profile and prior relationship conversations with this person. Private profile notes and journals are not sent automatically. Only generation calls AI and uses the current allowance; reading saved content is free.')),meta);
+      content.append(generateActions,el('small',l('生成或更新会结合双方人类图、你的完整成长档案、人物观察、相关日记、普通对话，以及与这个人的过往关系对话。仅生成时调用 AI 并按现有额度计次，阅读已保存内容不计次。','Generation uses both charts, your complete growth profile, observations, relevant journals, general chats and prior relationship conversations with this person. Only generation calls AI and uses the current allowance; reading saved content is free.')),meta);
     }
     async function generate(sync,retry=false,activeButton){
       if(busy||!valid(ticket))return;
@@ -368,7 +368,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     const resetOccurrence = () => { occurrence.value=''; occurrence.parentElement.hidden=true; };
     date.oninput=time.oninput=resetOccurrence;
     location.oninput=()=>{selectedPlace=null;matches.replaceChildren();resetOccurrence();};
-    const notes = field(form, '我的观察（选填，仅保存，不自动发送给 AI）', 'My observations (saved privately, not automatically sent to AI)', 'textarea', person?.notes || '', { maxlength: '2000', rows: '3' });
+    const notes = field(form, '我的观察（选填，用于相处指南）', 'My observations (optional, used in relationship guides)', 'textarea', person?.notes || '', { maxlength: '2000', rows: '3' });
     const save = el('button', l('保存档案', 'Save profile'), { type: 'submit', class: 'journal-primary' }); form.append(save);
     form.addEventListener('input', () => { dirty = true; });
     form.onsubmit = async event => {
@@ -535,7 +535,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     if(guide){question.value=relationshipGuidePrompt(getLanguage());dirty=true;form.hidden=true;await form.onsubmit({preventDefault(){}});if(valid(ticket))form.hidden=false;}
   }
   function language() { tab.querySelector('span').textContent=l('身边的人','People');
-    hero.replaceChildren(el('p',l('BUER WITHIN / 身边的人','BUER WITHIN / PEOPLE'),{class:'growth-eyebrow'}),el('h1',l('理解彼此，让相处多一点从容。','Understand each other. Make room to grow.')),el('p',l('从你在意的人开始，聊聊你们之间的事。','Start with someone who matters. Talk about life together.')),el('img','',{class:'companion-section-art',src:'assets/companion-people-listening.webp',alt:'',width:'320',height:'320'}));
+    hero.replaceChildren(el('p',l('BUER WITHIN / 身边的人','BUER WITHIN / PEOPLE'),{class:'growth-eyebrow'}),el('h1',l('理解彼此，让相处多一点从容。','Understand each other. Make room to grow.')),el('p',l('从你在意的人开始，聊聊你们之间的事。','Start with someone who matters. Talk about life together.')),el('img','',{class:'companion-section-art',src:'assets/companion-people-hug.png',alt:'',width:'320',height:'320'}));
     if(document.body.dataset.workspace==='people'&&!dialog.open&&!busy)void list(); }
   document.addEventListener('buer:language', language); language();
   document.addEventListener('buer:relationships', () => void open());

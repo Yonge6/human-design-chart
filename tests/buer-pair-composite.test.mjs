@@ -67,7 +67,7 @@ test('detailed composite prompt fits chat input limit and preserves relationship
  for(const language of ['zh','en']){
   const prompt=pairManualPrompt(language,{nickname:'妈妈',relationship:'父母'},result);
   assert.ok(prompt.length<=4000,`prompt length: ${prompt.length}`);
-  assert.match(prompt,/明确关系是：母亲/);assert.match(prompt,/700–900/);assert.match(prompt,/450–600/);assert.match(prompt,/过往关系对话/);assert.match(prompt,/不打匹配评分/);assert.match(prompt,/不会改变任何一方/);
+  assert.match(prompt,/明确关系是：母亲/);assert.match(prompt,/700–900/);assert.match(prompt,/550–750/);assert.match(prompt,/过往关系对话/);assert.match(prompt,/不打匹配评分/);assert.match(prompt,/不会改变任何一方/);
   assert.match(prompt,/每段用简短加粗小标题/);assert.ok(prompt.includes(JSON.stringify(result)));
   assert.doesNotThrow(()=>validateConversation({messages:[{role:'user',content:prompt}]}));
  }

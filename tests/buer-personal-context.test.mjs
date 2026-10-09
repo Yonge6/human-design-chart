@@ -8,8 +8,10 @@ test('chat offers defaults only for a new context and preserves saved opt-outs',
  assert.deepEqual(relationshipScopeDefaults(saved),saved.payload.scopes);
  assert.equal(cleanPersonalContext({scopes:relationshipScopeDefaults(null)}).chart,null);
 });
-test('journal lives in Me and product copy does not expose a model brand',()=>{
- const journal=readFileSync(new URL('../src/app/buer-journal.js',import.meta.url),'utf8');assert.doesNotMatch(journal,/homeEntry|home\?\.append/);assert.match(journal,/navEntry\('journal'/);
+test('journal lives in Growth and product copy does not expose a model brand',()=>{
+ const journal=readFileSync(new URL('../src/app/buer-journal.js',import.meta.url),'utf8');
+ const growth=readFileSync(new URL('../src/app/buer-growth.js',import.meta.url),'utf8');
+ assert.doesNotMatch(journal,/homeEntry|home\?\.append/);assert.doesNotMatch(journal,/navEntry\('journal'/);assert.match(growth,/buer:journal/);
  for(const f of ['buer-home','buer-growth','buer-membership','buer-relationships'])assert.doesNotMatch(readFileSync(new URL(`../src/app/${f}.js`,import.meta.url),'utf8'),/DeepSeek/i);
 });
 test('personal context requires explicit scopes and strips unsupported properties',()=>{

@@ -21,5 +21,5 @@ test('card edit action is icon-only and reading metadata is appended after the g
  assert.match(js,/编辑\$\{person\.nickname\}的资料/);
  const append=js.indexOf('content.append(generateActions');
  assert.ok(append>0&&js.indexOf(')),meta);',append)>append, 'metadata is appended after the generation controls');
- assert.match(js,/Private profile notes and journals are not sent automatically/);
+ assert.match(js,/Generation uses both charts, your complete growth profile, observations, relevant journals, general chats and prior relationship conversations/);
 });

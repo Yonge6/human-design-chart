@@ -118,7 +118,7 @@ export function createChatHandler({environment = process.env, fetchImpl = fetch}
     try {
       const upstream = await fetchImpl(`${baseUrl.replace(/\/$/,'')}/chat/completions`,{
         method:'POST',headers:{'Authorization':`Bearer ${apiKey}`,'Content-Type':'application/json'},
-        body:JSON.stringify({model,messages,stream:true,thinking:{type:'disabled'},max_tokens:body.mode==='relationship-guide'?6000:body.mode==='growth-assessment'?2400:1800}),signal:controller.signal,
+        body:JSON.stringify({model,messages,stream:true,thinking:{type:'disabled'},max_tokens:body.mode==='relationship-guide'?7600:body.mode==='growth-assessment'?2400:1800}),signal:controller.signal,
       });
       if(!upstream.ok || !upstream.body) {json(res,503,{error:'AI_UNAVAILABLE'});return true;}
       res.writeHead(200,{'Content-Type':'text/event-stream; charset=utf-8','Cache-Control':'no-store','X-Accel-Buffering':'no'});

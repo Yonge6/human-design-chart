@@ -5,7 +5,7 @@ import { createJournalStore, indexedJournalCache, journalRepository, localDate }
 
 const copy = {
   zh: { journal: '见己日记', hint: '记录生活，慢慢认识自己', account: '我的账号', accountHint: 'H5 与 App，同一个你',
-    kicker: '只属于你的记录', title: '把今天，留给自己。', subtitle: '日记仅自己可见。登录同一账号，在 H5 和 App 接着写。默认不供 AI 使用；可在「身边的人」明确授权按需参考。',
+    kicker: '记录当下，也看见成长', title: '把今天，留给未来的自己。', subtitle: '登录同一账号，在 H5 和 App 接着写。日记会沉淀进成长档案，并在生成个人与关系解读时作为背景参考。',
     login: '登录，开始记录', loginHint: '首次登录会创建不二账号。请在 H5 和 App 使用同一种登录方式。',
     unconfigured: '账号同步服务正在准备中，暂时无法登录。', apple: '通过 Apple 登录', google: '通过 Google 登录',
     switch: '切换账号', logout: '退出登录', export: '导出日记', deleteAccount: '删除账号与云端资料',
@@ -22,11 +22,11 @@ const copy = {
     leaveNote: '完成同步后退出，账号内容立即隐藏；云端内容保留。普通对话、档案与说明书的缓存仅在重新登录同一账号后显示。',
     error: '操作暂未完成，请检查网络后重试。输入内容仍保留。', providerError: '登录没有完成，请重试或选择另一种登录方式。',
     appleReauthError: '需要重新通过 Apple 登录后才能撤销授权并删除账号。请使用 Apple 登录后立即重试。',
-    storageBoundary: '账号同步范围：普通对话、完整成长档案、人生说明书、私密日记、人物档案、关系对话与相处指南。登录后自动合并本机旧内容；离线先存本机，联网后同步。同步不等于授权 AI 使用。',
+    storageBoundary: '普通对话、完整成长档案、人生说明书、日记、人物档案、关系对话与相处指南都会同步到账号。登录后自动合并本机旧内容；生成个人与关系解读时，AI 会结合这些资料理解你的背景。',
     pendingLeave: '请先完成日记同步或处理冲突，再切换账号。', saving: '正在保存…',
   },
   en: { journal: 'Private journal', hint: 'Keep a moment. Get to know yourself.', account: 'My account', accountHint: 'One account on web and App',
-    kicker: 'A space of your own', title: 'Leave a little room for today.', subtitle: 'Only you can view your journal. Use the same account on web and App. AI access is off by default; authorize relevant excerpts in People if you wish.',
+    kicker: 'Record today. Notice your growth.', title: 'Keep today for your future self.', subtitle: 'Continue on web and App with the same account. Journal entries become part of your growth profile and provide context for personal and relationship guidance.',
     login: 'Sign in to start writing', loginHint: 'Your first sign-in creates a Buer account. Use the same sign-in method on web and App.',
     unconfigured: 'Account sync is being prepared. Sign-in is not available yet.', apple: 'Sign in with Apple', google: 'Sign in with Google',
     switch: 'Switch account', logout: 'Sign out', export: 'Export journal', deleteAccount: 'Delete account and cloud data',
@@ -39,7 +39,7 @@ const copy = {
     cancel: 'Cancel', confirm: 'Confirm', deleteTitle: 'Delete this entry?', deleteNote: 'After syncing, this entry will be removed from all your devices. This cannot be undone.',
     deleteAccountTitle: 'Delete your Buer account and cloud data?', deleteAccountNote: 'This permanently removes all cloud chats, growth profiles, manuals, journals, people and relationship guides. Export anything you want to keep first. Apple users will be asked to authenticate again so that Apple authorization can be revoked. App Store subscriptions are not automatically cancelled; this account’s cache on this device is removed; other offline devices must reconnect to receive deletion. Type DELETE to confirm.',
     leaveNote: 'Sync and sign out. Account content is hidden immediately; cloud records remain. Cached chats, profiles and manuals reappear only after signing in to the same account.', error: 'Could not complete this action. Check your connection and try again. Your text is kept.',
-    providerError: 'Sign-in did not complete. Try again or choose another method.', appleReauthError: 'Sign in with Apple again before deleting the account so that Apple authorization can be revoked, then retry immediately.', storageBoundary: 'Chats, complete growth profiles, Life Manuals, journals, people, relationship conversations and guides sync with this account. Existing device content merges automatically after sign-in. Offline changes sync later. Sync does not grant AI access.',
+    providerError: 'Sign-in did not complete. Try again or choose another method.', appleReauthError: 'Sign in with Apple again before deleting the account so that Apple authorization can be revoked, then retry immediately.', storageBoundary: 'Chats, complete growth profiles, Life Manuals, journals, people, relationship conversations and guides all sync with this account. Existing device content merges automatically after sign-in. AI uses this context when creating personal and relationship guidance.',
     pendingLeave: 'Sync your journal and resolve conflicts before switching accounts.', saving: 'Saving…',
   },
 };
@@ -110,14 +110,14 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
   function navEntry(key, hint, next, icon) {
     const b = button('', () => open(next, b));
     const image = element('span', { className: 'drawer-nav-icon' });
-    image.append(element('i', { className: `ph ${icon}`, 'aria-hidden': 'true' }));
+    image.append(element('img', { src: `assets/companion-icon-${icon}.svg`, alt: '', width: '48', height: '48', 'aria-hidden': 'true' }));
     const label = element('span'); label.append(element('strong'), element('small'));
     b.append(image, label, element('span', { className: 'drawer-chevron', 'aria-hidden': 'true' }, '›'));
     nav?.prepend(b);
     return () => { b.querySelector('strong').textContent = t(key); b.querySelector('small').textContent = t(hint); };
   }
-  const refreshJournalEntry = navEntry('journal', 'hint', 'journal', 'ph-notebook');
-  const refreshAccountEntry = navEntry('account', 'accountHint', 'account', 'ph-user-circle');
+  const refreshAccountEntry = navEntry('account', 'accountHint', 'account', 'account');
+  document.addEventListener('buer:journal', event => void open(event.detail?.mode || 'journal', event.detail?.trigger));
 
   function renderLogin() {
     content.append(element('span', { className: 'journal-kicker' }, t('kicker')),
@@ -278,7 +278,7 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
   }
   async function languageChanged() {
     await pendingEdit.catch(() => {});
-    refreshJournalEntry(); refreshAccountEntry();
+    refreshAccountEntry();
     if (editing) { const row = state.entries.find(x => x.id === currentId); if (row) startEntry(row); }
     render();
   }

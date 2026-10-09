@@ -72,6 +72,12 @@ test("drawer actions use distinct accessible companion icons", () => {
     assert.ok(button.includes(`src="assets/companion-icon-${icon}.svg" alt=""`));
     assert.match(read(`assets/companion-icon-${icon}.svg`), /viewBox="0 0 64 64"/);
   }
+  const journal=read('src/app/buer-journal.js');
+  assert.match(journal, /companion-icon-\$\{icon\}\.svg/);
+  assert.match(journal, /navEntry\('account', 'accountHint', 'account', 'account'\)/);
+  assert.doesNotMatch(journal, /navEntry\('journal'/);
+  assert.match(read('assets/companion-icon-account.svg'), /viewBox="0 0 64 64"/);
+  assert.match(read('assets/companion-icon-journal.svg'), /viewBox="0 0 64 64"/);
   const drawer=html.split('class="drawer-nav"')[1].split('</nav>')[0];
   assert.doesNotMatch(drawer, /data-growth|data-people/);
 });
@@ -81,6 +87,24 @@ test('simplified home combines chart and growth context and removes source capti
   assert.doesNotMatch(html,/id="buerUseReport"|id="dailyTipSource"|class="buer-context-foot"/);
   assert.match(home,/const report=\$\('#buerUseGrowth'\)\.checked\?currentReport\(\):null/);
   assert.doesNotMatch(read('src/renderer/daily-tip-poster.js'),/来自我最近一次的人生说明书/);
+});
+
+test('growth profile uses secondary pages and owns the journal entry point',()=>{
+  const growth=read('src/app/buer-growth.js'),journal=read('src/app/buer-journal.js');
+  assert.doesNotMatch(growth,/class="growth-tabs"/);
+  assert.match(growth,/class="growth-subpage-nav"/);
+  assert.match(growth,/id="growthJournal"/);
+  assert.match(growth,/companion-icon-journal\.svg/);
+  assert.match(growth,/new CustomEvent\('buer:journal'/);
+  assert.match(journal,/addEventListener\('buer:journal'/);
+});
+
+test('People hero uses the seated hug mascot and the profile hero stays positive',()=>{
+  const people=read('src/app/buer-relationships.js'),app=read('app.js');
+  assert.match(people,/companion-people-hug\.png/);
+  assert.doesNotMatch(people,/companion-people-listening\.webp/);
+  assert.match(app,/记录每一次看见，积累属于你的成长/);
+  assert.match(app,/整理成长档案、经历与行动，让每一步都留下回响/);
 });
 
 test('loading previews use known labels and accessible real stages',()=>{

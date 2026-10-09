@@ -238,10 +238,9 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       if(!composite.available)pane.append(el('p',l('双方完整闸门资料尚未齐备，暂不解读合盘连接；可先阅读已有内容。','Complete gates are not yet available. Connection interpretation is withheld; saved content remains readable.')));
       if(selected==='overview'){
         if(chartError)pane.append(el('p',l('TA 的完整图谱暂未加载，请重新读取；下方缺失项不代表没有出生资料。','Their full chart could not load. Retry; missing fields do not mean missing birth details.')) ,button('重新读取图谱','Retry chart',()=>pairManual(person)));
-        const charts=el('details');charts.append(el('summary',l('合盘资料','Chart details')));
+        const charts=el('details');charts.append(el('summary',l('更多合盘详细资料','More chart details')));
         charts.append(comparisonTable(groups[0],options));
         for(const group of groups.slice(1))charts.append(comparisonTable(group,options));
-        pane.append(charts);
         const connection=el('section','',{class:'pair-manual-prose','aria-label':l('两张图放在一起','Your charts together')});
         const pairGraphs=el('div','',{class:'pair-bodygraphs'});
         for(const [name,chart] of [[l('我','Me'),snapshot.chart],[person.nickname,person.chart]]){
@@ -266,7 +265,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
         connection.append(pairGraphs);
         connection.append(el('h4',l('两张图放在一起','Your charts together')));
         const summary=el('div');renderReadingText(summary,compositeSummaryLines(pairComposite(snapshot.chart,person.chart),getLanguage(),id=>channelGuidance(id,getLanguage())).join('\n\n'));connection.append(summary);
-        pane.append(connection);
+        pane.append(connection,charts);
       }
       pane.querySelectorAll('details').forEach((d,i)=>{d.open=expanded.get(selected)?.[i]||false;});
       const generateActions=el('div','',{class:'journal-actions pair-manual-generate'});

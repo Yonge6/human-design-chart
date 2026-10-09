@@ -108,11 +108,18 @@ test('People hero uses the seated hug mascot and the profile hero stays positive
 });
 
 test('loading previews use known labels and accessible real stages',()=>{
-  const helper=read('src/app/buer-loading.js'),app=read('app.js'),css=read('buer-journal.css');
+  const helper=read('src/app/buer-loading.js'),boot=read('src/app/buer-home-loading.js'),html=read('index.html'),app=read('app.js'),css=read('buer-journal.css');
   assert.match(helper,/status.textContent = title/);
   assert.match(helper,/aria-busy/);
   assert.match(helper,/aria-hidden/);
   assert.match(css,/prefers-reduced-motion:no-preference/);
+  assert.match(html,/data-home[\s\S]*data-manual[\s\S]*data-people[\s\S]*data-profile/);
+  for(const view of ['home','growth','people','profile'])assert.match(html,new RegExp(`data-boot-view="${view}"`));
+  for(const label of ['01','02','03','04'])assert.match(html,new RegExp(`<span class="boot-index">${label}</span>`));
+  assert.match(boot,/body\.dataset\.workspace = view/);
+  assert.match(boot,/网络较慢，已保留当前页面结构/);
+  assert.match(read('src/app/buer-relationships.js'),/document\.querySelector\('\.rail-item\[data-people\]'\)/);
+  assert.doesNotMatch(boot,/\d+%/);
   assert.ok(app.indexOf('await preview.decode()')<app.indexOf('preview.hidden=false;textPreview.hidden=true'));
   assert.match(read('src/app/buer-relationships.js'),/解读已生成，正在保存到账号/);
 });

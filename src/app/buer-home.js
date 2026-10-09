@@ -196,7 +196,7 @@ export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
     if(reason!=='write'&&!controller){threads=validChatHistory(JSON.parse(contentStorage.getItem(key)||'[]'));if(current.messages.length)current=structuredClone(threads.find(x=>x.id===current.id)||{id:crypto.randomUUID(),date:Date.now(),messages:[]});renderHistory();renderMessages();refresh();}
   });
   refresh();
-  document.body.removeAttribute('data-home-pending');
-  document.querySelector('#homeBootPreview')?.setAttribute('aria-busy','false');
+  document.body.removeAttribute('data-app-pending');
+  document.querySelector('#workspaceBootPreviews')?.setAttribute('aria-busy','false');
   document.dispatchEvent(new Event('buer:home-ready'));
 }

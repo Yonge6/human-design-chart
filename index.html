@@ -24,7 +24,24 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://buer-api.wonderelian.com https://photon.komoot.io https://geocode.arcgis.com https://api-human-design.wonderelian.com https://*.supabase.co https://www.google-analytics.com https://region1.google-analytics.com; img-src 'self' data: blob: https://wendao.wonderelian.com; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://www.googletagmanager.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
   <title>不二见己 | 你的专属 AI 成长伙伴 豆豆龙</title>
   <style>
-    #homeBootPreview{display:none}body[data-home-pending] #homeBootPreview{display:block;background:#e4e9da;color:#203b30;border-radius:28px;padding:clamp(24px,5vw,64px);min-height:360px;box-sizing:border-box}body[data-home-pending] #buerHome>.buer-conversation-column,body[data-home-pending] #buerHome>.buer-context{display:none}body[data-home-pending] #buerHome{display:block;max-width:1200px;margin:24px auto;padding:0 20px}#homeBootPreview h1{font-size:clamp(28px,4vw,48px);line-height:1.4;max-width:700px}#homeBootPreview p{line-height:1.8}#homeBootPreview .home-preview-input{margin-top:32px;padding:24px;border-radius:20px;background:#faf8f1;max-width:560px}#homeBootPreview .home-preview-bars{height:54px;margin-top:22px;background:linear-gradient(#d8dfcc 0 12px,transparent 12px 22px,#d8dfcc 22px 34px,transparent 34px 44px,#d8dfcc 44px);width:78%;border-radius:6px}#homeBootPreview a{color:inherit}#homeBootPreview [hidden]{display:none}
+    #workspaceBootPreviews{display:none}
+    body[data-app-pending] #workspaceBootPreviews{display:block;box-sizing:border-box;width:min(1200px,calc(100% - 72px));margin:22px auto 90px;color:#263a30}
+    body[data-app-pending] :is(#buerHome,#buerGrowth,#buerPeople,.shell,#appDrawer,.buer-back-home,.buer-hero-art){display:none!important}
+    .boot-view{display:none}.boot-view[aria-hidden="false"]{display:block}
+    .boot-hero{position:relative;box-sizing:border-box;min-height:320px;padding:42px 42% 42px 40px;border-radius:28px;overflow:hidden;background:#e3eadc}
+    .boot-hero::after{content:"";position:absolute;right:5%;bottom:0;width:31%;aspect-ratio:1;border-radius:46% 54% 52% 48%;background:linear-gradient(145deg,#c5d4bb,#eaf0e3);box-shadow:inset 0 0 0 18px #d6e0ce}
+    .boot-kicker{display:block;margin-bottom:22px;font-size:11px;font-weight:700;letter-spacing:.18em;color:#52664c}
+    .boot-hero h1{position:relative;z-index:1;margin:0;font:500 clamp(30px,3.5vw,42px)/1.38 Georgia,"Songti SC",serif;letter-spacing:.04em;text-wrap:balance}
+    .boot-hero p{position:relative;z-index:1;margin:22px 0 0;font-size:15px;line-height:1.8;color:#566653}
+    .boot-surface{margin-top:26px}.boot-composer,.boot-card{box-sizing:border-box;border:1px solid #d0d7c7;border-radius:18px;background:#fffdf7}
+    .boot-composer{width:62%;padding:22px 24px}.boot-composer strong{display:block;font-size:16px;font-weight:500}.boot-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}.boot-chip{height:32px;width:112px;border-radius:10px;background:#e9ede2}.boot-chip:nth-child(2){width:148px}.boot-chip:nth-child(3){width:96px}
+    .boot-actions{display:flex;gap:10px;align-items:center;margin:26px 0 16px}.boot-action{height:42px;width:124px;border-radius:12px;background:#4b6343}.boot-action.secondary{width:92px;background:#eef0e7;border:1px solid #ccd4c3}.boot-filters{display:flex;gap:8px;overflow:hidden;margin:0 0 18px}.boot-filter{flex:0 0 62px;height:36px;border-radius:11px;background:#eef0e7;border:1px solid #d3d9cb}.boot-filter:first-child{background:#e1e7d9;border-color:#879b7e}
+    .boot-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.boot-card{min-height:150px;padding:24px}.boot-card small{color:#6b7967}.boot-card h2{margin:12px 0 10px;font:500 25px/1.4 Georgia,"Songti SC",serif}.boot-lines{height:38px;width:78%;border-radius:6px;background:linear-gradient(#dce3d5 0 9px,transparent 9px 21px,#e5e9df 21px 30px,transparent 30px)}
+    .boot-paths{margin-top:26px}.boot-path{display:grid;grid-template-columns:42px 1fr 92px;gap:18px;align-items:center;min-height:104px;padding:16px 0;border-bottom:1px solid #d3d9cb}.boot-index{font:italic 20px Georgia,serif;color:#65755f}.boot-path strong{display:block;font:500 21px/1.45 Georgia,"Songti SC",serif}.boot-path p{margin:6px 0 0;font-size:13px;color:#687565}.boot-path-button{height:40px;border-radius:11px;background:#eef0e7;border:1px solid #ccd4c3}
+    .boot-menu .boot-card{display:grid;grid-template-columns:48px 1fr;gap:18px;align-items:center;min-height:112px}.boot-icon{width:46px;height:46px;border-radius:15px;background:#dfe7d7;box-shadow:inset 0 0 0 10px #edf1e8}.boot-menu .boot-card h2{font-family:inherit;font-size:17px;font-weight:650;margin:0 0 7px}.boot-menu .boot-card p{margin:0;font-size:13px;color:#687565}
+    .boot-state{display:flex;align-items:center;gap:12px;margin:22px 4px 0;color:#65745f;font-size:13px;line-height:1.6}.boot-state::before{content:"";width:9px;height:9px;flex:0 0 9px;border-radius:50%;background:#6f8365}.boot-retry{width:auto!important;min-height:38px;margin-left:auto;border:1px solid #bdc8b4;border-radius:10px;background:transparent;color:#43563f;padding:8px 12px;font:inherit}.boot-retry[hidden]{display:none}
+    @media(prefers-reduced-motion:no-preference){body[data-app-pending] .boot-state::before{animation:boot-pulse 1.5s ease-in-out infinite}@keyframes boot-pulse{50%{opacity:.35;transform:scale(.72)}}}
+    @media(max-width:760px){body[data-app-pending] #workspaceBootPreviews{width:calc(100% - 40px);margin:12px auto 106px}.boot-hero{min-height:300px;padding:30px 26px 122px}.boot-hero::after{right:22px;width:116px}.boot-hero h1{font-size:30px}.boot-composer{width:100%;padding:18px}.boot-grid{grid-template-columns:1fr}.boot-card{min-height:126px}.boot-path{grid-template-columns:34px 1fr}.boot-path-button{display:none}.boot-menu .boot-card{min-height:96px;padding:18px}.boot-state{align-items:flex-start}.boot-retry{white-space:nowrap}}
   </style>
   <link rel="canonical" href="https://human-design.wonderelian.com/">
   <link rel="icon" type="image/png" href="assets/buer-companion-favicon.png">
@@ -41,7 +58,7 @@
   <script src="analytics.js" defer></script>
   <script src="src/app/buer-home-loading.js" defer></script>
 </head>
-<body data-workspace="home" data-home-pending>
+<body data-workspace="home" data-app-pending>
   <header class="topbar">
     <div class="brand"><img class="brand-symbol" src="assets/buer-companion-logo.png" alt=""><span data-i18n="brand">不二见己</span><small data-buer="tagline">与真实的自己 · 温柔相遇</small></div>
     <div class="topbar-actions">
@@ -246,21 +263,45 @@
   <nav class="buer-rail" aria-label="主要导航">
     <button class="buer-mark" data-home aria-label="不二见己首页"><img src="assets/buer-companion-logo.png" alt=""></button>
     <button class="rail-item is-active" data-home><i class="ph ph-house" aria-hidden="true"></i><span data-buer="home">见己</span></button>
-    <button class="rail-item" data-manual><i class="ph ph-book-open-text" aria-hidden="true"></i><span data-buer="manual">人生说明书</span></button>
+    <button class="rail-item" data-manual><i class="ph ph-book-open-text" aria-hidden="true"></i><span data-buer="manual">成长档案</span></button>
+    <button class="rail-item" data-people><i class="ph ph-users" aria-hidden="true"></i><span>身边的人</span></button>
     <button class="rail-item" id="buerProfileButton" data-profile><i class="ph ph-user-circle" aria-hidden="true"></i><span data-buer="profile">我的</span></button>
     <div class="rail-foot" data-buer="railFoot">更认识<br>更自在</div>
   </nav>
+  <main id="workspaceBootPreviews" aria-label="页面加载预览" aria-busy="true">
+    <section class="boot-view" data-boot-view="home" aria-label="见己加载预览" aria-hidden="false">
+      <header class="boot-hero"><small class="boot-kicker">BUER WITHIN / 见己</small><h1>今天，想从哪里聊起？</h1><p>从一件最近让你在意的小事开始，我们一起慢慢想明白。</p></header>
+      <div class="boot-surface"><div class="boot-composer"><strong>此刻，你想更了解自己的哪一面？</strong><div class="boot-chips" aria-hidden="true"><span class="boot-chip"></span><span class="boot-chip"></span><span class="boot-chip"></span></div></div></div>
+    </section>
+    <section class="boot-view" data-boot-view="growth" aria-label="成长档案加载预览" aria-hidden="true">
+      <header class="boot-hero"><small class="boot-kicker">BUER WITHIN / 成长档案</small><h1>认识自己，走好下一步。</h1><p>理解你的节奏、看清眼前的事，让每一次行动都有回响。</p></header>
+      <div class="boot-paths" aria-hidden="true">
+        <div class="boot-path"><span class="boot-index">01</span><span><strong>认识你的节奏</strong><p>从人类图开始，建立认识自己的基础。</p></span><span class="boot-path-button"></span></div>
+        <div class="boot-path"><span class="boot-index">02</span><span><strong>HUMAN 3.0 成长访谈</strong><p>从心智、身体、关系与意义，看清此刻。</p></span><span class="boot-path-button"></span></div>
+        <div class="boot-path"><span class="boot-index">03</span><span><strong>我的经历</strong><p>把来时路慢慢说给我听。</p></span><span class="boot-path-button"></span></div>
+        <div class="boot-path"><span class="boot-index">04</span><span><strong>见己日记</strong><p>记录生活，慢慢认识自己。</p></span><span class="boot-path-button"></span></div>
+      </div>
+    </section>
+    <section class="boot-view" data-boot-view="people" aria-label="身边的人加载预览" aria-hidden="true">
+      <header class="boot-hero"><small class="boot-kicker">BUER WITHIN / 身边的人</small><h1>理解彼此，让相处多一点从容。</h1><p>从你在意的人开始，聊聊你们之间的事。</p></header>
+      <div class="boot-actions" aria-hidden="true"><span class="boot-action"></span><span class="boot-action secondary"></span></div>
+      <div class="boot-filters" aria-hidden="true"><span class="boot-filter"></span><span class="boot-filter"></span><span class="boot-filter"></span><span class="boot-filter"></span><span class="boot-filter"></span></div>
+      <div class="boot-grid" aria-hidden="true"><article class="boot-card"><small>关系</small><h2>正在读取人物档案</h2><div class="boot-lines"></div></article><article class="boot-card"><small>关系</small><h2>相处指南即将就绪</h2><div class="boot-lines"></div></article></div>
+    </section>
+    <section class="boot-view" data-boot-view="profile" aria-label="我的加载预览" aria-hidden="true">
+      <header class="boot-hero"><small class="boot-kicker">真实自己，流动人生</small><h1>记录每一次看见，积累属于你的成长</h1><p>整理成长档案、经历与行动，让每一步都留下回响。</p></header>
+      <div class="boot-grid boot-menu" aria-hidden="true">
+        <article class="boot-card"><span class="boot-icon"></span><span><h2>我的账号</h2><p>同一个账号，随时继续</p></span></article>
+        <article class="boot-card"><span class="boot-icon"></span><span><h2>对话记录</h2><p>继续上次的探索</p></span></article>
+        <article class="boot-card"><span class="boot-icon"></span><span><h2>说明书历史</h2><p>重新打开已保存的说明书</p></span></article>
+        <article class="boot-card"><span class="boot-icon"></span><span><h2>关于我们</h2><p>认识不二见己</p></span></article>
+      </div>
+    </section>
+    <div class="boot-state"><span id="workspaceBootStatus" role="status">正在读取已保存的内容，页面结构已可浏览…</span><button id="workspaceBootRetry" class="boot-retry" type="button" hidden>重新加载</button></div>
+    <noscript><p>请启用 JavaScript 后使用对话与成长档案。</p></noscript>
+  </main>
   <img class="buer-hero-art" src="assets/buer-aurora-hero.webp" alt="" aria-hidden="true">
   <section id="buerHome" class="buer-home" aria-label="与不二见己聊聊">
-    <section id="homeBootPreview" aria-label="首页加载预览" aria-busy="true">
-      <small>不二见己 · 与真实的自己温柔相遇</small>
-      <h1>今天，想从哪里聊起？</h1>
-      <p>你的 AI 成长伙伴豆豆龙</p>
-      <div class="home-preview-input"><span>从一件最近让你在意的小事开始。</span><div class="home-preview-bars" aria-hidden="true"></div></div>
-      <p id="homeBootStatus" role="status">正在准备对话与成长档案，内容即将就绪…</p>
-      <a id="homeBootRetry" href="" hidden>重新加载</a>
-      <noscript><p>请启用 JavaScript 后使用对话与成长档案。</p></noscript>
-    </section>
     <div class="buer-conversation-column">
       <header class="buer-welcome"><h1 data-buer="headline">从一个问题，靠近自己</h1><p data-buer="intro">在这里，任何关于你的问题，都值得被认真对待</p></header>
 

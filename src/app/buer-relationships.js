@@ -42,9 +42,9 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
   const root=el('section','',{id:'buerPeople','aria-label':'People in your life'});
   const hero=el('header','',{class:'people-hero companion-section-hero'}),listContent=el('div','',{class:'people-content'});
   root.append(hero,listContent);document.querySelector('#buerHome').after(root);
-  const tab=el('button','',{type:'button',class:'rail-item','data-people':''});
-  tab.append(el('i','',{class:'ph ph-users','aria-hidden':'true'}),el('span'));
-  document.querySelector('.rail-item[data-profile]').before(tab);tab.onclick=()=>void open();
+  let tab=document.querySelector('.rail-item[data-people]');
+  if(!tab){tab=el('button','',{type:'button',class:'rail-item','data-people':''});tab.append(el('i','',{class:'ph ph-users','aria-hidden':'true'}),el('span'));document.querySelector('.rail-item[data-profile]').before(tab);}
+  tab.onclick=()=>void open();
   const scopeName=k=>({chart:l('我的人类图','My Human Design'),growth:l('成长访谈、经历与行动复盘','Growth, experiences and reflections'),journal:l('私密日记','Private journals'),history:l('历史对话','Previous conversations')})[k];
   const dialog = el('dialog', '', { class: 'journal-dialog relationship-dialog', 'aria-labelledby': 'relationshipHeading' });
   const shell = el('div', '', { class: 'journal-shell' });

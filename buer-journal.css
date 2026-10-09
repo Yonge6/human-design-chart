@@ -136,6 +136,7 @@ body[data-workspace="people"] #buerHome,body[data-workspace="people"] .shell,bod
  .journal-home-entry{margin-top:6px;font-size:13px}
 }
 .pair-manual-content{position:relative}
+.pair-bodygraphs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin:24px 0}.pair-bodygraphs figure{margin:0;padding:16px;border:1px solid var(--ui-line);border-radius:16px;background:#faf9f3;min-width:0}.pair-bodygraphs figcaption{text-align:center;font-weight:600;margin-bottom:12px}.pair-bodygraphs .relationship-bodygraph svg{display:block;width:100%;height:auto;max-height:420px}.pair-bodygraphs .relationship-bodygraph{min-height:180px}@media(max-width:480px){.pair-bodygraphs{grid-template-columns:1fr}.pair-bodygraphs .relationship-bodygraph svg{max-height:360px}}
 @media(min-width:761px){.relationship-dialog:has(.pair-manual-content) .journal-shell{height:calc(100dvh - 50px)}}
 .pair-reading-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
 .pair-reading-actions>button{width:auto;min-height:44px;padding:8px 14px}

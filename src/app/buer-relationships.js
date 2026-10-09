@@ -243,6 +243,18 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
         for(const group of groups.slice(1))charts.append(comparisonTable(group,options));
         pane.append(charts);
         const connection=el('section','',{class:'pair-manual-prose','aria-label':l('两张图放在一起','Your charts together')});
+        const pairGraphs=el('div','',{class:'pair-bodygraphs'});
+        for(const [name,chart] of [[l('我','Me'),snapshot.chart],[person.nickname,person.chart]]){
+          const figure=el('figure'),graph=el('div',l('正在加载图谱…','Loading chart…'),{class:'relationship-bodygraph'});
+          figure.append(el('figcaption',name),graph);pairGraphs.append(figure);
+          if(!chart){graph.textContent=l('尚未建立人类图','No chart available');continue;}
+          const side=value=>Object.fromEntries(Object.entries(value||{}).map(([key,a])=>[key,{Gate:a.Gate??a.gate}]));
+          const centers=chart.structure?.definedCenters||chart.centers||[];
+          const data={Design:side(chart.activations?.design||chart.design),Personality:side(chart.activations?.personality||chart.personality),'Defined Centers':centers.map(c=>`${c.replace(/ center$/,'').replace(/^spleen$/,'splenic').replace(/^solar plexus$/,'solar-plexus')} center`)};
+          const colors=Object.fromEntries(['head','ajna','throat','g','heart','sacral','splenic','solar-plexus','root'].map(k=>[`${k}-center`,'#718565']));
+          void createBodygraphRenderer({container:graph,templateUrl:new URL('../../assets/bodygraph-template.svg',import.meta.url).href,centerColors:colors,label:l(`${name}的人类图`,`${name}'s Human Design`)})(data).catch(()=>{graph.textContent=l('图谱暂未加载，请重新打开。','Chart could not load. Please reopen.');});
+        }
+        connection.append(pairGraphs);
         connection.append(el('h4',l('两张图放在一起','Your charts together')));
         const summary=el('div');renderReadingText(summary,compositeSummaryLines(pairComposite(snapshot.chart,person.chart),getLanguage(),id=>channelGuidance(id,getLanguage())).join('\n\n'));connection.append(summary);
         pane.append(connection);

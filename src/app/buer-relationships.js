@@ -1,5 +1,5 @@
 import {workspaceStorage} from '../services/buer-workspace.js';
-import {compositeGuidance,sectionFoundation,guideV2,guideText,stampGuide} from '../services/buer-pair-guidance.js';
+import {channelGuidance,compositeGuidance,sectionFoundation,guideV2,guideText,stampGuide} from '../services/buer-pair-guidance.js';
 import { relationshipRepository, cleanPerson, relationshipMessages } from '../services/buer-relationships.js';
 import { calculateHumanDesign, localToUtcCandidates } from '../../human-design-engine.js';
 import { createHumanDesignProfileSnapshot } from '../engine/profile-snapshot.js';
@@ -142,12 +142,15 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     const visible=orderedPeople(people,peopleOrder?.person_ids).filter(p=>!filter||p.relationship===filter||(filter==='其他'&&!RELATION_TYPES.some(([name])=>name===p.relationship)));
     for (const person of visible) {
       const card = el('article', '', { class: 'relationship-person' });
+      const editButton=button('', '', () => edit(person,false), 'relationship-edit');
+      editButton.setAttribute('aria-label',l(`编辑${person.nickname}的资料`,`Edit ${person.nickname}'s profile`));
+      editButton.setAttribute('title',l('编辑资料','Edit profile'));
+      card.append(editButton);
       card.append(
         el('small', person.relationship), el('h3', person.nickname));
       const core=person.chart?.core;card.append(el('p',core?`${chartText(core.type)} · ${core.profile} · ${chartText(core.authority)}`:l('出生时刻待确认 · 也可以先聊聊','Birth time unknown · You can still talk')));
       const controls = el('div', '', { class: 'journal-actions' });
       if(person.chart)controls.append(button('查看说明书', 'View manual', () => manual(person)));
-      controls.append(button('编辑资料', 'Edit profile', () => edit(person,false)));
       controls.append(button('相处指南', 'Relationship guide', () => pairManual(person)));
       if (!person.is_self) controls.append(button('聊聊我们的关系', 'Talk about us', () => conversation(person), 'journal-primary'));
       card.append(controls); cards.append(card);
@@ -184,7 +187,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       if(source)more.append(el('p',l(`资料更新：${new Date(source.updated_at).toLocaleString()}`,`Source updated: ${new Date(source.updated_at).toLocaleString()}`)));
       if(saved)more.append(el('p',l(`解读保存：${new Date(saved.updated_at).toLocaleString()}`,`Reading saved: ${new Date(saved.updated_at).toLocaleString()}`)));
       more.append(el('p',l('已保存的解读可直接阅读。人类图仅作观察参考。','Saved readings open directly. Human Design is a reflection tool.')),button('从账号刷新','Refresh from account',()=>pairManual(person,true)));
-      meta.append(more);content.append(meta,el('div','',{class:'pair-reading-anchor','aria-hidden':'true'}));
+      meta.append(more);content.append(el('div','',{class:'pair-reading-anchor','aria-hidden':'true'}));
       const nav=el('div','',{class:'relationship-manual-tabs pair-manual-tabs',role:'tablist','aria-label':l('相处说明书分类','Reading categories')});
       for(const [key,zh,en] of sections){
         const labels=legacy&&key==='friction'?['互补','Support']:legacy&&key==='practice'?['日常','Daily']:tabLabels[key],b=button(labels[0],labels[1],()=>selectSection(key));
@@ -222,7 +225,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
         pane.append(charts);
         const connection=el('section','',{class:'pair-manual-prose','aria-label':l('两张图放在一起','Your charts together')});
         connection.append(el('h4',l('两张图放在一起','Your charts together')));
-        const summary=el('div');renderReadingText(summary,compositeSummaryLines(pairComposite(snapshot.chart,person.chart),getLanguage()).join('\n\n'));connection.append(summary);
+        const summary=el('div');renderReadingText(summary,compositeSummaryLines(pairComposite(snapshot.chart,person.chart),getLanguage(),id=>channelGuidance(id,getLanguage())).join('\n\n'));connection.append(summary);
         charts.append(connection);
       }
       pane.querySelectorAll('details').forEach((d,i)=>{d.open=expanded.get(selected)?.[i]||false;});
@@ -232,7 +235,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
         if(source)generateActions.append(button(saved?'更新解读':'生成分类解读',saved?'Update reading':'Generate reading',b=>generate(false,false,b),'journal-primary'));
         generateActions.append(button(source?'同步当前成长档案并更新':'使用当前成长档案生成',source?'Sync current growth profile & update':'Generate from current growth profile',b=>generate(true,false,b),source?'':'journal-primary'));
       }
-      content.append(generateActions,el('small',l('仅生成或更新时调用 AI，并按现有额度计次；阅读已保存内容不计次。','Only generation or updates call AI and use the existing allowance. Reading saved content is free.')));
+      content.append(generateActions,el('small',l('生成或更新会结合双方人类图、你的成长档案，以及与这个人的过往关系对话；人物观察备注和日记不会自动发送。仅生成时调用 AI 并按现有额度计次，阅读已保存内容不计次。','Generation uses both charts, your growth profile and prior relationship conversations with this person. Private profile notes and journals are not sent automatically. Only generation calls AI and uses the current allowance; reading saved content is free.')),meta);
     }
     async function generate(sync,retry=false,activeButton){
       if(busy||!valid(ticket))return;

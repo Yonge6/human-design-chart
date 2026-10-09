@@ -52,6 +52,14 @@ test('formats match, source data is untouched, and summary uses Chinese centers'
  assert.ok(!compositeSummaryLines(result).join('\n').includes('solar'));
  assert.match(compositeSummaryLines(result,'en').join('\n'),/Solar plexus/);
 });
+test('composite explanations pair every visible channel number with a plain-language meaning',()=>{
+ const result={available:true,companionship:[],electromagnetic:['25–51','27–50'],dominanceMe:['18–58'],dominanceOther:[],compromiseMe:[],compromiseOther:[],newCenters:[]};
+ const describe=id=>({title:`${id} 的白话主题`,question:'生活里会怎样表现？'});
+ const text=compositeSummaryLines(result,'zh',describe).join('\n');
+ assert.match(text,/数字是通道编号，不是关系分数/);
+ for(const id of ['25–51','27–50','18–58'])assert.match(text,new RegExp(`${id}｜${id} 的白话主题。生活里可以观察`));
+ assert.match(text,/不是“命中注定”或吸引力证明/);
+});
 test('detailed composite prompt fits chat input limit and preserves relationship boundaries',()=>{
  // A conservative bound: no pair can have more than 36 classified channels.
  const channels=CHANNELS.map(([g])=>g.join('–'));
@@ -59,7 +67,7 @@ test('detailed composite prompt fits chat input limit and preserves relationship
  for(const language of ['zh','en']){
   const prompt=pairManualPrompt(language,{nickname:'妈妈',relationship:'父母'},result);
   assert.ok(prompt.length<=4000,`prompt length: ${prompt.length}`);
-  assert.match(prompt,/明确关系是：母亲/);assert.match(prompt,/550–750/);assert.match(prompt,/不打匹配评分/);assert.match(prompt,/不会改变任何一方/);
+  assert.match(prompt,/明确关系是：母亲/);assert.match(prompt,/700–900/);assert.match(prompt,/450–600/);assert.match(prompt,/过往关系对话/);assert.match(prompt,/不打匹配评分/);assert.match(prompt,/不会改变任何一方/);
   assert.match(prompt,/每段用简短加粗小标题/);assert.ok(prompt.includes(JSON.stringify(result)));
   assert.doesNotThrow(()=>validateConversation({messages:[{role:'user',content:prompt}]}));
  }

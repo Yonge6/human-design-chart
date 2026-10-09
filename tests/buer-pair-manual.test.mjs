@@ -13,9 +13,10 @@ test('pair source includes all canonical growth records and chart structures wit
 test('guide context includes every growth record and excludes other accounts',async()=>{
  const source=makeGuideSource({Properties:{Type:'Generator'}},{stories:Array.from({length:20},(_,i)=>({id:String(i),body:`full record ${i}`,useAI:false}))});
  const other={id:P,user_id:A,revision:1,is_self:false,birth:{certainty:'unknown'},chart:null,relationship:'朋友'};
- const opts={environment:{BUER_ACCOUNT_URL:'https://example.test',BUER_ACCOUNT_PUBLISHABLE_KEY:'public'},fetchImpl:async url=>Response.json(url.endsWith('/auth/v1/user')?{id:A}:url.includes('buer_people')?[other]:[{user_id:A,payload:source,revision:1}])};
+ const history={id:'00000000-0000-4000-b000-000000000099',user_id:A,person_id:P,updated_at:'2026-10-09T00:00:00Z',messages:[{role:'user',content:'我们讨论事情时经常节奏不同。'},{role:'assistant',content:'可以约定稍后再确认。'}]};
+ const opts={environment:{BUER_ACCOUNT_URL:'https://example.test',BUER_ACCOUNT_PUBLISHABLE_KEY:'public'},fetchImpl:async url=>Response.json(url.endsWith('/auth/v1/user')?{id:A}:url.includes('buer_people')?[other]:url.includes('buer_relationship_conversations')?[history]:[{user_id:A,payload:source,revision:1}])};
  const selection={personId:P,personRevision:1,sourceRevision:1};
- const ctx=await loadPairManualContext(selection,'Bearer test',opts);assert.equal(ctx.me.growth.stories.length,20);assert.equal(ctx.me.growth.stories[19].body,'full record 19');
+ const ctx=await loadPairManualContext(selection,'Bearer test',opts);assert.equal(ctx.me.growth.stories.length,20);assert.equal(ctx.me.growth.stories[19].body,'full record 19');assert.match(ctx.relationshipHistory[0].body,/节奏不同/);assert.equal(ctx.sources.at(-1).kind,'relationship-history');
  assert.ok(validateConversation({mode:'relationship-guide',relationship:selection,messages:[{role:'user',content:'guide'}]},ctx)[0].content.includes('JSON'));
  other.user_id=B;await assert.rejects(loadPairManualContext(selection,'Bearer test',opts),/PROFILES_CHANGED/);
  await assert.rejects(loadPairManualContext(selection,'',opts),/SIGN_IN_REQUIRED/);

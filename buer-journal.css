@@ -82,7 +82,7 @@
 .journal-confirm p{line-height:1.8}
 .journal-confirm .journal-actions{justify-content:flex-end;margin-bottom:0}
 .relationship-entry{margin:8px 0 20px}
-.relationship-person{border:1px solid #ccd3c4;border-radius:18px;padding:24px;background:#fffdf7;min-width:0;overflow-wrap:anywhere}
+.relationship-person{position:relative;border:1px solid #ccd3c4;border-radius:18px;padding:24px;background:#fffdf7;min-width:0;overflow-wrap:anywhere}
 .relationship-person>small,.relationship-summary>small{color:#65755b;font-size:12px}
 .relationship-summary dl{display:grid;grid-template-columns:auto 1fr;gap:8px 20px;font-size:14px;line-height:1.65}
 .relationship-summary dt{color:#65755b}.relationship-summary dd{margin:0;overflow-wrap:anywhere}
@@ -110,6 +110,10 @@ body[data-workspace="people"] #buerHome,body[data-workspace="people"] .shell,bod
 .people-content button.journal-primary{background:var(--ui-accent);color:#fffdf6;border-color:var(--ui-accent)}
 .people-content .relationship-people{gap:20px}.people-content .relationship-person{padding:26px}.people-content .relationship-person h3{font:500 28px/1.4 var(--editorial-serif,Georgia,serif);margin:10px 0}
 .people-content .relationship-person p{font-size:14px;line-height:1.8;color:var(--ui-muted)}
+.people-content .relationship-person .relationship-edit{position:absolute;top:18px;right:18px;width:42px;height:42px;min-height:42px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--ui-muted);font-size:0}
+.people-content .relationship-person .relationship-edit::before{content:'✎';font-size:22px;line-height:1}
+.people-content .relationship-person .relationship-edit:hover{background:var(--ui-surface);color:var(--ui-ink)}
+.people-content .relationship-person .relationship-edit:focus-visible{outline:2px solid var(--ui-accent);outline-offset:2px;background:var(--ui-surface)}
 .people-filters{display:flex;gap:8px;overflow-x:auto;scrollbar-width:thin;padding:8px 0 16px;max-width:100%}
 .people-filters button{flex:0 0 auto;width:auto;white-space:nowrap;font-size:13px}.people-filters button[aria-pressed="true"]{background:#e4e9db;border-color:#607556}
 .people-content .journal-actions button{width:auto}.people-content>.journal-actions{align-items:center}.people-content>.journal-actions button:last-child{border:0;background:none;margin-left:auto;padding:8px}
@@ -135,13 +139,13 @@ body[data-workspace="people"] #buerHome,body[data-workspace="people"] .shell,bod
 .pair-reading-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
 .pair-reading-actions>button{width:auto;min-height:44px;padding:8px 14px}
 .pair-reading-actions>button:first-child{border:0;background:transparent;padding-left:0}
-.pair-reading-meta{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 16px;margin-bottom:12px;font-size:13px}
-.pair-reading-meta .pair-reading-note{flex:1;min-width:160px;margin:0;line-height:1.6}
-.pair-reading-more{margin-left:auto}
-.pair-reading-more summary{cursor:pointer;min-height:44px;display:flex;align-items:center;justify-content:flex-end;gap:8px;list-style:none}
+.pair-reading-meta{display:block;margin:18px 0 0;padding-top:12px;border-top:1px solid var(--ui-line,#d0d8c6);font-size:13px;text-align:left}
+.pair-reading-meta .pair-reading-note{margin:0;line-height:1.6}
+.pair-reading-more{margin:2px 0 0}
+.pair-reading-more summary{cursor:pointer;min-height:44px;display:flex;align-items:center;justify-content:flex-start;gap:8px;list-style:none}
 .pair-reading-more summary::-webkit-details-marker{display:none}
 .pair-reading-more summary::after{content:'⌄';font-size:16px}
-.pair-reading-more[open]{flex-basis:100%;padding:0 0 12px;border-bottom:1px solid var(--ui-line,#d0d8c6)}
+.pair-reading-more[open]{padding:0 0 12px}
 .pair-reading-more[open] summary::after{content:'⌃'}
 .pair-reading-more p{margin:6px 0}
 .pair-reading-more button{width:auto;min-height:44px;margin-top:6px}

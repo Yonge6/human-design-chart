@@ -15,3 +15,11 @@ test('personal prose leads saved guides; generic cards are only the no-reading f
  assert.ok(!js.includes('阅读保留的旧版解读'));
  assert.match(pairManualPrompt(),/连贯可读/);
 });
+test('card edit action is icon-only and reading metadata is appended after the generation controls',async()=>{
+ const js=await readFile(new URL('../src/app/buer-relationships.js',import.meta.url),'utf8');
+ assert.match(js,/false\), 'relationship-edit'\)/);
+ assert.match(js,/编辑\$\{person\.nickname\}的资料/);
+ const append=js.indexOf('content.append(generateActions');
+ assert.ok(append>0&&js.indexOf(')),meta);',append)>append, 'metadata is appended after the generation controls');
+ assert.match(js,/Private profile notes and journals are not sent automatically/);
+});

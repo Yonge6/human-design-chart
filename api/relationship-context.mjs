@@ -16,7 +16,9 @@ export async function loadPairManualContext(selected,authorization,{environment=
  if(!person||person.revision!==selected.personRevision||!source||source.revision!==selected.sourceRevision)throw Error('PROFILES_CHANGED');
  const clean=cleanGuideSource(source.payload),other=anonymousPerson(person);
  if(other.chart){other.chart={...other.chart,activations:person.chart.activations,structure:person.chart.structure};}
- const context={me:clean,other,relationship:String(person.relationship||'').slice(0,60),coverage:'All canonical growth answers, experiences, actions/reflections and growth report in the explicitly confirmed source snapshot. No journals or chat histories.',sources:[{kind:'growth-snapshot',title:'成长档案全部记录',id:String(source.revision)}]};
+ const historyRows=await get(`/rest/v1/buer_relationship_conversations?select=id,user_id,person_id,messages,updated_at&user_id=eq.${user.id}&person_id=eq.${selected.personId}&order=updated_at.desc&limit=30`);
+ const relationshipHistory=rankExcerpts(historyRows.filter(x=>x.user_id===user.id&&x.person_id===selected.personId).map(row=>({id:row.id,title:'与这个人的过往关系对话',date:row.updated_at,kind:'relationship-history',body:(Array.isArray(row.messages)?row.messages:[]).filter(message=>message&&['user','assistant'].includes(message.role)&&typeof message.content==='string').map(message=>`${message.role}: ${message.content}`).join('\n')})),'沟通 决策 节奏 分歧 修复 相处 支持',8,2400);
+ const context={me:clean,other,relationship:String(person.relationship||'').slice(0,60),relationshipHistory,coverage:'All canonical growth answers, experiences, actions/reflections and growth report in the explicitly confirmed source snapshot, plus bounded prior relationship conversations with this person. No journals or private person notes.',sources:[{kind:'growth-snapshot',title:'成长档案全部记录',id:String(source.revision)},...relationshipHistory.map(({id,title,date,kind})=>({id,title,date,kind}))]};
  if(JSON.stringify(context).length>160000)throw Error('GUIDE_SOURCE_TOO_LARGE');
  return context;
 }

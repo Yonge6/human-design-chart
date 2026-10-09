@@ -30,16 +30,22 @@ export function pairComposite(me,other){
   return result;
 }
 
-export function compositeSummaryLines(result,language='zh'){
+export function compositeSummaryLines(result,language='zh',describe=null){
   if(!result.available)return [language==='en'?'Complete gate data is needed to calculate the connection.':'完整闸门资料不足，暂不能计算合盘连接；不把缺失资料当成没有连接。'];
   const l=(zh,en)=>language==='en'?en:zh;
-  const list=values=>values.join('、')||l('无','None');
+  const explain=(id)=>{
+    const item=describe?.(id);
+    if(!item)return id;
+    return l(`${id}｜${item.title}。生活里可以观察：${item.question}`,`${id} | ${item.title}. Notice in daily life: ${item.question}`);
+  };
+  const list=(values,empty=l('无','None'))=>values.length?values.map(explain).join('\n'):empty;
   const centers={head:['头顶','Head'],ajna:['逻辑','Ajna'],throat:['喉咙','Throat'],g:['G 中心','G'],heart:['意志','Heart'],sacral:['荐骨','Sacral'],spleen:['脾脏','Spleen'],solar:['情绪','Solar plexus'],root:['根部','Root']};
   return [
-    l(`共同拥有：${list(result.companionship)}。你们各自都有的完整通道，可作为观察共同习惯的线索，不等于一定想法相同。`,`Shared channels: ${list(result.companionship)}. Both charts contain these channels; shared structure does not mean identical opinions.`),
-    l(`一起补全：${list(result.electromagnetic)}。各自提供一端，放在一起才形成完整连接。可观察彼此是否更容易带动某种反应，不等于命中注定的吸引。`,`Completed together: ${list(result.electromagnetic)}. Each chart supplies one end. Observe interaction; this is not proof of attraction.`),
-    l(`一方完整、另一方没有：我 ${list(result.dominanceMe)}；TA ${list(result.dominanceOther)}。可观察谁在某些事上更有固定方式，但不代表谁应该主导关系。`,`One chart has the whole channel, the other neither gate: me ${list(result.dominanceMe)}; them ${list(result.dominanceOther)}. A structural difference, not a right to control.`),
-    l(`一方完整、另一方有一端：我完整 ${list(result.compromiseMe)}；TA 完整 ${list(result.compromiseOther)}。这是留意不同做事方式的线索，不代表一定冲突，更不要求一方迁就。`,`One full channel and one partial: mine full ${list(result.compromiseMe)}; theirs full ${list(result.compromiseOther)}. Observe differences without assuming conflict or demanding concessions.`),
+    l('**怎样阅读这里：** 数字是通道编号，不是关系分数。后面的白话说明是用来观察日常互动的提问，不是对性格或关系的定论。','**How to read this:** The numbers identify channels; they are not relationship scores. The plain-language notes are prompts for observing daily interaction, not verdicts about either person or the relationship.'),
+    l(`**你们都拥有：** ${list(result.companionship,'没有相同的完整通道。')}\n这类通道表示双方各自都有这条完整连接，可能较容易理解彼此在相关主题上的习惯，但不等于想法一定相同。`,`**Present in both charts:** ${list(result.companionship,'No complete channel is shared.')}\nBoth people carry the whole connection. It can make related habits easier to recognize, but does not imply identical opinions.`),
+    l(`**你们一起补全：** ${list(result.electromagnetic,'没有由双方各提供一端而补全的通道。')}\n这类通道表示双方各带来一端，相处时相关主题可能更容易被带动；它不是“命中注定”或吸引力证明。`,`**Completed together:** ${list(result.electromagnetic,'No channel is completed by combining one gate from each person.')}\nEach person contributes one end. The related topic may become more noticeable together; this is not proof of destiny or attraction.`),
+    l(`**一方带来完整方式：**\n你：${list(result.dominanceMe,'无')}\n对方：${list(result.dominanceOther,'无')}\n表示一方有完整连接，另一方没有两端。可以观察谁在相关事情上较有固定做法，但不代表谁应该主导。`,`**One person brings the whole pattern:**\nYou: ${list(result.dominanceMe,'None')}\nThem: ${list(result.dominanceOther,'None')}\nOne person has the complete connection and the other has neither end. Notice who has a more established approach without treating it as a right to lead.`),
+    l(`**一方完整、另一方已有一端：**\n你完整：${list(result.compromiseMe,'无')}\n对方完整：${list(result.compromiseOther,'无')}\n双方都接触到相关主题，但熟悉程度或做法可能不同。把差异说清楚即可，不代表一定冲突，也不要求谁迁就。`,`**One complete, the other already has one end:**\nYours complete: ${list(result.compromiseMe,'None')}\nTheirs complete: ${list(result.compromiseOther,'None')}\nBoth touch the topic, but their familiarity or approach may differ. Discuss the difference without assuming conflict or demanding concessions.`),
     l(`合图新增的定义中心：${list(result.newCenters.map(c=>centers[c][0]))}。指两张图放在一起才由完整通道连上的中心，不改变你们各自原本的决策方式。`,`Centers newly defined in the combined chart: ${list(result.newCenters.map(c=>centers[c][1]))}. These become connected only in the combined chart; neither person's own decision-making authority changes.`),
   ];
 }

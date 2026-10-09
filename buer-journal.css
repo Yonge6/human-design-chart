@@ -106,6 +106,7 @@ body[data-workspace="people"] #buerPeople{display:block}
 body[data-workspace="people"] #buerHome,body[data-workspace="people"] .shell,body[data-workspace="people"] #appDrawer,body[data-workspace="people"] .buer-back-home{display:none!important}
 /* Hero geometry, typography and motion are shared in buer-companion.css. */
 .people-content{padding-top:16px}.people-note{font-size:13px;color:var(--ui-muted);line-height:1.8}
+.people-loading .relationship-person{min-height:210px}.people-loading h3{font-size:22px!important}.people-load-notice{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:20px;font-size:13px;color:var(--ui-muted)}.people-load-notice button{width:auto;flex-shrink:0}
 .people-content button{font:inherit;min-height:44px;padding:10px 16px;border:1px solid var(--ui-line);border-radius:12px;background:#faf9f3;color:var(--ui-ink);cursor:pointer}
 .people-content button.journal-primary{background:var(--ui-accent);color:#fffdf6;border-color:var(--ui-accent)}
 .people-content .relationship-people{gap:20px}.people-content .relationship-person{padding:26px}.people-content .relationship-person h3{font:500 28px/1.4 var(--editorial-serif,Georgia,serif);margin:10px 0}

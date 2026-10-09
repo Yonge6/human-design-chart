@@ -248,9 +248,18 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
           const figure=el('figure'),graph=el('div',l('正在加载图谱…','Loading chart…'),{class:'relationship-bodygraph'});
           figure.append(el('figcaption',name),graph);pairGraphs.append(figure);
           if(!chart){graph.textContent=l('尚未建立人类图','No chart available');continue;}
-          const side=value=>Object.fromEntries(Object.entries(value||{}).map(([key,a])=>[key,{Gate:a.Gate??a.gate}]));
+          const side=value=>Object.fromEntries(Object.entries(value||{}).map(([key,a])=>[key,{Gate:a.Gate??a.gate,Line:a.Line??a.line}]));
           const centers=chart.structure?.definedCenters||chart.centers||[];
           const data={Design:side(chart.activations?.design||chart.design),Personality:side(chart.activations?.personality||chart.personality),'Defined Centers':centers.map(c=>`${c.replace(/ center$/,'').replace(/^spleen$/,'splenic').replace(/^solar plexus$/,'solar-plexus')} center`)};
+          const layout=el('div','',{class:'pair-chart-layout'});
+          const planets=[['Sun','sun','☉','太阳'],['Earth','earth','⊕','地球'],['North Node','northNode','☊','北交点'],['South Node','southNode','☋','南交点'],['Moon','moon','☽','月亮'],['Mercury','mercury','☿','水星'],['Venus','venus','♀','金星'],['Mars','mars','♂','火星'],['Jupiter','jupiter','♃','木星'],['Saturn','saturn','♄','土星'],['Uranus','uranus','♅','天王星'],['Neptune','neptune','♆','海王星'],['Pluto','pluto','♇','冥王星']];
+          for(const [key,label] of [['Design',l('设计','Design')],['Personality',l('人格','Personality')]]){
+            const column=el('div','',{class:`pair-planet-column ${key.toLowerCase()}`});column.append(el('small',label));
+            const list=el('ol','',{'aria-label':`${name} · ${label}`});
+            for(const [planet,alias,symbol,zh] of planets){const a=data[key][planet]||data[key][alias],row=el('li','',{title:l(zh,planet),'aria-label':`${l(zh,planet)} ${a?`${a.Gate}.${a.Line??'—'}`:l('暂无资料','Unavailable')}`});row.append(el('span',symbol,{'aria-hidden':'true'}),el('b',a?`${a.Gate}.${a.Line??'—'}`:'—'));list.append(row);}
+            column.append(list);layout.append(column);if(key==='Design')layout.append(graph);
+          }
+          figure.append(layout);
           const colors=Object.fromEntries(['head','ajna','throat','g','heart','sacral','splenic','solar-plexus','root'].map(k=>[`${k}-center`,'#718565']));
           void createBodygraphRenderer({container:graph,templateUrl:new URL('../../assets/bodygraph-template.svg',import.meta.url).href,centerColors:colors,label:l(`${name}的人类图`,`${name}'s Human Design`)})(data).catch(()=>{graph.textContent=l('图谱暂未加载，请重新打开。','Chart could not load. Please reopen.');});
         }

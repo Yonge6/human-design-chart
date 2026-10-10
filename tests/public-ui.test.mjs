@@ -93,10 +93,12 @@ test('growth profile uses secondary pages and owns the journal entry point',()=>
   const growth=read('src/app/buer-growth.js'),journal=read('src/app/buer-journal.js');
   assert.doesNotMatch(growth,/class="growth-tabs"/);
   assert.match(growth,/class="growth-subpage-nav"/);
-  assert.match(growth,/id="growthJournal"/);
-  assert.match(growth,/companion-icon-journal\.svg/);
-  assert.match(growth,/new CustomEvent\('buer:journal'/);
-  assert.match(journal,/addEventListener\('buer:journal'/);
+  assert.match(growth,/id="growthJournalInline"/);
+  assert.match(growth,/new CustomEvent\('buer:journal-inline'/);
+  assert.match(journal,/addEventListener\('buer:journal-inline'/);
+  assert.match(journal,/mountInline/);
+  assert.doesNotMatch(growth,/id="growthJournal"|companion-icon-journal\.svg|class="growth-actions"|class="growth-footer"/);
+  assert.doesNotMatch(growth,/growthActionForm|growthExport|growthClear|growthPlanAction/);
 });
 
 test('People hero uses the seated hug mascot and the profile hero stays positive',()=>{

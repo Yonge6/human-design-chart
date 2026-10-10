@@ -57,7 +57,7 @@ function element(tag, attributes = {}, text = '') {
 export async function initBuerJournal({ getLanguage, accountFactory = createAccount, cache = indexedJournalCache() }) {
   const t = key => copy[getLanguage() === 'en' ? 'en' : 'zh'][key];
   let account = null, store = null, currentId = null, userId = null, timer = null, editing = false, pendingEdit = Promise.resolve();
-  let state = { status: 'locked', entries: [] }, entryTrigger = null, mode = 'journal', busy = false;
+  let state = { status: 'locked', entries: [] }, entryTrigger = null, inlineHost = null, mode = 'journal', busy = false;
   let filterQuery = '', filterDate = '';
   const dialog = element('dialog', { className: 'journal-dialog', 'aria-labelledby': 'journal-heading' });
   const shell = element('div', { className: 'journal-shell' });
@@ -87,7 +87,7 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
     status.textContent = t(next.status) || '';
     const conflict = content.querySelector('.journal-conflict');
     if (conflict) conflict.hidden = !next.entries.find(row => row.id === currentId)?.conflict;
-    if (!editing && dialog.open && signedIn() && mode === 'journal') render();
+    if (!editing && (dialog.open || inlineHost?.isConnected) && signedIn() && mode === 'journal') render();
   }
   async function flush() {
     clearTimeout(timer); await pendingEdit;
@@ -95,6 +95,7 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
   }
   async function open(next = 'journal', trigger) {
     await pendingEdit.catch(() => {});
+    detachInline();
     if (mode !== next) { editing = false; currentId = null; }
     mode = next; entryTrigger = trigger || document.activeElement;
     render(); if (!dialog.open) dialog.showModal();
@@ -102,6 +103,8 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
   }
   function exit() {
     void flush().catch(() => {}); dialog.close(); entryTrigger?.focus({ preventScroll: true });
+    const host = document.querySelector('#growthJournalInline');
+    if (host && document.body.dataset.workspace === 'growth') void mountInline(host);
   }
   close.onclick = exit;
   dialog.addEventListener('cancel', event => { event.preventDefault(); exit(); });
@@ -118,6 +121,20 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
   }
   const refreshAccountEntry = navEntry('account', 'accountHint', 'account', 'account');
   document.addEventListener('buer:journal', event => void open(event.detail?.mode || 'journal', event.detail?.trigger));
+  function detachInline(requestedHost) {
+    if (!inlineHost || (requestedHost && requestedHost !== inlineHost)) return;
+    shell.append(content, status); inlineHost = null;
+  }
+  async function mountInline(host) {
+    if (!host || dialog.open) return;
+    await pendingEdit.catch(() => {});
+    if (!host.isConnected) return;
+    inlineHost = host; mode = 'journal'; editing = false; currentId = null;
+    host.replaceChildren(content, status); render();
+    if (signedIn()) void flush().catch(showError);
+  }
+  document.addEventListener('buer:journal-inline', event => void mountInline(event.detail?.host));
+  document.addEventListener('buer:journal-inline-unmount', event => detachInline(event.detail?.host));
 
   function renderLogin() {
     content.append(element('span', { className: 'journal-kicker' }, t('kicker')),
@@ -244,10 +261,10 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
       }), 'journal-danger'));
   }
   function renderList() {
-    content.append(element('span', { className: 'journal-kicker' }, t('kicker')), element('h3', {}, t('title')),
+    if (!inlineHost) content.append(element('span', { className: 'journal-kicker' }, t('kicker')), element('h3', {}, t('title')),
       element('p', { className: 'journal-description' }, t('subtitle')));
     const actions = element('div', { className: 'journal-actions' });
-    actions.append(button(`＋ ${t('new')}`, () => startEntry(), 'journal-primary'), button(t('account'), () => { mode = 'account'; render(); }), button(t('retry'), flush));
+    actions.append(button(`＋ ${t('new')}`, () => startEntry(), 'journal-primary'), button(t('account'), () => open('account')), button(t('retry'), flush));
     content.append(actions);
     const search = field(t('search'), 'search', filterQuery, { autocomplete: 'off' });
     const date = field(t('filterDate'), 'date', filterDate);
@@ -296,6 +313,8 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
     }
     render();
   } catch { status.textContent = t('providerError'); }
+  const initialInlineHost = document.querySelector('#growthJournalInline');
+  if (initialInlineHost) void mountInline(initialInlineHost);
   window.addEventListener('online', () => { if (signedIn()) void flush().catch(() => {}); });
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && signedIn()) void flush().catch(() => {}); });
   window.addEventListener('beforeunload', event => {
@@ -311,5 +330,5 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
   window.visualViewport?.addEventListener('resize', syncViewport, { passive: true });
   window.visualViewport?.addEventListener('scroll', syncViewport, { passive: true });
   window.addEventListener('resize', syncViewport, { passive: true }); syncViewport();
-  return { open, get account() { return account; } };
+  return { open, mountInline, get account() { return account; } };
 }

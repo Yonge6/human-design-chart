@@ -12,6 +12,7 @@ import { validChatHistory } from '../services/buer-conversation.js';
 import { fetchPlaceCandidates, inferTimezoneFromAddress } from '../services/location-service.js';
 import { personManualData } from '../services/buer-person-manual.js';
 import { createBodygraphRenderer } from '../renderer/bodygraph-renderer.js';
+import { BUER_CENTER_COLORS } from '../renderer/bodygraph-palette.js';
 import { orderedPeople, movePerson, relationshipGuidePrompt } from '../services/buer-people-tools.js';
 import {PAIR_SECTIONS,readingSections,makeGuideSource,cleanGuideSource,parsePairSections,pairManualRoleWarning,pairManualStale,guideSourceEqual,pairManualPrompt} from '../services/buer-pair-manual.js';
 import { loadingPreview } from './buer-loading.js';
@@ -259,8 +260,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
             column.append(list);layout.append(column);if(key==='Design')layout.append(graph);
           }
           figure.append(layout);
-          const colors=Object.fromEntries(['head','ajna','throat','g','heart','sacral','splenic','solar-plexus','root'].map(k=>[`${k}-center`,'#718565']));
-          void createBodygraphRenderer({container:graph,templateUrl:new URL('../../assets/bodygraph-template.svg',import.meta.url).href,centerColors:colors,label:l(`${name}的人类图`,`${name}'s Human Design`)})(data).catch(()=>{graph.textContent=l('图谱暂未加载，请重新打开。','Chart could not load. Please reopen.');});
+          void createBodygraphRenderer({container:graph,templateUrl:new URL('../../assets/bodygraph-template.svg',import.meta.url).href,centerColors:BUER_CENTER_COLORS,label:l(`${name}的人类图`,`${name}'s Human Design`)})(data).catch(()=>{graph.textContent=l('图谱暂未加载，请重新打开。','Chart could not load. Please reopen.');});
         }
         connection.append(pairGraphs);
         connection.append(el('h4',l('两张图放在一起','Your charts together')));
@@ -379,8 +379,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       const legend=el('div','',{class:'poster-center-legend'});for(const [cls,zh,en] of [['defined-swatch','已定义中心','Defined center'],['undefined-swatch','未定义中心','Undefined center']]){const item=el('span');item.append(el('i','',{class:cls}),el('span',l(zh,en)));legend.append(item);}graphColumn.append(legend);
       panels[2].append(chartLayout);
       select('overview');content.append(root);
-      const colors=Object.fromEntries(['head','ajna','throat','g','heart','sacral','splenic','solar-plexus','root'].map(k=>[`${k}-center`,'#718565']));
-      await createBodygraphRenderer({container:graph,templateUrl:new URL('../../assets/bodygraph-template.svg',import.meta.url).href,centerColors:colors,label:l(`${person.nickname}的人类图`,`${person.nickname}’s Human Design`)})(data);
+      await createBodygraphRenderer({container:graph,templateUrl:new URL('../../assets/bodygraph-template.svg',import.meta.url).href,centerColors:BUER_CENTER_COLORS,label:l(`${person.nickname}的人类图`,`${person.nickname}’s Human Design`)})(data);
       if(!valid(ticket))return;
       content.append(button('聊聊我们的关系','Talk about us',()=>conversation(person),'journal-primary'));status.textContent='';
     }catch(error){if(valid(ticket)){preview.remove();status.textContent=errorMessage(error);}}

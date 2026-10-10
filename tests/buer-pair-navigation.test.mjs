@@ -7,8 +7,8 @@ test('pair guide keeps metadata in More and exposes concise accessible sticky ta
  for(const text of ['概览','沟通','决策','节奏','修复','行动'])assert.ok(js.includes(text));
  for(const text of ["role:'tablist'","role:'tab'","role:'tabpanel'","'aria-selected'","'aria-controls'","'aria-labelledby'","ArrowLeft","ArrowRight","Home","End","preventScroll:true","expanded.set(selected"])assert.ok(js.includes(text),text);
  assert.ok(js.includes("more.append(el('summary',l('更多','More'))"));
- assert.ok(js.includes("charts.append(el('summary',l('合盘资料','Chart details'))"));
- assert.ok(js.indexOf('pane.append(connection)') > js.indexOf('pane.append(charts)'));
+ assert.ok(js.includes("charts.append(el('summary',l('更多合盘详细资料','More chart details'))"));
+ assert.ok(js.includes('pane.append(connection,charts)'));
  assert.ok(!js.includes("button('刷新', 'Refresh'"));
  assert.ok(!js.includes('本机成长档案与账号快照不同。确认属于你后'));
  assert.ok(!js.includes('栏目已重新整理。旧解读仍保留在下方'));

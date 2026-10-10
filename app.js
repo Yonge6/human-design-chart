@@ -17,6 +17,7 @@ import { canUseSystemShare, isEmbeddedBrowser, isMobileDevice, sharePageLink } f
 import { readStoredJson, writeStoredJson } from "./src/services/storage-service.js";
 import {workspace,workspaceStorage,onWorkspaceChange} from './src/services/buer-workspace.js';
 import { createBodygraphRenderer } from "./src/renderer/bodygraph-renderer.js";
+import { BUER_CENTER_COLORS } from "./src/renderer/bodygraph-palette.js";
 import { renderPosterElement } from "./src/renderer/poster-renderer.js";
 import { validateBirthSelection } from "./src/app/form-validation.js";
 import { canUseRemoteServices, effectiveRemoteConsent, isCapacitorNativeRuntime } from "./src/app/runtime-security.js";
@@ -798,17 +799,7 @@ function privateBirthLine() {
   return language === "zh" ? "****年**月**日 **:** · ********" : "****-**-** **:** · ********";
 }
 
-const centerColors = {
-  "head-center": "#718565",
-  "ajna-center": "#718565",
-  "throat-center": "#718565",
-  "g-center": "#718565",
-  "heart-center": "#718565",
-  "sacral-center": "#718565",
-  "splenic-center": "#718565",
-  "solar-plexus-center": "#718565",
-  "root-center": "#718565",
-};
+const centerColors = BUER_CENTER_COLORS;
 
 let lastData;
 let posterBlob;

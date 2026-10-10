@@ -268,8 +268,25 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
     if (!inlineHost) actions.append(button(t('account'), () => open('account')), button(t('retry'), flush));
     content.append(actions);
     const search = field(t('search'), 'search', filterQuery, { autocomplete: 'off' });
+    search.wrapper.classList.add('journal-search-field');
+    search.wrapper.hidden = !filterQuery;
+    const searchToggle = button('', () => {
+      const expanded = search.wrapper.hidden;
+      search.wrapper.hidden = !expanded;
+      searchToggle.setAttribute('aria-expanded', String(expanded));
+      if (expanded) search.input.focus();
+      else { search.input.value = ''; draw(); }
+    }, 'journal-search-toggle');
+    searchToggle.setAttribute('aria-label', t('search'));
+    searchToggle.setAttribute('title', t('search'));
+    searchToggle.setAttribute('aria-expanded', String(!search.wrapper.hidden));
+    searchToggle.append(element('i', { className: 'ph ph-magnifying-glass', 'aria-hidden': 'true' }));
     const date = field(t('filterDate'), 'date', filterDate);
-    const filters = element('div', { className: 'journal-filters' }); filters.append(search.wrapper, date.wrapper, button(t('clearFilter'), () => { date.input.value = ''; search.input.value = ''; draw(); }));
+    const clearFilter = button(t('clearFilter'), () => {
+      date.input.value = ''; search.input.value = ''; search.wrapper.hidden = true;
+      searchToggle.setAttribute('aria-expanded', 'false'); draw();
+    });
+    const filters = element('div', { className: 'journal-filters' }); filters.append(searchToggle, search.wrapper, date.wrapper, clearFilter);
     const list = element('div', { className: 'journal-list' });
     const draw = () => {
       filterQuery = search.input.value; filterDate = date.input.value;

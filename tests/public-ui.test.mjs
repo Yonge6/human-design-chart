@@ -97,6 +97,7 @@ test('growth profile uses secondary pages and owns the journal entry point',()=>
   assert.match(growth,/new CustomEvent\('buer:journal-inline'/);
   assert.match(journal,/addEventListener\('buer:journal-inline'/);
   assert.match(journal,/mountInline/);
+  assert.match(journal,/if \(!inlineHost\) actions\.append\(button\(t\('account'\)/);
   assert.doesNotMatch(growth,/id="growthJournal"|companion-icon-journal\.svg|class="growth-actions"|class="growth-footer"/);
   assert.doesNotMatch(growth,/growthActionForm|growthExport|growthClear|growthPlanAction/);
 });

@@ -264,7 +264,8 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
     if (!inlineHost) content.append(element('span', { className: 'journal-kicker' }, t('kicker')), element('h3', {}, t('title')),
       element('p', { className: 'journal-description' }, t('subtitle')));
     const actions = element('div', { className: 'journal-actions' });
-    actions.append(button(`＋ ${t('new')}`, () => startEntry(), 'journal-primary'), button(t('account'), () => open('account')), button(t('retry'), flush));
+    actions.append(button(`＋ ${t('new')}`, () => startEntry(), 'journal-primary'));
+    if (!inlineHost) actions.append(button(t('account'), () => open('account')), button(t('retry'), flush));
     content.append(actions);
     const search = field(t('search'), 'search', filterQuery, { autocomplete: 'off' });
     const date = field(t('filterDate'), 'date', filterDate);

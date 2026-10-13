@@ -233,7 +233,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       const sourceTime = relationshipSavedTime(source?.updated_at, getLanguage());
       if(sourceTime)more.append(el('p',l(`资料更新：${sourceTime}`,`Source updated: ${sourceTime}`)));
       more.append(el('p',l('已保存的解读可直接阅读。人类图仅作观察参考。','Saved readings open directly. Human Design is a reflection tool.')));
-      meta.append(more);content.append(meta,el('div','',{class:'pair-reading-anchor','aria-hidden':'true'}));
+      meta.append(more);content.append(el('div','',{class:'pair-reading-anchor','aria-hidden':'true'}));
       const nav=el('div','',{class:'relationship-manual-tabs pair-manual-tabs',role:'tablist','aria-label':l('相处说明书分类','Reading categories')});
       for(const [key,zh,en] of sections){
         const labels=legacy&&key==='friction'?['互补','Support']:legacy&&key==='practice'?['日常','Daily']:tabLabels[key],b=button(labels[0],labels[1],()=>selectSection(key));
@@ -300,7 +300,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
         if(source)generateActions.append(button(saved?'更新解读':'生成分类解读',saved?'Update reading':'Generate reading',b=>generate(false,false,b),'journal-primary'));
         generateActions.append(button(source?'使用最新档案更新':'使用最新档案生成',source?'Update with latest profile':'Generate with latest profile',b=>generate(true,false,b),source?'':'journal-primary'));
       }
-      content.append(generateActions,el('small',l('生成或更新会结合双方人类图、你的完整成长档案、人物观察、相关日记、普通对话，以及与这个人的过往关系对话。仅生成时调用 AI 并按现有额度计次，阅读已保存内容不计次。','Generation uses both charts, your complete growth profile, observations, relevant journals, general chats and prior relationship conversations with this person. Only generation calls AI and uses the current allowance; reading saved content is free.')));
+      content.append(generateActions,el('small',l('生成或更新会结合双方人类图、你的完整成长档案、人物观察、相关日记、普通对话，以及与这个人的过往关系对话。仅生成时调用 AI 并按现有额度计次，阅读已保存内容不计次。','Generation uses both charts, your complete growth profile, observations, relevant journals, general chats and prior relationship conversations with this person. Only generation calls AI and uses the current allowance; reading saved content is free.')),meta);
     }
     async function generate(sync,retry=false,activeButton){
       if(busy||!valid(ticket))return;

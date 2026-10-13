@@ -15,7 +15,8 @@
     "test:supabase": "node scripts/run-supabase-tests.mjs",
     "test:bodygraph-assets": "npm run build && npm run ios:sync && node scripts/test-bodygraph-release-assets.mjs",
     "generate:bodygraph": "node scripts/generate-original-bodygraph.mjs",
-    "build": "node scripts/build-web.mjs",
+    "build": "node --env-file-if-exists=.env.local scripts/build-web.mjs",
+    "build:buer-preview": "node --env-file-if-exists=.env.local scripts/build-buer-preview.mjs",
     "build:api": "node scripts/build-api-package.mjs",
     "api:start": "node api/server.mjs",
     "ios:add": "npm run build:native && npx cap add ios --packagemanager SPM",
@@ -24,7 +25,7 @@
     "ios:distribution:readiness": "node scripts/ios-distribution-readiness.mjs",
     "ios:open": "npm run ios:sync && npx cap open ios",
     "ios:run": "npm run ios:sync && npx cap run ios",
-    "build:native": "node scripts/build-web.mjs --native",
+    "build:native": "node --env-file-if-exists=.env.local scripts/build-web.mjs --native",
     "dev": "node --env-file-if-exists=.env.local scripts/serve-dist.mjs"
   },
   "dependencies": {

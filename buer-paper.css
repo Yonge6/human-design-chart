@@ -127,7 +127,7 @@ body[data-conversation="empty"] .buer-compose-meta { display:flex; flex-wrap:wra
 .workspace-conflict-meta { font-size:12px; }
 .workspace-conflict pre { overflow:auto; font-size:12px; line-height:1.65; max-height:220px; white-space:pre-wrap; overflow-wrap:anywhere; }
 .workspace-sync-status[data-state="offline"] { color:var(--ui-danger); }
-.pair-reading-meta { padding:14px 0 18px; margin-bottom:10px; border-bottom:1px solid var(--ui-line); }
+.pair-reading-meta { padding:18px 0 0; margin:22px 0 0; border-top:1px solid var(--ui-line); border-bottom:0; }
 .pair-reading-meta .pair-reading-note { font-size:13px; color:var(--ui-accent); margin:0 0 8px; }
 .pair-reading-meta .pair-reading-saved-time { font-size:12px; margin:0; }
 .pair-reading-meta .pair-reading-refresh { margin-top:10px; min-height:44px; padding:8px 0; border:0; background:none; font-size:13px; }
@@ -165,7 +165,7 @@ body[data-conversation="empty"] .buer-compose-meta { display:flex; flex-wrap:wra
 #capture .planet-list,#capture .celebrity-card { background:#e9eeee!important; border-color:#d6dad7!important; }
 #capture .defined-swatch { background:#5d9dac; border-color:#367e8c; }
 #capture .undefined-swatch { background:#fcfaf5; border-color:#b7c7c8; }
-.relationship-manual-tabs>button[aria-selected="true"] { color:var(--ui-accent); border-bottom-color:var(--ui-accent); }
+.relationship-manual-tabs>button[aria-selected="true"] { color:var(--ui-ink); border-bottom-color:transparent; }
 .buer-message p { background:var(--ui-surface); color:var(--ui-ink); border-color:var(--ui-line); }
 /* The first-load preview belongs to the same paper/blue identity. */
 body[data-app-pending] #workspaceBootPreviews { color:var(--ui-ink); }

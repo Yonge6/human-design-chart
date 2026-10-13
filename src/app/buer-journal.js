@@ -249,25 +249,13 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
     actions.append(button(t('export'), exportJournal));
     const zh=getLanguage()!=='en';
     actions.append(button(zh?'同步全部内容':'Sync all content',async()=>{await workspace().sync();await flush();render();}));
-    actions.append(button(zh?'导出普通对话、成长档案和说明书（含待同步及冲突版本）':'Export chats, growth & manuals (including pending edits and conflicts)',async()=>{
+    actions.append(button(zh?'导出普通对话、成长档案和说明书':'Export chats, growth & manuals',async()=>{
       const json=JSON.stringify({version:1,owner:workspace().owner,exportedAt:new Date().toISOString(),...workspace().values()},null,2);
       const native=globalThis.Capacitor?.Plugins?.PlutoNative;
       if(globalThis.Capacitor?.isNativePlatform?.()&&native){await native.exportGrowthProfile({json,filename:'buer-workspace.json'});return;}
       const url=URL.createObjectURL(new Blob([json],{type:'application/json'}));element('a',{href:url,download:'buer-workspace.json'}).click();setTimeout(()=>URL.revokeObjectURL(url),1000);
     }));
     const syncState=element('p',{className:'workspace-sync-status',role:'status'});content.append(syncState);updateWorkspaceStatus();
-    const conflicts=workspace().values().conflicts;
-    for (const row of conflicts) {
-      const summary = workspaceConflictSummary(row, getLanguage());
-      const details = element('details', { className: 'workspace-conflict' });
-      details.append(element('summary', {}, `${zh ? '保留版本' : 'Preserved version'} · ${summary.title} · ${summary.time}`));
-      details.append(element('p', { className: 'workspace-conflict-meta' }, `${summary.type} · ${zh ? '内容时间' : 'Content time'}：${summary.time}`));
-      const record = element('details');
-      record.append(element('summary', {}, zh ? '查看版本详情' : 'View version details'),
-        element('pre', {}, JSON.stringify({ kind: row.kind, recordId: row.recordId, payload: row.payload }, null, 2)));
-      details.append(record, button(zh?'恢复这个版本':'Restore this version',()=>confirmAction(zh?'恢复这个版本？':'Restore this version?',zh?'当前版本也会保留为可恢复副本。':'The current version will also be preserved.',async()=>{await workspace().restore(row.id);render();})));
-      content.append(details);
-    }
     actions.append(button(t('deleteAccount'), () => confirmAction(t('deleteAccountTitle'), t('deleteAccountNote'), async () => {
       await flush();
       // Hold store reference while Auth deletion fires the signed-out callback.
@@ -283,7 +271,7 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
     const node=content.querySelector('.workspace-sync-status');if(!node)return;
     const s=workspace().state,zh=getLanguage()!=='en';
     node.dataset.state = s.status;
-    node.textContent=(zh?'对话／成长档案／说明书：':'Chats / growth / manuals: ')+workspaceSyncStatus(s,getLanguage())+(s.conflicts?(zh?` · ${s.conflicts} 个版本已保留，可重新打开账号页查看。`:` · ${s.conflicts} versions preserved. Reopen Account to review.`):'');
+    node.textContent=(zh?'对话／成长档案／说明书：':'Chats / growth / manuals: ')+workspaceSyncStatus(s,getLanguage());
   }
   onWorkspaceChange(updateWorkspaceStatus);
   function startEntry(row) {

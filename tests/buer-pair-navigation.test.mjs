@@ -8,7 +8,9 @@ test('pair guide exposes save status and a read-only refresh before accessible s
  for(const text of ['概览','沟通','决策','节奏','修复','行动'])assert.ok(js.includes(text));
  for(const text of ["role:'tablist'","role:'tab'","role:'tabpanel'","'aria-selected'","'aria-controls'","'aria-labelledby'","ArrowLeft","ArrowRight","Home","End","preventScroll:true","expanded.set(selected"])assert.ok(js.includes(text),text);
  assert.ok(js.includes("more.append(el('summary',l('更多','More'))"));
- assert.ok(js.includes("content.append(meta,el('div','',{class:'pair-reading-anchor'"));
+ assert.ok(!js.includes("content.append(meta,el('div','',{class:'pair-reading-anchor'"));
+ const finalReadingMeta=js.indexOf(")),meta);",js.indexOf("content.append(generateActions,el('small'"));
+ assert.ok(finalReadingMeta>js.indexOf("content.append(generateActions,el('small'"),'saved-reading status belongs after the guide content');
  assert.ok(js.includes("class: 'pair-reading-saved-time'"));
  assert.ok(js.includes("button('从账号刷新','Refresh from account',()=>pairManual(person,true),'pair-reading-refresh')"));
  assert.ok(js.includes("saved?'更新解读':'生成分类解读'"));

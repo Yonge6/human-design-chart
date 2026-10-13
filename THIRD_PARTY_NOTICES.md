@@ -70,3 +70,11 @@ legal advice and does not claim Apple approval.
 - Source: https://phosphoricons.com/
 - Package: `@phosphor-icons/web` 2.1.2
 - License: MIT; full text in `vendor/phosphor/LICENSE`
+
+## Noto Serif SC UI font
+
+- Source: https://fonts.google.com/noto/specimen/Noto+Serif+SC
+- UI-character subset supplied by Google Fonts; local CSS family alias: `Buer Serif`.
+- Embedded font copyright: (c) 2017-2024 Adobe (http://www.adobe.com/).
+- License: SIL Open Font License 1.1; full text and copyright notices in `assets/fonts/buer-serif-OFL.txt`.
+- Google Fonts license source: https://github.com/google/fonts/blob/main/ofl/notoserifsc/OFL.txt

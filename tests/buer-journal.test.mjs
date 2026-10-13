@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createJournalStore, validateEntry } from '../src/services/buer-journal.js';
 import { readAuthCallback, accountConfig } from '../src/services/buer-account.js';
+import { nativeAuthDiagnostic, workspaceConflictSummary, workspaceSyncStatus } from '../src/app/buer-journal.js';
 const value = { title: 'A private day', body: 'Only mine', mood: 'calm', entry_date: '2026-10-05' };
 const clone = value => structuredClone(value);
 const delay = () => { let resolve; const promise = new Promise(r => resolve = r); return { promise, resolve }; };
@@ -33,6 +34,36 @@ test('native OAuth only accepts exact Buer callback with code', () => {
   assert.equal(readAuthCallback('https://auth/callback?code=abc'), null);
   assert.equal(readAuthCallback('buerwithin://auth/callback#error=abc'), null);
   assert.equal(accountConfig({}), null);
+});
+test('native development builds show only bounded auth diagnostic codes', () => {
+  assert.equal(nativeAuthDiagnostic(new Error('AUTH_CALLBACK_ACCESS_DENIED'), { native: true, environment: 'development' }), 'AUTH_CALLBACK_ACCESS_DENIED');
+  assert.equal(nativeAuthDiagnostic(new Error('code verifier mismatch'), { native: true, environment: 'development' }), 'PKCE_VERIFIER_FAILED');
+  assert.equal(nativeAuthDiagnostic(new Error('AUTH_CALLBACK_ACCESS_DENIED'), { native: false, environment: 'development' }), '');
+  assert.equal(nativeAuthDiagnostic(new Error('AUTH_CALLBACK_ACCESS_DENIED'), { native: true, environment: 'production' }), '');
+});
+test('preserved workspace versions use content names and valid content times, never internal record IDs', () => {
+  const chat = workspaceConflictSummary({ kind: 'chat', recordId: 'private-internal-id', payload: {
+    messages: [{ role: 'assistant', content: 'A reply' }, { role: 'user', content: '  我想找到\n适合自己的节奏  ' }],
+    date: '2026-10-13T12:00:00Z',
+  } });
+  assert.equal(chat.title, '我想找到 适合自己的节奏');
+  assert.equal(chat.type, '对话记录');
+  assert.match(chat.time, /2026/);
+  assert.ok(!JSON.stringify(chat).includes('private-internal-id'));
+  const manual = workspaceConflictSummary({ kind: 'manual', recordId: 'manual-id', payload: { input: { name: '小林' }, createdAt: 'invalid-date' } });
+  assert.equal(manual.title, '小林的人生说明书');
+  assert.equal(manual.time, '时间未记录');
+  assert.equal(workspaceConflictSummary({ kind: 'action', recordId: 'action-id', payload: { title: '每周留半天休息', due: '2026-12-31' } }).time, '时间未记录');
+  assert.equal(workspaceConflictSummary({ kind: 'answer', payload: { value: 'My next step' } }, 'en').title, 'My next step');
+  assert.equal(workspaceConflictSummary({ kind: 'chat', payload: { messages: {} } }).title, '对话记录');
+});
+test('account sync feedback distinguishes connection failure, queued edits and completed sync', () => {
+  assert.match(workspaceSyncStatus({ status: 'offline', pending: 2 }), /检查网络.*本机内容仍保留/);
+  assert.match(workspaceSyncStatus({ status: 'pending', pending: 2 }), /2 项等待同步/);
+  assert.equal(workspaceSyncStatus({ status: 'synced', pending: 0 }), '已同步到账号');
+  assert.match(workspaceSyncStatus({ status: 'synced', pending: 1 }), /等待同步/);
+  assert.equal(workspaceSyncStatus({ status: 'syncing', pending: 2 }, 'en'), 'Syncing…');
+  assert.match(workspaceSyncStatus({ status: 'offline', pending: 0 }, 'en'), /could not finish/);
 });
 test('accounts have isolated entries, local drafts and server writes', async () => {
   const { store, disk } = fixture();

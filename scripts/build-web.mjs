@@ -18,6 +18,7 @@ const files = [
   "buer-editorial.css",
   "buer-companion.css",
   "buer-journal.css",
+  "buer-paper.css",
   "app.js",
   "analytics.js",
   "analytics-frame.html",
@@ -60,20 +61,14 @@ export async function buildWeb({
         filter: (path) => {
           const name = relative(rootDirectory, path).split("\\").join("/");
           if (name === "assets/bodygraph-original-template.svg" || name.startsWith("src/visualization") || name.endsWith("bodygraph-original-renderer.js")) return false;
-          if (native && (name === "assets/bodygraph-template.svg" || name.startsWith("vendor/html2canvas"))) return false;
           return true;
         },
       },
     )),
   ]);
   if (native) {
-    await cp(resolve(rootDirectory, "src/app/native-bodygraph.js"), resolve(outputDirectory, "src/renderer/bodygraph-renderer.js"));
-    const appPath = resolve(outputDirectory, "app.js");
-    const app = await readFile(appPath, "utf8");
-    await writeFile(appPath, app.replace(/templateUrl: "\.\/assets\/bodygraph-template\.svg",/, ""));
     const htmlPath = resolve(outputDirectory, "index.html");
     await writeFile(htmlPath, (await readFile(htmlPath, "utf8"))
-      .replace(/<script src="vendor\/html2canvas\/html2canvas\.min\.js"><\/script>/, "")
       .replace('<html lang="zh-CN">', '<html lang="zh-CN" class="native-text-results">'));
   }
   await mkdir(resolve(outputDirectory, "supabase/functions/_shared"), { recursive: true });

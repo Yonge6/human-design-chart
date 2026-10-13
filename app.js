@@ -20,14 +20,14 @@ import { createBodygraphRenderer } from "./src/renderer/bodygraph-renderer.js";
 import { BUER_CENTER_COLORS } from "./src/renderer/bodygraph-palette.js";
 import { renderPosterElement } from "./src/renderer/poster-renderer.js";
 import { validateBirthSelection } from "./src/app/form-validation.js";
-import { canUseRemoteServices, effectiveRemoteConsent, isCapacitorNativeRuntime } from "./src/app/runtime-security.js";
+import { canUseRemoteServices, effectiveRemoteConsent, isCapacitorNativeRuntime, nativeImageCapabilities } from "./src/app/runtime-security.js";
 import { getReleaseFeatureAvailability } from "./src/app/release-feature-availability.js";
 import { hasSupabaseConfig } from "./src/config/runtime-config.js";
 import { createDailyTipPayload, getDailyTip, latestSavedResult, formatDailyTipText } from "./src/app/daily-tip.js";
 
 import { createDailyTipPoster } from "./src/renderer/daily-tip-poster.js";
 
-const publicAppUrl = "https://human-design.wonderelian.com/";
+const publicAppUrl = "https://buer.wonderelian.com/";
 preloadHumanDesignEngine().catch((error) => {
   console.warn("Human Design engine warmup deferred:", error);
 });
@@ -151,6 +151,11 @@ const deleteHistoryRecordsButton = document.querySelector("#deleteHistoryRecords
 const nativePlugin = globalThis.Capacitor?.Plugins?.PlutoNative
   || globalThis.Capacitor?.registerPlugin?.("PlutoNative") || null;
 const nativeRuntime = isCapacitorNativeRuntime(globalThis.Capacitor);
+const nativeImageActions = nativeImageCapabilities({
+  isNativeRuntime: nativeRuntime,
+  pluginAvailable: globalThis.Capacitor?.isPluginAvailable?.("PlutoNative") === true,
+  plugin: nativePlugin,
+});
 document.documentElement.classList.toggle("native-text-results", nativeRuntime);
 const remoteRuntimeAllowed = canUseRemoteServices({
   isSecureContext: globalThis.isSecureContext === true,
@@ -191,7 +196,7 @@ const copy = {
     openMenu: "打开更多功能", closeMenu: "关闭菜单", drawerBack: "返回", drawerTitle: "我的空间", drawerIntroKicker: "真实自己，流动人生", drawerIntroTitle: "记录每一次看见，积累属于你的成长", drawerIntroText: "整理成长档案、经历与行动，让每一步都留下回响。登录后自动同步，随时继续认识自己、走向下一步。", drawerActions: "你的空间", drawerHistoryHint: "重新打开已保存的人生说明书", drawerSettingsHint: "管理隐私模式、本地历史与数据", language: "语言", drawerLanguageHint: "切换界面与解读语言", aboutUs: "关于我们", drawerAboutHint: "认识不二见己 与我们相信的生命观", contactUs: "联系我们", drawerContactHint: "网站、邮箱与社交媒体", drawerLinksTitle: "帮助与说明", drawerFooter: "认识自己，不是为了证明自己。",
     worksTitle: "沿途所作", worksIntro: "观世界，识自己，也学习看见美。", workWonderElian: "WonderElian", workWonderElianTagline: "让复杂的想法变得清晰、好看而有人情味", workWonderElianDescription: "WonderElian 是永歌 Elian 的个人创作空间。这里记录作品，也记录关于设计、AI、产品，以及如何慢慢成为自己的思考与探索。", workYixiu: "一休冥想", workYixiuTagline: "让声音带你回到当下", workYixiuDescription: "一休冥想，用自然声音陪你放慢脚步，在忙碌间隙歇一歇，也为专注与独处留一点安静。", workXiazi: "虾子曰", workXiaziTagline: "昨日世界", workXiaziDescription: "每天用全球热点与双语海报，把复杂世界讲清楚。", workWendao: "三慢问道", workWendaoTagline: "慢读原典", workWendaoDescription: "在古老文字与当下生活之间，留一处慢慢阅读的空间。", workStyleAtlas: "艺术风格图鉴", workStyleAtlasTagline: "学习看懂一种美", workStyleAtlasDescription: "沿着艺术与设计的脉络，找到自己的观看方式。",
     aboutKicker: "真实自己，流动人生", aboutHeading: "生命不是用来证明自己的。", aboutParagraphOne: "豆豆龙是不二见己里的专属 AI 成长伙伴。从人类图自我观察，到 HUMAN 3.0 四领域访谈，再到持续补充的个人经历，我们帮助你把认识自己变成下一步行动，并从复盘中调整方向。", aboutParagraphTwo: "我们相信，认识自己、接纳自己、成为自己、活出自己，是一条持续展开的路。真实面对自己与世界，善待自己、他人与生命，并在创造和欣赏中活出生命之美。", aboutDisclaimer: "人类图仅作为自我观察与对话的视角，不是科学结论，也不替你作决定。", lifePhilosophyKicker: "我们的生命观", lifePhilosophyTitle: "生命不是用来证明自己的，而是用来认识、接纳、成为并活出自己。", lifePhilosophyIntro: "真正的成长，不是把自己改造成某个标准答案，而是在变化中越来越诚实地看见自己，越来越从容地选择自己的活法。", lifePathLabel: "核心路径", lifePathKnow: "认识自己", lifePathAccept: "接纳自己", lifePathBecome: "成为自己", lifePathLive: "活出自己", lifePrinciplePause: "一休", lifePrinciplePauseText: "先照顾身体，安顿情绪，再继续前行。", lifePrincipleWhole: "不二", lifePrincipleWholeText: "不评判，没有好坏对错，接纳高峰与低谷，拥抱完整而非完美。", lifePrincipleSlow: "三慢", lifePrincipleSlowText: "慢下来、慢慢来、慢慢成为，尊重生命的节奏。", lifePrincipleWater: "如水", lifePrincipleWaterText: "向内扎根，向外流动；顺应变化，不失本心。", lifePhilosophyQuote: "向内认识自己，向外如水而行。", lifePhilosophyVision: "我们愿陪伴彼此走过低谷与高峰，探索身心健康的工作与生活方式；真实面对自己与世界，善待自己、他人与生命，并在创造和欣赏中活出生命之美。", contactKicker: "保持联系", contactHeading: "一起把作品做得更好。", contactIntro: "欢迎分享你的使用感受、问题与建议。", emailLabel: "邮箱", redLabel: "小红书", douyinLabel: "抖音", openProfile: "打开主页",
-    history: "历史记录", settings: "隐私设置", localOnly: "仅保存在此设备", historyEmpty: "还没有保存的人生使用说明书。", openHistory: "打开", deleteHistory: "删除", confirmDeleteTitle: "删除这条记录？", confirmDeleteHint: "删除后无法恢复。", cancel: "取消", confirmDelete: "确认删除", openSource: "源代码",
+    history: "历史记录", settings: "隐私设置", localOnly: "保存在本机；登录后同步到账号", historyEmpty: "还没有保存的人生使用说明书。", openHistory: "打开", deleteHistory: "删除", confirmDeleteTitle: "删除这条记录？", confirmDeleteHint: "删除后无法恢复。", cancel: "取消", confirmDelete: "确认删除", openSource: "源代码",
     defaultPrivacy: "隐私模式", defaultPrivacyHint: "生成图片时隐藏姓名、日期、时间和地点；默认关闭。", saveHistory: "保存说明书记录", saveHistoryHint: "默认开启；登录后同步到账号。关闭时可保留旧记录，或删除并同步到所有设备。", cloudSave: "将新生成的说明书保存到云端", cloudSaveHint: "仅管理旧的匿名云端图谱库，不影响登录后的账号同步；默认关闭。", productAnalytics: "帮助我们改进不二见己", productAnalyticsHint: "仅发送允许的匿名操作事件，不包含出生资料或完整图谱；默认关闭。", deleteCloudData: "删除云端图谱与个人资料", deleteCloudConfirm: "这会删除当前匿名身份保存的姓名、出生资料和人类图记录。本地历史不会删除。已经记录的匿名使用事件会移除用户标识，并最多保留180天用于汇总统计。", deleteCloudTitle: "删除云端资料？", cloudDeleted: "云端图谱与个人资料已删除；匿名事件已去标识，本地历史保留。", clearHistory: "清空历史记录", clearHistoryTitle: "清空全部说明书记录？", clearHistoryConfirm: "已保存的人生说明书将被删除；登录状态下删除会同步到同一账号的所有设备。", disableHistoryTitle: "关闭本地历史记录？", disableHistoryConfirm: "关闭后，今后生成的说明书不会加入本地历史。你可以保留已有记录，也可以同时全部删除。", keepHistoryRecords: "关闭但保留记录", deleteHistoryRecords: "关闭并删除全部记录", pleaseConfirm: "请确认", confirmAction: "确认", privacyPolicy: "隐私政策", support: "帮助与支持", legalNotice: "法律声明", privacyNote: "隐私模式与匿名统计默认关闭。说明书记录默认开启，登录后自动同步到账号；未登录时仅保存在本机。删除记录会同步到同一账号的所有设备。匿名云端图谱另行管理。", nativeLocalOnlyPrivacyNote: "说明书和每日提示仅保存在此设备。关闭本地历史后，首页与小组件不再使用已保存的结果。", historyCleared: "历史记录已清空。", selectDate: "请选择完整的出生日期。", invalidDate: "请输入有效的出生日期。", selectTime: "请选择完整的出生时间。", invalidTime: "请输入有效的出生时间。", enterLocation: "请输入出生地点。",
   },
   en: {
@@ -817,7 +822,7 @@ let selectedPlace = null;
 let pendingHistoryDeleteId = null;
 let pendingConfirmation = null;
 let pendingHistoryOptOut = null;
-const paintBodygraph = nativeRuntime ? async () => null : createBodygraphRenderer({
+const paintBodygraph = createBodygraphRenderer({
   container: graph,
   templateUrl: "./assets/bodygraph-template.svg",
   centerColors,
@@ -935,9 +940,8 @@ function updateRemoteServiceControls() {
   cloudSaveInput.disabled = !remoteServicesAllowed;
   productAnalyticsInput.disabled = !remoteServicesAllowed;
   deleteCloudDataButton.disabled = !remoteServicesAllowed;
-  privacyNote.dataset.i18n = releaseFeatures.nativeRemoteFeaturesUnavailable
-    ? "nativeLocalOnlyPrivacyNote"
-    : "privacyNote";
+  // Account workspace sync is independent of the optional anonymous chart store.
+  privacyNote.dataset.i18n = "privacyNote";
 }
 
 function trackManualUsage(eventName) {
@@ -1480,7 +1484,6 @@ async function render(data) {
   updateAccessibleResultSummary(data);
   renderResultHighlights(data);
   document.dispatchEvent(new CustomEvent('buer:result',{detail:{data}}));
-  if (nativeRuntime) return;
   document.querySelector("#personName").textContent = privacyToggle.checked ? "***" : data.Properties.Name;
   document.querySelector("#birthLine").textContent = privacyToggle.checked ? privateBirthLine() : formattedBirth(data);
   document.querySelector("#designList").innerHTML = planets.map((planet) => row(planet, data.Design[planet])).join("");
@@ -1516,10 +1519,6 @@ function clearPoster() {
 }
 
 async function createPosterImage() {
-  if (nativeRuntime) {
-    chartResult.removeAttribute("aria-busy");
-    return;
-  }
   const renderVersion = ++posterRenderVersion;
   setResultLoadingMessage("buildingResult");
   setMediaState(previewStage, "loading");
@@ -1530,7 +1529,7 @@ async function createPosterImage() {
   privacyToggle.disabled = true;
   try {
     await Promise.all([paintBodygraph(lastData), document.fonts.ready, loadExportAssets()]);
-    const nextBlob = await renderPosterElement(chartPanel);
+    const nextBlob = await renderPosterElement(chartPanel, { backgroundColor: "#f7f4ec" });
     if (renderVersion !== posterRenderVersion) return;
     if (posterUrl) URL.revokeObjectURL(posterUrl);
     posterBlob = nextBlob;
@@ -1539,8 +1538,8 @@ async function createPosterImage() {
     if (chartPreview.decode) await chartPreview.decode();
     if (renderVersion !== posterRenderVersion) return;
     setMediaState(previewStage, "ready");
-    downloadButton.disabled = false;
-    shareButton.disabled = false;
+    downloadButton.disabled = nativeRuntime && !nativeImageActions.save;
+    shareButton.disabled = nativeRuntime && !nativeImageActions.share;
   } catch (error) {
     if (renderVersion === posterRenderVersion) setMediaState(previewStage, "error");
     throw error;
@@ -2196,15 +2195,8 @@ applyLanguage(language, false);
 if (nativeRuntime) {
   resultSummary.classList.remove("sr-only");
   resultSummary.classList.add("native-summary");
-  previewStage.hidden = true;
-  downloadButton.hidden = true;
-  shareButton.hidden = true;
-  privacyToggle.closest("label").hidden = true;
-  defaultPrivacyInput.closest("label").hidden = true;
-  chartPanel.hidden = true;
-  privacyNote.textContent = language === "zh"
-    ? "说明书和每日提示仅保存在此设备。关闭本地历史后，首页与小组件不再使用已保存的结果。"
-    : "Life Manuals and daily tips stay on this device. Turning off local history stops saved results appearing on home and widgets.";
+  downloadButton.hidden = !nativeImageActions.save;
+  shareButton.hidden = !nativeImageActions.share;
   nativePlugin?.addListener?.("dailyTipOpened", () => {
     consumeWidgetLink().catch(error => console.warn("Widget link deferred", error));
   });
@@ -2251,6 +2243,8 @@ document.querySelector('#shareDailyTip').addEventListener('click', async event =
   status.textContent = dailyShareText('正在生成分享卡片…', 'Creating your share card…');
   document.querySelector('#saveDailyImage').disabled = true;
   document.querySelector('#sendDailyImage').disabled = true;
+  document.querySelector('#saveDailyImage').hidden = nativeRuntime && !nativeImageActions.save;
+  document.querySelector('#sendDailyImage').hidden = nativeRuntime && !nativeImageActions.share;
   dailyShareDialog.showModal();
   const textPreview=document.querySelector('#dailyShareTextPreview');textPreview.hidden=false;textPreview.querySelector('p').textContent=formatDailyTipText(tip,language);
   try {
@@ -2273,8 +2267,8 @@ document.querySelector('#shareDailyTip').addEventListener('click', async event =
       showDailyImageHelp();
     }
     status.textContent = '';
-    document.querySelector('#saveDailyImage').disabled = false;
-    document.querySelector('#sendDailyImage').disabled = false;
+    document.querySelector('#saveDailyImage').disabled = nativeRuntime && !nativeImageActions.save;
+    document.querySelector('#sendDailyImage').disabled = nativeRuntime && !nativeImageActions.share;
   } catch (error) {
     if (!dailyShareDialog.open || generation !== dailyShareGeneration) return;
     status.textContent = dailyShareText('图片生成失败，请关闭后重试。', 'Image creation failed. Close and try again.');

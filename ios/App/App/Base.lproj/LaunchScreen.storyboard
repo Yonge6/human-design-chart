@@ -16,18 +16,18 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="PLUTO" textAlignment="center" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="j2v-Sn-5tB">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="不二见己" textAlignment="center" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="j2v-Sn-5tB">
                                 <rect key="frame" x="132" y="294" width="111" height="34"/>
                                 <fontDescription key="fontDescription" type="serif" pointSize="28"/>
-                                <color key="textColor" red="0.827" green="0.682" blue="0.438" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="textColor" red="0.153" green="0.224" blue="0.243" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="LIFE MANUAL" textAlignment="center" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kzm-KU-aKU">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="BUER WITHIN" textAlignment="center" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kzm-KU-aKU">
                                 <rect key="frame" x="137" y="340" width="101" height="14"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="11"/>
-                                <color key="textColor" red="0.827" green="0.682" blue="0.438" alpha="0.78" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="textColor" red="0.212" green="0.494" blue="0.549" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" red="0.059" green="0.043" blue="0.071" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.969" green="0.957" blue="0.925" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="j2v-Sn-5tB" firstAttribute="centerX" secondItem="snD-IY-ifK" secondAttribute="centerX" id="51M-Do-bP6"/>
                             <constraint firstItem="j2v-Sn-5tB" firstAttribute="centerY" secondItem="snD-IY-ifK" secondAttribute="centerY" constant="-22" id="QW1-q8-WKW"/>

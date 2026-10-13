@@ -25,6 +25,19 @@ const el = (tag, text = '', attributes = {}) => {
   for (const [key, value] of Object.entries(attributes)) node.setAttribute(key, value);
   return node;
 };
+export function relationshipSavedTime(value, language = 'zh') {
+  if (!value || !Number.isFinite(new Date(value).getTime())) return '';
+  return new Intl.DateTimeFormat(language === 'en' ? 'en' : 'zh-CN', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(value));
+}
+export function pairReadingVersionsDiffer(cached, remote) {
+  const version = row => row == null ? null : [row.revision ?? null, row.updated_at ?? null];
+  return ['source', 'saved'].some(key => JSON.stringify(version(cached[key])) !== JSON.stringify(version(remote[key])));
+}
+export async function checkPairReadingVersions({ repository, owner, personId, cached, isCurrent }) {
+  if (!isCurrent()) return false;
+  const [source, saved] = await Promise.all([repository.guideSource(owner), repository.pairManual(owner, personId)]);
+  return isCurrent() && pairReadingVersionsDiffer(cached, { source, saved });
+}
 const chartNames = { Generator:'生产者', 'Manifesting Generator':'显示生产者', Manifestor:'显现者', Projector:'投射者', Reflector:'反映者',
   'To Respond':'等待回应', 'To Inform':'告知', 'Wait for the Invitation':'等待邀请', 'Wait a Lunar Cycle':'等待一个月亮周期',
   'Emotional - Solar Plexus':'情绪权威 · 太阳神经丛', Sacral:'荐骨权威', Splenic:'脾脏权威', 'Ego Manifested':'意志显现权威', 'Ego Projected':'意志投射权威',
@@ -182,7 +195,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     if(force)readingCache.clear();
     invalidate();const ticket=epoch;reset(l(`我与${person.nickname} · 相处说明书`,`Me & ${person.nickname} · Relationship manual`));if(!dialog.open)dialog.showModal();
     content.classList.add('pair-manual-content');
-    let source=null,saved=null,selected='overview',pending=null,otherProperties=null,chartError=null;
+    let source=null,saved=null,selected='overview',pending=null,otherProperties=null,chartError=null,accountUpdateAvailable=false;
     const expanded=new Map();
     const tabLabels={overview:['概览','Overview'],communication:['沟通','Talk'],friction:['决策','Decide'],rhythm:['节奏','Rhythm'],repair:['修复','Repair'],practice:['行动','Practice']};
     function selectSection(key){
@@ -193,6 +206,15 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     }
     const remember=()=>{if(valid(ticket)&&!chartError)readingCache.set(owner,person,{source,saved,otherProperties});};
     const localSource=()=>makeGuideSource(getGrowthReport(),readGrowth(workspaceStorage()));
+    const updateNotice=()=>el('p',l('账号里有更新，刷新后查看。','Updates are available in your account. Refresh to read them.'),{class:'pair-reading-note pair-reading-update',role:'status'});
+    function showAccountUpdate() {
+      const meta=content.querySelector('.pair-reading-meta');
+      if(!meta||meta.querySelector('.pair-reading-update'))return;
+      const pane=content.querySelector('.pair-manual-reading'),previousTop=content.scrollTop,paneTop=pane?.getBoundingClientRect().top;
+      meta.querySelector('.pair-reading-note').after(updateNotice());
+      // Add a notice without rebuilding the reading or moving the text in view.
+      if(previousTop>0&&pane&&Number.isFinite(paneTop))content.scrollTop+=pane.getBoundingClientRect().top-paneTop;
+    }
     function draw(){
       content.replaceChildren();
       const sections=readingSections(saved?.sections),legacy=Boolean(saved&&!guideV2(saved.sections));
@@ -203,11 +225,15 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       const note=roleWarning?l(`称谓需核对：对方是你的${roleWarning}，请更新旧解读。`,`Check the old reading: this person is your ${roleWarning==='母亲'?'mother':'father'}.`):changed?l('资料有变化，原解读仍可阅读。','Sources changed. Your saved reading remains available.'):saved?l('已保存 · 随时阅读','Saved · Read any time'):l('先阅读基础建议，需要时再生成解读。','Read the basics, then generate a personal reading when ready.');
       const meta=el('div','',{class:'pair-reading-meta'}),more=el('details','',{class:'pair-reading-more'});
       meta.append(el('p',note,{class:'pair-reading-note',role:'status'}));
+      if(accountUpdateAvailable)meta.append(updateNotice());
+      const savedTime = relationshipSavedTime(saved?.updated_at, getLanguage());
+      if (savedTime) meta.append(el('p', l(`解读保存于 ${savedTime}`, `Reading saved ${savedTime}`), { class: 'pair-reading-saved-time' }));
+      meta.append(button('从账号刷新','Refresh from account',()=>pairManual(person,true),'pair-reading-refresh'));
       more.append(el('summary',l('更多','More')));
-      if(source)more.append(el('p',l(`资料更新：${new Date(source.updated_at).toLocaleString()}`,`Source updated: ${new Date(source.updated_at).toLocaleString()}`)));
-      if(saved)more.append(el('p',l(`解读保存：${new Date(saved.updated_at).toLocaleString()}`,`Reading saved: ${new Date(saved.updated_at).toLocaleString()}`)));
-      more.append(el('p',l('已保存的解读可直接阅读。人类图仅作观察参考。','Saved readings open directly. Human Design is a reflection tool.')),button('从账号刷新','Refresh from account',()=>pairManual(person,true)));
-      meta.append(more);content.append(el('div','',{class:'pair-reading-anchor','aria-hidden':'true'}));
+      const sourceTime = relationshipSavedTime(source?.updated_at, getLanguage());
+      if(sourceTime)more.append(el('p',l(`资料更新：${sourceTime}`,`Source updated: ${sourceTime}`)));
+      more.append(el('p',l('已保存的解读可直接阅读。人类图仅作观察参考。','Saved readings open directly. Human Design is a reflection tool.')));
+      meta.append(more);content.append(meta,el('div','',{class:'pair-reading-anchor','aria-hidden':'true'}));
       const nav=el('div','',{class:'relationship-manual-tabs pair-manual-tabs',role:'tablist','aria-label':l('相处说明书分类','Reading categories')});
       for(const [key,zh,en] of sections){
         const labels=legacy&&key==='friction'?['互补','Support']:legacy&&key==='practice'?['日常','Daily']:tabLabels[key],b=button(labels[0],labels[1],()=>selectSection(key));
@@ -272,9 +298,9 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
       if(pending)generateActions.append(button('重试保存解读（不重新生成）','Retry saving (no regeneration)',b=>generate(false,true,b),'journal-primary'));
       else {
         if(source)generateActions.append(button(saved?'更新解读':'生成分类解读',saved?'Update reading':'Generate reading',b=>generate(false,false,b),'journal-primary'));
-        generateActions.append(button(source?'同步当前成长档案并更新':'使用当前成长档案生成',source?'Sync current growth profile & update':'Generate from current growth profile',b=>generate(true,false,b),source?'':'journal-primary'));
+        generateActions.append(button(source?'使用最新档案更新':'使用最新档案生成',source?'Update with latest profile':'Generate with latest profile',b=>generate(true,false,b),source?'':'journal-primary'));
       }
-      content.append(generateActions,el('small',l('生成或更新会结合双方人类图、你的完整成长档案、人物观察、相关日记、普通对话，以及与这个人的过往关系对话。仅生成时调用 AI 并按现有额度计次，阅读已保存内容不计次。','Generation uses both charts, your complete growth profile, observations, relevant journals, general chats and prior relationship conversations with this person. Only generation calls AI and uses the current allowance; reading saved content is free.')),meta);
+      content.append(generateActions,el('small',l('生成或更新会结合双方人类图、你的完整成长档案、人物观察、相关日记、普通对话，以及与这个人的过往关系对话。仅生成时调用 AI 并按现有额度计次，阅读已保存内容不计次。','Generation uses both charts, your complete growth profile, observations, relevant journals, general chats and prior relationship conversations with this person. Only generation calls AI and uses the current allowance; reading saved content is free.')));
     }
     async function generate(sync,retry=false,activeButton){
       if(busy||!valid(ticket))return;
@@ -304,12 +330,19 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
         status.textContent=l('解读已生成，正在保存到账号…','Reading generated. Saving to your account…');
         phase('保存中…','Saving…');
         const row=await repo.savePairManual(owner,person,source,saved,pending.sections,pending.language,pending.mutation);if(!valid(ticket))return;
-        saved=row;pending=null;dirty=false;remember();status.textContent=l('说明书已保存，下次打开直接阅读。','Saved. Open it next time without generating again.');
+        saved=row;pending=null;dirty=false;accountUpdateAvailable=false;remember();status.textContent=l('说明书已保存，下次打开直接阅读。','Saved. Open it next time without generating again.');
       }catch(error){if(valid(ticket))status.textContent=errorMessage(error)+(saved?l(' 旧版说明书仍保留。',' Your previous reading is preserved.'):'');}
       finally{if(valid(ticket)){controller=null;busy=false;draw();}}
     }
     const cached=force?null:readingCache.get(owner,person);
-    if(cached&&valid(ticket)){({source,saved,otherProperties}=cached);draw();status.textContent='';return;}
+    if(cached&&valid(ticket)){
+      ({source,saved,otherProperties}=cached);draw();status.textContent='';
+      const readingOwner=owner;
+      void checkPairReadingVersions({repository:repo,owner:readingOwner,personId:person.id,cached,
+        isCurrent:()=>valid(ticket)&&owner===readingOwner&&!busy&&source===cached.source&&saved===cached.saved,
+      }).then(changed=>{if(changed&&valid(ticket)&&owner===readingOwner){accountUpdateAvailable=true;showAccountUpdate();}}).catch(()=>{});
+      return;
+    }
     busy=true;status.textContent=l('正在读取已保存的说明书…','Loading saved reading…');
     const preview=loadingPreview(l('正在连接账号，读取已保存的内容…','Connecting to your account and loading saved content…'),PAIR_SECTIONS.map(s=>s[getLanguage()==='en'?2:1]));
     content.append(chartSummary(person),preview);
@@ -573,7 +606,7 @@ export function initBuerRelationships({ getLanguage, account, openAccount, getRe
     if(guide){question.value=relationshipGuidePrompt(getLanguage());dirty=true;form.hidden=true;await form.onsubmit({preventDefault(){}});if(valid(ticket))form.hidden=false;}
   }
   function language() { tab.querySelector('span').textContent=l('身边的人','People');
-    hero.replaceChildren(el('p',l('BUER WITHIN / 身边的人','BUER WITHIN / PEOPLE'),{class:'growth-eyebrow'}),el('h1',l('理解彼此，让相处多一点从容。','Understand each other. Make room to grow.')),el('p',l('从你在意的人开始，聊聊你们之间的事。','Start with someone who matters. Talk about life together.')),el('img','',{class:'companion-section-art',src:'assets/companion-people-hug.png',alt:'',width:'320',height:'320'}));
+    hero.replaceChildren(el('p',l('BUER WITHIN / 身边的人','BUER WITHIN / PEOPLE'),{class:'growth-eyebrow'}),el('h1',l('理解彼此，让相处多一点从容。','Understand each other. Make room to grow.')),el('p',l('从你在意的人开始，聊聊你们之间的事。','Start with someone who matters. Talk about life together.')),el('img','',{class:'companion-section-art',src:'assets/doudoulong-blue-notebook.png',alt:'',width:'320',height:'320'}));
     if(document.body.dataset.workspace==='people'&&!dialog.open&&!busy)void list(); }
   document.addEventListener('buer:language', language); language();
   document.addEventListener('buer:relationships', () => void open());

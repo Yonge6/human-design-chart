@@ -230,3 +230,21 @@ test("built resources use one valid fingerprint and resolve without broken local
     assert.match(content, new RegExp(`[?&]v=${fingerprint}(?:[&#"'])`));
   }
 });
+
+test("native bundles carry the working graph and export resources used by H5", async (t) => {
+  const temporaryRoot = await mkdtemp(join(tmpdir(), "buer-native-parity-"));
+  t.after(() => rm(temporaryRoot, { recursive: true, force: true }));
+  const output = join(temporaryRoot, "native");
+  const { fingerprint } = await buildWeb({ rootDirectory: root, outputDirectory: output, environment: fixedEnvironment, native: true });
+  const graph = "assets/bodygraph-template.svg";
+  assert.deepEqual(await readFile(join(output, graph)), await readFile(join(root, graph)));
+  const renderer = "src/renderer/bodygraph-renderer.js";
+  assert.equal(await readFile(join(output, renderer), "utf8"), await readFile(join(root, renderer), "utf8"));
+  const html = await readFile(join(output, "index.html"), "utf8");
+  assert.match(html, new RegExp(`vendor/html2canvas/html2canvas\\.min\\.js\\?v=${fingerprint}`));
+  await stat(join(output, "vendor/html2canvas/html2canvas.min.js"));
+  const app = await readFile(join(output, "app.js"), "utf8");
+  assert.match(app, new RegExp(`templateUrl: "\\./assets/bodygraph-template\\.svg\\?v=${fingerprint}"`));
+  const relationship = await readFile(join(output, "src/app/buer-relationships.js"), "utf8");
+  assert.match(relationship, new RegExp(`assets/bodygraph-template\\.svg\\?v=${fingerprint}`));
+});

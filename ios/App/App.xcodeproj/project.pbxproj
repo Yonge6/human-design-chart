@@ -20,6 +20,7 @@
 		504EC30D1FED79650016851F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30B1FED79650016851F /* Main.storyboard */; };
 		504EC30F1FED79650016851F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30E1FED79650016851F /* Assets.xcassets */; };
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
+		B90000000000000000000110 /* doudoulong-blue-avatar.png in Resources */ = {isa = PBXBuildFile; fileRef = B90000000000000000000111 /* doudoulong-blue-avatar.png */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
 		B9000000000000000000000A /* DailyTipStore.swift in App Sources */ = {isa = PBXBuildFile; fileRef = B90000000000000000000001; };
 		B9000000000000000000000B /* DailyTipStore.swift in Widget Sources */ = {isa = PBXBuildFile; fileRef = B90000000000000000000001; };
@@ -54,6 +55,7 @@
 		504EC30E1FED79650016851F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		504EC3111FED79650016851F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		504EC3131FED79650016851F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B90000000000000000000111 /* doudoulong-blue-avatar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "doudoulong-blue-avatar.png"; path = "../../assets/doudoulong-blue-avatar.png"; sourceTree = SOURCE_ROOT; };
 		50B271D01FEDC1A000F3C39B /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = public; sourceTree = "<group>"; };
 		958DCC722DB07C7200EA8C5F /* debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = debug.xcconfig; path = ../debug.xcconfig; sourceTree = SOURCE_ROOT; };
 		B90000000000000000000001 /* DailyTipStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyTipStore.swift; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 				504EC30B1FED79650016851F /* Main.storyboard */,
 				504EC30E1FED79650016851F /* Assets.xcassets */,
 				504EC3101FED79650016851F /* LaunchScreen.storyboard */,
+				B90000000000000000000111 /* doudoulong-blue-avatar.png */,
 				504EC3131FED79650016851F /* Info.plist */,
 				B90000000000000000000007 /* App.entitlements */,
 				A20000000000000000000002 /* PrivacyInfo.xcprivacy */,
@@ -196,7 +199,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */,
+				B90000000000000000000110 /* doudoulong-blue-avatar.png in Resources */,
 				50B271D11FEDC1A000F3C39B /* public in Resources */,
 				504EC30F1FED79650016851F /* Assets.xcassets in Resources */,
 				50379B232058CBB4000EE86E /* capacitor.config.json in Resources */,

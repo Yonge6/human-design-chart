@@ -47,10 +47,39 @@ test("share images and chart loading use the warm editorial Buer system", () => 
   const poster = read("src/renderer/daily-tip-poster.js");
   const manualCss = read("buer-manual.css");
 
-  assert.match(poster, /companion-growth\.webp/);
+  assert.match(poster, /doudoulong-blue-notebook\.png/);
   assert.doesNotMatch(poster, /brand-companion-hero\.webp/);
-  assert.match(html, /class="result-loading-companion"[^>]*buer-companion-logo\.png/);
+  assert.match(html, /class="result-loading-companion"[^>]*doudoulong-blue-avatar\.png/);
+  for (const asset of ['doudoulong-blue-notebook.png', 'doudoulong-blue-avatar.png']) {
+    assert.equal(readFileSync(new URL(`../assets/${asset}`, import.meta.url)).readUInt32BE(0), 0x89504e47, `${asset} must exist as the referenced PNG artwork`);
+  }
   assert.match(read('buer-companion.css'), /#capture\.chart-panel\.export-mobile\{[^}]*background:#f4f0e7!important/);
+});
+
+test('native chart sharing keeps its per-image privacy control visible in the actual chart panel',()=>{
+  const html=read('index.html'),paper=read('buer-paper.css'),build=read('scripts/build-web.mjs');
+  const chart=html.match(/<section\b[^>]*id="manualChart"[^>]*>([\s\S]*?)<\/section>/);
+  assert.ok(chart,'The Human Design tab must exist');
+  assert.match(chart[1],/<label class="privacy-toggle">[\s\S]*?<input id="privacyMode" type="checkbox">/);
+  assert.match(chart[1],/id="download"[\s\S]*?id="share"/);
+  assert.match(paper,/html\.native-text-results #manualChart \.privacy-toggle\s*\{[^}]*display:\s*flex\s*!important/);
+  assert.ok(html.indexOf('href="buer-paper.css"')>html.indexOf('href="style.css"'),'The privacy override must load after the legacy native hide rule');
+  assert.match(build,/"buer-paper\.css"/,'Native and H5 bundles must both include the restoring stylesheet');
+});
+
+test('chart export and native safe-area surfaces keep the selected paper and cyan-blue palette',()=>{
+  const paper=read('buer-paper.css');
+  const colors=Object.fromEntries(['paper','ink','accent'].map(name=>{
+    const match=paper.match(new RegExp(`--ui-${name}:\\s*(#[0-9a-f]{6})\\s*;`,'i'));
+    assert.ok(match,`The shared ${name} color must be defined`);return [name,match[1]];
+  }));
+  const capture=paper.match(/#capture\.chart-panel\.export-mobile\s*\{([^}]*)\}/);
+  assert.ok(capture,'A shared chart export palette must override earlier themes');
+  assert.match(capture[1],new RegExp(`background:\\s*${colors.paper}\\s*!important`));
+  assert.match(capture[1],new RegExp(`color:\\s*${colors.ink}\\s*!important`));
+  assert.match(capture[1],new RegExp(`border-top-color:\\s*${colors.accent}\\s*!important`));
+  assert.match(paper,/html\.native-text-results body::before\s*\{[^}]*background:\s*var\(--ui-paper\)/);
+  assert.match(paper,/\.topbar[^}]*background:\s*var\(--ui-paper\)/);
 });
 
 test("drawer lists WonderElian first and does not include the retired support flow", () => {
@@ -106,12 +135,25 @@ test('growth profile uses secondary pages and owns the journal entry point',()=>
   assert.doesNotMatch(growth,/growthActionForm|growthExport|growthClear|growthPlanAction/);
 });
 
-test('People hero uses the seated hug mascot and the profile hero stays positive',()=>{
+test('People hero uses the selected cyan-blue hat mascot and the profile hero stays positive',()=>{
   const people=read('src/app/buer-relationships.js'),app=read('app.js');
-  assert.match(people,/companion-people-hug\.png/);
+  assert.match(people,/class:'companion-section-art',src:'assets\/doudoulong-blue-notebook\.png'/);
   assert.doesNotMatch(people,/companion-people-listening\.webp/);
   assert.match(app,/记录每一次看见，积累属于你的成长/);
   assert.match(app,/整理成长档案、经历与行动，让每一步都留下回响/);
+});
+
+test('the home submit button is explicitly associated with the real composer form',()=>{
+  const html=read('index.html'),home=read('src/app/buer-home.js');
+  const forms=[...html.matchAll(/<form\b([^>]*)>([\s\S]*?)<\/form>/g)].filter(match=>/\bid="buerChatForm"/.test(match[1]));
+  assert.equal(forms.length,1,'There must be one composer form');
+  assert.match(forms[0][2],/<textarea\b[^>]*id="buerQuestion"/);
+  const submit=[...html.matchAll(/<button\b([^>]*)>/g)].find(match=>/\bid="buerSend"/.test(match[1]));
+  assert.ok(submit,'The visible send button must exist');
+  const attributes=Object.fromEntries([...submit[1].matchAll(/([\w-]+)="([^"]*)"/g)].map(([,key,value])=>[key,value]));
+  assert.equal(attributes.type,'submit');
+  assert.equal(attributes.form,'buerChatForm','The send button outside the form must submit that composer');
+  assert.match(home,/form\.addEventListener\('submit',[\s\S]*?event\.preventDefault\(\);void ask\(input\.value\)/);
 });
 
 test('loading previews use known labels and accessible real stages',()=>{

@@ -9,9 +9,9 @@ export function initBuerManual({getLanguage,getData,getSections,isNative}) {
   let active='overview',openChapters=new Set([0]),renderedData=null;
   const tabs=[...document.querySelectorAll('[data-manual-tab]')];
   function selectTab(name,focus=false){
-    active=isNative&&name==='chart'?'overview':name;
+    active=name;
     for(const tab of tabs){const selected=tab.dataset.manualTab===active;tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected?0:-1;document.getElementById(tab.getAttribute('aria-controls')).hidden=!selected;if(selected&&focus)tab.focus();}
-    $('#manualChartTab').hidden=isNative;
+    $('#manualChartTab').hidden=false;
   }
   for(const tab of tabs){tab.addEventListener('click',()=>selectTab(tab.dataset.manualTab));tab.addEventListener('keydown',event=>{if(!['ArrowRight','ArrowLeft','Home','End'].includes(event.key))return;event.preventDefault();const visible=tabs.filter(t=>!t.hidden);const index=visible.indexOf(tab);const next=event.key==='Home'?0:event.key==='End'?visible.length-1:(index+(event.key==='ArrowRight'?1:-1)+visible.length)%visible.length;selectTab(visible[next].dataset.manualTab,true);});}
   function startQuestion(topic,chapter){

@@ -8,7 +8,7 @@ struct DailyTipEntry: TimelineEntry {
     var text: String {
         payload?.tip(on: date) ?? (isChinese
             ? "打开不二见己，生成你的说明书，获得每日生活提示。"
-            : "Open Buer Jianji and create your Life Manual for a daily suggestion.")
+            : "Open Buer Within and create your Life Manual for a daily thought.")
     }
 }
 
@@ -37,16 +37,16 @@ struct DailyTipProvider: TimelineProvider {
 struct DailyTipWidgetView: View {
     @Environment(\.widgetFamily) private var family
     let entry: DailyTipEntry
-    private let gold = Color(red: 0.85, green: 0.69, blue: 0.49)
-    private let ink = Color(red: 0.95, green: 0.91, blue: 0.86)
+    private let accent = Color(red: 54 / 255, green: 126 / 255, blue: 140 / 255)
+    private let ink = Color(red: 39 / 255, green: 57 / 255, blue: 62 / 255)
     private var background: some View {
-        Color(red: 0.063, green: 0.055, blue: 0.078)
+        Color(red: 247 / 255, green: 244 / 255, blue: 236 / 255)
     }
     private var content: some View {
         VStack(alignment: .leading, spacing: family == .systemSmall ? 8 : 12) {
             HStack(alignment: .firstTextBaseline) {
                 Text(entry.isChinese ? "今日提示" : "A thought for today")
-                    .font(.caption2.weight(.semibold)).foregroundStyle(gold)
+                    .font(.caption2.weight(.semibold)).foregroundStyle(accent)
                 Spacer(minLength: 4)
                 if family != .systemSmall {
                     Text(entry.date, format: .dateTime.month(.abbreviated).day())
@@ -60,10 +60,10 @@ struct DailyTipWidgetView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
                 .accessibilityLabel(entry.text)
             HStack {
-                Text(entry.isChinese ? "不二见己" : "BUER JIANJI").font(.system(size: 9, weight: .semibold, design: .rounded)).tracking(2)
+                Text(entry.isChinese ? "不二见己" : "BUER WITHIN").font(.system(size: 9, weight: .medium)).tracking(2)
                 Spacer()
                 Image(systemName: "arrow.up.right").font(.caption2)
-            }.foregroundStyle(gold.opacity(0.8))
+            }.foregroundStyle(accent)
         }
         .padding(16)
         .widgetURL(URL(string: "buerwithin://daily-tip"))

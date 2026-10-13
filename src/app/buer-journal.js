@@ -54,6 +54,57 @@ function element(tag, attributes = {}, text = '') {
   return node;
 }
 
+export function nativeAuthDiagnostic(error, {
+  native = globalThis.Capacitor?.isNativePlatform?.(),
+  environment = globalThis.PLUTO_CONFIG?.environment,
+} = {}) {
+  if (!native || environment !== 'development') return '';
+  const message = String(error?.message || '');
+  const explicit = message.match(/\b(?:AUTH|INVALID|PROVIDER)_[A-Z0-9_]+\b/)?.[0];
+  if (explicit) return explicit.slice(0, 64);
+  if (/code verifier|pkce/i.test(message)) return 'PKCE_VERIFIER_FAILED';
+  if (/exchange/i.test(message)) return 'SESSION_EXCHANGE_FAILED';
+  if (/fetch|network|offline/i.test(message)) return 'NETWORK_FAILED';
+  const apiCode = String(error?.code || '');
+  if (/^[a-z0-9_-]{1,48}$/i.test(apiCode)) return `API_${apiCode.toUpperCase().replaceAll('-', '_')}`;
+  return `AUTH_FAILED${Number.isInteger(error?.status) ? `_${error.status}` : ''}`;
+}
+
+export function workspaceConflictSummary(row, language = 'zh') {
+  const zh = language !== 'en', payload = row.payload || {};
+  const types = zh
+    ? { chat: '对话记录', manual: '人生说明书', answer: '成长访谈', story: '人生经历', action: '成长行动', growth_meta: '成长档案' }
+    : { chat: 'Conversation', manual: 'Life Manual', answer: 'Growth reflection', story: 'Life story', action: 'Growth action', growth_meta: 'Growth profile' };
+  const type = types[row.kind] || (zh ? '保存的内容' : 'Saved content');
+  const snippet = value => typeof value === 'string' ? value.replace(/\s+/g, ' ').trim() : '';
+  let title = snippet(payload.title);
+  if (!title && row.kind === 'chat' && Array.isArray(payload.messages)) title = snippet(payload.messages.find(message => message.role === 'user')?.content);
+  if (!title && row.kind === 'manual') {
+    const name = snippet(payload.input?.name || payload.data?.Properties?.Name);
+    if (name) title = zh ? `${name}的人生说明书` : `${name}’s Life Manual`;
+  }
+  if (!title && row.kind === 'answer') title = snippet(payload.value);
+  if (!title && row.kind === 'story') title = snippet(payload.body);
+  if (!title && row.kind === 'growth_meta' && row.recordId === 'report') title = zh ? '我的成长行动指南' : 'My growth action guide';
+  title ||= type;
+  if (title.length > 52) title = `${title.slice(0, 52)}…`;
+  const dateValue = [payload.updated_at, payload.updatedAt, payload.date, payload.created_at, payload.createdAt, payload.reportDate]
+    .find(value => value !== undefined && value !== null && value !== '' && Number.isFinite(new Date(value).getTime()));
+  const time = dateValue === undefined ? (zh ? '时间未记录' : 'Time not recorded')
+    : new Intl.DateTimeFormat(zh ? 'zh-CN' : 'en', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(dateValue));
+  return { type, title, time };
+}
+
+export function workspaceSyncStatus(state, language = 'zh') {
+  const zh = language !== 'en';
+  if (state.status === 'offline') return zh ? '同步暂未完成，请检查网络后重试。本机内容仍保留。' : 'Sync could not finish. Check your connection and retry. Your local content is kept.';
+  if (state.status === 'loading') return zh ? '正在读取账号内容…' : 'Loading account content…';
+  if (state.status === 'syncing') return zh ? '正在同步…' : 'Syncing…';
+  if (state.status === 'synced' && !state.pending) return zh ? '已同步到账号' : 'Synced to your account';
+  if (state.pending) return zh ? `已保存在本机 · ${state.pending} 项等待同步` : `Saved on this device · ${state.pending} changes awaiting sync`;
+  return zh ? '已保存在本机，等待同步' : 'Saved on this device, awaiting sync';
+}
+
 export async function initBuerJournal({ getLanguage, accountFactory = createAccount, cache = indexedJournalCache() }) {
   const t = key => copy[getLanguage() === 'en' ? 'en' : 'zh'][key];
   let account = null, store = null, currentId = null, userId = null, timer = null, editing = false, pendingEdit = Promise.resolve();
@@ -114,6 +165,7 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
     const b = button('', () => open(next, b));
     const image = element('span', { className: 'drawer-nav-icon' });
     image.append(element('img', { src: `assets/companion-icon-${icon}.svg`, alt: '', width: '48', height: '48', 'aria-hidden': 'true' }));
+    image.append(element('i', { className: `ph ${{account:'ph-user-circle',journal:'ph-notebook'}[icon] || 'ph-book-bookmark'}`, 'aria-hidden': 'true' }));
     const label = element('span'); label.append(element('strong'), element('small'));
     b.append(image, label, element('span', { className: 'drawer-chevron', 'aria-hidden': 'true' }, '›'));
     nav?.prepend(b);
@@ -145,7 +197,10 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
       content.append(button(t(provider), async () => {
         busy = true;
         try { await account.signIn(provider); }
-        catch { status.textContent = t('providerError'); }
+        catch (error) {
+          const diagnostic = nativeAuthDiagnostic(error);
+          status.textContent = `${t('providerError')}${diagnostic ? ` [${diagnostic}]` : ''}`;
+        }
         finally { busy = false; }
       }, 'journal-provider'));
     }
@@ -202,7 +257,17 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
     }));
     const syncState=element('p',{className:'workspace-sync-status',role:'status'});content.append(syncState);updateWorkspaceStatus();
     const conflicts=workspace().values().conflicts;
-    for(const row of conflicts){const details=element('details');details.append(element('summary',{},(zh?'保留的冲突版本：':'Preserved version: ')+row.kind+' · '+row.recordId));details.append(element('pre',{},JSON.stringify(row.payload,null,2)));details.append(button(zh?'恢复这个版本':'Restore this version',()=>confirmAction(zh?'恢复这个版本？':'Restore this version?',zh?'当前版本也会保留为可恢复副本。':'The current version will also be preserved.',async()=>{await workspace().restore(row.id);render();})));content.append(details);}
+    for (const row of conflicts) {
+      const summary = workspaceConflictSummary(row, getLanguage());
+      const details = element('details', { className: 'workspace-conflict' });
+      details.append(element('summary', {}, `${zh ? '保留版本' : 'Preserved version'} · ${summary.title} · ${summary.time}`));
+      details.append(element('p', { className: 'workspace-conflict-meta' }, `${summary.type} · ${zh ? '内容时间' : 'Content time'}：${summary.time}`));
+      const record = element('details');
+      record.append(element('summary', {}, zh ? '查看版本详情' : 'View version details'),
+        element('pre', {}, JSON.stringify({ kind: row.kind, recordId: row.recordId, payload: row.payload }, null, 2)));
+      details.append(record, button(zh?'恢复这个版本':'Restore this version',()=>confirmAction(zh?'恢复这个版本？':'Restore this version?',zh?'当前版本也会保留为可恢复副本。':'The current version will also be preserved.',async()=>{await workspace().restore(row.id);render();})));
+      content.append(details);
+    }
     actions.append(button(t('deleteAccount'), () => confirmAction(t('deleteAccountTitle'), t('deleteAccountNote'), async () => {
       await flush();
       // Hold store reference while Auth deletion fires the signed-out callback.
@@ -217,7 +282,8 @@ export async function initBuerJournal({ getLanguage, accountFactory = createAcco
   function updateWorkspaceStatus(){
     const node=content.querySelector('.workspace-sync-status');if(!node)return;
     const s=workspace().state,zh=getLanguage()!=='en';
-    node.textContent=(zh?'对话／成长档案／说明书：':'Chats / growth / manuals: ')+(s.status==='synced'&&!s.pending?(zh?'已同步':'Synced'):s.status==='syncing'?(zh?'同步中…':'Syncing…'):(zh?'已存本机，等待同步':'Saved locally, awaiting sync'))+(s.conflicts?(zh?` · ${s.conflicts} 个冲突版本已保留，请重新打开账号页查看。`:` · ${s.conflicts} preserved conflicts. Reopen Account to review.`):'');
+    node.dataset.state = s.status;
+    node.textContent=(zh?'对话／成长档案／说明书：':'Chats / growth / manuals: ')+workspaceSyncStatus(s,getLanguage())+(s.conflicts?(zh?` · ${s.conflicts} 个版本已保留，可重新打开账号页查看。`:` · ${s.conflicts} versions preserved. Reopen Account to review.`):'');
   }
   onWorkspaceChange(updateWorkspaceStatus);
   function startEntry(row) {

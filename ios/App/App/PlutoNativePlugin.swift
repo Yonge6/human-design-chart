@@ -15,6 +15,7 @@ public class PlutoNativePlugin: CAPPlugin, CAPBridgedPlugin, ASWebAuthentication
     private var transactionListener: Task<Void, Never>?
     private let installationLock = NSLock()
     private var accountWebSession: ASWebAuthenticationSession?
+    private var accountOAuthCall: CAPPluginCall?
     private var accountAppleCall: CAPPluginCall?
     private var accountNonce: String?
     private let accountStorageService = "com.yonge6.buerwithin.account"
@@ -46,6 +47,7 @@ public class PlutoNativePlugin: CAPPlugin, CAPBridgedPlugin, ASWebAuthentication
             }
         }
         NotificationCenter.default.addObserver(self, selector: #selector(dailyTipOpened), name: Notification.Name("PlutoDailyTipOpened"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(accountAuthCallback(_:)), name: Notification.Name("BuerAuthCallback"), object: nil)
     }
 
     deinit { transactionListener?.cancel(); NotificationCenter.default.removeObserver(self) }
@@ -88,24 +90,67 @@ public class PlutoNativePlugin: CAPPlugin, CAPBridgedPlugin, ASWebAuthentication
     public func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         bridge?.viewController?.view.window ?? ASPresentationAnchor()
     }
+    private func accountCallbackIssue(_ url: URL) -> String? {
+        if url.scheme != "buerwithin" { return "SCHEME" }
+        if url.host != "auth" { return "HOST" }
+        if url.path != "/callback" { return "PATH" }
+        if url.user != nil || url.password != nil { return "USERINFO" }
+        if url.port != nil { return "PORT" }
+        // Foundation preserves a trailing "#" as an empty fragment on some
+        // iOS callback paths. It carries no data and the Web URL parser exposes
+        // no hash value for it. Any non-empty fragment
+        // remains forbidden so tokens can never cross this bridge.
+        if let fragment = url.fragment, !fragment.isEmpty { return "FRAGMENT" }
+        return nil
+    }
+    private func validAccountCallback(_ url: URL) -> Bool {
+        accountCallbackIssue(url) == nil
+    }
+    private func finishAccountOAuth(_ url: URL) {
+        guard validAccountCallback(url), let call = accountOAuthCall else { return }
+        accountOAuthCall = nil
+        accountWebSession = nil
+        call.resolve(["url": url.absoluteString])
+    }
+    @objc private func accountAuthCallback(_ notification: Notification) {
+        guard let url = notification.object as? URL else { return }
+        finishAccountOAuth(url)
+    }
     @objc func accountOAuth(_ call: CAPPluginCall) {
         guard let raw = call.getString("url"), let url = URL(string: raw), url.scheme == "https",
               url.host == "hiuphqtqqvejyjgoxfov.supabase.co", url.path == "/auth/v1/authorize",
               url.user == nil, url.password == nil, url.port == nil, url.fragment == nil,
               let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
               components.queryItems?.filter({ $0.name == "provider" }).map({ $0.value }) == ["google"],
-              components.queryItems?.filter({ $0.name == "redirect_to" }).map({ $0.value }) == ["buerwithin://auth/callback"] else {
+              components.queryItems?.filter({ $0.name == "redirect_to" }).map({ $0.value }) == ["buerwithin://auth/callback"],
+              components.queryItems?.filter({ $0.name == "code_challenge_method" }).map({ $0.value }) == ["s256"],
+              let challenge = components.queryItems?.filter({ $0.name == "code_challenge" }).compactMap({ $0.value }).first,
+              components.queryItems?.filter({ $0.name == "code_challenge" }).count == 1,
+              challenge.range(of: #"^[A-Za-z0-9_-]{43,128}$"#, options: .regularExpression) != nil else {
             call.reject("INVALID_AUTH_URL"); return
         }
         DispatchQueue.main.async {
             guard self.accountWebSession == nil else { call.reject("AUTH_IN_PROGRESS"); return }
+            self.accountOAuthCall = call
             let session = ASWebAuthenticationSession(url: url, callbackURLScheme: "buerwithin") { callback, error in
-                self.accountWebSession = nil
-                guard error == nil, let callback = callback, callback.scheme == "buerwithin", callback.host == "auth", callback.path == "/callback",
-                      callback.user == nil, callback.password == nil, callback.port == nil, callback.fragment == nil else {
-                    call.reject("AUTH_CANCELLED"); return
+                if let callback = callback {
+                    if let issue = self.accountCallbackIssue(callback) {
+                        self.accountOAuthCall = nil; self.accountWebSession = nil
+                        call.reject("INVALID_AUTH_CALLBACK_\(issue)"); return
+                    }
+                    self.finishAccountOAuth(callback)
+                    return
                 }
-                call.resolve(["url": callback.absoluteString])
+                // Some iOS versions activate the app through its registered URL
+                // scheme and report this browser session as cancelled. Give the
+                // AppDelegate callback one run-loop turn to resolve the same
+                // strictly validated URL before reporting a real cancellation.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    guard self.accountOAuthCall != nil else { return }
+                    self.accountOAuthCall = nil; self.accountWebSession = nil
+                    let code = (error as NSError?)?.code
+                    call.reject(code == ASWebAuthenticationSessionError.canceledLogin.rawValue ? "AUTH_SESSION_CANCELLED" : "AUTH_SESSION_FAILED")
+                }
             }
             session.presentationContextProvider = self
             session.prefersEphemeralWebBrowserSession = true

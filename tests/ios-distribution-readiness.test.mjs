@@ -115,7 +115,10 @@ test("Release signing settings and shipped capabilities remain minimal", () => {
   assert.match(project, /CODE_SIGN_ENTITLEMENTS = PlutoDailyWidget\/PlutoDailyWidget.entitlements/);
   assert.doesNotMatch(project, /SystemCapabilities/);
   assert.match(infoPlist, /<key>ITSAppUsesNonExemptEncryption<\/key>\s*<false\/>/);
-  assert.match(infoPlist, /<key>UILaunchStoryboardName<\/key>\s*<string>LaunchScreen<\/string>/);
+  assert.doesNotMatch(infoPlist, /<key>UILaunchStoryboardName<\/key>/);
+  assert.match(infoPlist, /<key>UILaunchScreen<\/key>\s*<dict>[\s\S]*?<key>UIImageName<\/key>\s*<string>doudoulong-blue-avatar<\/string>/);
+  assert.match(project, /doudoulong-blue-avatar\.png in Resources/);
+  assert.ok(fs.existsSync("assets/doudoulong-blue-avatar.png"));
   assert.match(project, /Assets\.xcassets in Resources/);
   assert.match(appIconContents, /"size"\s*:\s*"1024x1024"/);
   assert.match(launchScreen, /launchScreen/);

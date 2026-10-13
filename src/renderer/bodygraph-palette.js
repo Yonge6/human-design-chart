@@ -3,12 +3,12 @@
 // renderer itself.
 export const BUER_CENTER_COLORS = Object.freeze({
   "head-center": "#d8d2b5",
-  "ajna-center": "#c9d6c0",
-  "throat-center": "#b9cec5",
+  "ajna-center": "#ccdce0",
+  "throat-center": "#b9d1d7",
   "g-center": "#d7c7ad",
   "heart-center": "#d7b9ad",
   "sacral-center": "#d3b28f",
-  "splenic-center": "#bdc9a8",
+  "splenic-center": "#b8c9cf",
   "solar-plexus-center": "#c8bacd",
-  "root-center": "#b6c1ad",
+  "root-center": "#afc3cc",
 });

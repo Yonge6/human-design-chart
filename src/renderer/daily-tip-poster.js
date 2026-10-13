@@ -36,45 +36,45 @@ export async function createDailyTipPoster({ tip, language, date = new Date() })
   if (!tip) throw new Error('A saved result is required.');
   const [qr, hero, orb] = await Promise.all([
     loadImage(new URL(globalThis.PLUTO_CONFIG?.buerShareQrPath || '../../assets/chart-qr.png', import.meta.url).href),
-    loadImage(new URL('../../assets/companion-growth.webp', import.meta.url).href).catch(() => null),
-    loadImage(new URL("../../assets/buer-companion-logo.png", import.meta.url).href),
+    loadImage(new URL('../../assets/doudoulong-blue-notebook.png', import.meta.url).href).catch(() => null),
+    loadImage(new URL("../../assets/doudoulong-blue-avatar.png", import.meta.url).href),
     document.fonts.ready,
   ]);
   const chinese = language === 'zh';
   const canvas = document.createElement('canvas');
   canvas.width = 1080; canvas.height = 1440;
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#f5f1e8'; ctx.fillRect(0, 0, 1080, 1440);
-  ctx.fillStyle = '#526649'; ctx.fillRect(0, 0, 1080, 18);
-  ctx.strokeStyle = '#cbd0be'; ctx.lineWidth = 2;
+  ctx.fillStyle = '#f7f4ec'; ctx.fillRect(0, 0, 1080, 1440);
+  ctx.fillStyle = '#367e8c'; ctx.fillRect(0, 0, 1080, 18);
+  ctx.strokeStyle = '#d6dad7'; ctx.lineWidth = 2;
   for (const y of [204, 1130]) { ctx.beginPath(); ctx.moveTo(80, y); ctx.lineTo(1000, y); ctx.stroke(); }
   ctx.textBaseline = 'top';
-  ctx.fillStyle = '#526649'; ctx.font = '22px sans-serif';
+  ctx.fillStyle = '#367e8c'; ctx.font = '22px sans-serif';
   ctx.fillText('BUER WITHIN  /  DAILY NOTE', 80, 68);
-  ctx.fillStyle = '#263a30'; ctx.font = '62px Georgia, serif';
+  ctx.fillStyle = '#23333d'; ctx.font = '62px Georgia, serif';
   ctx.fillText(`${String(date.getMonth()+1).padStart(2,'0')}.${String(date.getDate()).padStart(2,'0')}`, 80, 112);
-  ctx.font = '24px sans-serif'; ctx.fillStyle = '#5c6959'; ctx.textAlign = 'right';
+  ctx.font = '24px sans-serif'; ctx.fillStyle = '#63747e'; ctx.textAlign = 'right';
   ctx.fillText(`${date.getFullYear()} · ${new Intl.DateTimeFormat(chinese ? 'zh-CN' : 'en', {weekday:'long'}).format(date)}`, 1000, 142); ctx.textAlign = 'left';
   ctx.fillStyle = '#c86732'; ctx.font = '26px sans-serif';
   ctx.fillText(chinese ? '今日提示 / 给自己的一句话' : 'A thought for today', 80, 267);
   let size = 64;
   let lines;
   do {
-    ctx.font = `300 ${size}px ${chinese ? '"Songti SC", "Noto Serif CJK SC",' : ''} Georgia, serif`;
+    ctx.font = `400 ${size}px ${chinese ? '"Buer Serif", "Songti SC", "Noto Serif CJK SC",' : ''} Georgia, serif`;
     lines = wrapPosterText(ctx, formatDailyTipText(tip, language), 920);
     if (lines.length * size * 1.5 <= 420) break;
     size -= 2;
   } while (size > 30);
-  ctx.fillStyle = '#263a30';
+  ctx.fillStyle = '#23333d';
   lines.forEach((line, index) => ctx.fillText(line, 80, 350 + index * size * 1.5));
-  ctx.font = '22px sans-serif'; ctx.fillStyle = '#5c6959';
+  ctx.font = '22px sans-serif'; ctx.fillStyle = '#63747e';
   if (hero) ctx.drawImage(hero, 680, 790, 330, 330);
-  ctx.fillStyle = '#526649'; ctx.font = '26px Georgia, "Songti SC", serif';
+  ctx.fillStyle = '#367e8c'; ctx.font = '26px Georgia, "Buer Serif", "Songti SC", serif';
   ctx.fillText(chinese ? '一点点，回到自己。' : 'A little closer to yourself.', 80, 1015);
   ctx.drawImage(orb, 80, 1190, 84, 84);
-  ctx.fillStyle = '#263a30'; ctx.font = '42px Georgia, serif';
+  ctx.fillStyle = '#23333d'; ctx.font = '42px Georgia, "Buer Serif", "Songti SC", serif';
   ctx.fillText(chinese ? '不二见己' : 'Buer Within', 186, 1190);
-  ctx.font = '21px sans-serif'; ctx.fillStyle = '#5c6959';
+  ctx.font = '21px sans-serif'; ctx.fillStyle = '#63747e';
   ctx.fillText((globalThis.PLUTO_CONFIG?.buerPublicUrl || 'https://buer.wonderelian.com/').replace(/^https?:\/\//,'').replace(/\/$/,''), 186, 1250);
   // Preserve the white quiet zone and hard edges for reliable scanning.
   ctx.imageSmoothingEnabled = false; ctx.drawImage(qr, 810, 1164, 190, 190);

@@ -4,7 +4,11 @@ export function readAuthCallback(value) {
   let url; try { url = new URL(value); } catch { return null; }
   if (url.protocol !== 'buerwithin:' || url.hostname !== 'auth' || url.pathname !== '/callback'
     || url.username || url.password || url.port || url.hash) return null;
-  if (url.searchParams.has('error') || url.searchParams.has('error_description')) throw new Error('AUTH_CANCELLED');
+  if (url.searchParams.has('error') || url.searchParams.has('error_description')) {
+    const providerCode = url.searchParams.get('error') || 'error';
+    const safeCode = /^[a-z0-9_-]{1,48}$/i.test(providerCode) ? providerCode.toUpperCase().replaceAll('-', '_') : 'ERROR';
+    throw new Error(`AUTH_CALLBACK_${safeCode}`);
+  }
   const codes = url.searchParams.getAll('code');
   const code = codes[0];
   if (codes.length !== 1 || !code?.trim()) throw new Error('AUTH_CODE_MISSING');

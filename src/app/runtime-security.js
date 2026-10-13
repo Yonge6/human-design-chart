@@ -9,6 +9,14 @@ export function isCapacitorNativeRuntime(capacitor = globalThis.Capacitor) {
   return false;
 }
 
+export function nativeImageCapabilities({ isNativeRuntime = false, pluginAvailable = false, plugin } = {}) {
+  const available = isNativeRuntime && pluginAvailable;
+  return {
+    save: available && typeof plugin?.saveImage === "function",
+    share: available && typeof plugin?.shareImage === "function",
+  };
+}
+
 export function effectiveRemoteConsent(settings = {}, remoteServicesAllowed = false) {
   if (!remoteServicesAllowed) return { cloudSave: false, productAnalytics: false };
   return {

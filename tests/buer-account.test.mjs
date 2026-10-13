@@ -79,7 +79,8 @@ test('web Apple and Google return to H5 without leaking its query or fragment', 
 test('foreign, ambiguous and credential-bearing callbacks never exchange a code', async () => {
   for (const url of ['buerwithin://auth/callback-evil?code=x', 'buerwithin://user@auth/callback?code=x', 'buerwithin://auth:123/callback?code=x', 'buerwithin://auth/callback?code=x#fragment']) assert.equal(readAuthCallback(url), null);
   assert.throws(() => readAuthCallback(`${NATIVE_CALLBACK}?code=a&code=b`));
-  assert.throws(() => readAuthCallback(`${NATIVE_CALLBACK}?error_description=cancelled`), /AUTH_CANCELLED/);
+  assert.throws(() => readAuthCallback(`${NATIVE_CALLBACK}?error_description=cancelled`), /AUTH_CALLBACK_ERROR/);
+  assert.throws(() => readAuthCallback(`${NATIVE_CALLBACK}?error=access_denied`), /AUTH_CALLBACK_ACCESS_DENIED/);
   const { account, calls } = await fixture({ native: true, plugin: { accountOAuth: async () => ({ url: 'other://auth/callback?code=x' }) } });
   await assert.rejects(account.signIn('google'), /INVALID_AUTH_CALLBACK/);
   assert.equal(calls.length, 1);
@@ -158,4 +159,19 @@ test('login UI contains no email form or verification code fallback', async () =
   const source = await readFile(new URL('../src/app/buer-journal.js', import.meta.url), 'utf8');
   assert.doesNotMatch(source, /sendCode|verifyCode|one-time-code|邮箱验证码/);
   assert.match(source, /if \(action === 'logout'\) exit\(\)/);
+});
+
+test('native OAuth accepts an AppDelegate callback fallback without weakening URL validation', async () => {
+  const [delegate, plugin] = await Promise.all([
+    readFile(new URL('../ios/App/App/AppDelegate.swift', import.meta.url), 'utf8'),
+    readFile(new URL('../ios/App/App/PlutoNativePlugin.swift', import.meta.url), 'utf8'),
+  ]);
+  assert.match(delegate, /url\.scheme == "buerwithin", url\.host == "auth", url\.path == "\/callback"/);
+  assert.match(delegate, /Notification\.Name\("BuerAuthCallback"\)/);
+  assert.match(plugin, /validAccountCallback/);
+  assert.ok(plugin.includes('call.reject("INVALID_AUTH_CALLBACK_\\(issue)")'));
+  assert.match(plugin, /if url\.user != nil \|\| url\.password != nil/);
+  assert.match(plugin, /if let fragment = url\.fragment, !fragment\.isEmpty/);
+  assert.match(plugin, /code_challenge_method/);
+  assert.match(plugin, /AUTH_SESSION_CANCELLED/);
 });

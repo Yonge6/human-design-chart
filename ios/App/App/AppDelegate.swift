@@ -7,7 +7,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        window?.backgroundColor = UIColor(red: 245.0 / 255.0, green: 242.0 / 255.0, blue: 234.0 / 255.0, alpha: 1.0)
+        window?.backgroundColor = UIColor(red: 247.0 / 255.0, green: 244.0 / 255.0, blue: 236.0 / 255.0, alpha: 1.0)
         return true
     }
 
@@ -34,6 +34,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
+        if url.scheme == "buerwithin", url.host == "auth", url.path == "/callback" {
+            NotificationCenter.default.post(name: Notification.Name("BuerAuthCallback"), object: url)
+            return true
+        }
         if url.scheme == "buerwithin", url.host == "daily-tip" {
             UserDefaults.standard.set(true, forKey: DailyTipStore.pendingLinkKey)
             NotificationCenter.default.post(name: Notification.Name("PlutoDailyTipOpened"), object: nil)

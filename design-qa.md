@@ -96,3 +96,47 @@ Tablet follow-up: at 900 × 1000, reduced hero art to 80% height and composer to
 - Reviewed Chinese desktop at 1280 × 900 and Chinese/English mobile at 390 × 844; no horizontal overflow or text/mascot overlap. Removed duplicated vertical padding above profile hero.
 - 34 targeted public UI, growth and build security tests passed; diff check clean.
 - Evidence: docs/design/companion/growth-header-desktop.webp and profile-header-en.webp.
+
+## Paper Manual — selected option 1 (2026-10-13)
+
+final result: passed
+
+Scope: selected homepage visual direction and shared H5 content. This section supersedes the older sage/companion direction above. Native installation and public deployment have separate release readbacks; this visual result does not certify App Store publication or a new AI-response run.
+
+### Reference and evidence
+
+- Selected reference: `/Users/yongyuan/.codex/generated_images/01a12516-f0e6-7770-b73d-7c6acf91ddf0/exec-396652d7-31f4-49b4-915f-cca24278da0f.png`, 853 × 1844, normalized without distortion to 390 × 844 CSS pixels.
+- Implemented existing product, not a standalone prototype: `http://127.0.0.1:8796/`, in-app browser at 390 × 844, 320 × 740, 430 × 932 and 1440 × 1000. Screenshots use 1 image pixel per CSS pixel; source density normalized only for comparison.
+- Final Chinese homepage: `/Users/yongyuan/.codex/visualizations/2026/10/10/01a12516-f0e6-7770-b73d-7c6acf91ddf0/buer-paper-qa/12-home-zh-390-final.png`.
+- Source-left / implementation-right comparison, inspected at full size: same directory, `21-source-vs-implementation-390.png` (796 × 844).
+- Reviewed growth, My, guest People, privacy settings, membership dialog, English mobile and desktop. Evidence in the same directory: `09-growth-390-final.png`, `15-my-390-final.png`, `05-people-390.png`, `16-privacy-settings-390-final.png`, `17-membership-dialog-390-final.png`, `18-home-en-390-final.png`, `20-home-en-desktop-final.png`.
+- Actual generated-and-downloaded privacy poster inspected: `/Users/yongyuan/Downloads/private-life-manual.png` (1200 × 3676); live chart/controls: `11-bodygraph-private-390-final.png`.
+- `19-home-en-desktop-final.png` is a browser-wrapper clipped capture and is excluded; direct full-viewport capture 20 is the accepted desktop evidence.
+
+### Comparison and corrections
+
+1. P2: legacy hero/context animation faded text at entry; removed those animations and recaptured.
+2. P2: inherited chart/print sage colors and dark export background were inconsistent with the selected blue paper identity; corrected chart toolbar, poster rules, planet columns and export canvas background, then generated an actual PNG.
+3. P1 parity/privacy: legacy native selector hid the image privacy switch even after graph/save/share returned; explicitly restored it in the native stylesheet. H5 control was exercised and output visibly masks name, date, time and place. Native visibility is also covered by regression assertion.
+4. P2: old native safety-area pseudo-element retained navy; aligned it with paper. Actual UIKit chrome is verified independently on device.
+5. Release integrity: four new PNGs are intentionally explicitly tracked despite the repository-wide PNG ignore rule. Typeface OFL and Adobe metadata attribution bundled.
+
+No unresolved P0/P1/P2 visual findings on the reviewed surfaces.
+
+### Visual surfaces
+
+- Typography: Noto Serif SC UI subset under `Buer Serif` alias, system Songti fallback for dynamic CJK, system sans for controls/body. Serif hierarchy and restrained blue-gray ink retained; English wraps without overlap. Reference's exact font drawing/boldness is a P3 variant, not a change of hierarchy.
+- Spacing: 24px mobile gutters, open hero, subtle composer divider, 118px input, horizontal real suggestions, context row, full-width 54px primary action, separated quote area and four-item navigation. Main divider y≈294 vs reference y≈292; input/button offsets vary by 10–16px with real content and native-size controls.
+- Color: flat warm paper #f7f4ec, blue-gray #23333d, blue-leaning teal #367e8c. Reference paper texture/soft gradient omitted intentionally for crisp content and native system materials. Body/muted/controls remain distinct.
+- Imagery: separate transparent new mascot assets, not a screenshot cropped into the UI. Hat and clothing are blue-leaning cyan/teal. Same identity is used for hero, avatars, icon, launch asset and exports. P3 generated pose/scale variation remains, with no green hat.
+- Copy: real rotating welcome/questions and saved-profile daily quote are retained. The static reference's two suggestions and one-line sample quote are not fabricated product state; real long text remains scrollable. Growth/manual entry reflects existing local saved state. App-specific purchases remain in system StoreKit, not an invented H5 checkout.
+
+### Interactions and quality checks
+
+- Exercised four navigation entries, Chinese/English switching, suggestion-to-textbox filling and manual overview-to-chart tabs.
+- External primary button remains a true form submit control via `form="buerChatForm"`; regression test verifies association. No production chat or new personal record was submitted in visual QA.
+- Opened privacy settings and membership dialog; closed dialog and verified usable home after dismissal. No deletion, account sign-out or subscription purchase performed.
+- Checked existing chart and privacy switch; waited for render completion, used Save Image and inspected the resulting full PNG. Existing renderer math/topology unchanged.
+- Read-only DOM checks show document width equals viewport at 320 and 1440; screenshots at 390 and 430 show no horizontal page overflow. Suggestion row remains intentionally independently scrollable.
+- Browser warning/error collection is empty after these checks. Unit results and native/public release evidence are tracked separately.
+- Product remains a shared hybrid App/H5. UIKit supplies actual system tabs, page sheets, pickers and share surfaces; the content is not claimed to be fully SwiftUI-native.

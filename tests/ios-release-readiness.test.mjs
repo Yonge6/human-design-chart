@@ -20,7 +20,7 @@ test("the shipped AppIcon is the approved opaque 1024px Doudoulong artwork", () 
   assert.equal(icon.readUInt32BE(20), 1024);
   assert.equal(icon[25], 2, "App Store icon must use opaque RGB");
   assert.equal(createHash("sha256").update(icon).digest("hex"),
-    "beafb390b9e05216d9de01fd8c553c5d2428c3e6c7332ee0a33e6a816d29e7f7");
+    "7f6293d09a77f6743b435b27afaf47360e465786d9053d9830d61e37c19aab0f");
 });
 
 test("iOS release identity and versions remain aligned", () => {

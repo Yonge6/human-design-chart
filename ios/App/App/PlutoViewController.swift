@@ -19,12 +19,16 @@ final class BuerTabController: UITabBarController, UITabBarControllerDelegate, W
     private let pages = [UIViewController(), UIViewController(), UIViewController(), UIViewController()]
     private let keys = ["home", "manual", "people", "profile"]
     private var webReady = false
+    private var sheetHost: UIViewController?
+    private var sheetTransitionInProgress = false
+    private var modalRequested = false
+    private let paper = UIColor(red: 247 / 255, green: 244 / 255, blue: 236 / 255, alpha: 1)
 
     override func viewDidLoad() {
         super.viewDidLoad()
         delegate = self
         overrideUserInterfaceStyle = .light
-        view.backgroundColor = UIColor(red: 245 / 255, green: 242 / 255, blue: 234 / 255, alpha: 1)
+        view.backgroundColor = paper
         let titles = ["见己", "成长档案", "身边的人", "我的"]
         let symbols = ["house", "book", "person.2", "person.crop.circle"]
         for (index, page) in pages.enumerated() {
@@ -32,7 +36,8 @@ final class BuerTabController: UITabBarController, UITabBarControllerDelegate, W
             page.view.backgroundColor = .clear
         }
         setViewControllers(pages, animated: false)
-        tabBar.tintColor = UIColor(red: 86 / 255, green: 103 / 255, blue: 75 / 255, alpha: 1)
+        // Leave the system bar material intact so current iOS adopts Liquid Glass.
+        tabBar.tintColor = UIColor(red: 54 / 255, green: 126 / 255, blue: 140 / 255, alpha: 1)
         attachWorkspace(to: pages[0])
         guard let web = workspace.webView else { return }
         web.configuration.userContentController.add(self, name: "buerNavigation")
@@ -70,6 +75,43 @@ final class BuerTabController: UITabBarController, UITabBarControllerDelegate, W
         workspace.didMove(toParent: page)
     }
 
+    private func updateSheetPresentation() {
+        guard !sheetTransitionInProgress else { return }
+        if modalRequested {
+            guard sheetHost == nil, presentedViewController == nil else { return }
+            let host = UIViewController()
+            host.view.backgroundColor = paper
+            host.modalPresentationStyle = .pageSheet
+            // The page owns its unsaved-change checks and close action.
+            host.isModalInPresentation = true
+            if let sheet = host.sheetPresentationController {
+                sheet.detents = [.large()]
+                sheet.prefersGrabberVisible = true
+                sheet.prefersScrollingExpandsWhenScrolledToEdge = true
+                sheet.prefersEdgeAttachedInCompactHeight = true
+                sheet.widthFollowsPreferredContentSizeWhenEdgeAttached = true
+            }
+            sheetHost = host
+            sheetTransitionInProgress = true
+            workspace.webView?.evaluateJavaScript("document.documentElement.classList.add('native-system-sheet')", completionHandler: nil)
+            attachWorkspace(to: host)
+            present(host, animated: true) { [weak self] in
+                self?.sheetTransitionInProgress = false
+                self?.updateSheetPresentation()
+            }
+        } else if let host = sheetHost {
+            sheetTransitionInProgress = true
+            host.dismiss(animated: true) { [weak self] in
+                guard let self else { return }
+                self.sheetHost = nil
+                self.attachWorkspace(to: self.pages[self.selectedIndex])
+                self.workspace.webView?.evaluateJavaScript("document.documentElement.classList.remove('native-system-sheet')", completionHandler: nil)
+                self.sheetTransitionInProgress = false
+                self.updateSheetPresentation()
+            }
+        }
+    }
+
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         attachWorkspace(to: viewController)
         guard webReady else { return }
@@ -82,10 +124,11 @@ final class BuerTabController: UITabBarController, UITabBarControllerDelegate, W
         webReady = true
         let titles = state["english"] as? Bool == true ? ["Home", "Growth", "People", "Me"] : ["见己", "成长档案", "身边的人", "我的"]
         for (index, page) in pages.enumerated() { page.tabBarItem.title = titles[index] }
-        tabBar.isHidden = state["modal"] as? Bool == true
+        modalRequested = state["modal"] as? Bool == true
         if let key = state["workspace"] as? String, let index = keys.firstIndex(of: key), selectedIndex != index {
             selectedIndex = index
-            attachWorkspace(to: pages[index])
+            if sheetHost == nil { attachWorkspace(to: pages[index]) }
         }
+        updateSheetPresentation()
     }
 }

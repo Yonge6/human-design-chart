@@ -140,3 +140,10 @@ No unresolved P0/P1/P2 visual findings on the reviewed surfaces.
 - Read-only DOM checks show document width equals viewport at 320 and 1440; screenshots at 390 and 430 show no horizontal page overflow. Suggestion row remains intentionally independently scrollable.
 - Browser warning/error collection is empty after these checks. Unit results and native/public release evidence are tracked separately.
 - Product remains a shared hybrid App/H5. UIKit supplies actual system tabs, page sheets, pickers and share surfaces; the content is not claimed to be fully SwiftUI-native.
+
+### Native follow-up typography (2026-10-13)
+
+- Actual iPhone 14 Pro Max installation and launch exposed P2 mixed CJK typography in the My title: the first small font subset omitted `，积累属`, and iOS did not have the Mac-only serif fallback. The issue was not visible in desktop H5 screenshots.
+- Replaced that 182-glyph static font with a real variable Noto Serif SC subset (wght 200–900), covering all static product characters plus GB2312 level-one common characters. 3782 required characters have zero missing glyphs; cmap contains 4348 mappings. Different outlines at weights 400, 500 and 600 verified.
+- Browser uses the compressed WOFF2 (1,464,236 bytes), with TTF retained as the source artifact. Old font backed up separately. Original OFL retained and notices updated to describe local subsetting.
+- Aligned drawer-local ink/muted variables and first-load preview colors with the final paper/blue tokens; no business state or layout flow changed.

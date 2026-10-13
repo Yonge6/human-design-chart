@@ -74,7 +74,7 @@ legal advice and does not claim Apple approval.
 ## Noto Serif SC UI font
 
 - Source: https://fonts.google.com/noto/specimen/Noto+Serif+SC
-- UI-character subset supplied by Google Fonts; local CSS family alias: `Buer Serif`.
+- Official Google Fonts variable TTF subset locally with FontTools: static UI characters and GB2312 level-one common characters; local CSS family alias: `Buer Serif`.
 - Embedded font copyright: (c) 2017-2024 Adobe (http://www.adobe.com/).
 - License: SIL Open Font License 1.1; full text and copyright notices in `assets/fonts/buer-serif-OFL.txt`.
 - Google Fonts license source: https://github.com/google/fonts/blob/main/ofl/notoserifsc/OFL.txt

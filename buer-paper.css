@@ -1,5 +1,5 @@
 /* Selected Paper Manual direction. Shared App/H5 content; UIKit owns App chrome. */
-@font-face { font-family:"Buer Serif"; src:url("assets/fonts/buer-serif-ui.ttf"); font-style:normal; font-weight:400 600; font-display:swap; }
+@font-face { font-family:"Buer Serif"; src:url("assets/fonts/buer-serif-ui.woff2") format("woff2"); font-style:normal; font-weight:200 900; font-display:swap; }
 :root {
   --ui-paper:#f7f4ec; --ui-surface:#fcfaf5; --ui-ink:#23333d;
   --ui-muted:#63747e; --ui-accent:#367e8c; --ui-line:#d6dad7;
@@ -37,7 +37,7 @@ body[data-conversation="empty"] .buer-conversation-column {
   padding:0; overflow:visible;
 }
 .buer-welcome { position:relative; width:100%; min-height:210px; padding:18px 40% 34px 0!important; }
-.buer-welcome h1 { margin:0; font:600 clamp(34px,3.6vw,48px)/1.45 var(--editorial-serif); color:var(--ui-ink); text-wrap:pretty; }
+.buer-welcome h1 { margin:0; font:600 clamp(34px,3.6vw,48px)/1.45 var(--editorial-serif); color:var(--ui-ink); text-wrap:balance; }
 .buer-welcome p { margin-top:20px; font:400 16px/1.8 var(--companion-body-font); letter-spacing:0; color:var(--ui-muted); max-width:100%; }
 .buer-paper-mascot { position:absolute; right:0; bottom:15px; width:250px; height:250px; object-fit:contain; pointer-events:none; }
 body[data-conversation="active"] .buer-paper-mascot { display:none; }
@@ -92,6 +92,7 @@ body[data-conversation="empty"] .buer-compose-meta { display:flex; flex-wrap:wra
 :is(#buerGrowth,#buerPeople) .companion-section-hero>p:last-of-type,#appDrawer .companion-section-hero>p { color:var(--ui-muted)!important; font-size:15px; line-height:1.8; letter-spacing:0; }
 .companion-section-art { right:0; bottom:18px; width:140px; height:140px; opacity:1; }
 #appDrawer .drawer-nav { grid-template-columns:1fr; gap:0; }
+#appDrawer .side-drawer { --ink:var(--ui-ink); --muted:var(--ui-muted); --gold:var(--ui-accent); --gold-soft:#245968; }
 #appDrawer .drawer-nav>button { background:none; border:0; border-bottom:1px solid var(--ui-line); border-radius:0; padding:22px 0; column-gap:18px; }
 #appDrawer .drawer-nav>button:hover { background:#367e8c06; border-color:var(--ui-line); }
 #appDrawer .drawer-nav-icon { width:34px; height:34px; flex-basis:34px; }
@@ -166,6 +167,18 @@ body[data-conversation="empty"] .buer-compose-meta { display:flex; flex-wrap:wra
 #capture .undefined-swatch { background:#fcfaf5; border-color:#b7c7c8; }
 .relationship-manual-tabs>button[aria-selected="true"] { color:var(--ui-accent); border-bottom-color:var(--ui-accent); }
 .buer-message p { background:var(--ui-surface); color:var(--ui-ink); border-color:var(--ui-line); }
+/* The first-load preview belongs to the same paper/blue identity. */
+body[data-app-pending] #workspaceBootPreviews { color:var(--ui-ink); }
+.boot-hero { background:transparent; border-radius:0; border-bottom:1px solid var(--ui-line); }
+.boot-hero::after { background:#e7eeee; box-shadow:none; }
+.boot-hero h1,.boot-card h2,.boot-path strong { font-family:var(--editorial-serif); }
+.boot-kicker,.boot-index,.boot-hero p,.boot-card small,.boot-path p,.boot-menu .boot-card p,.boot-state { color:var(--ui-muted); }
+.boot-composer,.boot-card,.boot-action.secondary,.boot-filter,.boot-path-button { background:var(--ui-surface); border-color:var(--ui-line); }
+.boot-chip,.boot-icon { background:#e7eeee; box-shadow:none; }
+.boot-action,.boot-state::before { background:var(--ui-accent); }
+.boot-filter:first-child { background:#e4eded; border-color:#9db9bf; }
+.boot-lines { background:linear-gradient(#dce5e5 0 9px,transparent 9px 21px,#e7eeee 21px 30px,transparent 30px); }
+.boot-retry { color:var(--ui-accent); border-color:var(--ui-line); }
 .buer-message.user p { background:#e4eeed; border-color:#cfdfdf; }
 .buer-user-avatar { background:#e4eeed; color:var(--ui-accent); }
 body[data-conversation="active"] .buer-compose-zone { display:grid; grid-template-columns:minmax(0,1fr) 44px; gap:8px 12px; background:var(--ui-surface); border-color:var(--ui-line); border-radius:16px; }

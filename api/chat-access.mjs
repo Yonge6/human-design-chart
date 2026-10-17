@@ -4,7 +4,7 @@ import { dirname } from 'node:path';
 import { SignedDataVerifier, Environment } from '@apple/app-store-server-library';
 
 export const SUBSCRIPTIONS = ['com.yonge6.buerwithin.plus.monthly', 'com.yonge6.buerwithin.plus.annual'];
-export const DAILY_FREE_LIMIT = 100;
+export const DAILY_FREE_LIMIT = 10;
 export function appleMembershipVerifier(environment=process.env) {
   const roots=[readFileSync(new URL('./apple-roots/AppleRootCA-G3.der',import.meta.url))];
   const verifiers=[Environment.PRODUCTION,Environment.SANDBOX].map(env=>new SignedDataVerifier(roots,true,env,'com.yonge6.buerwithin',Number(environment.BUER_APP_APPLE_ID || 6814764726)));

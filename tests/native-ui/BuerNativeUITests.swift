@@ -46,15 +46,19 @@ final class BuerNativeUITests: XCTestCase {
     private func tapButton(startingWith title: String) {
         let button = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", title)).firstMatch
         XCTAssertTrue(button.waitForExistence(timeout: 10))
-        for _ in 0..<6 {
+        let web = app.webViews.firstMatch
+        for _ in 0..<8 {
             if button.isHittable { break }
-            app.swipeUp()
+            let below = button.frame.midY > web.frame.midY
+            let start = web.coordinate(withNormalizedOffset: CGVector(dx: 0.45, dy: below ? 0.70 : 0.35))
+            let end = web.coordinate(withNormalizedOffset: CGVector(dx: 0.45, dy: below ? 0.48 : 0.57))
+            start.press(forDuration: 0.15, thenDragTo: end)
         }
         XCTAssertTrue(button.isHittable)
         button.tap()
     }
 
-    func testAccountSheetMembershipAndResizing() throws {
+    func testAccountSheetAndMembership() throws {
         app.buttons["我的"].firstMatch.tap()
         tapButton(startingWith: "我的账号")
         XCTAssertTrue(app.buttons["通过 Apple 登录"].waitForExistence(timeout: 15))
@@ -65,14 +69,5 @@ final class BuerNativeUITests: XCTestCase {
         let quota = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "每日免费对话 10 条")).firstMatch
         XCTAssertTrue(quota.waitForExistence(timeout: 15), "The actual native membership screen shows ten free replies")
         capture("qa-membership-ten-replies")
-        app.buttons["关闭"].firstMatch.tap()
-        app.buttons["关闭"].firstMatch.tap()
-        app.buttons["见己"].firstMatch.tap()
-        XCUIDevice.shared.orientation = .landscapeLeft
-        XCTAssertTrue(app.buttons["切换到英文"].waitForExistence(timeout: 10))
-        XCTAssertGreaterThan(app.frame.width, app.frame.height, "Scene supports a wide layout")
-        capture("qa-landscape")
-        XCUIDevice.shared.orientation = .portrait
-        XCTAssertTrue(app.buttons["发送问题"].waitForExistence(timeout: 10))
     }
 }

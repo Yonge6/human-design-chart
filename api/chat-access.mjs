@@ -5,6 +5,22 @@ import { SignedDataVerifier, Environment } from '@apple/app-store-server-library
 
 export const SUBSCRIPTIONS = ['com.yonge6.buerwithin.plus.monthly', 'com.yonge6.buerwithin.plus.annual'];
 export const DAILY_FREE_LIMIT = 10;
+export function accountGrantVerifier(environment=process.env, fetchImpl=fetch) {
+  const allowed=new Set((environment.BUER_GRANTED_USERS || '').split(',').map(x=>x.trim()).filter(x=>/^[0-9a-f-]{36}$/i.test(x)));
+  return async authorization=>{
+    if(!allowed.size || typeof authorization!=='string' || !/^Bearer [A-Za-z0-9_.-]+$/.test(authorization)) return false;
+    const url=environment.BUER_ACCOUNT_URL, key=environment.BUER_ACCOUNT_PUBLISHABLE_KEY;
+    if(!url || !key) return false;
+    try {
+      const endpoint=new URL('/auth/v1/user',url);
+      if(endpoint.protocol!=='https:') return false;
+      const response=await fetchImpl(endpoint,{headers:{apikey:key,Authorization:authorization},signal:AbortSignal.timeout(8000)});
+      if(!response.ok) return false;
+      const user=await response.json();
+      return typeof user.id==='string' && allowed.has(user.id);
+    } catch { return false; }
+  };
+}
 export function appleMembershipVerifier(environment=process.env) {
   const roots=[readFileSync(new URL('./apple-roots/AppleRootCA-G3.der',import.meta.url))];
   const verifiers=[Environment.PRODUCTION,Environment.SANDBOX].map(env=>new SignedDataVerifier(roots,true,env,'com.yonge6.buerwithin',Number(environment.BUER_APP_APPLE_ID || 6814764726)));
@@ -21,7 +37,8 @@ export function createChatAccess({file,verify=async()=>false,now=()=>Date.now()}
   let usage={};const pending=new Map();
   if(file)try{usage=JSON.parse(readFileSync(file,'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;}
   const save=()=>{if(!file)return;mkdirSync(dirname(file),{recursive:true});writeFileSync(file+'.tmp',JSON.stringify(usage),{mode:0o600});renameSync(file+'.tmp',file);};
-  return { async reserve(body) {
+  return { async reserve(body, accountMember=false) {
+    if(accountMember)return {finish(){},member:true};
     if(await verify(body.transactionJWS))return {finish(){},member:true};
     if(typeof body.installationId!=='string'||!/^[a-f0-9-]{36}$/i.test(body.installationId))throw new Error('DEVICE_REQUIRED');
     // UTC reset is explicit in the paywall and consistent across travel/time changes.

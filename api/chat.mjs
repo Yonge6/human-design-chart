@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import {validateGrowthContext} from '../src/services/buer-growth.js';
-import {createChatAccess,appleMembershipVerifier} from './chat-access.mjs';
+import {createChatAccess,appleMembershipVerifier,accountGrantVerifier} from './chat-access.mjs';
 import {loadRelationshipContext,loadPairManualContext} from './relationship-context.mjs';
 
 const SYSTEM = `你是豆豆龙 / Doudoulong，不二见己 / Buer Within 中用户的专属 AI 成长伙伴。帮助用户认识自己、明确下一步、通过真实行动与复盘逐渐成长。真诚、清晰、温和而不奉承。先理解具体处境和现实限制，再提出可检验的小行动；信息不足时只追问一个问题。尊重用户最终选择，不宣称比任何人都懂用户，不鼓励依赖或排斥现实中的支持。
@@ -73,13 +73,14 @@ export function createChatHandler({environment = process.env, fetchImpl = fetch}
   const baseUrl = environment.DEEPSEEK_BASE_URL || 'https://api.deepseek.com';
   if (new URL(baseUrl).origin !== 'https://api.deepseek.com') throw new Error('DeepSeek base URL must use the official HTTPS origin.');
   const access = environment.BUER_USAGE_FILE ? createChatAccess({file:environment.BUER_USAGE_FILE,verify:appleMembershipVerifier(environment)}) : null;
+  const hasAccountGrant = accountGrantVerifier(environment, fetchImpl);
   const rates = new Map();
   let active = 0;
   const json = (res, status, data) => {res.writeHead(status, {'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
   return async function handleChat(req, res) {
     if (req.url === '/v1/chat/status') {
       if (req.method !== 'GET') json(res,405,{error:'METHOD_NOT_ALLOWED'});
-      else json(res,200,{configured:Boolean(apiKey),growthCoach:1});
+      else json(res,200,{configured:Boolean(apiKey),growthCoach:1,...(req.headers.authorization?{accountMember:await hasAccountGrant(req.headers.authorization)}:{})});
       return true;
     }
     if (req.url !== '/v1/chat') return false;
@@ -104,7 +105,7 @@ export function createChatHandler({environment = process.env, fetchImpl = fetch}
       const message = known.includes(error.message) ? error.message : 'INVALID_INPUT';
       json(res, message === 'SIGN_IN_REQUIRED' ? 401 : message.endsWith('_CHANGED') ? 409 : message.startsWith('ACCOUNT_') ? 503 : 400, {error:message});return true;
     }
-    if(access)try{reservation=await access.reserve(body);}catch(error){json(res,error.message==='DAILY_LIMIT'?402:400,{error:error.message});return true;}
+    if(access)try{reservation=await access.reserve(body,await hasAccountGrant(req.headers.authorization));}catch(error){json(res,error.message==='DAILY_LIMIT'?402:400,{error:error.message});return true;}
     const latestRate = rates.get(client);
     const reservedRate = latestRate && latestRate.until > Date.now() ? latestRate : {count:0,until:Date.now()+60000};
     if (reservedRate.count >= 8 || active >= 3) {reservation?.finish(false);json(res,429,{error:'RATE_LIMITED'});return true;}

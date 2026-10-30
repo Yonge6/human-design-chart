@@ -98,6 +98,7 @@ export function workspace(){
    if(detail.owner&&detail.pending&&detail.status!=='offline'){clearTimeout(timer);timer=setTimeout(()=>instance.sync().catch(()=>{}),700);}
   }});
   instance.bind=next=>{account=next;next?.subscribe(user=>{void instance.activate(user?.id||null).catch(()=>{});});};
+  instance.account=()=>account;
   globalThis.addEventListener?.('online',()=>instance.sync().catch(()=>{}));
   globalThis.addEventListener?.('storage',event=>{if(event.key?.startsWith('buer:workspace:'))instance.changed();});
   globalThis.document?.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')void instance.sync().catch(()=>{});});

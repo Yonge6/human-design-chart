@@ -1,4 +1,4 @@
-import {chatAccess,showMembership,initMembership,ensureAIConsent} from './buer-membership.js';
+import {chatAccess,showMembership,initMembership,ensureAIConsent,accountAuthorization} from './buer-membership.js';
 import {renderAssistantText} from './buer-message-format.js';
 import {readGrowth,growthContext,answeredCount} from '../services/buer-growth.js';
 import {nextQuestionBatch} from './buer-suggestions.js';
@@ -163,7 +163,7 @@ export function initBuerHome({getLanguage,setLanguage,openManual,getReport}) {
     try {
       if(globalThis.PLUTO_CONFIG?.buerChatEnabled===false)throw new Error('AI_NOT_CONFIGURED');
       const report=$('#buerUseGrowth').checked?currentReport():null;
-      const response=await fetch(endpoint(),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history,...(report?{report}:{}),...($('#buerUseGrowth').checked?{growth:growthContext(readGrowth(workspaceStorage()),value)}:{}),...await chatAccess()}),signal:active.signal});
+      const response=await fetch(endpoint(),{method:'POST',headers:{'Content-Type':'application/json',...await accountAuthorization()},body:JSON.stringify({messages:history,...(report?{report}:{}),...($('#buerUseGrowth').checked?{growth:growthContext(readGrowth(workspaceStorage()),value)}:{}),...await chatAccess()}),signal:active.signal});
       if(!response.ok){const data=await response.json().catch(()=>({}));throw new Error(data.error || 'AI_UNAVAILABLE');}
       if(!response.body)throw new Error('AI_UNAVAILABLE');
       await readBuerEvents(response.body,(type,data)=>{if(ticket===workspace().epoch&&type==='delta'){answer.content+=data.text;setStatus('streaming');renderMessages();}});

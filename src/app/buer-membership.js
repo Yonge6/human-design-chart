@@ -1,8 +1,19 @@
 import {trackUsage} from '../services/buer-analytics.js';
+import {workspace} from '../services/buer-workspace.js';
 const zh=()=>document.documentElement.lang.startsWith('zh');
 const native=()=>globalThis.Capacitor?.isNativePlatform?.();
 const plugin=()=>globalThis.Capacitor?.Plugins?.PlutoNative||globalThis.Capacitor?.registerPlugin?.('PlutoNative');
 let state={products:[]};
+export async function accountAuthorization(){
+  const account=workspace().account?.();
+  if(!account?.user) return {};
+  try {const result=await account.client.auth.getSession();const session=result.data?.session;return session?.access_token && session.user?.id===account.user?.id?{Authorization:`Bearer ${session.access_token}`}:{ };} catch{return {};}
+}
+async function accountMembership(){
+  const headers=await accountAuthorization();if(!headers.Authorization)return false;
+  const base=(globalThis.PLUTO_CONFIG?.apiBaseUrl||'').replace(/\/$/,'');
+  try{const r=await fetch(`${base}/v1/chat/status`,{headers,cache:'no-store'});return r.ok && (await r.json()).accountMember===true;}catch{return false;}
+}
 export async function chatAccess(){
   if(native()) {state=await plugin().subscriptionStatus();return {installationId:state.installationId,transactionJWS:state.transactionJWS};}
   let id=localStorage.getItem('buer-installation-id');if(!id){id=crypto.randomUUID();localStorage.setItem('buer-installation-id',id);}return {installationId:id};
@@ -20,8 +31,8 @@ export function showMembership(){
   const status=add('p',zh()?'正在读取订阅…':'Loading subscriptions…','membership-status');status.role='status';
   if(!native()){status.textContent=zh()?'请在 iPhone App 内查看会员。':'Subscriptions are available in the iPhone app.';dialog.append(close);dialog.showModal();return;}
   const render=async()=>{
-    try{state=await plugin().subscriptionStatus();status.textContent=state.member?(zh()?'会员已生效':'Membership active'):'';
-      if(!state.products?.length)status.textContent=zh()?'订阅暂不可用，请稍后重试。':'Subscriptions are temporarily unavailable. Please try again later.';
+    try{state=await plugin().subscriptionStatus();const granted=await accountMembership();status.textContent=state.member||granted?(zh()?'会员已生效':'Membership active'):'';
+      if(!state.products?.length && !granted && !state.member)status.textContent=zh()?'订阅暂不可用，请稍后重试。':'Subscriptions are temporarily unavailable. Please try again later.';
       for(const suffix of ['monthly','annual']){
         const p=state.products?.find(p=>p.id.endsWith(suffix));if(!p)continue;
         const b=add('button',`${suffix==='monthly'?(zh()?'月订阅':'Monthly'):(zh()?'年订阅':'Annual')} · ${p.price} / ${suffix==='monthly'?(zh()?'月':'month'):(zh()?'年':'year')}`,'membership-plan');

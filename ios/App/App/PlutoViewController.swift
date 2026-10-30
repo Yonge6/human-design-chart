@@ -37,7 +37,9 @@ final class BuerTabController: UITabBarController, UITabBarControllerDelegate, W
         }
         setViewControllers(pages, animated: false)
         // Leave the system bar material intact so current iOS adopts Liquid Glass.
-        tabBar.tintColor = UIColor(red: 54 / 255, green: 126 / 255, blue: 140 / 255, alpha: 1)
+        let accent = UIColor(red: 54 / 255, green: 126 / 255, blue: 140 / 255, alpha: 1)
+        view.tintColor = accent
+        tabBar.tintColor = accent
         attachWorkspace(to: pages[0])
         guard let web = workspace.webView else { return }
         web.configuration.userContentController.add(self, name: "buerNavigation")
@@ -54,6 +56,7 @@ final class BuerTabController: UITabBarController, UITabBarControllerDelegate, W
             new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['data-workspace']});
             new MutationObserver(sync).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
             new MutationObserver(sync).observe(document.body,{subtree:true,attributes:true,attributeFilter:['open']});
+            document.addEventListener('buer:language', sync);
             sync();
           };
           if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setup); else setup();
@@ -69,9 +72,17 @@ final class BuerTabController: UITabBarController, UITabBarControllerDelegate, W
         workspace.view.removeFromSuperview()
         workspace.removeFromParent()
         page.addChild(workspace)
-        workspace.view.frame = page.view.bounds
-        workspace.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        workspace.view.translatesAutoresizingMaskIntoConstraints = false
         page.view.addSubview(workspace.view)
+        // Duo can place system controls along a vertical edge. Constrain to
+        // UIKit's changing safe area rather than assuming a bottom tab bar.
+        let safeArea = page.view.safeAreaLayoutGuide
+        NSLayoutConstraint.activate([
+            workspace.view.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            workspace.view.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
+            workspace.view.topAnchor.constraint(equalTo: safeArea.topAnchor),
+            workspace.view.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor)
+        ])
         workspace.didMove(toParent: page)
     }
 
@@ -123,7 +134,12 @@ final class BuerTabController: UITabBarController, UITabBarControllerDelegate, W
         guard let state = message.body as? [String: Any] else { return }
         webReady = true
         let titles = state["english"] as? Bool == true ? ["Home", "Growth", "People", "Me"] : ["见己", "成长档案", "身边的人", "我的"]
-        for (index, page) in pages.enumerated() { page.tabBarItem.title = titles[index] }
+        for (index, page) in pages.enumerated() {
+            page.tabBarItem.title = titles[index]
+            page.tabBarItem.accessibilityLabel = titles[index]
+            tabBar.items?[index].title = titles[index]
+            tabBar.items?[index].accessibilityLabel = titles[index]
+        }
         modalRequested = state["modal"] as? Bool == true
         if let key = state["workspace"] as? String, let index = keys.firstIndex(of: key), selectedIndex != index {
             selectedIndex = index

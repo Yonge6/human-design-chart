@@ -13,9 +13,9 @@ import { pathToFileURL } from "node:url";
 
 const EXPECTED = Object.freeze({
   bundleId: "com.yonge6.buerwithin",
-  build: "5",
+  build: "7",
   deploymentTarget: "15.0",
-  marketingVersion: "1.0",
+  marketingVersion: "1.1",
   teamId: "L855ZVM679",
 });
 

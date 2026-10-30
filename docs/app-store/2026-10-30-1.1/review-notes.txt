@@ -1,0 +1,19 @@
+Buer Within 1.1 (7) updates the approved 1.0 (6) app with the current web experience. It includes a paper-inspired interface, the blue-teal Doudoulong character, native system navigation and sheets, optional Apple/Google account synchronization, private journals, people profiles and relationship manuals, and 10 free completed AI replies per UTC day.
+
+IPHONE DUO
+Built with Xcode 27.1 / iOS 27.1 SDK. The app now uses UIWindowScene lifecycle rather than the legacy app-only window lifecycle. Native content follows UIKit safe areas, including side-mounted system navigation on Duo. It supports portrait and landscape. The existing iPhone and iPad device families remain supported. Dedicated Duo screenshots show the actual bundled native interface.
+
+REVIEW WITHOUT SIGN-IN
+1. Home: type a question, review the AI-sharing notice and choose whether to proceed. The service is hosted at buer-api.wonderelian.com and uses DeepSeek. Birth details are not automatically attached. Only completed replies count; failures do not consume the allowance. It resets at 00:00 UTC.
+2. Growth: create an optional on-device Human Design reading with synthetic birth details, explore the four-domain reflection, add your own experiences, and record actions/reviews. These local functions do not require a subscription.
+3. Me > Privacy settings > Membership & subscriptions: view the free allowance, monthly and annual products, restore purchases, terms and subscription management. Plus removes the daily reply cap; reasonable rate limits remain. Existing subscription identifiers and prices are unchanged.
+4. Switch English/Chinese with the language button at the top. The system navigation labels follow the selected language.
+
+OPTIONAL ACCOUNT FEATURES
+Me > My account offers Sign in with Apple and Google. First sign-in creates a Buer account; no separate password is required. A reviewer can use Sign in with Apple to test account features. Use the same provider on the app and web to access the same account.
+Signed-in journals, conversations, growth records, saved manuals, people and relationship conversations sync over HTTPS. They are private to that account and are not end-to-end encrypted. People > add a person allows private relationship profiles and manuals. Use synthetic details or obtain the person's permission. Me > My account includes journal export, sign-out and account deletion. Account deletion removes account records but does not cancel an Apple subscription.
+
+PRIVACY AND AI
+Account synchronization and permission to use content for AI are separate. AI context is limited to the authorized sources for the requested feature, and journal/relationship excerpts require explicit source authorization. Native authentication tokens use Keychain. Optional usage analytics remain off by default and do not include messages, journals or birth details. App Privacy now includes the name, email and account identifier returned by optional sign-in, used for App Functionality and linked to the account, without tracking.
+
+The primary experience remains AI companionship, reflection, journal and action review. Human Design is an optional interpretive self-observation lens; it is not a scientific assessment, prediction, diagnosis or definition of a person's ability. AI may make mistakes. No user content or AI outcome is fabricated in the store screenshots.

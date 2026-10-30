@@ -15,13 +15,14 @@ test('personal prose leads saved guides; generic cards are only the no-reading f
  assert.ok(!js.includes('阅读保留的旧版解读'));
  assert.match(pairManualPrompt(),/连贯可读/);
 });
-test('card edit action is icon-only and saved-reading metadata leads the reading tabs',async()=>{
+test('card edit action is icon-only and saved-reading metadata follows the reading and generation controls',async()=>{
  const js=await readFile(new URL('../src/app/buer-relationships.js',import.meta.url),'utf8');
  assert.match(js,/false\), 'relationship-edit'\)/);
  assert.match(js,/编辑\$\{person\.nickname\}的资料/);
- const meta=js.indexOf("content.append(meta,el('div','',{class:'pair-reading-anchor'");
- const tabs=js.indexOf('const nav=',meta),generate=js.indexOf('content.append(generateActions',tabs);
- assert.ok(meta>0&&tabs>meta&&generate>tabs, 'saved-reading metadata precedes tabs and generation controls');
+ const anchor=js.indexOf("content.append(el('div','',{class:'pair-reading-anchor'");
+ const tabs=js.indexOf('const nav=',anchor),generate=js.indexOf('content.append(generateActions',tabs);
+ const footer=js.indexOf('meta);',generate);
+ assert.ok(anchor>0&&tabs>anchor&&generate>tabs&&footer>generate, 'saved-reading metadata stays below tabs, reading and generation controls');
  assert.match(js,/pair-reading-saved-time/);
  assert.match(js,/pair-reading-refresh/);
  assert.match(js,/Generation uses both charts, your complete growth profile, observations, relevant journals, general chats and prior relationship conversations/);

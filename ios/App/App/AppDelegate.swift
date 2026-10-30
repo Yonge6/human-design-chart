@@ -56,3 +56,41 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 }
+
+/// iOS 27 requires scene-based windows. A single resizable scene keeps the
+/// same workspace alive when Duo changes size or a system sheet is presented.
+final class BuerSceneDelegate: UIResponder, UIWindowSceneDelegate {
+    var window: UIWindow?
+
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        guard let windowScene = scene as? UIWindowScene else { return }
+        if window == nil {
+            let sceneWindow = UIWindow(windowScene: windowScene)
+            sceneWindow.rootViewController = BuerTabController()
+            window = sceneWindow
+        }
+        window?.backgroundColor = UIColor(red: 247 / 255, green: 244 / 255, blue: 236 / 255, alpha: 1)
+        window?.makeKeyAndVisible()
+        route(connectionOptions.urlContexts)
+        for activity in connectionOptions.userActivities {
+            self.scene(scene, continue: activity)
+        }
+    }
+
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        route(URLContexts)
+    }
+
+    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+        _ = ApplicationDelegateProxy.shared.application(UIApplication.shared, continue: userActivity, restorationHandler: { _ in })
+    }
+
+    private func route(_ contexts: Set<UIOpenURLContext>) {
+        guard let delegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        for context in contexts {
+            var options: [UIApplication.OpenURLOptionsKey: Any] = [.openInPlace: context.options.openInPlace]
+            if let source = context.options.sourceApplication { options[.sourceApplication] = source }
+            _ = delegate.application(UIApplication.shared, open: context.url, options: options)
+        }
+    }
+}
